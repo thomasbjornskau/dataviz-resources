@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leveranseflyt – nasjonalregnskap</title>
+<!-- SheetJS for å lese Excel direkte i nettleseren -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --paper: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-mute: #8a8a8a;
+    --line: #e3e3dd;
+    --line-soft: #efefe9;
+    --accent: #d24a2b;
+    --row-alt: #f5f5f0;
+    --endelige: #b8d4c2;
+    --endelige-from: #f5c4b3;
+    --from: #d24a2b;
+    --to: #3e7a5a;
+    --måleperiode-border: #d24a2b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Charter", "Iowan Old Style", "Georgia", serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px 32px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 28px; }
+  h1 { font-weight: 700; font-size: 32px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .subtitle { color: var(--ink-soft); font-size: 15px; max-width: 720px; margin: 0; }
+  .subtitle em { color: var(--accent); font-style: normal; font-weight: 600; }
+  .source-note {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .source-note a { color: var(--accent); text-decoration: none; }
+  .source-note a:hover { text-decoration: underline; }
+
+  .controls {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+  }
+  .controls-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .controls-title {
+    font-family: inherit; font-weight: 700; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); margin: 0; min-width: 80px;
+  }
+  .controls-actions { margin-left: auto; display: flex; gap: 14px; font-size: 13px; }
+  .controls-actions button {
+    background: none; border: none; color: var(--accent);
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    padding: 0; text-decoration: underline; text-underline-offset: 3px;
+  }
+  .controls-actions button:hover { color: var(--ink); }
+  .mode-group {
+    display: inline-flex; background: var(--bg);
+    border: 1px solid var(--line); border-radius: 999px; padding: 3px;
+  }
+  .mode-group button {
+    background: none; border: none; padding: 6px 16px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--ink-soft); cursor: pointer; border-radius: 999px;
+    transition: all 0.15s;
+  }
+  .mode-group button.active { background: var(--ink); color: var(--bg); }
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 1px solid var(--line);
+    background: var(--paper); border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .chip:hover { border-color: var(--ink-mute); color: var(--ink); }
+  .chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .summary {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 13px; color: var(--ink-soft);
+  }
+  .summary strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .role-tag {
+    display: inline-block; padding: 2px 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    margin: 0 4px; text-transform: lowercase;
+  }
+  .role-tag.from { background: #fde4dd; color: #8a2912; }
+  .role-tag.to { background: #dfeae3; color: #235340; }
+
+  .diagram-wrapper {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 4px; padding: 32px 28px 24px; overflow-x: auto;
+  }
+  .diagram { position: relative; min-width: 1100px; }
+  .grid { display: grid; grid-template-columns: 110px repeat(12, 1fr); }
+  .col-header {
+    text-align: center; font-size: 12px; color: var(--ink-soft);
+    padding: 4px 2px 12px; border-bottom: 1px solid var(--line);
+  }
+  .col-header.year-start { border-left: 1px solid var(--line); }
+  .year-label {
+    font-weight: 700; font-size: 15px; color: var(--ink);
+    display: block; text-align: left; padding-left: 4px; margin-bottom: 4px;
+  }
+  .kv-label { font-weight: 600; color: var(--ink); }
+  .row-label {
+    font-weight: 700; font-size: 14px;
+    padding: 14px 14px 14px 0; text-align: right;
+    border-bottom: 1px solid var(--line-soft); color: var(--ink);
+    display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  }
+  .row-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .row-dot.from { background: var(--from); }
+  .row-dot.to { background: var(--to); }
+  .cell {
+    border-bottom: 1px solid var(--line-soft); padding: 14px 4px;
+    position: relative; min-height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 3px;
+  }
+  .cell.alt { background: var(--row-alt); }
+  .cell.year-start { border-left: 1px solid var(--line); }
+  .måleperiode-overlay {
+    position: absolute; pointer-events: none;
+    border: 2px solid var(--måleperiode-border);
+    background: rgba(210, 74, 43, 0.04); z-index: 1;
+  }
+  .måleperiode-label {
+    position: absolute; top: -28px; left: 8px;
+    font-weight: 700; font-size: 11px;
+    color: var(--måleperiode-border);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .marker {
+    position: relative; z-index: 2;
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1.5px solid var(--to); background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--ink);
+    cursor: default; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .marker:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;
+  }
+  .marker.E { background: var(--endelige); }
+  .marker.role-from { border-color: var(--from); }
+  .marker.role-from.E { background: var(--endelige-from); }
+  .arrow-svg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 1;
+  }
+  .arrow-path { stroke-width: 1.2; fill: none; opacity: 0.7; }
+  .arrow-path.from { stroke: var(--from); }
+  .arrow-path.to { stroke: var(--to); }
+  .tooltip {
+    position: fixed; background: var(--ink); color: var(--bg);
+    padding: 10px 14px; border-radius: 4px;
+    font-size: 12px; line-height: 1.5;
+    pointer-events: none; z-index: 1000;
+    opacity: 0; transition: opacity 0.12s;
+    max-width: 280px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip strong { color: #fff; }
+  .tooltip .tooltip-row { margin-top: 4px; }
+  .tooltip .tooltip-row:first-child { margin-top: 0; }
+  .tooltip .label-small {
+    color: var(--ink-mute); text-transform: uppercase;
+    letter-spacing: 0.05em; font-size: 10px;
+  }
+  .legend {
+    display: flex; gap: 24px; margin-top: 24px;
+    padding: 16px 22px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 4px;
+    flex-wrap: wrap; font-size: 13px; align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .legend-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid var(--to); background: var(--paper);
+    display: inline-block;
+  }
+  .legend-dot.E { background: var(--endelige); }
+  .legend-dash {
+    display: inline-block; width: 22px; height: 0;
+    border-top: 1.5px solid var(--from);
+  }
+  .legend-dash.to { border-top-color: var(--to); }
+  .footer-note {
+    margin-top: 32px; font-size: 12px;
+    color: var(--ink-mute); text-align: right; font-style: italic;
+  }
+  .hint {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 8px; text-align: right;
+  }
+
+  .loading, .error-box {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .error-box {
+    background: #fff5f1;
+    border: 1px solid #f5c4b3;
+    border-radius: 4px;
+    color: #8a2912;
+    text-align: left;
+    padding: 24px;
+  }
+  .error-box code {
+    background: rgba(0,0,0,0.05);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid var(--line);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: -4px;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Leveranseflyt i nasjonalregnskapet</h1>
+    <p class="subtitle">Hvilke leveranser går mellom hvilke systemer, til hvilken tid, med hvilken status. Velg ett eller flere <em>systemer</em>, og om du vil se hva de <em>sender</em>, <em>mottar</em>, eller begge deler.</p>
+    <p class="source-note" id="sourceNote">Datagrunnlag: <a href="NR_sammenhenger.xlsx" download>NR_sammenhenger.xlsx</a></p>
+  </header>
+
+  <div id="loadingBox" class="loading">
+    <span class="spinner"></span> Leser leveransedata fra Excel-arket …
+  </div>
+
+  <div id="mainApp" style="display: none;">
+    <div class="controls">
+      <div class="controls-row">
+        <h2 class="controls-title">Modus</h2>
+        <div class="mode-group" id="modeGroup">
+          <button data-mode="from" class="active">Sender fra</button>
+          <button data-mode="to">Mottar til</button>
+          <button data-mode="both">Begge</button>
+        </div>
+        <div class="controls-actions">
+          <button id="selectAll">Velg alle</button>
+          <button id="selectNone">Fjern alle</button>
+        </div>
+      </div>
+      <div class="controls-row" style="margin-bottom: 8px;">
+        <h2 class="controls-title">Systemer</h2>
+      </div>
+      <div class="chip-group" id="chipGroup"></div>
+      <div class="summary" id="summary"></div>
+    </div>
+
+    <div class="diagram-wrapper">
+      <div class="diagram" id="diagram"></div>
+    </div>
+
+    <div class="hint">Hold pekeren over en sirkel for detaljer.</div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dash"></span> Sender fra valgt system</div>
+      <div class="legend-item"><span class="legend-dash to"></span> Mottar til valgt system</div>
+      <div class="legend-item" style="margin-left: 16px;"><span class="legend-dot"></span> Førstegangs/revidert</div>
+      <div class="legend-item"><span class="legend-dot E"></span> Endelig sluttleveranse</div>
+    </div>
+
+    <div class="footer-note" id="footerNote"></div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  // === Excel-parsing ===
+  const XLSX_URL = 'NR_sammenhenger.xlsx';
+  const SHEET_NAME = 'SAMMENHENGER';
+
+  // System-rekkefølge (samme som i originaltegningen)
+  const SYS_ORDER = ['REA', 'KNR', 'AR', 'IKR', 'KVINS', 'FINSE', 'UR DRI', 'UR FIN', 'FDI', 'BERKAP', 'OFF DRI', 'OFF FIN'];
+
+  // Hjelpefunksjoner for å tolke perioder
+  function parseLevering(s) {
+    if (!s) return null;
+    s = String(s).trim();
+    const m = s.match(/^(\d)\.kv\.\s*(\d{2})$/);
+    if (m) return { year: 2000 + parseInt(m[2]), kv: parseInt(m[1]) };
+    return null;
+  }
+
+  function parsePeriodeLabel(s) {
+    if (!s) return '';
+    s = String(s).trim();
+    let m = s.match(/^(\d)\.kv\.\s*(\d{2})$/);
+    if (m) return 'K' + m[1];
+    m = s.match(/^(\d)\.-(\d)\.kv\.\s*(\d{2})/);
+    if (m) return m[1] + '-' + m[2];
+    m = s.match(/^(\d{4})$/);
+    if (m) return m[1].slice(-2);
+    return s;
+  }
+
+  // === Tilstand ===
+  let DATA = [];
+  let dynamicSystems = []; // systemer som faktisk finnes i dataene, i SYS_ORDER-rekkefølge
+  let dynamicQuarters = []; // kvartaler som faktisk finnes
+  let selected = new Set();
+  let mode = 'from';
+
+  // === Last og parse Excel ===
+  async function loadData() {
+    try {
+      const resp = await fetch(XLSX_URL);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      if (!wb.SheetNames.includes(SHEET_NAME)) {
+        throw new Error('Fant ikke arkfanen "' + SHEET_NAME + '". Tilgjengelige faner: ' + wb.SheetNames.join(', '));
+      }
+      const ws = wb.Sheets[SHEET_NAME];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: null });
+
+      DATA = [];
+      const yearSet = new Set();
+      const sysSet = new Set();
+
+      rows.forEach(r => {
+        const from = r['LEVERANDØR'] ? String(r['LEVERANDØR']).trim() : null;
+        const to = r['MOTTAKER'] ? String(r['MOTTAKER']).trim() : null;
+        const måle = r['MÅLETIDSPERIODE'];
+        const lev = r['LEVERINGSTIDSPUNKT'];
+        const status = r['STATUS'] ? String(r['STATUS']).trim() : null;
+        const periodetype = r['PERIODE'] ? String(r['PERIODE']).trim() : null;
+        const kommentar = r['KOMMENTAR'] ? String(r['KOMMENTAR']).trim() : '';
+        if (!from || !to || !lev || !status) return;
+        const parsed = parseLevering(lev);
+        if (!parsed) return;
+        const statusKey = status[0]; // 'F', 'R', 'E'
+        const periodeLabel = parsePeriodeLabel(måle);
+        DATA.push({
+          from, to,
+          periode: periodeLabel,
+          periodeRaw: String(måle || ''),
+          year: parsed.year,
+          kv: parsed.kv,
+          status: statusKey,
+          statusFull: status,
+          periodetype,
+          kommentar
+        });
+        yearSet.add(parsed.year);
+        sysSet.add(from);
+        sysSet.add(to);
+      });
+
+      // Dynamisk system-liste: bruk SYS_ORDER, men kun de som faktisk forekommer
+      // (og legg til eventuelle nye systemer på slutten)
+      dynamicSystems = SYS_ORDER.filter(s => sysSet.has(s));
+      sysSet.forEach(s => {
+        if (!dynamicSystems.includes(s)) dynamicSystems.push(s);
+      });
+
+      // Dynamiske kvartaler: alle år som forekommer, alle 4 kvartaler
+      const years = Array.from(yearSet).sort((a,b) => a-b);
+      dynamicQuarters = [];
+      years.forEach(y => {
+        for (let k = 1; k <= 4; k++) {
+          dynamicQuarters.push({ year: y, kv: k, isStart: k === 1 });
+        }
+      });
+
+      // Måleperiode: laveste år (antar måleperiode er hele det første året)
+      window.MÅLEPERIODE_YEAR = years[0];
+
+      // Standard: velg AR hvis den finnes
+      if (dynamicSystems.includes('AR')) selected.add('AR');
+
+      document.getElementById('loadingBox').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      document.getElementById('footerNote').textContent =
+        'Måleperiode ' + years[0] + ' · ' + DATA.length + ' leveranser · ' + dynamicSystems.length + ' systemer';
+      render();
+    } catch (err) {
+      const box = document.getElementById('loadingBox');
+      box.className = 'error-box';
+      box.innerHTML = '<strong>Kunne ikke laste leveransedata.</strong><br><br>'
+        + 'Feilmelding: <code>' + (err.message || err) + '</code><br><br>'
+        + 'Sjekk at filen <code>NR_sammenhenger.xlsx</code> ligger i samme mappe som denne HTML-filen, '
+        + 'og at arkfanen <code>SAMMENHENGER</code> finnes.<br><br>'
+        + 'Hvis du tester lokalt: nettlesere blokkerer ofte fetch() fra <code>file://</code>. '
+        + 'Bruk en lokal server, f.eks. <code>python3 -m http.server</code>, eller publiser via GitHub Pages.';
+    }
+  }
+
+  // === Rendering ===
+  const STATUS_LABEL = {F: 'foreløpige', R: 'reviderte', E: 'endelige'};
+
+  function getRole(r) {
+    const fromSel = selected.has(r.from);
+    const toSel = selected.has(r.to);
+    if (mode === 'from' && fromSel) return 'from';
+    if (mode === 'to' && toSel) return 'to';
+    if (mode === 'both') {
+      if (fromSel && toSel) return 'both';
+      if (fromSel) return 'from';
+      if (toSel) return 'to';
+    }
+    return null;
+  }
+
+  function buildChips() {
+    const c = document.getElementById('chipGroup');
+    c.innerHTML = '';
+    dynamicSystems.forEach(s => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (selected.has(s) ? ' active' : '');
+      b.textContent = s;
+      b.onclick = () => { selected.has(s) ? selected.delete(s) : selected.add(s); render(); };
+      c.appendChild(b);
+    });
+  }
+
+  function leveringLabel(year, kv) { return year + ' · ' + kv + '.kv.'; }
+
+  function buildDiagram() {
+    const d = document.getElementById('diagram');
+    d.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    grid.style.gridTemplateColumns = '110px repeat(' + dynamicQuarters.length + ', 1fr)';
+
+    const corner = document.createElement('div');
+    corner.className = 'col-header';
+    grid.appendChild(corner);
+    dynamicQuarters.forEach(q => {
+      const h = document.createElement('div');
+      h.className = 'col-header' + (q.isStart ? ' year-start' : '');
+      h.innerHTML = (q.isStart ? '<span class="year-label">' + q.year + '</span>' : '') + '<span class="kv-label">' + q.kv + '.kv.</span>';
+      grid.appendChild(h);
+    });
+
+    dynamicSystems.forEach((sys, rowIdx) => {
+      const lbl = document.createElement('div');
+      lbl.className = 'row-label';
+      const dots = [];
+      if (selected.has(sys)) {
+        if (mode === 'from' || mode === 'both') dots.push('<span class="row-dot from"></span>');
+        if (mode === 'to' || mode === 'both') dots.push('<span class="row-dot to"></span>');
+      }
+      lbl.innerHTML = dots.join('') + sys;
+      grid.appendChild(lbl);
+      dynamicQuarters.forEach(q => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        if (rowIdx % 2 === 1) cell.classList.add('alt');
+        if (q.isStart) cell.classList.add('year-start');
+        cell.dataset.sys = sys;
+        cell.dataset.year = q.year;
+        cell.dataset.kv = q.kv;
+        grid.appendChild(cell);
+      });
+    });
+    d.appendChild(grid);
+
+    DATA.forEach((r, idx) => {
+      const role = getRole(r);
+      if (!role) return;
+      const cF = grid.querySelector('.cell[data-sys="' + r.from + '"][data-year="' + r.year + '"][data-kv="' + r.kv + '"]');
+      const cT = grid.querySelector('.cell[data-sys="' + r.to + '"][data-year="' + r.year + '"][data-kv="' + r.kv + '"]');
+      if (!cF || !cT) return;
+      const arrowRole = role === 'both' ? 'from' : role;
+      const mF = document.createElement('div');
+      mF.className = 'marker ' + r.status + ' role-' + arrowRole;
+      mF.textContent = r.periode;
+      mF.dataset.idx = idx; mF.dataset.endpoint = 'from';
+      attachTip(mF, r);
+      cF.appendChild(mF);
+      const mT = document.createElement('div');
+      mT.className = 'marker ' + r.status + ' role-' + arrowRole;
+      mT.textContent = r.periode;
+      mT.dataset.idx = idx; mT.dataset.endpoint = 'to';
+      attachTip(mT, r);
+      cT.appendChild(mT);
+    });
+
+    drawArrows(grid);
+    drawMP(grid);
+  }
+
+  function drawArrows(grid) {
+    const old = document.querySelector('.arrow-svg');
+    if (old) old.remove();
+    const diagram = document.getElementById('diagram');
+    const dRect = diagram.getBoundingClientRect();
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.classList.add('arrow-svg');
+    svg.setAttribute('width', dRect.width);
+    svg.setAttribute('height', dRect.height);
+    const defs = document.createElementNS(svgNS, 'defs');
+    defs.innerHTML = '<marker id="ah-from" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#d24a2b" opacity="0.7"/></marker>'
+      + '<marker id="ah-to" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3e7a5a" opacity="0.7"/></marker>';
+    svg.appendChild(defs);
+
+    DATA.forEach((r, idx) => {
+      const role = getRole(r);
+      if (!role) return;
+      const arrowRole = role === 'both' ? 'from' : role;
+      const mF = grid.querySelector('.marker[data-idx="' + idx + '"][data-endpoint="from"]');
+      const mT = grid.querySelector('.marker[data-idx="' + idx + '"][data-endpoint="to"]');
+      if (!mF || !mT) return;
+      const r1 = mF.getBoundingClientRect(), r2 = mT.getBoundingClientRect();
+      const x1 = r1.left + r1.width/2 - dRect.left, y1 = r1.top + r1.height/2 - dRect.top;
+      const x2 = r2.left + r2.width/2 - dRect.left, y2 = r2.top + r2.height/2 - dRect.top;
+      const dx = x2-x1, dy = y2-y1, len = Math.sqrt(dx*dx+dy*dy);
+      if (len < 1) return;
+      const nx = dx/len, ny = dy/len, rad = 13;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', x1+nx*rad); line.setAttribute('y1', y1+ny*rad);
+      line.setAttribute('x2', x2-nx*rad); line.setAttribute('y2', y2-ny*rad);
+      line.setAttribute('class', 'arrow-path ' + arrowRole);
+      line.setAttribute('marker-end', 'url(#ah-' + arrowRole + ')');
+      svg.appendChild(line);
+    });
+    diagram.appendChild(svg);
+  }
+
+  function drawMP(grid) {
+    const cells = grid.querySelectorAll('.cell[data-year="' + window.MÅLEPERIODE_YEAR + '"]');
+    if (!cells.length) return;
+    const diagram = document.getElementById('diagram');
+    const dRect = diagram.getBoundingClientRect();
+    const fRect = cells[0].getBoundingClientRect();
+    const lRect = cells[cells.length - 1].getBoundingClientRect();
+    const headerFirst = grid.children[1].getBoundingClientRect();
+    const allCells = grid.querySelectorAll('.cell');
+    const lastRow = allCells[allCells.length - 1].getBoundingClientRect();
+    const overlay = document.createElement('div');
+    overlay.className = 'måleperiode-overlay';
+    overlay.style.left = (fRect.left - dRect.left) + 'px';
+    overlay.style.width = (lRect.right - fRect.left) + 'px';
+    overlay.style.top = (headerFirst.top - dRect.top) + 'px';
+    overlay.style.height = (lastRow.bottom - headerFirst.top) + 'px';
+    overlay.innerHTML = '<span class="måleperiode-label">Måleperiode</span>';
+    diagram.appendChild(overlay);
+  }
+
+  const tooltip = document.getElementById('tooltip');
+  function attachTip(el, r) {
+    el.addEventListener('mouseenter', () => {
+      const isFromEnd = el.dataset.endpoint === 'from';
+      const dir = isFromEnd
+        ? '<span class="label-small">Fra</span> <strong>' + r.from + '</strong> → ' + r.to
+        : '<span class="label-small">Til</span> <strong>' + r.to + '</strong> ← ' + r.from;
+      tooltip.innerHTML = '<div class="tooltip-row">' + dir + '</div>'
+        + '<div class="tooltip-row"><span class="label-small">Måleperiode</span> ' + r.periodeRaw + '</div>'
+        + '<div class="tooltip-row"><span class="label-small">Leveres</span> ' + leveringLabel(r.year, r.kv) + '</div>'
+        + '<div class="tooltip-row"><span class="label-small">Status</span> ' + STATUS_LABEL[r.status] + '</div>'
+        + (r.kommentar ? '<div class="tooltip-row"><span class="label-small">Merknad</span> ' + r.kommentar + '</div>' : '');
+      tooltip.classList.add('visible');
+    });
+    el.addEventListener('mousemove', (e) => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + tooltip.offsetWidth > window.innerWidth - 10) x = e.clientX - tooltip.offsetWidth - 14;
+      if (y + tooltip.offsetHeight > window.innerHeight - 10) y = e.clientY - tooltip.offsetHeight - 14;
+      tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  }
+
+  function updateSummary() {
+    const s = document.getElementById('summary');
+    if (selected.size === 0) { s.innerHTML = '<em>Ingen systemer valgt – velg minst ett.</em>'; return; }
+    const matched = DATA.filter(r => getRole(r) !== null);
+    const sysList = Array.from(selected).join(', ');
+    let modeText;
+    if (mode === 'from') modeText = '<span class="role-tag from">sender fra</span>';
+    else if (mode === 'to') modeText = '<span class="role-tag to">mottar til</span>';
+    else modeText = '<span class="role-tag from">sender</span> eller <span class="role-tag to">mottar</span>';
+    s.innerHTML = '<strong>' + matched.length + '</strong> leveranser som ' + modeText + ' <strong>' + sysList + '</strong>';
+  }
+
+  function render() {
+    buildChips();
+    buildDiagram();
+    updateSummary();
+  }
+
+  document.querySelectorAll('#modeGroup button').forEach(btn => {
+    btn.onclick = () => {
+      mode = btn.dataset.mode;
+      document.querySelectorAll('#modeGroup button').forEach(b => b.classList.toggle('active', b === btn));
+      render();
+    };
+  });
+
+  document.getElementById('selectAll').onclick = () => { selected = new Set(dynamicSystems); render(); };
+  document.getElementById('selectNone').onclick = () => { selected = new Set(); render(); };
+
+  window.addEventListener('resize', () => {
+    const grid = document.querySelector('.diagram .grid');
+    if (grid) {
+      document.querySelectorAll('.arrow-svg, .måleperiode-overlay').forEach(el => el.remove());
+      drawArrows(grid);
+      drawMP(grid);
+    }
+  });
+
+  // Start
+  loadData();
+</script>
+</body>
+</html>

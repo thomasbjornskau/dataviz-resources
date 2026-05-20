@@ -1,0 +1,90 @@
+{
+  "tittel": "Delprosesser i makrostatistikkproduksjon",
+  "beskrivelse": "Datatilstander viser hvor data er i produksjonsløpet. Delprosessene viser hva som skjer med data.",
+  "styringslag": "Kataloger, kontoplaner og omkodingsregler er ikke datatilstander, men et styringslag som virker på tvers av overgangene. De brukes særlig ved omkoding, validering, aggregering, føring på regnskapsposter og uttak.",
+  "datatilstander": [
+    { "id": "kilde", "navn": "Kildedata" },
+    { "id": "inn", "navn": "Inndata" },
+    { "id": "klar", "navn": "Klargjorte data" },
+    { "id": "stat", "navn": "Statistikk" },
+    { "id": "ut", "navn": "Utdata" }
+  ],
+  "overganger": [
+    {
+      "id": "mot_inndata",
+      "fra": "kilde",
+      "til": "inn",
+      "navn": "Mot inndata",
+      "beskrivelse": "Data hentes fra kilder eller fra delte SSB-data og gjøres klar som inndata for makrostatistikken.",
+      "delprosesser": [
+        { "navn": "Mottak / innhenting", "forklaring": "Data hentes fra kilder, interne leveranser eller administrative systemer.", "inngang": "tradisjonell" },
+        { "navn": "Avgrensing", "forklaring": "Kun relevante perioder, enheter, variabler eller deler av kilden tas med.", "inngang": "tradisjonell" },
+        { "navn": "Dataminimering", "forklaring": "Overflødige data fjernes før de går videre.", "inngang": "tradisjonell" },
+        { "navn": "Pseudonymisering", "forklaring": "Identifiserende opplysninger skjermes der det er relevant.", "inngang": "tradisjonell" },
+        { "navn": "Formatstandardisering", "forklaring": "Data omformes til et teknisk format som kan behandles videre.", "inngang": "tradisjonell" },
+        { "navn": "Kildekontroll", "forklaring": "Kontroll av at leveransen er komplett, lesbar og gjelder riktig periode/versjon.", "inngang": "tradisjonell" },
+        { "navn": "Første omkoding", "forklaring": "Kildekoder oversettes foreløpig til interne eller felles strukturer.", "inngang": "tradisjonell" },
+        { "navn": "Versjonsmerking", "forklaring": "Kilde, mottakstidspunkt, periode og versjon dokumenteres.", "inngang": "tradisjonell" },
+        { "navn": "Uttrekk", "forklaring": "Relevante deler av delte SSB-data hentes inn som startpunkt for makrostatistikken.", "inngang": "delte_data" },
+        { "navn": "Harmonisering", "forklaring": "Data gjøres sammenlignbare på tvers av kilder, perioder eller statistikker.", "inngang": "delte_data" },
+        { "navn": "Kobling til metadata", "forklaring": "Data knyttes til relevante kataloger, kodeverk, kontoplaner eller klassifikasjoner.", "inngang": "delte_data" },
+        { "navn": "Innfrysing av grunnlag", "forklaring": "Et bestemt datagrunnlag låses som startversjon for videre produksjon.", "inngang": "delte_data" }
+      ]
+    },
+    {
+      "id": "inn_til_klar",
+      "fra": "inn",
+      "til": "klar",
+      "navn": "Klargjøring",
+      "beskrivelse": "Inndata bearbeides, valideres, kobles, omkodes og kvalitetssjekkes.",
+      "delprosesser": [
+        { "navn": "Validering mot katalog", "forklaring": "Kontroll av at koder finnes, er gyldige og brukes i riktig periode." },
+        { "navn": "Validering mot kontoplan", "forklaring": "Kontroll av at tall kan føres på gyldige poster og kombinasjoner." },
+        { "navn": "Omkoding / mapping", "forklaring": "Kildekoder oversettes til makrostatistikkens operative koder, for eksempel NR-næring, produkt, sektor eller inntektsart." },
+        { "navn": "Kobling", "forklaring": "Data kobles mot andre datasett, kataloger, fordelingsnøkler eller referansestrukturer." },
+        { "navn": "Omforming", "forklaring": "Data endres fra kildeformat til produksjonsstruktur, for eksempel fra bredt til langt format eller fra filstruktur til tabellstruktur." },
+        { "navn": "Beregning", "forklaring": "Nye størrelser beregnes fra input, for eksempel avledede poster, satser, fordelinger eller mellomresultater." },
+        { "navn": "Justering for definisjonsforskjeller", "forklaring": "Kildedata tilpasses makrostatistikkens begreper og avgrensninger." },
+        { "navn": "Fordeling / oppsplitting", "forklaring": "Summer fordeles på næring, sektor, produkt, art eller andre dimensjoner." },
+        { "navn": "Editering / korrigering", "forklaring": "Feil, mangler og urimelige verdier rettes, maskinelt eller manuelt." },
+        { "navn": "Kvalitetskontroll", "forklaring": "Kontroll av rimelighet, utvikling, brudd, summer og sammenheng mot tidligere perioder." }
+      ]
+    },
+    {
+      "id": "klar_til_stat",
+      "fra": "klar",
+      "til": "stat",
+      "navn": "Statistikkproduksjon",
+      "beskrivelse": "Klargjorte data løftes til statistikk gjennom aggregering, estimering, avstemming og sluttføring.",
+      "delprosesser": [
+        { "navn": "Aggregering", "forklaring": "Detaljerte tall summeres til høyere nivåer." },
+        { "navn": "Estimering / framskriving", "forklaring": "Tall beregnes der full informasjon ikke finnes, ofte med indikatorer eller modeller." },
+        { "navn": "Avstemming", "forklaring": "Kontroll av at ulike deler av regnskapet henger sammen." },
+        { "navn": "Balansering", "forklaring": "Justeringer gjøres for å få regnskapet til å gå opp. Dette er mer operativt enn avstemming." },
+        { "navn": "Kjeding", "forklaring": "Volumserier kobles sammen over tid når vekter eller prisgrunnlag endres." },
+        { "navn": "Deflatering / inflatering", "forklaring": "Tall omregnes mellom løpende og faste priser." },
+        { "navn": "Sesongjustering", "forklaring": "Tidsserier justeres for sesong- og kalendereffekter." },
+        { "navn": "Konsistenskontroll", "forklaring": "Kontroll av sammenheng mellom år/kvartal, delregnskap, sektorer, aggregater og publiserte størrelser." },
+        { "navn": "Sluttføring", "forklaring": "Faglig sistekontroll, vurdering og eventuell manuell justering før statistikken settes som ferdig." }
+      ]
+    },
+    {
+      "id": "stat_til_ut",
+      "fra": "stat",
+      "til": "ut",
+      "navn": "Mot utdata",
+      "beskrivelse": "Statistikken tilrettelegges, konfidensialitetsbeskyttes og leveres videre.",
+      "delprosesser": [
+        { "navn": "Uttrekk", "forklaring": "Publiserings- og leveransedata hentes fra ferdig statistikk." },
+        { "navn": "Tilrettelegging", "forklaring": "Data struktureres for Statistikkbanken, tabeller, internasjonale leveranser eller videre bruk." },
+        { "navn": "Aggregering til publiseringsnivå", "forklaring": "Tall løftes til nivåer som skal publiseres eller deles." },
+        { "navn": "Undertrykking", "forklaring": "Verdier skjules ved behov for konfidensialitet eller kvalitet." },
+        { "navn": "Støylegging", "forklaring": "Verdier endres kontrollert der det er nødvendig for konfidensialitet." },
+        { "navn": "Runding", "forklaring": "Tall avrundes etter publiseringsstandard." },
+        { "navn": "Teksting og metadatauttak", "forklaring": "Koder kobles til tekster, fotnoter, forklaringer og dokumentasjon." },
+        { "navn": "Publiseringskontroll", "forklaring": "Kontroll av format, summer, versjon, metadata og samsvar med det som skal publiseres." },
+        { "navn": "Leveranse", "forklaring": "Data sendes til publiseringskanaler, nasjonale brukere eller internasjonale mottakere." }
+      ]
+    }
+  ]
+}

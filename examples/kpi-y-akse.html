@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aksen som lyver — KPI 2020–2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f4ef;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0, 0, 0, 0.12);
+    --accent: #185FA5;
+    --accent-bg: #E6F1FB;
+    --accent-text: #0C447C;
+    --accent-fill: rgba(24, 95, 165, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1f1f1e;
+      --bg-secondary: #2a2a29;
+      --text-primary: #f0efea;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255, 255, 255, 0.15);
+      --accent: #85B7EB;
+      --accent-bg: #0C447C;
+      --accent-text: #B5D4F4;
+      --accent-fill: rgba(133, 183, 235, 0.12);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .presets button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--text-primary);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .presets button:hover {
+    background: var(--bg-secondary);
+  }
+
+  .presets button.active {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    .controls { grid-template-columns: 1fr; }
+  }
+
+  .control {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .control-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .control-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .control-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  .control-row input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  .control-value {
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 30px;
+    text-align: right;
+    color: var(--text-primary);
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    margin-bottom: 0.75rem;
+  }
+
+  .readout {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .readout strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .source {
+    margin-top: 0.75rem;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2 class="sr-only">Interaktiv graf av konsumprisindeksen 2020–2026 med justerbar y-akse.</h2>
+
+  <div class="presets" id="presets">
+    <button data-min="0" data-max="120">Akse fra 0</button>
+    <button data-min="75" data-max="105" class="active">Tilpasset akse</button>
+    <button data-min="95" data-max="103">Sterkt zoomet</button>
+    <button data-min="99" data-max="103">Ekstrem zoom</button>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <div class="control-label">y-akse: nedre</div>
+      <div class="control-row">
+        <input type="range" id="ymin" min="0" max="100" step="1" value="75">
+        <span id="ymin-out" class="control-value">75</span>
+      </div>
+    </div>
+    <div class="control">
+      <div class="control-label">y-akse: øvre</div>
+      <div class="control-row">
+        <input type="range" id="ymax" min="101" max="130" step="1" value="105">
+        <span id="ymax-out" class="control-value">105</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="kpiChart" role="img" aria-label="Konsumprisindeks månedlig fra januar 2020 til april 2026, fra omtrent 81 til 103.">KPI 2020–2026: fra 80.8 til 102.8.</canvas>
+  </div>
+
+  <div class="readout">
+    Med denne aksen ser bølgen ut som <strong id="verdict">en tydelig stigning</strong>. Prisene steg <strong>27,2 %</strong> fra januar 2020 til april 2026. Den raskeste perioden var sommeren 2022 til sommeren 2023.
+  </div>
+
+  <div class="source">
+    Kilde: SSB tabell 14710 — Konsumprisindeks (2025 = 100).
+  </div>
+</div>
+
+<script>
+(function(){
+  const data = [
+    ["2020-01",80.8],["2020-02",80.8],["2020-03",80.8],["2020-04",81.1],["2020-05",81.2],["2020-06",81.4],
+    ["2020-07",82.0],["2020-08",81.7],["2020-09",82.0],["2020-10",82.2],["2020-11",81.6],["2020-12",82.0],
+    ["2021-01",82.8],["2021-02",83.4],["2021-03",83.2],["2021-04",83.5],["2021-05",83.4],["2021-06",83.7],
+    ["2021-07",84.5],["2021-08",84.4],["2021-09",85.4],["2021-10",85.1],["2021-11",85.8],["2021-12",86.3],
+    ["2022-01",85.5],["2022-02",86.5],["2022-03",87.0],["2022-04",88.0],["2022-05",88.3],["2022-06",89.0],
+    ["2022-07",90.2],["2022-08",89.9],["2022-09",91.2],["2022-10",91.5],["2022-11",91.4],["2022-12",91.4],
+    ["2023-01",91.5],["2023-02",91.9],["2023-03",92.7],["2023-04",93.6],["2023-05",94.1],["2023-06",94.7],
+    ["2023-07",95.0],["2023-08",94.3],["2023-09",94.3],["2023-10",95.2],["2023-11",95.7],["2023-12",95.7],
+    ["2024-01",95.9],["2024-02",96.1],["2024-03",96.3],["2024-04",97.0],["2024-05",96.9],["2024-06",97.2],
+    ["2024-07",97.7],["2024-08",96.8],["2024-09",97.1],["2024-10",97.7],["2024-11",98.0],["2024-12",97.9],
+    ["2025-01",98.1],["2025-02",99.5],["2025-03",98.8],["2025-04",99.4],["2025-05",99.9],["2025-06",100.1],
+    ["2025-07",100.8],["2025-08",100.2],["2025-09",100.6],["2025-10",100.7],["2025-11",100.9],["2025-12",101.0],
+    ["2026-01",101.6],["2026-02",102.2],["2026-03",102.4],["2026-04",102.8]
+  ];
+  const labels = data.map(d => d[0]);
+  const values = data.map(d => d[1]);
+
+  function getColors() {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    return {
+      line: dark ? '#85B7EB' : '#185FA5',
+      fill: dark ? 'rgba(133,183,235,0.12)' : 'rgba(24,95,165,0.08)',
+      tick: dark ? '#b4b2a9' : '#5f5e5a',
+      grid: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'
+    };
+  }
+
+  let colors = getColors();
+  const ctx = document.getElementById('kpiChart');
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        borderColor: colors.line,
+        backgroundColor: colors.fill,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: c => 'KPI: ' + c.parsed.y.toFixed(1) }
+        }
+      },
+      scales: {
+        y: {
+          min: 75,
+          max: 105,
+          ticks: { font: { size: 11 }, color: colors.tick },
+          grid: { color: colors.grid }
+        },
+        x: {
+          ticks: {
+            font: { size: 11 },
+            color: colors.tick,
+            autoSkip: true,
+            maxTicksLimit: 8,
+            callback: function(v) {
+              const lbl = this.getLabelForValue(v);
+              return lbl && lbl.endsWith('-01') ? lbl.slice(0,4) : '';
+            }
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  // Reagér på systemets fargemodus-bytte
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    colors = getColors();
+    chart.data.datasets[0].borderColor = colors.line;
+    chart.data.datasets[0].backgroundColor = colors.fill;
+    chart.options.scales.y.ticks.color = colors.tick;
+    chart.options.scales.y.grid.color = colors.grid;
+    chart.options.scales.x.ticks.color = colors.tick;
+    chart.update();
+  });
+
+  const ymin = document.getElementById('ymin');
+  const ymax = document.getElementById('ymax');
+  const yminOut = document.getElementById('ymin-out');
+  const ymaxOut = document.getElementById('ymax-out');
+  const verdict = document.getElementById('verdict');
+  const presets = document.querySelectorAll('#presets button');
+
+  function update() {
+    let lo = parseInt(ymin.value, 10);
+    let hi = parseInt(ymax.value, 10);
+    if (hi <= lo) hi = lo + 1;
+    yminOut.textContent = lo;
+    ymaxOut.textContent = hi;
+    chart.options.scales.y.min = lo;
+    chart.options.scales.y.max = hi;
+    chart.update('none');
+
+    const range = hi - lo;
+    let txt;
+    if (lo === 0 && hi >= 110) txt = 'en nesten flat strek';
+    else if (range >= 25) txt = 'en moderat stigning';
+    else if (range >= 10) txt = 'en tydelig bølge';
+    else if (range >= 5) txt = 'en dramatisk klatring';
+    else txt = 'en eksplosiv vekst';
+    verdict.textContent = txt;
+
+    presets.forEach(p => {
+      const pmin = parseInt(p.dataset.min, 10);
+      const pmax = parseInt(p.dataset.max, 10);
+      p.classList.toggle('active', pmin === lo && pmax === hi);
+    });
+  }
+
+  ymin.addEventListener('input', update);
+  ymax.addEventListener('input', update);
+
+  presets.forEach(p => {
+    p.addEventListener('click', () => {
+      ymin.value = p.dataset.min;
+      ymax.value = p.dataset.max;
+      update();
+    });
+  });
+})();
+</script>
+</body>
+</html>

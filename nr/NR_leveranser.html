@@ -283,8 +283,8 @@
     <div class="hint">Hold pekeren over en sirkel for detaljer.</div>
 
     <div class="legend">
-      <div class="legend-item"><span class="legend-dash"></span> Sender fra valgt system</div>
-      <div class="legend-item"><span class="legend-dash to"></span> Mottar til valgt system</div>
+      <div class="legend-item"><span class="legend-dash"></span> Sender til et valgt system</div>
+      <div class="legend-item"><span class="legend-dash to"></span> Mottar fra et valgt system</div>
       <div class="legend-item" style="margin-left: 16px;"><span class="legend-dot"></span> Førstegangs/revidert</div>
       <div class="legend-item"><span class="legend-dot E"></span> Endelig sluttleveranse</div>
     </div>
@@ -598,8 +598,8 @@
     const matched = DATA.filter(r => getRole(r) !== null);
     const sysList = Array.from(selected).join(', ');
     let modeText;
-    if (mode === 'from') modeText = '<span class="role-tag from">sender fra</span>';
-    else if (mode === 'to') modeText = '<span class="role-tag to">mottar til</span>';
+    if (mode === 'from') modeText = '<span class="role-tag from">sender</span>';
+    else if (mode === 'to') modeText = '<span class="role-tag to">mottar</span>';
     else modeText = '<span class="role-tag from">sender</span> eller <span class="role-tag to">mottar</span>';
     s.innerHTML = '<strong>' + matched.length + '</strong> leveranser som ' + modeText + ' <strong>' + sysList + '</strong>';
   }

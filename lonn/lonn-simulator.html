@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hva er vanlig lønn? – en simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6ee;
+    --bg-card: #fbfcf6;
+    --ink: #1f2a26;
+    --ink-soft: #4a5a52;
+    --ink-mute: #7a8a82;
+    --line: #d6dccd;
+    --line-soft: #e6ead9;
+
+    --green-deep: #1f7a44;
+    --green: #2fa15d;
+    --green-soft: #8fcca6;
+    --green-pale: #d3e8d8;
+    --grey-bar: #b8bfb1;
+    --grey-bar-soft: #d2d7cc;
+
+    --purple: #6a3fd7;
+    --purple-soft: #b9a3ed;
+
+    --warn: #c4622a;
+
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+  }
+
+  header.intro {
+    margin-bottom: 36px;
+    max-width: 760px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px 0;
+    color: var(--ink);
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--green-deep);
+  }
+
+  .lede {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 640px;
+  }
+
+  /* Layout */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 26px 28px;
+  }
+
+  /* Chart area */
+  .chart-card { padding: 22px 24px 18px; }
+
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 8px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .chart-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .chart-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+  }
+
+  .view-toggle {
+    display: inline-flex;
+    background: var(--line-soft);
+    padding: 3px;
+    border-radius: 2px;
+  }
+
+  .view-toggle button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding: 7px 14px;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .view-toggle button.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  svg.chart {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: var(--sans);
+  }
+
+  /* Stats strip */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+    margin-top: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat {
+    padding: 14px 14px 10px;
+    border-right: 1px solid var(--line);
+  }
+  .stat:last-child { border-right: 0; }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+
+  .stat-val {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .stat-val.purple { color: var(--purple); }
+  .stat-val.green  { color: var(--green-deep); }
+
+  .stat-note {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+  }
+
+  /* Controls panel */
+  .panel h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.01em;
+  }
+  .panel .panel-sub {
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    margin-bottom: 22px;
+  }
+
+  .control {
+    margin-bottom: 22px;
+  }
+
+  .control-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .control-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .control-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green-deep);
+    font-weight: 500;
+  }
+
+  .control-desc {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--green-deep);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 0 0 1px var(--green-deep);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--green-deep);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 0 0 1px var(--green-deep);
+  }
+
+  .presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .preset {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: transparent;
+    padding: 9px 10px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 2px;
+    text-align: left;
+    line-height: 1.3;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .preset:hover {
+    background: var(--green-pale);
+    border-color: var(--green-soft);
+  }
+  .preset .preset-name {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .preset .preset-hint {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* Narrative blocks */
+  .narrative {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 800px) {
+    .narrative { grid-template-columns: 1fr; }
+  }
+
+  .narrative .card {
+    padding: 22px 22px 20px;
+  }
+
+  .narrative h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.005em;
+  }
+
+  .narrative p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .narrative .num {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--green-deep);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Lorenz mini chart */
+  .lorenz-card { margin-top: 28px; }
+  .lorenz-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .footer-note {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-mute);
+    max-width: 760px;
+    line-height: 1.55;
+  }
+
+  /* SVG element styling */
+  .axis text {
+    font-size: 11px;
+    fill: var(--ink-mute);
+    font-family: var(--sans);
+  }
+  .axis line, .axis path {
+    stroke: var(--line);
+    stroke-width: 1;
+    fill: none;
+  }
+  .gridline {
+    stroke: var(--line-soft);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+  .marker-line {
+    stroke-width: 1.5;
+  }
+  .marker-label {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  /* Annotation pill */
+  .annotation {
+    pointer-events: none;
+  }
+  .annotation rect {
+    fill: var(--bg-card);
+    stroke: var(--line);
+  }
+  .annotation text {
+    font-size: 11.5px;
+    fill: var(--ink);
+  }
+  .annotation .ann-num {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    fill: var(--green-deep);
+  }
+
+  /* Smooth transitions */
+  rect.bar {
+    transition: height 0.18s ease, y 0.18s ease, fill 0.18s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="intro">
+    <div class="eyebrow">En interaktiv forklaring</div>
+    <h1>Hvorfor tjener <em>flertallet</em><br/>under gjennomsnittet?</h1>
+    <p class="lede">
+      Dra i sliderne nedenfor. Endre formen på lønnsfordelingen og se hvordan
+      forholdet mellom median og gjennomsnitt forskyver seg — og hvor stor andel
+      som havner under snittet.
+    </p>
+  </header>
+
+  <div class="grid">
+
+    <!-- CHART -->
+    <section class="card chart-card">
+      <div class="chart-head">
+        <div>
+          <h2 class="chart-title" id="chartTitle">Antall lønnstakere i ulike lønnsintervaller</h2>
+          <div class="chart-sub" id="chartSub">Simulerte data. Månedslønn per heltidsekvivalent.</div>
+        </div>
+        <div class="view-toggle" role="tablist" aria-label="Velg visning">
+          <button id="btnHist" class="active" role="tab" aria-selected="true">Histogram</button>
+          <button id="btnPct" role="tab" aria-selected="false">Prosentiler</button>
+          <button id="btnBoth" role="tab" aria-selected="false">Side om side</button>
+        </div>
+      </div>
+
+      <svg class="chart" id="chart" viewBox="0 0 780 440" preserveAspectRatio="xMidYMid meet" aria-label="Lønnsfordeling"></svg>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Median</div>
+          <div class="stat-val green" id="statMedian">53 500</div>
+          <div class="stat-note">Midten i fordelingen</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Gjennomsnitt</div>
+          <div class="stat-val purple" id="statMean">59 400</div>
+          <div class="stat-note">Sum delt på antall</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Andel under snitt</div>
+          <div class="stat-val" id="statShare">67,8 %</div>
+          <div class="stat-note" id="statShareNote">av alle lønninger</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Topp 1 % / median</div>
+          <div class="stat-val" id="statRatio">4,1×</div>
+          <div class="stat-note">Hvor mye toppen tjener</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <aside class="card panel">
+      <h2>Lek med fordelingen</h2>
+      <div class="panel-sub">Endre formen og se hva som skjer med statistikken.</div>
+
+      <div class="control">
+        <div class="control-head">
+          <label class="control-label" for="sk">Skjevhet</label>
+          <span class="control-val" id="skVal">middels</span>
+        </div>
+        <input type="range" id="sk" min="0" max="100" value="55" />
+        <div class="control-desc">Symmetrisk fordeling til venstre, sterkt høyreskjev til høyre.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label class="control-label" for="top">Topp 1 % – hvor mye?</label>
+          <span class="control-val" id="topVal">4,0× median</span>
+        </div>
+        <input type="range" id="top" min="10" max="120" value="40" step="1" />
+        <div class="control-desc">Hvor høyt det aller øverste lønnstrinnet ligger, som multiplum av medianen.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label class="control-label" for="mid">Tetthet i midten</label>
+          <span class="control-val" id="midVal">normal</span>
+        </div>
+        <input type="range" id="mid" min="0" max="100" value="50" />
+        <div class="control-desc">Smal fordeling samler folk om medianen. Bred fordeling sprer dem.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label class="control-label">Forhåndsinnstillinger</label>
+        </div>
+        <div class="presets">
+          <button class="preset" data-preset="real">
+            <span class="preset-name">Norge 2024</span>
+            <span class="preset-hint">slik SSB viser det</span>
+          </button>
+          <button class="preset" data-preset="symmetric">
+            <span class="preset-name">Symmetrisk</span>
+            <span class="preset-hint">median = snitt</span>
+          </button>
+          <button class="preset" data-preset="extreme">
+            <span class="preset-name">Sterkt ulik</span>
+            <span class="preset-hint">f.eks. USA-aktig</span>
+          </button>
+          <button class="preset" data-preset="flat">
+            <span class="preset-name">Veldig jevn</span>
+            <span class="preset-hint">smal midte</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- NARRATIVE -->
+  <section class="narrative">
+    <div class="card">
+      <div class="num" id="ledeNum">68 %</div>
+      <h3>Andelen under snittet er ikke en regel</h3>
+      <p>
+        I en symmetrisk fordeling ligger halvparten under snittet. Jo skjevere
+        fordelingen blir, jo flere havner under. Tallet «68 %» er ikke et
+        statistisk fenomen — det er en egenskap ved den norske lønnsfordelingen
+        akkurat nå.
+      </p>
+    </div>
+    <div class="card">
+      <div class="num" id="gapNum">+11 %</div>
+      <h3>Avstanden mellom median og snitt</h3>
+      <p>
+        Når noen tjener vesentlig mer enn andre, drar de gjennomsnittet opp uten
+        å påvirke medianen. Avstanden mellom de to målene er i seg selv et mål
+        på hvor skjev fordelingen er.
+      </p>
+    </div>
+    <div class="card">
+      <div class="num" id="topShareNum">8,2 %</div>
+      <h3>Halen veier tungt</h3>
+      <p>
+        Andelen av totallønnen som tilfaller den øverste prosenten. Selv om de
+        bare er 1 av 100, kan de stå for en uforholdsmessig stor del av summen
+        — og det er nettopp dette som forklarer skjevheten.
+      </p>
+    </div>
+  </section>
+
+  <!-- LORENZ -->
+  <section class="card lorenz-card">
+    <div class="lorenz-head">
+      <div>
+        <h2 class="chart-title" style="font-size:18px;">Bonus: Lorenz-kurven</h2>
+        <div class="chart-sub">Hvor mye av totallønnen tilfaller de lavest lønte? Avstanden fra diagonalen er ulikhet.</div>
+      </div>
+      <div class="stat-val green" id="giniVal" style="font-size:24px;">Gini: 0,28</div>
+    </div>
+    <svg class="chart" id="lorenz" viewBox="0 0 780 240" preserveAspectRatio="xMidYMid meet"></svg>
+  </section>
+
+  <p class="footer-note">
+    Tallene er <strong>simulerte</strong>, ikke ekte SSB-data. Modellen bruker en log-normal-fordeling
+    med justerbare parametre og en eksplisitt topphale, kalibrert slik at standardinnstillingen
+    havner i nærheten av reelle 2024-tall fra SSBs lønnsstatistikk. Bruk simulatoren som en
+    forklaringsmaskin, ikke som en kilde.
+  </p>
+
+</div>
+
+<script>
+/* ============================================================
+   MODEL
+   ============================================================ */
+
+// We simulate 100 percentile values directly. Each value is the
+// mean wage within that percentile (so percentile-100 is the top 1%).
+// Three knobs:
+//   skew  (0..100) — how right-skewed the distribution is
+//   top   (10..120) — top-1% as multiplier of median (after rescaling)
+//   mid   (0..100) — concentration in the middle (low = flat, high = pointy)
+
+const N_PCT = 100;
+
+function buildDistribution(skew, top, mid) {
+  // Map sliders to model parameters
+  const sigma = 0.08 + (skew / 100) * 0.55;        // 0.08 .. 0.63
+  const mu    = Math.log(50000) - sigma * sigma * 0.5;
+  const tightness = 0.4 + (mid / 100) * 1.4;       // 0.4 .. 1.8
+
+  // Build base percentile means via inverse CDF of log-normal
+  const pct = new Array(N_PCT);
+  for (let i = 0; i < N_PCT; i++) {
+    const p = (i + 0.5) / N_PCT;              // midpoint of percentile
+    // Inverse normal via Beasley-Springer-Moro approximation
+    const z = invNorm(p);
+    const adjusted = z * (1 / tightness);     // tighten or widen
+    let v = Math.exp(mu + sigma * adjusted);
+    pct[i] = v;
+  }
+
+  // Now override the top 1% to honour the "top" slider.
+  // We treat 'top' as the desired ratio of top-1% to median.
+  // Sort and pick median first.
+  const sorted = [...pct].sort((a, b) => a - b);
+  const median = (sorted[49] + sorted[50]) / 2;
+  const targetTop = (top / 10) * median; // top slider 10..120 -> 1..12× median, then we map further
+
+  // Actually: slider 10..120 ranges represent 1.0..12.0× — but we want richer range.
+  // Reinterpret: top/10 gives 1..12, but we'll scale exponentially for the high end.
+  const ratio = 1 + Math.pow(top / 120, 1.4) * 14;  // 1..15×
+  const desiredTop = ratio * median;
+
+  // Blend the existing tail (last 5 percentiles) toward the desired top value,
+  // keeping monotonicity.
+  // Reset pct in sorted order then rebuild
+  for (let i = 0; i < N_PCT; i++) pct[i] = sorted[i];
+
+  // Smoothly lift the top tail toward desiredTop
+  const tailStart = 95;
+  const curTop = pct[N_PCT - 1];
+  if (curTop > 0) {
+    const lift = desiredTop / curTop;
+    for (let i = tailStart; i < N_PCT; i++) {
+      const t = (i - tailStart) / (N_PCT - 1 - tailStart); // 0..1
+      const localLift = 1 + (lift - 1) * Math.pow(t, 1.5);
+      pct[i] = pct[i] * localLift;
+    }
+    // Restore monotonicity gently
+    for (let i = 1; i < N_PCT; i++) {
+      if (pct[i] < pct[i - 1]) pct[i] = pct[i - 1];
+    }
+  }
+
+  // Compute summary stats
+  const mean = pct.reduce((a, b) => a + b, 0) / N_PCT;
+  const medianFinal = (pct[49] + pct[50]) / 2;
+  const q1 = pct[24];
+  const q3 = pct[74];
+  const topFinal = pct[N_PCT - 1];
+  const shareBelowMean = pct.filter(v => v < mean).length / N_PCT;
+  const topShare = pct[N_PCT - 1] / pct.reduce((a, b) => a + b, 0);
+
+  // Gini from sorted percentile means
+  let cum = 0, lorenzSum = 0;
+  const totals = [];
+  for (let i = 0; i < N_PCT; i++) {
+    cum += pct[i];
+    totals.push(cum);
+  }
+  for (let i = 0; i < N_PCT; i++) lorenzSum += totals[i];
+  const gini = 1 - (2 * lorenzSum) / (N_PCT * cum) + 1 / N_PCT;
+
+  return {
+    percentiles: pct,
+    mean,
+    median: medianFinal,
+    q1, q3,
+    top1: topFinal,
+    shareBelowMean,
+    topShare,
+    gini,
+    total: cum
+  };
+}
+
+// Inverse normal CDF — Beasley-Springer-Moro
+function invNorm(p) {
+  const a = [-39.6968302866538, 220.946098424521, -275.928510446969,
+              138.357751867269, -30.6647980661472, 2.50662827745924];
+  const b = [-54.4760987982241, 161.585836858041, -155.698979859887,
+              66.8013118877197, -13.2806815528857];
+  const c = [-0.00778489400243029, -0.322396458041136, -2.40075827716184,
+             -2.54973253934373, 4.37466414146497, 2.93816398269878];
+  const d = [0.00778469570904146, 0.32246712907004, 2.445134137143,
+             3.75440866190742];
+  const plow = 0.02425, phigh = 1 - plow;
+  let q, r;
+  if (p < plow) {
+    q = Math.sqrt(-2 * Math.log(p));
+    return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) /
+           ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+  }
+  if (phigh < p) {
+    q = Math.sqrt(-2 * Math.log(1 - p));
+    return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) /
+            ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+  }
+  q = p - 0.5;
+  r = q*q;
+  return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q /
+         (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+
+/* ============================================================
+   HISTOGRAM BUILDER
+   ============================================================ */
+
+function buildHistogram(percentiles, binSize = 5000) {
+  // Each percentile represents 1% of workers — assume e.g. 28000 per percentile
+  // We'll just use bin counts and normalize visually.
+  const max = Math.max(...percentiles);
+  const nBins = Math.ceil((max + binSize) / binSize);
+  const counts = new Array(nBins).fill(0);
+  // Distribute each percentile's "mass" of 1 into its bin
+  // To make it look smooth, distribute each percentile across the bin range it falls in.
+  // Simpler: just put unit count at the bin where the percentile mean falls.
+  for (const v of percentiles) {
+    const b = Math.min(nBins - 1, Math.floor(v / binSize));
+    counts[b] += 1;
+  }
+  return { counts, binSize, nBins };
+}
+
+/* ============================================================
+   FORMATTING
+   ============================================================ */
+
+const NB = new Intl.NumberFormat('nb-NO');
+const fmtKr = v => NB.format(Math.round(v / 10) * 10);
+const fmtPct = v => (v * 100).toFixed(1).replace('.', ',') + ' %';
+
+/* ============================================================
+   RENDERING — HISTOGRAM
+   ============================================================ */
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function el(name, attrs = {}, text) {
+  const e = document.createElementNS(SVG_NS, name);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function renderHistogram(svg, dist) {
+  svg.innerHTML = '';
+  const W = 780, H = 440;
+  const margin = { top: 60, right: 30, bottom: 60, left: 56 };
+  const innerW = W - margin.left - margin.right;
+  const innerH = H - margin.top - margin.bottom;
+
+  const { counts, binSize, nBins } = buildHistogram(dist.percentiles, 5000);
+  // Cap to where there is data
+  let lastBin = nBins - 1;
+  while (lastBin > 0 && counts[lastBin] === 0) lastBin--;
+  const visibleBins = lastBin + 2;
+  const maxCount = Math.max(...counts);
+  const barW = innerW / visibleBins;
+
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  // Gridlines (y)
+  const yTicks = 4;
+  for (let i = 0; i <= yTicks; i++) {
+    const y = innerH - (i / yTicks) * innerH;
+    const val = Math.round((i / yTicks) * maxCount);
+    g.appendChild(el('line', {
+      x1: 0, x2: innerW, y1: y, y2: y, class: 'gridline'
+    }));
+    g.appendChild(el('text', {
+      x: -10, y: y + 4, 'text-anchor': 'end', class: 'axis'
+    }, val + ' %'));
+  }
+
+  // Mean x position
+  const valToX = v => (v / (visibleBins * binSize)) * innerW;
+  const xMean = valToX(dist.mean);
+  const xMedian = valToX(dist.median);
+
+  // Bars
+  for (let i = 0; i < visibleBins; i++) {
+    const c = counts[i] || 0;
+    const h = (c / maxCount) * innerH;
+    const x = i * barW;
+    const binMid = (i + 0.5) * binSize;
+    const isBelow = binMid < dist.mean;
+    const fill = isBelow ? 'var(--green)' : 'var(--green-pale)';
+    g.appendChild(el('rect', {
+      class: 'bar',
+      x: x + 1, y: innerH - h,
+      width: Math.max(0, barW - 2),
+      height: h,
+      fill
+    }));
+  }
+
+  // X-axis labels
+  const xTickStep = Math.max(1, Math.floor(visibleBins / 8));
+  for (let i = 0; i <= visibleBins; i += xTickStep) {
+    const x = i * barW;
+    g.appendChild(el('line', {
+      x1: x, x2: x, y1: innerH, y2: innerH + 4, class: 'axis'
+    }));
+    g.appendChild(el('text', {
+      x: x, y: innerH + 18, 'text-anchor': 'middle', class: 'axis'
+    }, NB.format(i * binSize / 1000) + 'k'));
+  }
+
+  // Axis baseline
+  g.appendChild(el('line', {
+    x1: 0, x2: innerW, y1: innerH, y2: innerH, class: 'axis'
+  }));
+
+  // Median line
+  g.appendChild(el('line', {
+    x1: xMedian, x2: xMedian, y1: -10, y2: innerH,
+    class: 'marker-line',
+    stroke: 'var(--green-deep)',
+    'stroke-dasharray': '4 3'
+  }));
+  g.appendChild(el('text', {
+    x: xMedian - 6, y: -28, 'text-anchor': 'end',
+    class: 'marker-label', fill: 'var(--green-deep)'
+  }, 'Median'));
+  g.appendChild(el('text', {
+    x: xMedian - 6, y: -12, 'text-anchor': 'end',
+    class: 'marker-label', fill: 'var(--green-deep)',
+    'font-family': 'var(--serif)', 'font-size': '15'
+  }, fmtKr(dist.median)));
+
+  // Mean line
+  g.appendChild(el('line', {
+    x1: xMean, x2: xMean, y1: -10, y2: innerH,
+    class: 'marker-line',
+    stroke: 'var(--purple)'
+  }));
+  g.appendChild(el('text', {
+    x: xMean + 6, y: -28, 'text-anchor': 'start',
+    class: 'marker-label', fill: 'var(--purple)'
+  }, 'Gjennomsnitt'));
+  g.appendChild(el('text', {
+    x: xMean + 6, y: -12, 'text-anchor': 'start',
+    class: 'marker-label', fill: 'var(--purple)',
+    'font-family': 'var(--serif)', 'font-size': '15'
+  }, fmtKr(dist.mean)));
+
+  // Share annotation
+  if (dist.shareBelowMean > 0.05) {
+    const annX = Math.min(xMedian - 90, innerW * 0.25);
+    const annY = innerH * 0.45;
+    const annG = el('g', { class: 'annotation' });
+    annG.appendChild(el('text', {
+      x: annX, y: annY,
+      'font-family': 'var(--serif)',
+      'font-size': '32',
+      'font-weight': '500',
+      fill: 'var(--ink)'
+    }, fmtPct(dist.shareBelowMean)));
+    annG.appendChild(el('text', {
+      x: annX, y: annY + 18,
+      'font-size': '12',
+      fill: 'var(--ink-soft)'
+    }, 'av lønningene ligger'));
+    annG.appendChild(el('text', {
+      x: annX, y: annY + 33,
+      'font-size': '12',
+      fill: 'var(--ink-soft)'
+    }, 'under gjennomsnittet'));
+    g.appendChild(annG);
+  }
+
+  // X-axis title
+  g.appendChild(el('text', {
+    x: innerW / 2, y: innerH + 44,
+    'text-anchor': 'middle',
+    class: 'axis',
+    'font-size': '11'
+  }, 'Månedslønn (kroner)'));
+
+  // Y-axis title
+  g.appendChild(el('text', {
+    x: -innerH / 2, y: -42,
+    transform: `rotate(-90)`,
+    'text-anchor': 'middle',
+    class: 'axis',
+    'font-size': '11'
+  }, 'Andel lønnstakere'));
+}
+
+/* ============================================================
+   RENDERING — PERCENTILES
+   ============================================================ */
+
+function renderPercentiles(svg, dist) {
+  svg.innerHTML = '';
+  const W = 780, H = 440;
+  const margin = { top: 60, right: 30, bottom: 60, left: 70 };
+  const innerW = W - margin.left - margin.right;
+  const innerH = H - margin.top - margin.bottom;
+
+  const maxV = dist.percentiles[N_PCT - 1] * 1.02;
+  const barW = innerW / N_PCT;
+
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  // Y-axis gridlines
+  const yTicks = 5;
+  for (let i = 0; i <= yTicks; i++) {
+    const y = innerH - (i / yTicks) * innerH;
+    const val = (i / yTicks) * maxV;
+    g.appendChild(el('line', {
+      x1: 0, x2: innerW, y1: y, y2: y, class: 'gridline'
+    }));
+    g.appendChild(el('text', {
+      x: -10, y: y + 4, 'text-anchor': 'end', class: 'axis'
+    }, fmtKr(val)));
+  }
+
+  // Bars (colour-coded by quartile zone)
+  for (let i = 0; i < N_PCT; i++) {
+    const v = dist.percentiles[i];
+    const h = (v / maxV) * innerH;
+    const x = i * barW;
+    let fill;
+    if (i < 25)       fill = 'var(--green-pale)';
+    else if (i < 50)  fill = 'var(--green-soft)';
+    else if (i < 75)  fill = 'var(--grey-bar-soft)';
+    else              fill = 'var(--grey-bar)';
+    g.appendChild(el('rect', {
+      class: 'bar',
+      x: x + 0.5, y: innerH - h,
+      width: Math.max(0.5, barW - 1),
+      height: h,
+      fill
+    }));
+  }
+
+  // Find mean position on x-axis (which percentile equals the mean)
+  let meanPctIdx = N_PCT - 1;
+  for (let i = 0; i < N_PCT; i++) {
+    if (dist.percentiles[i] >= dist.mean) { meanPctIdx = i; break; }
+  }
+  const xMean = meanPctIdx * barW;
+
+  // Quartile / median / mean lines
+  const lines = [
+    { x: 25 * barW, label: 'Q1', val: dist.q1, colour: 'var(--ink-mute)', dash: '3 3' },
+    { x: 50 * barW, label: 'Median', val: dist.median, colour: 'var(--green-deep)', dash: '4 3' },
+    { x: xMean,     label: 'Snitt',  val: dist.mean,   colour: 'var(--purple)', dash: '' },
+    { x: 75 * barW, label: 'Q3', val: dist.q3, colour: 'var(--ink-mute)', dash: '3 3' }
+  ];
+
+  lines.forEach((ln, i) => {
+    g.appendChild(el('line', {
+      x1: ln.x, x2: ln.x, y1: -8, y2: innerH,
+      stroke: ln.colour,
+      'stroke-width': ln.dash ? 1 : 1.5,
+      'stroke-dasharray': ln.dash
+    }));
+    // Stagger labels to avoid collision
+    const labelY = -38 + (i % 2) * 16;
+    g.appendChild(el('text', {
+      x: ln.x, y: labelY,
+      'text-anchor': 'middle',
+      class: 'marker-label',
+      fill: ln.colour,
+      'font-size': '11'
+    }, ln.label));
+    g.appendChild(el('text', {
+      x: ln.x, y: labelY + 13,
+      'text-anchor': 'middle',
+      fill: ln.colour,
+      'font-family': 'var(--mono)',
+      'font-size': '10.5'
+    }, fmtKr(ln.val)));
+  });
+
+  // Annotation: top 1%
+  const xTop = 99.5 * barW;
+  const yTop = innerH - (dist.percentiles[N_PCT - 1] / maxV) * innerH;
+  g.appendChild(el('path', {
+    d: `M ${xTop - 50} ${yTop - 18} Q ${xTop - 20} ${yTop - 28} ${xTop - 4} ${yTop - 4}`,
+    fill: 'none',
+    stroke: 'var(--ink-mute)',
+    'stroke-width': 1
+  }));
+  g.appendChild(el('polygon', {
+    points: `${xTop - 4},${yTop - 4} ${xTop - 11},${yTop - 9} ${xTop - 10},${yTop - 1}`,
+    fill: 'var(--ink-mute)'
+  }));
+  g.appendChild(el('text', {
+    x: xTop - 56, y: yTop - 24,
+    'text-anchor': 'end',
+    'font-family': 'var(--serif)',
+    'font-size': '15',
+    'font-weight': '500',
+    fill: 'var(--ink)'
+  }, fmtKr(dist.top1)));
+  g.appendChild(el('text', {
+    x: xTop - 56, y: yTop - 10,
+    'text-anchor': 'end',
+    'font-size': '11',
+    fill: 'var(--ink-soft)'
+  }, 'topp 1 %'));
+
+  // X-axis
+  g.appendChild(el('line', {
+    x1: 0, x2: innerW, y1: innerH, y2: innerH, class: 'axis'
+  }));
+  for (let p = 0; p <= 100; p += 10) {
+    const x = p * barW;
+    g.appendChild(el('line', { x1: x, x2: x, y1: innerH, y2: innerH + 4, class: 'axis' }));
+    g.appendChild(el('text', {
+      x, y: innerH + 18, 'text-anchor': 'middle', class: 'axis'
+    }, p));
+  }
+  g.appendChild(el('text', {
+    x: innerW / 2, y: innerH + 44,
+    'text-anchor': 'middle',
+    class: 'axis',
+    'font-size': '11'
+  }, 'Prosentil (1 = lavest, 100 = høyest)'));
+}
+
+/* ============================================================
+   RENDERING — SIDE BY SIDE (small multiples)
+   ============================================================ */
+
+function renderBoth(svg, dist) {
+  svg.innerHTML = '';
+  const W = 780, H = 440;
+  const halfW = W / 2;
+
+  // Two background panels for visual separation
+  const labelBand = el('g', {});
+  labelBand.appendChild(el('text', {
+    x: halfW / 2, y: 22, 'text-anchor': 'middle',
+    'font-family': 'var(--serif)', 'font-size': '13',
+    'font-weight': '500', fill: 'var(--ink-soft)'
+  }, 'Histogram'));
+  labelBand.appendChild(el('text', {
+    x: halfW + halfW / 2, y: 22, 'text-anchor': 'middle',
+    'font-family': 'var(--serif)', 'font-size': '13',
+    'font-weight': '500', fill: 'var(--ink-soft)'
+  }, 'Prosentiler'));
+  svg.appendChild(labelBand);
+
+  // Render mini histogram
+  renderMiniHistogram(svg, dist, 0, 30, halfW, H - 30);
+  renderMiniPercentiles(svg, dist, halfW, 30, halfW, H - 30);
+}
+
+function renderMiniHistogram(svg, dist, ox, oy, w, h) {
+  const margin = { top: 30, right: 16, bottom: 40, left: 50 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+  const { counts, binSize, nBins } = buildHistogram(dist.percentiles, 5000);
+  let lastBin = nBins - 1;
+  while (lastBin > 0 && counts[lastBin] === 0) lastBin--;
+  const visibleBins = lastBin + 2;
+  const maxCount = Math.max(...counts);
+  const barW = innerW / visibleBins;
+
+  const g = el('g', { transform: `translate(${ox + margin.left},${oy + margin.top})` });
+  svg.appendChild(g);
+
+  const valToX = v => (v / (visibleBins * binSize)) * innerW;
+  const xMean = valToX(dist.mean);
+  const xMedian = valToX(dist.median);
+
+  for (let i = 0; i < visibleBins; i++) {
+    const c = counts[i] || 0;
+    const ht = (c / maxCount) * innerH;
+    const x = i * barW;
+    const binMid = (i + 0.5) * binSize;
+    const isBelow = binMid < dist.mean;
+    const fill = isBelow ? 'var(--green)' : 'var(--green-pale)';
+    g.appendChild(el('rect', {
+      class: 'bar',
+      x: x + 0.5, y: innerH - ht,
+      width: Math.max(0, barW - 1), height: ht, fill
+    }));
+  }
+
+  g.appendChild(el('line', {
+    x1: xMedian, x2: xMedian, y1: 0, y2: innerH,
+    stroke: 'var(--green-deep)', 'stroke-dasharray': '4 3', 'stroke-width': 1.5
+  }));
+  g.appendChild(el('line', {
+    x1: xMean, x2: xMean, y1: 0, y2: innerH,
+    stroke: 'var(--purple)', 'stroke-width': 1.5
+  }));
+
+  g.appendChild(el('line', {
+    x1: 0, x2: innerW, y1: innerH, y2: innerH, class: 'axis'
+  }));
+
+  for (let i = 0; i <= visibleBins; i += Math.max(1, Math.floor(visibleBins / 5))) {
+    const x = i * barW;
+    g.appendChild(el('text', {
+      x, y: innerH + 16, 'text-anchor': 'middle', class: 'axis', 'font-size': '10'
+    }, NB.format(i * binSize / 1000) + 'k'));
+  }
+
+  // Legend
+  g.appendChild(el('text', {
+    x: xMedian - 4, y: -8, 'text-anchor': 'end',
+    fill: 'var(--green-deep)', 'font-size': '10', 'font-weight': '600'
+  }, 'med'));
+  g.appendChild(el('text', {
+    x: xMean + 4, y: -8, 'text-anchor': 'start',
+    fill: 'var(--purple)', 'font-size': '10', 'font-weight': '600'
+  }, 'snitt'));
+}
+
+function renderMiniPercentiles(svg, dist, ox, oy, w, h) {
+  const margin = { top: 30, right: 20, bottom: 40, left: 56 };
+  const innerW = w - margin.left - margin.right;
+  const innerH = h - margin.top - margin.bottom;
+
+  const maxV = dist.percentiles[N_PCT - 1] * 1.02;
+  const barW = innerW / N_PCT;
+
+  const g = el('g', { transform: `translate(${ox + margin.left},${oy + margin.top})` });
+  svg.appendChild(g);
+
+  // Gridlines
+  for (let i = 0; i <= 4; i++) {
+    const y = innerH - (i / 4) * innerH;
+    g.appendChild(el('line', { x1: 0, x2: innerW, y1: y, y2: y, class: 'gridline' }));
+    g.appendChild(el('text', {
+      x: -8, y: y + 3, 'text-anchor': 'end', class: 'axis', 'font-size': '10'
+    }, fmtKr((i / 4) * maxV)));
+  }
+
+  for (let i = 0; i < N_PCT; i++) {
+    const v = dist.percentiles[i];
+    const ht = (v / maxV) * innerH;
+    const x = i * barW;
+    let fill;
+    if (i < 25)      fill = 'var(--green-pale)';
+    else if (i < 50) fill = 'var(--green-soft)';
+    else if (i < 75) fill = 'var(--grey-bar-soft)';
+    else             fill = 'var(--grey-bar)';
+    g.appendChild(el('rect', {
+      class: 'bar',
+      x: x + 0.3, y: innerH - ht,
+      width: Math.max(0.5, barW - 0.6),
+      height: ht, fill
+    }));
+  }
+
+  let meanPctIdx = N_PCT - 1;
+  for (let i = 0; i < N_PCT; i++) {
+    if (dist.percentiles[i] >= dist.mean) { meanPctIdx = i; break; }
+  }
+  g.appendChild(el('line', {
+    x1: 50 * barW, x2: 50 * barW, y1: 0, y2: innerH,
+    stroke: 'var(--green-deep)', 'stroke-dasharray': '4 3', 'stroke-width': 1.5
+  }));
+  g.appendChild(el('line', {
+    x1: meanPctIdx * barW, x2: meanPctIdx * barW, y1: 0, y2: innerH,
+    stroke: 'var(--purple)', 'stroke-width': 1.5
+  }));
+
+  g.appendChild(el('line', {
+    x1: 0, x2: innerW, y1: innerH, y2: innerH, class: 'axis'
+  }));
+  for (let p = 0; p <= 100; p += 20) {
+    const x = p * barW;
+    g.appendChild(el('text', {
+      x, y: innerH + 16, 'text-anchor': 'middle', class: 'axis', 'font-size': '10'
+    }, p));
+  }
+}
+
+/* ============================================================
+   RENDERING — LORENZ
+   ============================================================ */
+
+function renderLorenz(svg, dist) {
+  svg.innerHTML = '';
+  const W = 780, H = 240;
+  const margin = { top: 20, right: 28, bottom: 36, left: 56 };
+  const innerW = W - margin.left - margin.right;
+  const innerH = H - margin.top - margin.bottom;
+
+  const g = el('g', { transform: `translate(${margin.left},${margin.top})` });
+  svg.appendChild(g);
+
+  // Grid
+  for (let i = 0; i <= 4; i++) {
+    const y = innerH - (i / 4) * innerH;
+    g.appendChild(el('line', { x1: 0, x2: innerW, y1: y, y2: y, class: 'gridline' }));
+    g.appendChild(el('text', {
+      x: -10, y: y + 3, 'text-anchor': 'end', class: 'axis', 'font-size': '10'
+    }, (i * 25) + ' %'));
+  }
+  for (let i = 0; i <= 4; i++) {
+    const x = (i / 4) * innerW;
+    g.appendChild(el('text', {
+      x, y: innerH + 18, 'text-anchor': 'middle', class: 'axis', 'font-size': '10'
+    }, (i * 25) + ' %'));
+  }
+
+  // Equality line
+  g.appendChild(el('line', {
+    x1: 0, y1: innerH, x2: innerW, y2: 0,
+    stroke: 'var(--ink-mute)', 'stroke-dasharray': '3 3', 'stroke-width': 1
+  }));
+  g.appendChild(el('text', {
+    x: innerW - 6, y: 14, 'text-anchor': 'end',
+    'font-size': '10.5', fill: 'var(--ink-mute)'
+  }, 'Perfekt likhet'));
+
+  // Lorenz curve
+  let cum = 0;
+  const total = dist.percentiles.reduce((a, b) => a + b, 0);
+  const points = [[0, innerH]];
+  for (let i = 0; i < N_PCT; i++) {
+    cum += dist.percentiles[i];
+    const x = ((i + 1) / N_PCT) * innerW;
+    const y = innerH - (cum / total) * innerH;
+    points.push([x, y]);
+  }
+
+  // Filled area between equality and curve
+  const areaPts = [[0, innerH], ...points.slice(1), [innerW, innerH]]
+    .map(p => p.join(',')).join(' ');
+  g.appendChild(el('polygon', {
+    points: areaPts,
+    fill: 'var(--green-pale)',
+    opacity: '0.4'
+  }));
+
+  const linePath = 'M ' + points.map(p => p.join(',')).join(' L ');
+  g.appendChild(el('path', {
+    d: linePath,
+    fill: 'none',
+    stroke: 'var(--green-deep)',
+    'stroke-width': 2
+  }));
+
+  // Axis labels
+  g.appendChild(el('text', {
+    x: innerW / 2, y: innerH + 32,
+    'text-anchor': 'middle', class: 'axis', 'font-size': '11'
+  }, 'Andel lønnstakere (sortert lavest til høyest)'));
+  g.appendChild(el('text', {
+    x: -innerH / 2, y: -40,
+    transform: 'rotate(-90)',
+    'text-anchor': 'middle', class: 'axis', 'font-size': '11'
+  }, 'Andel av total lønnssum'));
+}
+
+/* ============================================================
+   STATE & EVENTS
+   ============================================================ */
+
+const state = {
+  skew: 55,
+  top: 40,
+  mid: 50,
+  view: 'hist'
+};
+
+const chart = document.getElementById('chart');
+const lorenz = document.getElementById('lorenz');
+
+function update() {
+  const dist = buildDistribution(state.skew, state.top, state.mid);
+
+  // Render chart by view
+  if (state.view === 'hist')      renderHistogram(chart, dist);
+  else if (state.view === 'pct')  renderPercentiles(chart, dist);
+  else                            renderBoth(chart, dist);
+
+  renderLorenz(lorenz, dist);
+
+  // Stats
+  document.getElementById('statMedian').textContent = fmtKr(dist.median);
+  document.getElementById('statMean').textContent = fmtKr(dist.mean);
+  document.getElementById('statShare').textContent = fmtPct(dist.shareBelowMean);
+  document.getElementById('statRatio').textContent =
+    (dist.top1 / dist.median).toFixed(1).replace('.', ',') + '×';
+
+  // Narrative numbers
+  document.getElementById('ledeNum').textContent = fmtPct(dist.shareBelowMean);
+  const gap = (dist.mean - dist.median) / dist.median;
+  document.getElementById('gapNum').textContent =
+    (gap >= 0 ? '+' : '') + (gap * 100).toFixed(1).replace('.', ',') + ' %';
+  document.getElementById('topShareNum').textContent = fmtPct(dist.topShare);
+
+  // Gini
+  document.getElementById('giniVal').textContent =
+    'Gini: ' + dist.gini.toFixed(2).replace('.', ',');
+
+  // Slider value labels
+  const skLabels = ['veldig lav', 'lav', 'middels', 'høy', 'svært høy'];
+  document.getElementById('skVal').textContent =
+    skLabels[Math.min(4, Math.floor(state.skew / 20))];
+  const ratio = 1 + Math.pow(state.top / 120, 1.4) * 14;
+  document.getElementById('topVal').textContent =
+    ratio.toFixed(1).replace('.', ',') + '× median';
+  const midLabels = ['veldig bred', 'bred', 'normal', 'samlet', 'veldig samlet'];
+  document.getElementById('midVal').textContent =
+    midLabels[Math.min(4, Math.floor(state.mid / 20))];
+}
+
+// Sliders
+['sk', 'top', 'mid'].forEach(id => {
+  const map = { sk: 'skew', top: 'top', mid: 'mid' };
+  const input = document.getElementById(id);
+  input.addEventListener('input', e => {
+    state[map[id]] = +e.target.value;
+    update();
+  });
+});
+
+// View toggle
+const tabs = {
+  hist: document.getElementById('btnHist'),
+  pct:  document.getElementById('btnPct'),
+  both: document.getElementById('btnBoth')
+};
+Object.entries(tabs).forEach(([key, btn]) => {
+  btn.addEventListener('click', () => {
+    state.view = key;
+    Object.values(tabs).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Update titles
+    const title = document.getElementById('chartTitle');
+    const sub = document.getElementById('chartSub');
+    if (key === 'hist') {
+      title.textContent = 'Antall lønnstakere i ulike lønnsintervaller';
+      sub.textContent = 'Hver søyle viser hvor mange som har lønn i et 5 000-kroners intervall.';
+    } else if (key === 'pct') {
+      title.textContent = 'Månedslønn etter prosentil';
+      sub.textContent = 'Alle lønninger sortert fra lavest til høyest, delt i 100 like grupper.';
+    } else {
+      title.textContent = 'Samme data, to perspektiver';
+      sub.textContent = 'Histogrammet viser tetthet. Prosentilfiguren viser nivå.';
+    }
+    update();
+  });
+});
+
+// Presets
+document.querySelectorAll('.preset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = btn.dataset.preset;
+    const set = (sk, top, mid) => {
+      state.skew = sk; state.top = top; state.mid = mid;
+      document.getElementById('sk').value = sk;
+      document.getElementById('top').value = top;
+      document.getElementById('mid').value = mid;
+    };
+    if (p === 'real')      set(55, 40, 50);
+    if (p === 'symmetric') set(0,  10, 50);
+    if (p === 'extreme')   set(90, 100, 35);
+    if (p === 'flat')      set(20, 20, 85);
+    update();
+  });
+});
+
+// Initial render
+update();
+</script>
+</body>
+</html>

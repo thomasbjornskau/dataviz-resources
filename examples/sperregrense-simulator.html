@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sperregrense-simulator – Stortingsvalget 2025</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --surface-2: #f1efe8;
+    --text: #2c2c2a;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --accent: #185fa5;
+    --danger: #a32d2d;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18;
+      --surface: #232321;
+      --surface-2: #2c2c2a;
+      --text: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.15);
+      --accent: #85b7eb;
+      --danger: #f09595;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 2rem 1rem;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 0.75rem;
+  }
+
+  .slider-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    min-width: 100px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  .threshold-out {
+    font-size: 22px;
+    font-weight: 500;
+    min-width: 70px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .preset-row, .view-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: 116px;
+    margin-bottom: 0.5rem;
+  }
+
+  .view-row {
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+
+  .view-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  button:hover {
+    background: var(--surface-2);
+  }
+
+  button.active {
+    background: var(--surface-2);
+    border-color: var(--text-tertiary);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    margin-bottom: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .commentary {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .footnote {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+
+  .rg-num { color: var(--danger); }
+  .b-num { color: var(--accent); }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Sperregrense-simulator</h1>
+  <p class="lede">Stortingsvalget 2025. Dra i slideren for å se hvordan ulike sperregrenser ville endret mandatfordelingen.</p>
+</header>
+
+<h2 class="sr-only">Interaktiv simulator av sperregrensen ved stortingsvalget 2025</h2>
+
+<div class="controls">
+  <div class="slider-row">
+    <label class="slider-label" for="threshold">Sperregrense</label>
+    <input type="range" min="0" max="10" step="0.1" value="4" id="threshold">
+    <span class="threshold-out" id="threshold-out">4,0 %</span>
+  </div>
+
+  <div class="preset-row">
+    <button onclick="setT(0)">0 %</button>
+    <button onclick="setT(0.5)">0,5 %</button>
+    <button onclick="setT(2)">2 % (DK)</button>
+    <button onclick="setT(3)">3 %</button>
+    <button onclick="setT(4)">4 % (NO)</button>
+    <button onclick="setT(5)">5 % (DE)</button>
+    <button onclick="setT(7)">7 %</button>
+  </div>
+
+  <div class="view-row">
+    <span class="view-label">Vis:</span>
+    <button id="btn-mandater" class="active" onclick="setView('mandater')">Mandater</button>
+    <button id="btn-oppslutning" onclick="setView('oppslutning')">Oppslutning</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Over terskelen</div>
+    <div class="stat-value" id="stat-parties">8 av 17</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Rødgrønn / borgerlig</div>
+    <div class="stat-value" id="stat-blocks">88 / 81</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Stemmer under terskel</div>
+    <div class="stat-value" id="stat-wasted">6,1 %</div>
+  </div>
+</div>
+
+<div class="chart-wrapper">
+  <canvas id="chart" role="img" aria-label="Stolpediagram som viser alle partier sortert etter oppslutning">Mandatfordeling per parti.</canvas>
+</div>
+
+<div class="commentary" id="commentary">
+  Dagens norske grense på 4 prosent.
+</div>
+
+<p class="footnote">
+Kilde: Valgdirektoratet og SSB, endelig resultat fra stortingsvalget 2025. Småpartier under 0,3 prosent er slått sammen under «Øvrige». Distriktsmandatene holdes faste; bare utjevningsmandatene fordeles på nytt etter modifisert Sainte-Laguë blant partier over terskelen. Partier som ligger under terskelen vises i grått.
+</p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  const parties = [
+    { id: 'AP',  name: 'Arbeiderpartiet', pct: 28.2, distrikt: 50, block: 'rg', color: '#E24B4A' },
+    { id: 'FRP', name: 'Frp',         pct: 23.9, distrikt: 47, block: 'b',  color: '#185FA5' },
+    { id: 'H',   name: 'Høyre',       pct: 14.5, distrikt: 22, block: 'b',  color: '#378ADD' },
+    { id: 'R',   name: 'Rødt',        pct: 6.0,  distrikt: 7,  block: 'rg', color: '#A32D2D' },
+    { id: 'SV',  name: 'SV',          pct: 5.6,  distrikt: 7,  block: 'rg', color: '#993556' },
+    { id: 'SP',  name: 'Senterpartiet', pct: 5.6, distrikt: 8,  block: 'rg', color: '#3B6D11' },
+    { id: 'MDG', name: 'MDG',         pct: 4.7,  distrikt: 4,  block: 'rg', color: '#639922' },
+    { id: 'KRF', name: 'KrF',         pct: 4.3,  distrikt: 2,  block: 'b',  color: '#BA7517' },
+    { id: 'V',   name: 'Venstre',     pct: 3.7,  distrikt: 3,  block: 'b',  color: '#1D9E75' },
+    { id: 'PP',  name: 'Pensjonistpartiet', pct: 0.8, distrikt: 0, block: 'andre', color: '#888780' },
+    { id: 'ND',  name: 'Norgesdemokratene', pct: 0.7, distrikt: 0, block: 'andre', color: '#5F5E5A' },
+    { id: 'GP',  name: 'Generasjonspartiet', pct: 0.7, distrikt: 0, block: 'andre', color: '#7F77DD' },
+    { id: 'INP', name: 'INP',           pct: 0.6, distrikt: 0, block: 'andre', color: '#534AB7' },
+    { id: 'KONS',name: 'Konservativt',  pct: 0.5, distrikt: 0, block: 'andre', color: '#4A1B0C' },
+    { id: 'FOR', name: 'Fred og rettferdighet', pct: 0.3, distrikt: 0, block: 'andre', color: '#993C1D' },
+    { id: 'PS',  name: 'Partiet Sentrum', pct: 0.3, distrikt: 0, block: 'andre', color: '#D85A30' },
+    { id: 'OVR', name: 'Øvrige',          pct: 0.5, distrikt: 0, block: 'andre', color: '#B4B2A9' }
+  ];
+  const TOTAL_UTJEVNING = 19;
+  let view = 'mandater';
+
+  function distribute(threshold) {
+    const eligible = parties.filter(p => p.pct >= threshold);
+    const quotients = [];
+    eligible.forEach(p => {
+      for (let k = 0; k < TOTAL_UTJEVNING + 2; k++) {
+        const div = k === 0 ? 1.4 : (2 * k + 1);
+        quotients.push({ id: p.id, q: p.pct / div });
+      }
+    });
+    quotients.sort((a, b) => b.q - a.q);
+    const utj = {};
+    eligible.forEach(p => utj[p.id] = 0);
+    for (let i = 0; i < TOTAL_UTJEVNING && i < quotients.length; i++) {
+      utj[quotients[i].id]++;
+    }
+    return parties.map(p => ({
+      ...p,
+      mandater: p.distrikt + (utj[p.id] || 0),
+      eligible: p.pct >= threshold
+    }));
+  }
+
+  let chart;
+
+  function render() {
+    const t = parseFloat(document.getElementById('threshold').value);
+    document.getElementById('threshold-out').textContent = t.toFixed(1).replace('.', ',') + ' %';
+
+    const result = distribute(t);
+    const sorted = result.slice().sort((a,b) => b.pct - a.pct);
+
+    const partiesOver = result.filter(p => p.eligible).length;
+    const rg = result.filter(p => p.block === 'rg').reduce((s,p) => s + p.mandater, 0);
+    const bk = result.filter(p => p.block === 'b').reduce((s,p) => s + p.mandater, 0);
+    const wasted = result.filter(p => !p.eligible).reduce((s,p) => s + p.pct, 0);
+
+    document.getElementById('stat-parties').textContent = partiesOver + ' av ' + parties.length;
+    document.getElementById('stat-blocks').innerHTML = '<span class="rg-num">' + rg + '</span> / <span class="b-num">' + bk + '</span>';
+    document.getElementById('stat-wasted').textContent = wasted.toFixed(1).replace('.', ',') + ' %';
+
+    if (chart) chart.destroy();
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    const fillColors = sorted.map(p => p.eligible ? p.color : '#B4B2A9');
+    const lightColors = sorted.map(p => p.eligible ? p.color + '70' : '#B4B2A940');
+
+    let datasets;
+    let xMax;
+    let xLabel;
+
+    if (view === 'mandater') {
+      datasets = [
+        { label: 'Distrikt', data: sorted.map(p => p.distrikt), backgroundColor: fillColors, borderWidth: 0 },
+        { label: 'Utjevning', data: sorted.map(p => p.mandater - p.distrikt), backgroundColor: lightColors, borderWidth: 0 }
+      ];
+      xMax = 60;
+      xLabel = 'Mandater';
+    } else {
+      datasets = [
+        { label: 'Oppslutning', data: sorted.map(p => p.pct), backgroundColor: fillColors, borderWidth: 0 }
+      ];
+      xMax = 30;
+      xLabel = 'Prosent av stemmene';
+    }
+
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const tickColor = isDark ? '#b4b2a9' : '#5f5e5a';
+    const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: sorted.map(p => p.name), datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (item) => {
+                const p = sorted[item.dataIndex];
+                if (view === 'mandater') {
+                  return item.dataset.label + ': ' + item.parsed.x;
+                } else {
+                  return p.pct.toFixed(1).replace('.', ',') + ' %';
+                }
+              },
+              footer: (items) => {
+                const p = sorted[items[0].dataIndex];
+                if (view === 'mandater') {
+                  return p.pct.toFixed(1).replace('.', ',') + ' % stemmer' + (p.eligible ? '' : ' (under terskel)');
+                } else {
+                  return p.mandater + ' mandater' + (p.eligible ? '' : ' (under terskel)');
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            beginAtZero: true,
+            max: xMax,
+            title: { display: true, text: xLabel, font: { size: 11 }, color: tickColor },
+            ticks: { font: { size: 11 }, color: tickColor },
+            grid: { display: true, color: gridColor }
+          },
+          y: {
+            stacked: true,
+            ticks: { font: { size: 11 }, color: tickColor },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    const com = document.getElementById('commentary');
+    let msg = '';
+    if (t === 0) {
+      msg = 'Ingen sperregrense. Alle partier som fikk stemmer er med i fordelingen. Pensjonistpartiet og Norgesdemokratene ville fått hvert sitt utjevningsmandat.';
+    } else if (t < 1) {
+      msg = 'Svært lav terskel. De største småpartiene over ' + t.toFixed(1).replace('.', ',') + ' prosent kommer med i fordelingen av utjevningsmandater.';
+    } else if (t <= 2) {
+      msg = 'Lav terskel, dansk modell. Alle Stortingets ni partier består, men ingen norske småpartier kom i nærheten av 2 prosent. ' + wasted.toFixed(1).replace('.', ',') + ' prosent av stemmene faller fortsatt utenfor.';
+    } else if (t < 4) {
+      msg = 'Moderat terskel. Alle Stortingets partier består, småpartiene utenfor.';
+    } else if (t < 4.5) {
+      msg = 'Dagens norske grense. Venstre faller under sammen med småpartiene. Til sammen ' + wasted.toFixed(1).replace('.', ',') + ' prosent av velgerne får ingen utjevningsmandater.';
+    } else if (t < 6) {
+      msg = 'Høyere terskel. MDG og KrF faller også under. Sentrumsrommet utraderes.';
+    } else {
+      msg = 'Høy terskel, tysk modell og over. Bare de største partiene består. ' + wasted.toFixed(1).replace('.', ',') + ' prosent av velgerne mister utjevningsmandater.';
+    }
+    com.textContent = msg;
+  }
+
+  window.setT = function(v) {
+    document.getElementById('threshold').value = v;
+    render();
+  };
+
+  window.setView = function(v) {
+    view = v;
+    document.getElementById('btn-mandater').classList.toggle('active', v === 'mandater');
+    document.getElementById('btn-oppslutning').classList.toggle('active', v === 'oppslutning');
+    render();
+  };
+
+  document.getElementById('threshold').addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

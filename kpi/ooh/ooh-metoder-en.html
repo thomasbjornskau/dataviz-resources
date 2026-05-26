@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOH measurement · Methods and debate</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4ee;
+  --color-background-tertiary: #faf9f5;
+  --color-text-primary: #1a1915;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-border-tertiary: rgba(26, 25, 21, 0.15);
+  --color-border-secondary: rgba(26, 25, 21, 0.3);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --grid-color: rgba(136, 135, 128, 0.12);
+  --axis-color: #888780;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1f1e1a;
+    --color-background-secondary: #2a2925;
+    --color-background-tertiary: #1a1915;
+    --color-text-primary: #f1efe8;
+    --color-text-secondary: #b4b2a9;
+    --color-text-tertiary: #888780;
+    --color-border-tertiary: rgba(241, 239, 232, 0.15);
+    --color-border-secondary: rgba(241, 239, 232, 0.3);
+    --grid-color: rgba(241, 239, 232, 0.1);
+    --axis-color: #b4b2a9;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+header {
+  margin: 0 0 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+h1 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.55;
+}
+.tab-btn {
+  padding: 10px 14px; font-size: 13px; background: transparent;
+  border: 0.5px solid transparent; border-radius: var(--border-radius-md);
+  cursor: pointer; color: var(--color-text-secondary);
+  font-family: inherit;
+}
+.tab-btn[aria-selected="true"] {
+  background: var(--color-background-primary);
+  border-color: var(--color-border-tertiary);
+  color: var(--color-text-primary);
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; font-size: 13px; background: transparent;
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md); cursor: pointer;
+  color: var(--color-text-primary); font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pill:hover { background: var(--color-background-secondary); }
+.layer-btn {
+  flex: 1; padding: 10px; font-size: 13px; background: transparent;
+  border: 0.5px solid transparent; border-radius: var(--border-radius-md);
+  cursor: pointer; color: var(--color-text-secondary); font-family: inherit;
+}
+.layer-btn[aria-selected="true"] {
+  background: var(--color-background-primary);
+  border-color: var(--color-border-tertiary);
+  color: var(--color-text-primary);
+}
+.tension {
+  padding: 12px 14px; background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md); cursor: pointer;
+  text-align: left; font-family: inherit; color: var(--color-text-primary);
+  transition: border-color 0.15s, background 0.15s;
+}
+.tension:hover { border-color: var(--color-border-secondary); }
+.tension[aria-pressed="true"] {
+  border-color: var(--color-border-secondary);
+  background: var(--color-background-secondary);
+}
+footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 0.5px solid var(--color-border-tertiary);
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+}
+footer a { color: var(--color-text-secondary); }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Owner-occupied housing in price statistics</h1>
+  <p class="subtitle">Four approaches to measuring the price development of owner-occupied housing, and why no international consensus exists. Intended as a basis for discussion.</p>
+</header>
+
+<h2 class="sr-only">Interactive application in two parts. Part one compares four OOH approaches through three layers (concept, data needs, consequence) with a dot matrix for suitability and a line chart of simulated inflation paths 2010-2025. Part two presents the four fundamental tensions that make OOH measurement contested.</h2>
+
+<div role="tablist" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); margin: 0 0 1.5rem;">
+  <button class="tab-btn" role="tab" aria-selected="true" data-view="methods">1 · Four approaches</button>
+  <button class="tab-btn" role="tab" aria-selected="false" data-view="debate">2 · Why no consensus</button>
+</div>
+
+<div id="view-methods">
+
+  <div style="margin: 0 0 1rem;">
+    <div style="font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 6px;">Select approach</div>
+    <div id="method-pills" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+  </div>
+
+  <div style="margin: 0 0 1.5rem;">
+    <div style="font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 6px;">Select layer</div>
+    <div role="tablist" style="display: flex; gap: 4px; padding: 3px; background: var(--color-background-secondary); border-radius: var(--border-radius-md);">
+      <button class="layer-btn" role="tab" aria-selected="true" data-layer="concept">Concept</button>
+      <button class="layer-btn" role="tab" aria-selected="false" data-layer="data">Data needs</button>
+      <button class="layer-btn" role="tab" aria-selected="false" data-layer="impact">Consequence</button>
+    </div>
+  </div>
+
+  <div id="text-panel" style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin: 0 0 1.5rem;"></div>
+
+  <div style="margin: 0 0 0.5rem; display: flex; align-items: baseline; justify-content: space-between;">
+    <div style="font-size: 13px; color: var(--color-text-secondary);">Suitability along four dimensions</div>
+    <div style="font-size: 11px; color: var(--color-text-tertiary);">Larger dot = better suited</div>
+  </div>
+  <div id="dot-matrix" style="margin: 0 0 2rem;"></div>
+
+  <div style="margin: 0 0 0.5rem; display: flex; align-items: baseline; justify-content: space-between;">
+    <div style="font-size: 13px; color: var(--color-text-secondary);">Simulated annual OOH inflation, same underlying housing market</div>
+    <div style="font-size: 11px; color: var(--color-text-tertiary);">Illustrative figures</div>
+  </div>
+  <div style="position: relative; width: 100%; height: 280px;">
+    <canvas id="timeChart" role="img" aria-label="Line chart showing four synthetic inflation paths from 2010 to 2025 based on the same underlying housing price and rent data. Rental equivalence stays stable around 2-3 percent, user cost swings sharply with interest rates from negative to 8 percent, net acquisition follows new dwelling prices 0-7 percent, hedonic sits between 1 and 4 percent.">Four different approaches yield genuinely different inflation signals even from the same underlying data.</canvas>
+  </div>
+  <div id="time-legend" style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--color-text-secondary); justify-content: center;"></div>
+
+  <div style="margin: 1.25rem 0 0; padding: 0.75rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); font-size: 12px; color: var(--color-text-secondary); line-height: 1.6;">
+    <i class="ti ti-info-circle" aria-hidden="true" style="font-size: 13px; vertical-align: -2px; margin-right: 4px;"></i>
+    The time series are calibrated to known patterns (CPI rental indices, residential property price indices, policy rate movements) but are not official estimates. They illustrate direction and volatility, not levels.
+  </div>
+
+</div>
+
+<div id="view-debate" style="display: none;">
+
+  <div style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.65; margin: 0 0 1.5rem;">
+    Four fundamental tensions explain why no single approach has prevailed. Click to read each.
+  </div>
+
+  <div id="tensions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 1.5rem;"></div>
+
+  <div id="tension-detail" style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem;"></div>
+
+</div>
+
+<footer>
+  Source basis: CPI Manual 2020, SNA 2008, and Eurostat's OOHPI framework.
+  Time series are illustrative and calibrated to known patterns, not actual historical computations.
+</footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const methods = {
+  rental: {
+    name: "Rental equivalence",
+    full: "Rental equivalence",
+    icon: "ti-home",
+    color: "#534AB7",
+    colorLight: "#CECBF6",
+    scores: { data: 4, theory: 4, stability: 5, intl: 5 },
+    users: "United States, Germany, Japan, the Netherlands, Denmark, Norway",
+    concept: {
+      headline: "What would it cost to rent an equivalent dwelling?",
+      body: "Owner-occupiers are treated as consuming a flow of dwelling services. The value of those services is estimated as the market rent of a comparable rented dwelling. The approach is grounded in the cost-of-living index (COLI) framework and is recommended by SNA 2008 for household final consumption expenditure (para. 11.96).",
+      depth: "The underlying assumption is that two identical dwellings — one rented, one owner-occupied — deliver the same flow of services, so the observed rent serves as the shadow price for the owner-occupier's consumption. This does not require the housing market to be in equilibrium; it only requires that the rental and owner-occupied markets carry information about the same underlying service flow."
+    },
+    data: {
+      headline: "Representative rents matched to the owner-occupied stock",
+      body: "Requires reliable rental data by dwelling type, location and quality, together with a method for matching owner-occupied dwellings to comparable rented ones (CPI Manual 2020, paras. 11.97–11.98). Works well where the rental market is large and transparent.",
+      depth: "Constant-quality measurement is essential: only identical dwellings are compared over time. In practice this often means a panel of representative rented dwellings followed monthly, with periodic refreshment of the sample and adjustments for differences in geography and dwelling size between the rented and owner-occupied stocks."
+    },
+    impact: {
+      headline: "Stable. Tracks the rental market, not house prices",
+      body: "Produces a stable inflation signal because rents move slowly. Critics argue it understates the cost development faced by owners during periods of rapidly rising house prices.",
+      depth: "A subtle circularity can arise in jurisdictions where rent regulation links rent adjustments to the CPI itself: when the rental index is a major CPI input, a large share of the rental stock is then adjusted in line with the CPI, creating built-in inertia. This is methodologically accepted but communicationally demanding."
+    }
+  },
+  usercost: {
+    name: "User cost",
+    full: "User cost",
+    icon: "ti-calculator",
+    color: "#0F6E56",
+    colorLight: "#9FE1CB",
+    scores: { data: 2, theory: 5, stability: 1, intl: 2 },
+    users: "Used in research and experimental indices; rarely adopted as the official approach",
+    concept: {
+      headline: "The economic cost of holding the dwelling",
+      body: "Treats housing as a capital asset providing a flow of services. The cost of consuming those services equals the opportunity cost of holding the asset: interest, depreciation, maintenance and taxes, less expected capital gains (CPI Manual 2020, Table 11.4).",
+      depth: "Conceptually this is the cleanest formulation of what it costs to occupy a dwelling for a given period. It captures the opportunity cost of capital tied up in the dwelling. The difficulty is that one of its components — expected future price change — is not observable and must be modelled."
+    },
+    data: {
+      headline: "Interest rates, dwelling prices and price expectations",
+      body: "Requires data on interest rates, dwelling prices, depreciation rates, maintenance costs and expected capital gains. The last component is unobservable.",
+      depth: "The expectations component makes the entire calculation model-dependent. Different statisticians can arrive at materially different results from the same source data, depending on whether they use historical averages, moving averages or market-based expectations. This makes the approach difficult to operationalise consistently in official statistics."
+    },
+    impact: {
+      headline: "Volatile. The interest component dominates",
+      body: "Interest rate changes pass through directly. The approach also creates a circularity with monetary policy: when the central bank raises rates to curb inflation, a user-cost-based index may show higher inflation.",
+      depth: "This is the classic objection: a central bank attempting to fight inflation through rate hikes would see inflation rise in its own index, undermining the index's usefulness as a monetary policy anchor. Most statistical agencies have considered user cost and declined to adopt it as the principal approach."
+    }
+  },
+  netacq: {
+    name: "Net acquisition",
+    full: "Net acquisition",
+    icon: "ti-shopping-cart",
+    color: "#D85A30",
+    colorLight: "#F5C4B3",
+    scores: { data: 3, theory: 3, stability: 3, intl: 4 },
+    users: "European Union (OOHPI), Australia, New Zealand, Canada (partially)",
+    concept: {
+      headline: "Treats dwelling purchases as acquisitions",
+      body: "Measures price changes for newly built dwellings purchased by the household sector, excluding land. Treats the purchase as a monetary transaction consistent with a strict monetary-transactions definition of the CPI.",
+      depth: "The philosophical position is that the CPI should measure only observed monetary flows between households and the rest of the economy. Imputed service flows belong in the national accounts, not in a transactions-based price index. This is the interpretation Eurostat has built its OOHPI around."
+    },
+    data: {
+      headline: "Transaction prices for new dwellings, excluding land",
+      body: "Requires transaction data on new dwellings, self-builds and major renovations, plus a method for separating the value of the structure from the value of the land. Quality adjustment is essential.",
+      depth: "The structure–land split is methodologically difficult because the two are sold as a single bundle. Hedonic or residual approaches are typically used to extract the land component. The result is that a relatively small share of household sector housing activity (new construction) carries the entire index signal."
+    },
+    impact: {
+      headline: "Tracks the construction market, not the full stock",
+      body: "Based on observed prices, but covers only a small part of the dwelling stock. Mixes consumption and investment elements, and gives a different inflation signal from rental equivalence.",
+      depth: "Where the net acquisition approach and rental equivalence coexist within the same statistical system — for instance, where a country uses rental equivalence in its national CPI but reports net acquisition for harmonised European purposes — two conceptually different OOH measures sit side by side. This is a real communication challenge."
+    }
+  },
+  hedonic: {
+    name: "Hedonic",
+    full: "Hedonic / component cost",
+    icon: "ti-tools",
+    color: "#BA7517",
+    colorLight: "#FAC775",
+    scores: { data: 2, theory: 3, stability: 4, intl: 3 },
+    users: "Used as a tool within the other approaches; rarely as a stand-alone OOH measure",
+    concept: {
+      headline: "Build the price from parts, or model quality directly",
+      body: "The component cost approach aggregates prices of construction materials and labour (CPI Manual 2020, para. 11.143). Hedonic models control for quality attributes such as size, location and age to isolate pure price change.",
+      depth: "Hedonic regression decomposes a dwelling into its attributes and estimates how much each attribute contributes to the price. Holding attributes constant isolates pure price movement. This is the foundation of modern constant-quality measurement and underpins quality adjustment in the other approaches."
+    },
+    data: {
+      headline: "Input prices or detailed dwelling characteristics",
+      body: "Component cost requires input price indices. Hedonic methods require large transaction datasets with rich attribute information and statistical modelling capacity.",
+      depth: "In practice a hedonic model needs thousands of transactions with rich attribute data to produce stable coefficients. The choice of specification — linear, log-linear, semi-log, non-parametric — affects the result, and there is no objective winner among specifications."
+    },
+    impact: {
+      headline: "A tool, not a stand-alone approach",
+      body: "Rarely used alone as an OOH measure. More often the necessary building block that enables the other approaches to function, especially for quality adjustment.",
+      depth: "The most realistic role for hedonic methods is to supply quality adjustments into rental equivalence, net acquisition and residential property price indices. Treating it as a stand-alone OOH approach overstates its independence from the other methods."
+    }
+  }
+};
+
+const dimensions = [
+  { key: "data", label: "Data availability", desc: "How readily ongoing data can be collected" },
+  { key: "theory", label: "Theoretical consistency", desc: "How well the approach captures what it claims to measure" },
+  { key: "stability", label: "Stability", desc: "How robust the index is to external shocks" },
+  { key: "intl", label: "International use", desc: "How widely adopted in official CPIs" }
+];
+
+const tensions = [
+  {
+    key: "consumption",
+    title: "Consumption or investment?",
+    icon: "ti-arrows-exchange",
+    short: "Housing is both",
+    body: "Housing is simultaneously a consumption good (the household lives in it) and an investment asset (it may rise or fall in value). Each approach takes a position on which side it measures. Rental equivalence treats housing as consumption; net acquisition treats it as an acquisition. Both are conceptually defensible, but they cannot be reconciled within a single index."
+  },
+  {
+    key: "purpose",
+    title: "COLI or pure price index?",
+    icon: "ti-target",
+    short: "What is the CPI for",
+    body: "Is the CPI a measure of the cost of living (COLI) or a pure price index for monetary transactions? The COLI framework favours rental equivalence because it captures the flow of services the household consumes. The monetary-transactions perspective favours net acquisition because it measures observed transactions. The choice between them is philosophical, not technical (CPI Manual 2020, paras. 11.96–11.99)."
+  },
+  {
+    key: "observed",
+    title: "Observed or imputed?",
+    icon: "ti-eye",
+    short: "What counts as data",
+    body: "Net acquisition rests on observed transactions. Rental equivalence rests on an imputation — a constructed price. User cost requires modelled expectations. Each approach trades off data availability against conceptual cleanness. There is no way around this: either you have observed prices that measure the wrong thing, or imputed prices that measure the right thing."
+  },
+  {
+    key: "context",
+    title: "National or international?",
+    icon: "ti-world",
+    short: "Every economy is different",
+    body: "Countries differ in homeownership rates, the size of the rental market, the extent of rent regulation, and data availability. Some EU countries (including Spain, France, Italy and Greece) have chosen to exclude OOH entirely from their HICP. Eurostat continues to work towards a harmonised approach that functions across member states. Economic heterogeneity makes harmonisation genuinely difficult (CPI Manual 2020, paras. 11.97–11.99)."
+  }
+];
+
+let activeMethod = "rental";
+let activeLayer = "concept";
+let activeView = "methods";
+let activeTension = "consumption";
+
+const pillsEl = document.getElementById("method-pills");
+const textPanel = document.getElementById("text-panel");
+const dotMatrix = document.getElementById("dot-matrix");
+
+function renderPills() {
+  pillsEl.innerHTML = Object.entries(methods).map(([key, m]) => {
+    const active = key === activeMethod;
+    return `<button class="pill" data-method="${key}" aria-pressed="${active}" style="${active ? `background: ${m.colorLight}; color: ${m.color}; border-color: ${m.color};` : ''}">
+      <i class="ti ${m.icon}" aria-hidden="true" style="font-size: 14px;"></i>${m.name}
+    </button>`;
+  }).join("");
+  pillsEl.querySelectorAll("button").forEach(b => {
+    b.addEventListener("click", () => {
+      activeMethod = b.dataset.method;
+      renderPills();
+      renderText();
+      renderDots();
+      updateChart();
+    });
+  });
+}
+
+function renderText() {
+  const m = methods[activeMethod];
+  const layer = m[activeLayer];
+  const layerName = { concept: "Concept", data: "Data needs", impact: "Consequence" }[activeLayer];
+  textPanel.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+      <i class="ti ${m.icon}" aria-hidden="true" style="font-size: 22px; color: ${m.color};"></i>
+      <div>
+        <div style="font-size: 12px; color: var(--color-text-tertiary);">${layerName} · ${m.full}</div>
+        <div style="font-size: 17px; font-weight: 500; line-height: 1.35;">${layer.headline}</div>
+      </div>
+    </div>
+    <div style="font-size: 14px; line-height: 1.7; margin-bottom: 1rem;">${layer.body}</div>
+    <div style="font-size: 13px; line-height: 1.65; padding: 0.75rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">
+      <div style="font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px;">In more depth</div>
+      ${layer.depth}
+    </div>
+    <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 0.5px solid var(--color-border-tertiary); font-size: 13px;">
+      <span style="color: var(--color-text-tertiary);">Used by </span><span>${m.users}</span>
+    </div>
+  `;
+}
+
+function renderDots() {
+  const methodKeys = Object.keys(methods);
+  const cols = dimensions.length;
+  const labelWidth = 150;
+
+  let html = `<div style="display: grid; grid-template-columns: ${labelWidth}px repeat(${cols}, 1fr); gap: 0; align-items: center; font-size: 12px;">`;
+  html += `<div></div>`;
+  dimensions.forEach(d => {
+    html += `<div style="text-align: center; color: var(--color-text-secondary); padding: 0 4px; line-height: 1.3;" title="${d.desc}">${d.label}</div>`;
+  });
+
+  methodKeys.forEach(key => {
+    const m = methods[key];
+    const isActive = key === activeMethod;
+    const rowOpacity = isActive ? 1 : 0.45;
+    html += `<div style="display: flex; align-items: center; gap: 8px; padding: 10px 0; opacity: ${rowOpacity}; transition: opacity 0.2s;">
+      <i class="ti ${m.icon}" aria-hidden="true" style="font-size: 14px; color: ${m.color};"></i>
+      <span style="font-size: 13px;">${m.name}</span>
+    </div>`;
+    dimensions.forEach(d => {
+      const score = m.scores[d.key];
+      const size = 8 + score * 5;
+      const fill = isActive ? m.color : m.colorLight;
+      html += `<div style="display: flex; justify-content: center; align-items: center; padding: 10px 0; opacity: ${rowOpacity};">
+        <div title="${m.name} · ${d.label}: ${score}/5" style="width: ${size}px; height: ${size}px; border-radius: 50%; background: ${fill}; border: 0.5px solid ${m.color};"></div>
+      </div>`;
+    });
+  });
+
+  html += `</div>`;
+  dotMatrix.innerHTML = html;
+}
+
+let chart;
+function buildChart() {
+  const ctx = document.getElementById("timeChart").getContext("2d");
+  const years = Array.from({length: 16}, (_, i) => 2010 + i);
+
+  const baseRental = [2.1, 2.4, 2.6, 2.5, 2.2, 2.0, 1.8, 1.5, 1.7, 2.0, 1.9, 2.4, 3.6, 4.2, 3.8, 3.1];
+  const baseUserCost = [-1.5, 0.8, 1.2, 0.5, 1.8, -2.3, -1.8, 0.4, 2.1, 1.5, -4.2, -2.8, 5.4, 8.1, 6.2, 3.4];
+  const baseNetAcq = [3.8, 4.2, 3.5, 2.8, 3.2, 4.5, 5.8, 4.2, 3.1, 2.5, 6.8, 7.4, 5.2, 1.8, 0.5, 2.1];
+  const baseHedonic = [1.8, 2.1, 2.3, 2.0, 1.9, 1.7, 1.6, 1.4, 1.6, 1.9, 2.2, 2.6, 3.2, 3.8, 3.4, 2.9];
+
+  const dashMap = { rental: [], usercost: [6, 4], netacq: [2, 3], hedonic: [10, 2] };
+
+  const datasets = [
+    { key: "rental", label: "Rental equivalence", data: baseRental, color: methods.rental.color },
+    { key: "usercost", label: "User cost", data: baseUserCost, color: methods.usercost.color },
+    { key: "netacq", label: "Net acquisition", data: baseNetAcq, color: methods.netacq.color },
+    { key: "hedonic", label: "Hedonic", data: baseHedonic, color: methods.hedonic.color }
+  ].map(d => ({
+    label: d.label,
+    methodKey: d.key,
+    data: d.data,
+    borderColor: d.color,
+    backgroundColor: d.color,
+    borderDash: dashMap[d.key],
+    borderWidth: 2,
+    pointRadius: 0,
+    pointHoverRadius: 4,
+    tension: 0.3
+  }));
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: years, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          ticks: { color: 'var(--axis-color)', font: { size: 11 }, callback: (v) => v + '%' },
+          grid: { color: 'rgba(136,135,128,0.15)' }
+        },
+        x: {
+          ticks: { color: 'var(--axis-color)', font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: (c) => `${c.dataset.label}: ${c.parsed.y.toFixed(1)}%` }
+        }
+      }
+    }
+  });
+
+  const legendEl = document.getElementById("time-legend");
+  legendEl.innerHTML = datasets.map(ds => {
+    const lineStyle = ds.borderDash.length === 0 ? 'solid' : 'dashed';
+    return `<span style="display: inline-flex; align-items: center; gap: 6px;">
+      <span style="width: 18px; height: 0; border-top: 2px ${lineStyle} ${ds.borderColor};"></span>${ds.label}
+    </span>`;
+  }).join("");
+}
+
+function updateChart() {
+  if (!chart) return;
+  chart.data.datasets.forEach(ds => {
+    const isActive = ds.methodKey === activeMethod;
+    ds.borderWidth = isActive ? 3 : 1.5;
+    const baseColor = methods[ds.methodKey].color;
+    const lightColor = methods[ds.methodKey].colorLight;
+    ds.borderColor = isActive ? baseColor : lightColor;
+  });
+  chart.update('none');
+}
+
+function renderTensions() {
+  const grid = document.getElementById("tensions");
+  grid.innerHTML = tensions.map(s => `
+    <button class="tension" data-tension="${s.key}" aria-pressed="${s.key === activeTension}">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+        <i class="ti ${s.icon}" aria-hidden="true" style="font-size: 16px; color: var(--color-text-secondary);"></i>
+        <span style="font-size: 14px; font-weight: 500;">${s.title}</span>
+      </div>
+      <div style="font-size: 12px; color: var(--color-text-tertiary); padding-left: 24px;">${s.short}</div>
+    </button>
+  `).join("");
+  grid.querySelectorAll("button").forEach(b => {
+    b.addEventListener("click", () => {
+      activeTension = b.dataset.tension;
+      renderTensions();
+      renderTensionDetail();
+    });
+  });
+}
+
+function renderTensionDetail() {
+  const s = tensions.find(x => x.key === activeTension);
+  document.getElementById("tension-detail").innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem;">
+      <i class="ti ${s.icon}" aria-hidden="true" style="font-size: 20px; color: var(--color-text-secondary);"></i>
+      <div style="font-size: 17px; font-weight: 500;">${s.title}</div>
+    </div>
+    <div style="font-size: 14px; line-height: 1.7;">${s.body}</div>
+  `;
+}
+
+document.querySelectorAll('.tab-btn').forEach(t => {
+  t.addEventListener("click", () => {
+    activeView = t.dataset.view;
+    document.querySelectorAll('.tab-btn').forEach(x => x.setAttribute("aria-selected", x.dataset.view === activeView ? "true" : "false"));
+    document.getElementById("view-methods").style.display = activeView === "methods" ? "block" : "none";
+    document.getElementById("view-debate").style.display = activeView === "debate" ? "block" : "none";
+  });
+});
+
+document.querySelectorAll('.layer-btn').forEach(b => {
+  b.addEventListener("click", () => {
+    activeLayer = b.dataset.layer;
+    document.querySelectorAll('.layer-btn').forEach(x => x.setAttribute("aria-selected", x.dataset.layer === activeLayer ? "true" : "false"));
+    renderText();
+  });
+});
+
+renderPills();
+renderText();
+renderDots();
+buildChart();
+updateChart();
+renderTensions();
+renderTensionDetail();
+</script>
+</body>
+</html>

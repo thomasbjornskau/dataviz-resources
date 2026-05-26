@@ -1,6 +1,6 @@
 # Selveierboliger i prisstatistikken
 
-[**→ Åpne applikasjonen**]([https://thomasbjornskau.github.io/dataviz-resources/kpi/ooh/ooh-metoder.html])
+[**→ Åpne applikasjonen**](https://thomasbjornskau.github.io/dataviz-resources/kpi/ooh/ooh-metoder.html)
 
 En interaktiv forklaring av de fire hovedmetodene for å måle prisutvikling på selveierboliger (owner-occupied housing, OOH), og hvorfor det ikke finnes internasjonal konsensus om hvilken som er riktig.
 

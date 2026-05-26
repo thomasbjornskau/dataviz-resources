@@ -12,7 +12,7 @@ Applikasjonene har ikke samme redaksjonelle løype som ssb.no. De følger en let
 Per nå ligger følgende applikasjoner her:
 
 # Bidrag og prosess
-Applikasjonene utvikles i samarbeid mellom fagseksjoner og personer med visualiserings- og formidlingskompetanse. KI-assistenter brukes som verktøy i prosessen – til strukturering, utkast, kode og iterasjon – på samme måte som andre digitale verktøy. Hver applikasjon har en navngitt fagansvarlig som står inne for det faglige innholdet.
+Applikasjonene utvikles i samarbeid mellom fagseksjoner og personer med visualiserings- og formidlingskompetanse. KI-assistenter brukes som verktøy i prosessen – til strukturering, utkast, kode og iterasjon – på samme måte som andre digitale verktøy.
 
 Kildekoden for hver applikasjon ligger åpent tilgjengelig i dette repoet. Endringshistorikk, designvalg og forutsetninger kan inspiseres og kommenteres.
 

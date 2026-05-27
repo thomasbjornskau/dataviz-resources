@@ -584,10 +584,10 @@
   async function loadData() {
     try {
       const [gResp, sResp] = await Promise.all([
-        fetch('gsbpm-systemer.json'),
+        fetch('gsbpm.json'),
         fetch('systemer.json')
       ]);
-      if (!gResp.ok) throw new Error('gsbpm-systemer.json: HTTP ' + gResp.status);
+      if (!gResp.ok) throw new Error('gsbpm.json: HTTP ' + gResp.status);
       if (!sResp.ok) throw new Error('systemer.json: HTTP ' + sResp.status);
       GSBPM = await gResp.json();
       SYS = await sResp.json();
@@ -603,7 +603,7 @@
       box.className = 'error-box';
       box.innerHTML = '<strong>Kunne ikke laste data.</strong><br><br>'
         + '<code>' + (err.message || err) + '</code><br><br>'
-        + 'Sjekk at filene <code>gsbpm-systemer.json</code> og <code>systemer.json</code> ligger i samme mappe. '
+        + 'Sjekk at filene <code>gsbpm.json</code> og <code>systemer.json</code> ligger i samme mappe. '
         + 'Hvis du tester lokalt: bruk en lokal server (<code>python3 -m http.server</code>).';
     }
   }

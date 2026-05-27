@@ -1,0 +1,31 @@
+{
+  "tittel": "Hvilke systemer støtter de ulike prosessene i GSBPM?",
+  "kilde": "Systemoversikt (intern, foreløpig)",
+  "kategorier": {
+    "Metadata": { "farge": "#2563a8", "farge_lys": "#e3edf6" },
+    "Formidling": { "farge": "#c9651f", "farge_lys": "#fbeadb" }
+  },
+  "systemer": [
+    { "navn": "Kudoc", "kategori": "Metadata", "ikon": "book", "beskrivelse": "Kudoc er foreløpig beskrevet som et metadata-system." },
+    { "navn": "RespReg", "kategori": "Metadata", "ikon": "account", "beskrivelse": "RespReg er foreløpig beskrevet som et metadata-system." },
+    { "navn": "Amor", "kategori": "Metadata", "ikon": "library", "beskrivelse": "Amor er foreløpig beskrevet som et metadata-system." },
+    { "navn": "A3Admin", "kategori": "Metadata", "ikon": "settings-gear", "beskrivelse": "A3Admin er foreløpig beskrevet som et metadata-system." },
+    { "navn": "DaplaLab", "kategori": "Formidling", "ikon": "notebook", "beskrivelse": "DaplaLab er foreløpig beskrevet som et formidlingssystem." },
+    { "navn": "Vardef", "kategori": "Formidling", "ikon": "symbol-variable", "beskrivelse": "Vardef er foreløpig beskrevet som et formidlingssystem." },
+    { "navn": "Datadoc", "kategori": "Formidling", "ikon": "file-text", "beskrivelse": "Datadoc er foreløpig beskrevet som et formidlingssystem." },
+    { "navn": "Klass", "kategori": "Formidling", "ikon": "list-tree", "beskrivelse": "Klass er foreløpig beskrevet som et formidlingssystem." },
+    { "navn": "Statreg", "kategori": "Formidling", "ikon": "database", "beskrivelse": "Statreg er foreløpig beskrevet som et formidlingssystem." }
+  ],
+  "koblinger": [
+    { "system": "Kudoc", "steg": "2.2", "brukstype": "Helt", "beskrivelse": "Noe tekst her" },
+    { "system": "Kudoc", "steg": "3.1", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "RespReg", "steg": "4.1", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "Amor", "steg": "5.1", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "A3Admin", "steg": "5.2", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "DaplaLab", "steg": "6.2", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "Vardef", "steg": "6.2", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "Datadoc", "steg": "6.2", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "Klass", "steg": "6.2", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" },
+    { "system": "Statreg", "steg": "6.3", "brukstype": "Delvis", "beskrivelse": "Noe tekst her" }
+  ]
+}

@@ -150,6 +150,27 @@
   .sysbtn.active {
     color: white !important;
   }
+  /* Når en delprosess er valgt: marker systemknapper som inngår i den */
+  .sysbtn.proc-match {
+    box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px white;
+    position: relative;
+  }
+  .sysbtn.proc-match::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 1.5px solid white;
+  }
+  .sysbtn.proc-match-dimmed {
+    /* Systemet inngår i delprosessen, men er ikke aktivt i filteret */
+    box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px white;
+    opacity: 0.55;
+  }
 
   /* DIAGRAMMET */
   .diagram-wrap {
@@ -619,6 +640,14 @@
     const container = document.getElementById('systemGroups');
     container.innerHTML = '';
 
+    // Hvilke systemer er knyttet til den valgte delprosessen?
+    const procMatchSystemer = new Set();
+    if (activeProc) {
+      SYS.koblinger
+        .filter(k => k.steg === activeProc.kode)
+        .forEach(k => procMatchSystemer.add(k.system));
+    }
+
     Object.keys(SYS.kategorier).forEach(kat => {
       const group = document.createElement('div');
       group.className = 'system-group';
@@ -632,9 +661,15 @@
       buttons.className = 'system-buttons';
       SYS.systemer.filter(s => s.kategori === kat).forEach(s => {
         const btn = document.createElement('button');
-        btn.className = 'sysbtn' + (activeSystems.has(s.navn) ? ' active' : '');
+        const isActive = activeSystems.has(s.navn);
+        const isProcMatch = procMatchSystemer.has(s.navn);
+        let cls = 'sysbtn';
+        if (isActive) cls += ' active';
+        if (isProcMatch && isActive) cls += ' proc-match';
+        else if (isProcMatch && !isActive) cls += ' proc-match-dimmed';
+        btn.className = cls;
         const farge = SYS.kategorier[s.kategori].farge;
-        if (activeSystems.has(s.navn)) {
+        if (isActive) {
           btn.style.background = farge;
           btn.style.borderColor = farge;
         } else {
@@ -706,10 +741,14 @@
           iconsBox.appendChild(chip);
         });
 
-        // Klikk på selve boksen viser info-panelet
+        // Klikk på selve boksen viser info-panelet (toggle av/på)
         div.addEventListener('click', (e) => {
           if (e.target.closest('.proc-icon-chip')) return; // ikoner har egne tooltip
-          activeProc = { faseId: fase.id, kode: p.kode };
+          if (activeProc && activeProc.kode === p.kode) {
+            activeProc = null;
+          } else {
+            activeProc = { faseId: fase.id, kode: p.kode };
+          }
           render();
         });
 

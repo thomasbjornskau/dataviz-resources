@@ -2,8 +2,6 @@
 
 Toveis utforsker som viser hvilke systemer som støtter de ulike delprosessene i GSBPM, og motsatt: hvilke delprosesser et gitt system inngår i.
 
-Applikasjon [Lenke](https://thomasbjornskau.github.io/dataviz-resources/gsbpm/apps/systemer/index.html)
-
 ## Hva appen viser
 
 - Klikk på en **systemknapp** øverst for å se hvor det plasseres i diagrammet (som fargede ikoner på delprosessene)
@@ -14,8 +12,34 @@ Applikasjon [Lenke](https://thomasbjornskau.github.io/dataviz-resources/gsbpm/ap
 
 ## Datakilder
 
-- `../../data/gsbpm.json` (kanonisk modell – kun lesing)
-- `./data.json` (appspesifikk – systemer og deres koblinger til delprosesser)
+- `../../data/gsbpm.json` – kanonisk modell, kun lesing
+- `./data.json` – kategorier og systemer (sjelden endring)
+- `./koblinger.xlsx` – koblinger mellom systemer og delprosesser (ofte endring)
+
+## Vedlikehold
+
+### Legge til en kobling
+
+Åpne `koblinger.xlsx` i Excel og legg til en ny rad. Lagre. Commit til GitHub. Ferdig.
+
+Kolonner i Excel-fila:
+
+| Kolonne | Innhold | Eksempel |
+|---|---|---|
+| SYSTEMNAVN | Må matche et navn fra `data.json` | `Kudoc` |
+| GSBPM_STEG | Kode for delprosess, f.eks. 5.2 | `5.2` |
+| BRUKSTYPE | `Helt` eller `Delvis` | `Delvis` |
+| BESKRIVELSE | Fri tekst, vises i mouseover og info-panel | `Brukes til metadatauttak` |
+
+Rader hvor SYSTEMNAVN ikke finnes i `data.json` ignoreres ved lasting og logges som advarsel i nettleserens konsoll.
+
+### Legge til et nytt system
+
+Et nytt system må først legges inn i `data.json` (med navn, kategori, ikon og beskrivelse) før det kan brukes i Excel-fila. Hvis systemet hører til en ny kategori, legg også til kategorien i `data.json` med en farge.
+
+### Endre kategori eller farge
+
+Skjer i `data.json`. Gjelder med en gang appen lastes på nytt.
 
 ## `data.json`-strukturen
 
@@ -31,23 +55,11 @@ Applikasjon [Lenke](https://thomasbjornskau.github.io/dataviz-resources/gsbpm/ap
       "ikon": "<codicon-navn>",
       "beskrivelse": "<kort tekst>"
     }
-  ],
-  "koblinger": [
-    {
-      "system": "<systemnavn>",
-      "steg": "<GSBPM-kode, f.eks. 5.2>",
-      "brukstype": "Helt" | "Delvis",
-      "beskrivelse": "<merknad>"
-    }
   ]
 }
 ```
 
-## Oppdatere data
-
-For å legge til en kobling: åpne `data.json`, finn `"koblinger"`-lista, og kopier én av de eksisterende. Endre `system`, `steg`, `brukstype` og `beskrivelse`. Husk komma mellom hvert objekt, men ikke etter det siste.
-
-For å legge til et nytt system: legg det inn både i `"systemer"`-lista og i eventuelle nye `"koblinger"`. Hvis systemet hører til en ny kategori, legg også til kategorien i `"kategorier"`-blokken med en farge.
+Koblinger ligger ikke her – de leses fra `koblinger.xlsx`.
 
 ## Ikoner
 
@@ -55,4 +67,6 @@ Ikoner kommer fra [codicons](https://github.com/microsoft/vscode-codicons) (CC-B
 
 ## Bruk
 
-Åpne `index.html` via GitHub Pages, eller kjør lokalt med `python3 -m http.server` og besøk `localhost:8000/apps/systemer/`.
+Åpne via GitHub Pages, eller kjør lokalt med `python3 -m http.server` og besøk `localhost:8000/apps/systemer/`.
+
+**Merk:** Excel-lesing krever en HTTP-server – nettlesere blokkerer `fetch()` fra `file://`-URL-er. Lokal testing direkte fra filsystem fungerer ikke.

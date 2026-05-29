@@ -6,6 +6,8 @@
 <title>Hvilke systemer støtter prosessene i GSBPM?</title>
 <!-- Iconify – henter codicons direkte ved behov -->
 <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+<!-- SheetJS – for å lese koblinger.xlsx direkte i nettleseren -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root {
     --bg: #fafaf7;
@@ -572,11 +574,11 @@
         <h3>Forklaring</h3>
         <div class="legend-row">
           <span class="legend-sample" style="background: var(--ink-mute);"><iconify-icon icon="codicon:circle-filled"></iconify-icon></span>
-          <span>Systemet er <strong style="color: #235340;">helt</strong> utviklet og støtter delprosessen</span>
+          <span>System brukt <strong style="color: #235340;">helt</strong> i denne delprosessen</span>
         </div>
         <div class="legend-row">
           <span class="legend-sample delvis" style="background: var(--ink-mute);"><iconify-icon icon="codicon:circle-filled"></iconify-icon></span>
-          <span>System er <strong style="color: #8a4912;">delvis</strong> utviklet og støtter denne delprosessen</span>
+          <span>System brukt <strong style="color: #8a4912;">delvis</strong> i denne delprosessen</span>
         </div>
         <div class="legend-row" style="margin-top: 10px; color: var(--ink-mute); font-size: 12px;">
           Fargen på ikonet følger systemkategori. Mouseover gir detaljer.
@@ -604,16 +606,46 @@
 
   async function loadData() {
     try {
-      const [gResp, sResp] = await Promise.all([
+      const [gResp, sResp, kResp] = await Promise.all([
         fetch('../../data/gsbpm.json'),
-        fetch('./data.json')
+        fetch('./data.json'),
+        fetch('./koblinger.xlsx')
       ]);
       if (!gResp.ok) throw new Error('../../data/gsbpm.json: HTTP ' + gResp.status);
       if (!sResp.ok) throw new Error('./data.json: HTTP ' + sResp.status);
+      if (!kResp.ok) throw new Error('./koblinger.xlsx: HTTP ' + kResp.status);
+
       GSBPM = await gResp.json();
       SYS = await sResp.json();
 
-      // Default: alle systemer aktive (slik at man umiddelbart ser hvor de plasseres)
+      // Parse Excel-fila med koblinger
+      const buf = await kResp.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: null });
+
+      SYS.koblinger = [];
+      const ukjenteSystemer = new Set();
+      const systemNavn = new Set(SYS.systemer.map(s => s.navn));
+
+      rows.forEach((r, idx) => {
+        const system = r['SYSTEMNAVN'] ? String(r['SYSTEMNAVN']).trim() : null;
+        const steg = r['GSBPM_STEG'] ? String(r['GSBPM_STEG']).trim() : null;
+        const brukstype = r['BRUKSTYPE'] ? String(r['BRUKSTYPE']).trim() : null;
+        const beskrivelse = r['BESKRIVELSE'] ? String(r['BESKRIVELSE']).trim() : '';
+        if (!system || !steg || !brukstype) return;
+        if (!systemNavn.has(system)) {
+          ukjenteSystemer.add(system);
+          return; // hopp over rader hvor systemet ikke finnes i data.json
+        }
+        SYS.koblinger.push({ system, steg, brukstype, beskrivelse });
+      });
+
+      if (ukjenteSystemer.size > 0) {
+        console.warn('Systemer i Excel som ikke finnes i data.json:', Array.from(ukjenteSystemer));
+      }
+
+      // Default: alle systemer aktive
       SYS.systemer.forEach(s => activeSystems.add(s.navn));
 
       document.getElementById('loadingBox').style.display = 'none';
@@ -624,7 +656,7 @@
       box.className = 'error-box';
       box.innerHTML = '<strong>Kunne ikke laste data.</strong><br><br>'
         + '<code>' + (err.message || err) + '</code><br><br>'
-        + 'Sjekk at filene <code>../../data/gsbpm.json</code> og <code>./data.json</code> er tilgjengelige fra denne appen. '
+        + 'Sjekk at filene <code>../../data/gsbpm.json</code>, <code>./data.json</code> og <code>./koblinger.xlsx</code> er tilgjengelige fra denne appen. '
         + 'Hvis du tester lokalt: bruk en lokal server (<code>python3 -m http.server</code>).';
     }
   }

@@ -2,6 +2,8 @@
 
 Toveis utforsker som viser hvilke systemer som støtter de ulike delprosessene i GSBPM, og motsatt: hvilke delprosesser et gitt system inngår i.
 
+Applikasjon [Lenke](https://thomasbjornskau.github.io/dataviz-resources/gsbpm/apps/systemer/index.html)
+
 ## Hva appen viser
 
 - Klikk på en **systemknapp** øverst for å se hvor det plasseres i diagrammet (som fargede ikoner på delprosessene)

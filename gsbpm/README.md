@@ -9,7 +9,7 @@ Hver app i denne mappen bruker GSBPM som rygg og legger på sin egen dimensjon �
 | App | Hva den viser | URL |
 |---|---|---|
 | [Delprosesser](./apps/delprosesser/) | Konfigurator hvor en statistikkprodusent kan huke av de delprosessene som inngår i sitt eget løp. | `apps/delprosesser/` |
-| [Systemer](./apps/systemer/) | Hvilke systemer (Kudoc, RespReg, DaplaLab osv.) som støtter hvilke delprosesser, med kategori, brukstype og forklaring. | `apps/systemer/` |
+| [Systemer](./apps/systemer/) | Hvilke systemer (Kudoc, RespReg, DaplaLab osv.) som støtter hvilke delprosesser, med kategori, brukstype og forklaring. Koblinger ligger i Excel-fil for enkel redigering. | `apps/systemer/` |
 
 ## Mappestruktur
 
@@ -24,9 +24,19 @@ gsbpm/
     │   └── README.md
     └── systemer/
         ├── index.html
-        ├── data.json              ← appspesifikk data (systemer, koblinger)
+        ├── data.json              ← kategorier + systemer
+        ├── koblinger.xlsx         ← koblinger (redigeres i Excel)
         └── README.md
 ```
+
+## Datakilder: JSON eller Excel?
+
+Hvor data bør ligge avhenger av endringsfrekvens og hvem som vedlikeholder dem:
+
+- **JSON** er bra for *strukturerte konfigurasjoner* som endres sjelden og som tekniske brukere eier (kategorier, fargekoder, ikonvalg, fasebeskrivelser).
+- **Excel** er bra for *flate tabeller* som endres ofte og som ikke-tekniske brukere eier (koblinger, ansvar, brukstype, fritekstmerknader).
+
+Systemer-appen kombinerer begge: stabil systemoversikt i JSON, levende koblinger i Excel. Det er en god mal for nye apper med tilsvarende mønster.
 
 ## Datakilder
 

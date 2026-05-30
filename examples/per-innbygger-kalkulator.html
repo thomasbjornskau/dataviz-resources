@@ -386,7 +386,7 @@
 </div>
 
 <script>
-const API = "https://data.ssb.no/api/pxwebapi/v2-beta/tables/07459/data";
+const API = "https://data.ssb.no/api/pxwebapi/v2/tables/07459/data";
 const cache = {};            // år -> array[106] med befolkning per alder (index = alder, 105 = 105+)
 let popByAge = null;         // gjeldende års array
 let currentYear = null;
@@ -469,19 +469,16 @@ $("ageMax").addEventListener("input", () => { syncSlider(); recompute(); });
 // ---- Henting fra SSB ----
 async function loadYear(year){
   if (cache[year]) return cache[year];
-  const body = {
-    selection: [
-      { variableCode: "Region",       valueCodes: ["0"] },
-      { variableCode: "Alder",        valueCodes: ["*"] },
-      { variableCode: "ContentsCode", valueCodes: ["Personer1"] },
-      { variableCode: "Tid",          valueCodes: [String(year)] }
-    ]
-  };
-  const res = await fetch(API + "?lang=no", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
+  // GET med spørring i URL. Ingen egendefinerte headere -> ingen CORS-preflight.
+  const params = new URLSearchParams({
+    lang: "no",
+    outputFormat: "json-stat2",
+    "selection[Region]": "0",
+    "selection[Alder]": "*",
+    "selection[ContentsCode]": "Personer1",
+    "selection[Tid]": String(year)
   });
+  const res = await fetch(API + "?" + params.toString());
   if (!res.ok) throw new Error("SSB svarte " + res.status);
   const js = await res.json();
   // json-stat2: verdier i datarekkefølge = aldersdimensjonen 0..105

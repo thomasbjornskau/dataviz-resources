@@ -6,65 +6,116 @@
       "farge": "#2563a8",
       "farge_lys": "#e3edf6"
     },
-    "Formidling": {
+    "Fellestjenester": {
+      "farge": "#1C8A32",
+      "farge_lys": "#DCFAE2"
+    },
+    "Datafangst": {
       "farge": "#c9651f",
       "farge_lys": "#fbeadb"
+    },
+    "Annet": {
+      "farge": "#A9A9A9",
+      "farge_lys": "#D3D3D3"
     }
+    
   },
   "systemer": [
     {
-      "navn": "Kudoc",
-      "kategori": "Metadata",
-      "ikon": "book",
-      "beskrivelse": "Kudoc er foreløpig beskrevet som et metadata-system."
-    },
-    {
-      "navn": "RespReg",
-      "kategori": "Metadata",
-      "ikon": "account",
-      "beskrivelse": "RespReg er foreløpig beskrevet som et metadata-system."
-    },
-    {
       "navn": "Amor",
-      "kategori": "Metadata",
-      "ikon": "library",
-      "beskrivelse": "Amor er foreløpig beskrevet som et metadata-system."
+      "kategori": "Datafangst",
+      "ikon": "call-outgoing",
+      "beskrivelse": "Administrasjon av personundersøkelser."
     },
     {
       "navn": "A3Admin",
-      "kategori": "Metadata",
-      "ikon": "settings-gear",
-      "beskrivelse": "A3Admin er foreløpig beskrevet som et metadata-system."
+      "kategori": "Datafangst",
+      "ikon": "chip",
+      "beskrivelse": "Administrasjon av næringsundersøkelser."
+    },
+    {
+      "navn": "DaplaCtrl",
+      "kategori": "Fellestjenester",
+      "ikon": "account",
+      "beskrivelse": "Tjeneste for tilgangsstyring på Dapla."
     },
     {
       "navn": "DaplaLab",
-      "kategori": "Formidling",
+      "kategori": "Annet",
       "ikon": "notebook",
-      "beskrivelse": "DaplaLab er foreløpig beskrevet som et formidlingssystem."
+      "beskrivelse": "Arbeidsbenk for statistikkproduksjon."
     },
     {
-      "navn": "Vardef",
-      "kategori": "Formidling",
-      "ikon": "symbol-variable",
-      "beskrivelse": "Vardef er foreløpig beskrevet som et formidlingssystem."
+      "navn": "DataCollector",
+      "kategori": "Datafangst",
+      "ikon": "gear",
+      "beskrivelse": "Tjeneste for avansert API-innehenting."
     },
     {
       "navn": "Datadoc",
-      "kategori": "Formidling",
-      "ikon": "file-text",
-      "beskrivelse": "Datadoc er foreløpig beskrevet som et formidlingssystem."
+      "kategori": "Metadata",
+      "ikon": "archive",
+      "beskrivelse": "Dokumentasjon av datasett."
+    },
+    {
+      "navn": "Datakatalog",
+      "kategori": "Metadata",
+      "ikon": "library",
+      "beskrivelse": "Oversikt over dokumenterte datasett."
+    },
+    {
+      "navn": "Delomat",
+      "kategori": "Fellestjenester",
+      "ikon": "files",
+      "beskrivelse": "Delomaten er en tjeneste som lar Dapla-team dele data med hverandre selv om de behandler personopplysninger ulikt."
+    },
+    {
+      "navn": "Editeringsrammeverk",
+      "kategori": "Fellestjenester",
+      "ikon": "editor-layout",
+      "beskrivelse": ""
+    },
+    {
+      "navn": "Kildomat",
+      "kategori": "Fellestjenester",
+      "ikon": "file-code",
+      "beskrivelse": "Automatiserer deler av overgangen fra kildedata til inndata."
+    },
+    {
+      "navn": "Kudoc",
+      "kategori": "Metadata",
+      "ikon": "folder-library",
+      "beskrivelse": "Metadata om innsamlinger."
+    },
+    {
+      "navn": "Metodebibliotek",
+      "kategori": "Fellestjenester",
+      "ikon": "developer-tools",
+      "beskrivelse": "Metodebibliotek er SSBs bibliotek for statistiske metode funksjoner."
+    },
+    {
+      "navn": "Respondentregister",
+      "kategori": "Datafangst",
+      "ikon": "database",
+      "beskrivelse": "Oversikt over utvalg, respondenter, og tilhørende datafangststatus under innsamlinger."
+    },
+    {
+      "navn": "Vardef",
+      "kategori": "Metadata",
+      "ikon": "type-hierarchy-super",
+      "beskrivelse": "Variabeldefinisjoner."
     },
     {
       "navn": "Klass",
-      "kategori": "Formidling",
+      "kategori": "Metadata",
       "ikon": "list-tree",
-      "beskrivelse": "Klass er foreløpig beskrevet som et formidlingssystem."
+      "beskrivelse": "Kodeverk og klassifikasjoner."
     },
     {
-      "navn": "Statreg",
-      "kategori": "Formidling",
-      "ikon": "database",
-      "beskrivelse": "Statreg er foreløpig beskrevet som et formidlingssystem."
+      "navn": "Statistikkregister",
+      "kategori": "Metadata",
+      "ikon": "book",
+      "beskrivelse": "Metadata om statistikkprodukter og publisering."
     }
   ]
 }

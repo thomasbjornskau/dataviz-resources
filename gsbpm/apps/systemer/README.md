@@ -9,7 +9,7 @@ Applikasjon [Lenke](https://thomasbjornskau.github.io/dataviz-resources/gsbpm/ap
 - Klikk på en **systemknapp** øverst for å se hvor det plasseres i diagrammet (som fargede ikoner på delprosessene)
 - Klikk på en **delprosess-boks** for å se hvilke systemer som støtter den (i info-panelet under, og markert med rød ring på systemknappene over)
 - Brukstype: **Helt** vises som fylt ikon, **Delvis** som dempet ikon med stripe-overlay
-- Farge på ikoner og knapper følger systemkategori (Metadata = blå, Formidling = orange)
+- Farge på ikoner og knapper følger systemkategori (Metadata = blå, Datafangst = orange, etc)
 - Mouseover på et ikon i diagrammet viser alle detaljer: system, delprosess, fase, brukstype og merknad
 
 ## Datakilder

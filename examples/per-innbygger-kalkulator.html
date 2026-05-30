@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Per innbygger — gjør store tall menneskelige</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #1a1714;
+    --ink-soft: #4a443d;
+    --ink-faint: #8a8175;
+    --paper: #f4f0e8;
+    --paper-card: #fbf9f3;
+    --line: #ddd5c6;
+    --line-strong: #c5bba6;
+    --accent: #b5341f;
+    --accent-soft: #e8d9c4;
+    --highlight: #f0e6d2;
+    --shadow: rgba(40,32,22,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(181,52,31,0.04), transparent 40%),
+      radial-gradient(circle at 85% 88%, rgba(40,32,22,0.04), transparent 45%);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 48px 20px 80px;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* Masthead */
+  .masthead {
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 6px;
+  }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(34px, 7vw, 58px);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .standfirst {
+    font-size: 19px;
+    color: var(--ink-soft);
+    font-style: italic;
+    max-width: 54ch;
+  }
+  .byline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+
+  /* Form */
+  .controls { margin-top: 36px; }
+
+  .field { margin-bottom: 26px; }
+  .field-label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 9px;
+  }
+  .field-label .step {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.8fr;
+    gap: 18px;
+  }
+  @media (max-width: 620px) { .row { grid-template-columns: 1fr; } }
+
+  input[type="text"], select {
+    width: 100%;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper-card);
+    border: 1.5px solid var(--line-strong);
+    border-radius: 2px;
+    padding: 12px 14px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(181,52,31,0.12);
+  }
+  select {
+    font-size: 17px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b5341f' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+  input::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  /* Age slider */
+  .age-block {
+    background: var(--paper-card);
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    padding: 22px 22px 18px;
+  }
+  .age-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .age-readout {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .age-readout .pop {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin-left: 8px;
+  }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 7px; }
+  .preset {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 6px 11px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 30px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset:hover { border-color: var(--accent); color: var(--accent); }
+  .preset.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .slider-wrap { position: relative; height: 46px; margin-top: 6px; }
+  .track {
+    position: absolute; top: 21px; left: 0; right: 0; height: 4px;
+    background: var(--line-strong); border-radius: 2px;
+  }
+  .track-fill {
+    position: absolute; top: 21px; height: 4px;
+    background: var(--accent); border-radius: 2px;
+  }
+  input[type="range"] {
+    position: absolute; top: 12px; left: 0; width: 100%;
+    -webkit-appearance: none; appearance: none;
+    background: none; pointer-events: none; margin: 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; pointer-events: all;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--paper-card); border: 2.5px solid var(--accent);
+    cursor: grab; box-shadow: 0 2px 5px var(--shadow);
+  }
+  input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; }
+  input[type="range"]::-moz-range-thumb {
+    pointer-events: all;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--paper-card); border: 2.5px solid var(--accent);
+    cursor: grab; box-shadow: 0 2px 5px var(--shadow);
+  }
+  .scale {
+    display: flex; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--ink-faint); margin-top: 2px;
+  }
+
+  /* Result */
+  .result {
+    margin-top: 40px;
+    border-top: 3px double var(--ink);
+    padding-top: 30px;
+  }
+  .result.empty .result-body { display: none; }
+  .result.empty .placeholder { display: block; }
+  .placeholder {
+    display: none;
+    font-style: italic;
+    color: var(--ink-faint);
+    text-align: center;
+    padding: 30px 0;
+  }
+
+  .lede {
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .headline-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(46px, 11vw, 92px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    margin: 4px 0;
+  }
+  .headline-unit {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .inverse {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 26px;
+  }
+  .inverse strong { color: var(--ink-soft); font-weight: 500; }
+
+  .breakdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--paper-card);
+  }
+  @media (max-width: 560px){ .breakdown { grid-template-columns: repeat(2,1fr); } }
+  .cell {
+    padding: 16px 14px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .cell:nth-child(4n){ border-right: none; }
+  @media (max-width: 560px){
+    .cell:nth-child(2n){ border-right: none; }
+    .cell:nth-child(4n){ border-right: 1px solid var(--line); }
+  }
+  .cell-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 6px;
+  }
+  .cell-num {
+    font-family: 'Fraunces', serif;
+    font-size: 26px; font-weight: 600; line-height: 1;
+  }
+
+  .provenance {
+    margin-top: 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--ink-faint);
+    border-left: 2px solid var(--accent-soft);
+    padding-left: 14px;
+  }
+  .provenance a { color: var(--ink-soft); }
+
+  .status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; color: var(--ink-faint);
+    margin-top: 14px; min-height: 16px;
+  }
+  .status.err { color: var(--accent); }
+
+  .foot {
+    margin-top: 50px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--ink-faint);
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="kicker">Statistisk omregner · SSB tabell 07459</div>
+    <h1>Hva blir det <em>per innbygger?</em></h1>
+    <p class="standfirst">Store tall er lette å lese, vanskelige å føle. Skriv inn et tall, og se hva det tilsvarer for hver enkelt av oss — i et helt år, og brutt ned til måned, uke og dag.</p>
+    <div class="byline">Folketall hentet direkte fra Statistisk sentralbyrå</div>
+  </header>
+
+  <div class="controls">
+
+    <div class="field">
+      <label class="field-label" for="num"><span class="step">01</span> &nbsp;Hvilket tall?</label>
+      <div class="row">
+        <input type="text" id="num" inputmode="numeric" placeholder="f.eks. 30 000 pakker" autocomplete="off">
+        <select id="period">
+          <option value="365.25">per dag</option>
+          <option value="52.18">per uke</option>
+          <option value="12">per måned</option>
+          <option value="1">per år</option>
+        </select>
+        <select id="year"></select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label"><span class="step">02</span> &nbsp;Fordelt på hvilken del av befolkningen?</label>
+      <div class="age-block">
+        <div class="age-head">
+          <div class="age-readout" id="ageReadout">Hele befolkningen<span class="pop" id="agePop"></span></div>
+          <div class="presets" id="presets"></div>
+        </div>
+        <div class="slider-wrap">
+          <div class="track"></div>
+          <div class="track-fill" id="trackFill"></div>
+          <input type="range" id="ageMin" min="0" max="105" value="0" step="1">
+          <input type="range" id="ageMax" min="0" max="105" value="105" step="1">
+        </div>
+        <div class="scale"><span>0 år</span><span>105 år +</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <section class="result empty" id="result">
+    <p class="placeholder">Skriv inn et tall over for å se regnestykket.</p>
+    <div class="result-body">
+      <p class="lede" id="lede"></p>
+      <div class="headline-num" id="headlineNum">—</div>
+      <div class="headline-unit" id="headlineUnit"></div>
+      <p class="inverse" id="inverse"></p>
+
+      <div class="breakdown">
+        <div class="cell"><div class="cell-label">Per år</div><div class="cell-num" id="rYear">—</div></div>
+        <div class="cell"><div class="cell-label">Per måned</div><div class="cell-num" id="rMonth">—</div></div>
+        <div class="cell"><div class="cell-label">Per uke</div><div class="cell-num" id="rWeek">—</div></div>
+        <div class="cell"><div class="cell-label">Per dag</div><div class="cell-num" id="rDay">—</div></div>
+      </div>
+
+      <div class="provenance" id="provenance"></div>
+    </div>
+    <div class="status" id="status"></div>
+  </section>
+
+  <footer class="foot">
+    Kilde: Statistisk sentralbyrå, tabell 07459 (folkemengde 1. januar, ettårig alder, hele landet).<br>
+    Befolkningstall hentes live fra SSBs åpne API. Et år har ikke nøyaktig 365 dager eller 52 uker — omregningen bruker 365,25 dager og 52,18 uker for å treffe over tid.
+  </footer>
+
+</div>
+
+<script>
+const API = "https://data.ssb.no/api/pxwebapi/v2-beta/tables/07459/data";
+const cache = {};            // år -> array[106] med befolkning per alder (index = alder, 105 = 105+)
+let popByAge = null;         // gjeldende års array
+let currentYear = null;
+
+const $ = id => document.getElementById(id);
+
+// ---- År-nedtrekk ----
+(function fillYears(){
+  const sel = $("year");
+  for (let y = 2026; y >= 1986; y--){
+    const o = document.createElement("option");
+    o.value = y; o.textContent = y;
+    if (y === 2026) o.selected = true;
+    sel.appendChild(o);
+  }
+})();
+
+// ---- Forhåndsvalg for alder ----
+const PRESETS = [
+  { label: "Hele",   min: 0,  max: 105 },
+  { label: "0–17",   min: 0,  max: 17  },
+  { label: "18+",    min: 18, max: 105 },
+  { label: "18–66",  min: 18, max: 66  },
+  { label: "67+",    min: 67, max: 105 },
+];
+(function fillPresets(){
+  const box = $("presets");
+  PRESETS.forEach((p, i) => {
+    const b = document.createElement("button");
+    b.className = "preset"; b.textContent = p.label;
+    b.onclick = () => { $("ageMin").value = p.min; $("ageMax").value = p.max; syncSlider(); recompute(); };
+    box.appendChild(b);
+  });
+})();
+
+// ---- Tallformat (norsk) ----
+const nf0 = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 0 });
+const nf2 = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 });
+function smart(n){
+  if (n === 0) return "0";
+  const a = Math.abs(n);
+  if (a >= 100) return nf0.format(n);
+  if (a >= 1)   return nf2.format(n);
+  if (a >= 0.01) return new Intl.NumberFormat("nb-NO",{maximumFractionDigits:3}).format(n);
+  return new Intl.NumberFormat("nb-NO",{maximumFractionDigits:5}).format(n);
+}
+
+// ---- Input: tillat tusenskille mens man skriver ----
+$("num").addEventListener("input", e => {
+  const raw = e.target.value.replace(/[^\d]/g,"");
+  e.target.value = raw ? nf0.format(parseInt(raw,10)) : "";
+  recompute();
+});
+function parseNum(){
+  const raw = $("num").value.replace(/[^\d]/g,"");
+  return raw ? parseInt(raw,10) : null;
+}
+
+// ---- Slider ----
+function syncSlider(){
+  let lo = +$("ageMin").value, hi = +$("ageMax").value;
+  if (lo > hi){ [lo,hi] = [hi,lo]; $("ageMin").value = lo; $("ageMax").value = hi; }
+  const fill = $("trackFill");
+  fill.style.left  = (lo/105*100) + "%";
+  fill.style.right = (100 - hi/105*100) + "%";
+  fill.style.width = "auto";
+  // readout
+  const label = (hi >= 105)
+      ? (lo === 0 ? "Hele befolkningen" : lo + " år og eldre")
+      : lo + "–" + hi + " år";
+  $("ageReadout").firstChild.nodeValue = label;
+  // marker aktivt preset
+  document.querySelectorAll(".preset").forEach((b,i) => {
+    b.classList.toggle("active", PRESETS[i].min===lo && PRESETS[i].max===hi);
+  });
+}
+$("ageMin").addEventListener("input", () => { syncSlider(); recompute(); });
+$("ageMax").addEventListener("input", () => { syncSlider(); recompute(); });
+
+// ---- Henting fra SSB ----
+async function loadYear(year){
+  if (cache[year]) return cache[year];
+  const body = {
+    selection: [
+      { variableCode: "Region",       valueCodes: ["0"] },
+      { variableCode: "Alder",        valueCodes: ["*"] },
+      { variableCode: "ContentsCode", valueCodes: ["Personer1"] },
+      { variableCode: "Tid",          valueCodes: [String(year)] }
+    ]
+  };
+  const res = await fetch(API + "?lang=no", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error("SSB svarte " + res.status);
+  const js = await res.json();
+  // json-stat2: verdier i datarekkefølge = aldersdimensjonen 0..105
+  const ageDim = js.dimension.Alder;
+  const order = ageDim.category.index;        // kode -> posisjon
+  const values = js.value;
+  const arr = new Array(106).fill(0);
+  for (const code in order){
+    const ageNum = parseInt(code, 10);        // "000"->0 ... "105+"->105
+    const pos = order[code];
+    arr[ Math.min(ageNum, 105) ] += values[pos] || 0;
+  }
+  cache[year] = arr;
+  return arr;
+}
+
+function popInRange(arr, lo, hi){
+  let s = 0;
+  for (let a = lo; a <= hi; a++) s += arr[a] || 0;
+  return s;
+}
+
+// ---- Hovedberegning ----
+let pending = 0;
+async function recompute(){
+  const year = +$("year").value;
+  const n = parseNum();
+  const result = $("result");
+  const status = $("status");
+
+  // last år ved behov
+  if (year !== currentYear || !popByAge){
+    status.className = "status";
+    status.textContent = "Henter folketall for " + year + " fra SSB …";
+    const ticket = ++pending;
+    try {
+      const arr = await loadYear(year);
+      if (ticket !== pending) return;          // nyere kall har overtatt
+      popByAge = arr; currentYear = year;
+      status.textContent = "";
+    } catch(err){
+      status.className = "status err";
+      status.textContent = "Klarte ikke å hente data: " + err.message + ". Sjekk nettforbindelse.";
+      return;
+    }
+  }
+
+  const lo = +$("ageMin").value, hi = +$("ageMax").value;
+  const pop = popInRange(popByAge, Math.min(lo,hi), Math.max(lo,hi));
+  $("agePop").textContent = pop ? "· " + nf0.format(pop) + " personer" : "";
+
+  if (n === null || pop === 0){
+    result.classList.add("empty");
+    return;
+  }
+  result.classList.remove("empty");
+
+  const perYearFactor = +$("period").value;     // ganger opp til årlig
+  const annualTotal = n * perYearFactor;
+  const perPersonYear = annualTotal / pop;
+
+  // tekster
+  const periodTxt = $("period").selectedOptions[0].textContent;
+  const ageTxt = $("ageReadout").firstChild.nodeValue.toLowerCase();
+  $("lede").textContent = `${nf0.format(n)} ${periodTxt}, fordelt på ${ageTxt} i ${year}, blir`;
+
+  $("headlineNum").textContent = smart(perPersonYear);
+  $("headlineUnit").textContent = "per innbygger · per år";
+
+  // invers: 1 per X innbyggere (nyttig når raten er liten)
+  if (perPersonYear > 0 && perPersonYear < 1){
+    const inv = 1 / perPersonYear;
+    $("inverse").innerHTML = `Det vil si omtrent <strong>1 for hver ${smart(inv)} innbyggere</strong> i året.`;
+  } else if (perPersonYear >= 1){
+    $("inverse").innerHTML = `Til sammen <strong>${nf0.format(annualTotal)}</strong> i året for hele gruppen.`;
+  } else {
+    $("inverse").textContent = "";
+  }
+
+  $("rYear").textContent  = smart(perPersonYear);
+  $("rMonth").textContent = smart(perPersonYear/12);
+  $("rWeek").textContent  = smart(perPersonYear/52.18);
+  $("rDay").textContent   = smart(perPersonYear/365.25);
+
+  $("provenance").innerHTML =
+    `Regnestykke: ${nf0.format(n)} × ${perYearFactor} (til årlig) ÷ ${nf0.format(pop)} personer.<br>` +
+    `Befolkningsgrunnlag: ${ageTxt}, hele landet per 1. januar ${year}.`;
+}
+
+$("year").addEventListener("change", recompute);
+$("period").addEventListener("change", recompute);
+
+// init
+syncSlider();
+recompute();   // henter 2026 i bakgrunnen, viser placeholder til tall skrives inn
+</script>
+</body>
+</html>

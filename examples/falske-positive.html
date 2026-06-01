@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvor godt virker en test?</title>
+<!--
+  Pedagogisk utforsker for testkvalitet.
+  Hele siden er én frittstående fil: HTML + CSS + JS.
+  Ingen eksterne bibliotek – alt er ren HTML/CSS/JavaScript, så siden
+  kan åpnes rett i nettleseren uten byggesteg eller server.
+-->
+<style>
+  /* ---- Fonter via Google Fonts (CDN). ----
+     Fraunces gir en varm, redaksjonell tittelfont; Newsreader en rolig
+     brødtekst. Begrunnelse: distinkt, lesbart, og bryter med generisk
+     systemfont-preg uten å bli støyende. */
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap');
+
+  :root {
+    --bg: #f6f3ec;
+    --panel: #fffdf8;
+    --ink: #2b2722;
+    --ink-soft: #6b6356;
+    --line: #e2dccf;
+    --accent: #b8742f;
+
+    /* Kategorifarger – valgt for å være godt atskilte og lesbare.
+       Farge brukes aldri alene; alt har også tekst og mønster. */
+    --tp: #2f6f5e;   /* sanne positive  – grønn  */
+    --fp: #c0612f;   /* falske positive – oransje */
+    --tn: #4a6f8a;   /* sanne negative  – blå    */
+    --fn: #9c4a6e;   /* falske negative – plomme */
+
+    --radius: 14px;
+    --maxw: 1080px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ---- Topp ---- */
+  header.intro {
+    max-width: 640px;
+    margin-bottom: 40px;
+  }
+  .kicker {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(34px, 6vw, 56px);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    font-size: 20px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---- Generelle seksjoner ---- */
+  section { margin-top: 44px; }
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 26px;
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---- Begrepsforklaringer ---- */
+  .concepts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .concept {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .concept h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 19px;
+    margin: 0 0 8px;
+  }
+  .concept p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Kontrollpanel ---- */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 36px;
+  }
+  .control label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 600;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .control .val {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    height: 28px;
+    cursor: pointer;
+  }
+  .control .hint {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 6px 0 0;
+  }
+
+  /* ---- Fire tallkort ---- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--c);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card .tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .card .swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    background: var(--c);
+    flex: none;
+  }
+  .card .num {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .card .desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+
+  /* ---- Visualiseringslayout ---- */
+  .viz-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .viz-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .viz-card h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0 0 4px;
+  }
+  .viz-card .sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+
+  /* ---- Forvirringsmatrise ---- */
+  .matrix {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .matrix .corner { }
+  .matrix .col-head, .matrix .row-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+    color: var(--ink-soft);
+    padding: 4px;
+  }
+  .matrix .row-head { writing-mode: horizontal-tb; }
+  .matrix .cell {
+    border-radius: 10px;
+    padding: 16px 12px;
+    color: #fff;
+    background: var(--c);
+    min-height: 92px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+  .matrix .cell .label {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .matrix .cell .value {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Ikon/mønster per celle, så fargen aldri står alene */
+  .icon { font-size: 13px; }
+
+  /* ---- Waffle / prikkvisualisering ---- */
+  #waffle {
+    display: grid;
+    grid-template-columns: repeat(40, 1fr);
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+  #waffle .dot {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 2px;
+    background: var(--dot);
+  }
+  .waffle-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    font-size: 14px;
+  }
+  .waffle-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .waffle-legend i {
+    width: 13px; height: 13px;
+    border-radius: 3px;
+    display: inline-block;
+    background: var(--c);
+  }
+
+  /* ---- Stolpegraf for positive tester ---- */
+  .pos-bar {
+    width: 100%;
+    height: 46px;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .pos-bar .seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 0;
+    transition: width 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .pos-bar .seg.tp { background: var(--tp); }
+  .pos-bar .seg.fp { background: var(--fp); }
+  .pos-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+  }
+  .pos-legend b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Nøkkelforklaring ---- */
+  .keytext {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 26px 30px;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  .keytext strong { color: var(--accent); font-weight: 600; }
+
+  /* ---- Refleksjon ---- */
+  .why {
+    background: #efe9dc;
+    border-radius: var(--radius);
+    padding: 26px 30px;
+  }
+  .why h2 { margin-top: 0; }
+  .why p { margin: 0 0 12px; color: var(--ink-soft); }
+  .why p:last-child { margin-bottom: 0; }
+
+  /* ---- Bunntekst ---- */
+  .disclaimer {
+    margin-top: 40px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    max-width: 720px;
+  }
+
+  /* ---- Responsivt ---- */
+  @media (max-width: 820px) {
+    .concepts { grid-template-columns: 1fr; }
+    .controls { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr 1fr; }
+    .viz-grid { grid-template-columns: 1fr; }
+    #waffle { grid-template-columns: repeat(25, 1fr); }
+  }
+  @media (max-width: 460px) {
+    body { font-size: 17px; }
+    .wrap { padding: 32px 16px 64px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 1. Tittel og ingress -->
+  <header class="intro">
+    <div class="kicker">Test &amp; sannsynlighet</div>
+    <h1>Hvor godt virker en test?</h1>
+    <p class="lede">En test kan være svært treffsikker og likevel gi mange falske
+      alarmer. Her kan du justere på tallene selv og se hvordan testkvalitet og
+      hvor mange som faktisk er smittet, henger sammen.</p>
+  </header>
+
+  <!-- 2. Begrepsforklaringer -->
+  <section aria-label="Begreper">
+    <div class="concepts">
+      <div class="concept">
+        <h3>Sensitivitet</h3>
+        <p>Hvor flink testen er til å fange opp dem som faktisk er smittet.
+          Sensitivitet på 95 % betyr at 95 av 100 smittede får riktig positivt svar.</p>
+      </div>
+      <div class="concept">
+        <h3>Spesifisitet</h3>
+        <p>Hvor flink testen er til å gi friske et negativt svar.
+          Spesifisitet på 98 % betyr at 2 av 100 friske likevel får falsk alarm.</p>
+      </div>
+      <div class="concept">
+        <h3>Andel smittede</h3>
+        <p>Hvor stor del av gruppen som faktisk er smittet (prevalens).
+          Er 1 % smittet, er det 1 syk og 99 friske per 100 personer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Kontrollpanel -->
+  <section aria-label="Kontroller">
+    <h2>Juster tallene</h2>
+    <div class="panel">
+      <div class="controls">
+        <div class="control">
+          <label for="population">Antall som testes
+            <span class="val" id="populationVal"></span></label>
+          <input type="range" id="population" min="100" max="100000" step="100" value="10000">
+          <p class="hint">Hvor mange personer som tar testen.</p>
+        </div>
+
+        <div class="control">
+          <label for="prevalence">Andel som faktisk er smittet
+            <span class="val" id="prevalenceVal"></span></label>
+          <input type="range" id="prevalence" min="0.1" max="50" step="0.1" value="1">
+          <p class="hint">Prevalens i gruppen som testes.</p>
+        </div>
+
+        <div class="control">
+          <label for="sensitivity">Sensitivitet
+            <span class="val" id="sensitivityVal"></span></label>
+          <input type="range" id="sensitivity" min="50" max="100" step="0.1" value="95">
+          <p class="hint">Treff blant dem som er smittet.</p>
+        </div>
+
+        <div class="control">
+          <label for="specificity">Spesifisitet
+            <span class="val" id="specificityVal"></span></label>
+          <input type="range" id="specificity" min="50" max="100" step="0.1" value="98">
+          <p class="hint">Treff blant dem som ikke er smittet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Fire tallkort -->
+  <section aria-label="Hovedresultat">
+    <h2>Hovedresultat</h2>
+    <div class="cards">
+      <div class="card" style="--c: var(--tp)">
+        <div class="tag"><span class="swatch"></span> Sanne positive</div>
+        <div class="num" id="tpNum"></div>
+        <div class="desc">Smittet — og fikk riktig positivt svar.</div>
+      </div>
+      <div class="card" style="--c: var(--fp)">
+        <div class="tag"><span class="swatch"></span> Falske positive</div>
+        <div class="num" id="fpNum"></div>
+        <div class="desc">Frisk — men fikk en falsk alarm.</div>
+      </div>
+      <div class="card" style="--c: var(--tn)">
+        <div class="tag"><span class="swatch"></span> Sanne negative</div>
+        <div class="num" id="tnNum"></div>
+        <div class="desc">Frisk — og fikk riktig negativt svar.</div>
+      </div>
+      <div class="card" style="--c: var(--fn)">
+        <div class="tag"><span class="swatch"></span> Falske negative</div>
+        <div class="num" id="fnNum"></div>
+        <div class="desc">Smittet — men gikk under radaren.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Visualiseringer -->
+  <section aria-label="Visualiseringer">
+    <h2>Slik fordeler resultatene seg</h2>
+    <div class="viz-grid">
+
+      <!-- a. Forvirringsmatrise -->
+      <div class="viz-card">
+        <h3>Testmatrise</h3>
+        <p class="sub">Rader: hva som er sant. Kolonner: hva testen sa.</p>
+        <div class="matrix" role="table" aria-label="Testmatrise">
+          <div class="corner"></div>
+          <div class="col-head">Test: positiv</div>
+          <div class="col-head">Test: negativ</div>
+
+          <div class="row-head">Smittet</div>
+          <div class="cell" style="--c: var(--tp)">
+            <span class="label"><span class="icon">✓ ●</span> Sann positiv</span>
+            <span class="value" id="mTp"></span>
+          </div>
+          <div class="cell" style="--c: var(--fn)">
+            <span class="label"><span class="icon">✗ ●</span> Falsk negativ</span>
+            <span class="value" id="mFn"></span>
+          </div>
+
+          <div class="row-head">Frisk</div>
+          <div class="cell" style="--c: var(--fp)">
+            <span class="label"><span class="icon">✗ ○</span> Falsk positiv</span>
+            <span class="value" id="mFp"></span>
+          </div>
+          <div class="cell" style="--c: var(--tn)">
+            <span class="label"><span class="icon">✓ ○</span> Sann negativ</span>
+            <span class="value" id="mTn"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- b. Waffle / prikker -->
+      <div class="viz-card">
+        <h3>1000 personer</h3>
+        <p class="sub">Hver prikk er ett av tusen i gruppen som testes.</p>
+        <div id="waffle" role="img" aria-label="Prikkdiagram over 1000 personer fordelt på testresultat"></div>
+        <div class="waffle-legend">
+          <span><i style="--c: var(--tp)"></i> Sanne positive</span>
+          <span><i style="--c: var(--fp)"></i> Falske positive</span>
+          <span><i style="--c: var(--tn)"></i> Sanne negative</span>
+          <span><i style="--c: var(--fn)"></i> Falske negative</span>
+        </div>
+      </div>
+
+      <!-- c. Stolpegraf for positive tester -->
+      <div class="viz-card" style="grid-column: 1 / -1;">
+        <h3>Av alle som fikk positivt svar</h3>
+        <p class="sub">Hvor stor andel av de positive testene er reelle treff?</p>
+        <div class="pos-bar" role="img" aria-label="Fordeling av positive tester mellom sanne og falske positive">
+          <div class="seg tp" id="barTp"></div>
+          <div class="seg fp" id="barFp"></div>
+        </div>
+        <div class="pos-legend">
+          <span><b id="barTpLabel"></b> sanne positive</span>
+          <span><b id="barFpLabel"></b> falske positive</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6. Pedagogisk nøkkelforklaring -->
+  <section aria-label="Oppsummering">
+    <div class="keytext" id="keyText" aria-live="polite"></div>
+  </section>
+
+  <!-- 7. Refleksjon -->
+  <section>
+    <div class="why">
+      <h2>Hvorfor skjer dette?</h2>
+      <p>Når få er smittet, er det mange flere friske enn syke i gruppen som
+        testes. Selv en liten feilrate blant alle de friske gir da et stort antall
+        falske alarmer — rett og slett fordi det er så mange friske å gjøre feil på.</p>
+      <p>De falske positive kan dermed bli flere enn de sanne positive, selv om
+        testen i seg selv er god. Det er derfor et positivt svar betyr mer når
+        sykdommen er utbredt, enn når den er sjelden.</p>
+    </div>
+  </section>
+
+  <!-- Faglig presisering -->
+  <p class="disclaimer">
+    Dette er en pedagogisk forenkling. I virkelige testsituasjoner kan tolkning av
+    testresultater avhenge av testtype, symptomer, tidspunkt, gjentatt testing og
+    andre forhold.
+  </p>
+
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   BEREGNINGER
+   Alle beregninger er samlet her, atskilt fra visningen.
+   ========================================================================= */
+
+/**
+ * Regner ut alle testtall ut fra de fire inn-variablene.
+ * prevalence/sensitivity/specificity er gitt som andeler mellom 0 og 1.
+ */
+function computeResults(population, prevalence, sensitivity, specificity) {
+  // Faktisk smittede og friske i gruppen
+  const sick    = population * prevalence;
+  const healthy = population - sick;
+
+  // Blant de smittede: hvor mange fanger testen opp, og hvor mange glipper
+  const truePositive  = sick * sensitivity;            // riktig positiv
+  const falseNegative = sick * (1 - sensitivity);      // glapp
+
+  // Blant de friske: hvor mange får riktig negativt svar, og hvor mange får falsk alarm
+  const trueNegative  = healthy * specificity;         // riktig negativ
+  const falsePositive = healthy * (1 - specificity);   // falsk alarm
+
+  // Prediktive verdier: hva et svar faktisk er verdt
+  // PPV = sannsynlighet for å være smittet GITT positivt svar
+  const allPositive = truePositive + falsePositive;
+  const ppv = allPositive > 0 ? truePositive / allPositive : 0;
+
+  // NPV = sannsynlighet for å være frisk GITT negativt svar
+  const allNegative = trueNegative + falseNegative;
+  const npv = allNegative > 0 ? trueNegative / allNegative : 0;
+
+  return {
+    sick, healthy,
+    truePositive, falseNegative, trueNegative, falsePositive,
+    allPositive, ppv, npv
+  };
+}
+
+/* =========================================================================
+   HJELPEFUNKSJONER FOR VISNING
+   ========================================================================= */
+
+// Heltall med mellomrom som tusenskille (norsk konvensjon)
+function intFmt(n) {
+  return Math.round(n).toLocaleString('nb-NO');
+}
+// Prosent med én desimal
+function pctFmt(frac) {
+  return (frac * 100).toLocaleString('nb-NO', {
+    minimumFractionDigits: 1, maximumFractionDigits: 1
+  }) + ' %';
+}
+
+/* =========================================================================
+   WAFFLE-DIAGRAM
+   1000 prikker fordeles proporsjonalt på de fire kategoriene.
+   ========================================================================= */
+
+const WAFFLE_DOTS = 1000;
+const waffleEl = document.getElementById('waffle');
+
+// Bygg prikkene én gang; vi endrer bare farge ved oppdatering
+const dotNodes = [];
+for (let i = 0; i < WAFFLE_DOTS; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot';
+  waffleEl.appendChild(d);
+  dotNodes.push(d);
+}
+
+const COLORS = {
+  tp: getComputedStyle(document.documentElement).getPropertyValue('--tp').trim(),
+  fp: getComputedStyle(document.documentElement).getPropertyValue('--fp').trim(),
+  tn: getComputedStyle(document.documentElement).getPropertyValue('--tn').trim(),
+  fn: getComputedStyle(document.documentElement).getPropertyValue('--fn').trim()
+};
+
+/**
+ * Fordeler 1000 prikker etter andelene i resultatet.
+ * Bruker "largest remainder" så summen alltid blir nøyaktig 1000.
+ */
+function paintWaffle(r) {
+  const total = r.truePositive + r.falsePositive + r.trueNegative + r.falseNegative;
+  const raw = {
+    tp: r.truePositive  / total * WAFFLE_DOTS,
+    fp: r.falsePositive / total * WAFFLE_DOTS,
+    tn: r.trueNegative  / total * WAFFLE_DOTS,
+    fn: r.falseNegative / total * WAFFLE_DOTS
+  };
+  const counts = {};
+  let used = 0;
+  for (const k of ['tp','fp','tn','fn']) { counts[k] = Math.floor(raw[k]); used += counts[k]; }
+  // Fordel resten til kategoriene med størst desimalrest
+  let remainder = WAFFLE_DOTS - used;
+  const order = ['tp','fp','tn','fn'].sort((a,b) => (raw[b]%1) - (raw[a]%1));
+  for (let i = 0; i < remainder; i++) counts[order[i % 4]]++;
+
+  // Rekkefølge på prikkene: positive først (tp, fp), så negative (fn, tn)
+  const sequence = [];
+  for (let i = 0; i < counts.tp; i++) sequence.push(COLORS.tp);
+  for (let i = 0; i < counts.fp; i++) sequence.push(COLORS.fp);
+  for (let i = 0; i < counts.fn; i++) sequence.push(COLORS.fn);
+  for (let i = 0; i < counts.tn; i++) sequence.push(COLORS.tn);
+
+  for (let i = 0; i < WAFFLE_DOTS; i++) {
+    dotNodes[i].style.setProperty('--dot', sequence[i]);
+  }
+}
+
+/* =========================================================================
+   OPPDATERING AV HELE SIDEN
+   ========================================================================= */
+
+const els = {
+  population: document.getElementById('population'),
+  prevalence: document.getElementById('prevalence'),
+  sensitivity: document.getElementById('sensitivity'),
+  specificity: document.getElementById('specificity')
+};
+
+function update() {
+  // Les rå verdier fra sliderne
+  const population  = parseInt(els.population.value, 10);
+  const prevalence  = parseFloat(els.prevalence.value)  / 100;
+  const sensitivity = parseFloat(els.sensitivity.value) / 100;
+  const specificity = parseFloat(els.specificity.value) / 100;
+
+  // Vis slider-verdiene
+  document.getElementById('populationVal').textContent  = intFmt(population);
+  document.getElementById('prevalenceVal').textContent  = pctFmt(prevalence);
+  document.getElementById('sensitivityVal').textContent = pctFmt(sensitivity);
+  document.getElementById('specificityVal').textContent = pctFmt(specificity);
+
+  // Regn ut
+  const r = computeResults(population, prevalence, sensitivity, specificity);
+
+  // Fire tallkort
+  document.getElementById('tpNum').textContent = intFmt(r.truePositive);
+  document.getElementById('fpNum').textContent = intFmt(r.falsePositive);
+  document.getElementById('tnNum').textContent = intFmt(r.trueNegative);
+  document.getElementById('fnNum').textContent = intFmt(r.falseNegative);
+
+  // Matrise
+  document.getElementById('mTp').textContent = intFmt(r.truePositive);
+  document.getElementById('mFn').textContent = intFmt(r.falseNegative);
+  document.getElementById('mFp').textContent = intFmt(r.falsePositive);
+  document.getElementById('mTn').textContent = intFmt(r.trueNegative);
+
+  // Waffle
+  paintWaffle(r);
+
+  // Stolpegraf for positive tester
+  const tpEl = document.getElementById('barTp');
+  const fpEl = document.getElementById('barFp');
+  if (r.allPositive > 0) {
+    const tpShare = r.truePositive / r.allPositive * 100;
+    tpEl.style.width = tpShare + '%';
+    fpEl.style.width = (100 - tpShare) + '%';
+    tpEl.textContent = tpShare > 8 ? Math.round(tpShare) + '%' : '';
+    fpEl.textContent = (100 - tpShare) > 8 ? Math.round(100 - tpShare) + '%' : '';
+  } else {
+    tpEl.style.width = '0%';
+    fpEl.style.width = '0%';
+    tpEl.textContent = '';
+    fpEl.textContent = '';
+  }
+  document.getElementById('barTpLabel').textContent = intFmt(r.truePositive);
+  document.getElementById('barFpLabel').textContent = intFmt(r.falsePositive);
+
+  // Nøkkelforklaring – dynamisk setning
+  const key = document.getElementById('keyText');
+  if (r.allPositive > 0) {
+    key.innerHTML =
+      `Med disse innstillingene tester <strong>${intFmt(population)}</strong> personer seg. ` +
+      `Om <strong>${pctFmt(prevalence)}</strong> faktisk er smittet, finner testen omtrent ` +
+      `<strong>${intFmt(r.truePositive)}</strong> sanne positive, men gir også omtrent ` +
+      `<strong>${intFmt(r.falsePositive)}</strong> falske positive. ` +
+      `Det betyr at blant alle som får positivt svar, er omtrent ` +
+      `<strong>${pctFmt(r.ppv)}</strong> faktisk smittet.`;
+  } else {
+    key.innerHTML = `Med disse innstillingene gir ingen tester positivt svar.`;
+  }
+}
+
+// Knytt alle sliders til umiddelbar oppdatering
+Object.values(els).forEach(el => el.addEventListener('input', update));
+
+// Tegn opp ved sidelast
+update();
+</script>
+</body>
+</html>

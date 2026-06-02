@@ -2,21 +2,25 @@
   "tittel": "Hvilke systemer støtter de ulike prosessene i GSBPM?",
   "kilde": "Systemoversikt (intern, foreløpig)",
   "kategorier": {
-    "Metadata": {
-      "farge": "#2563a8",
-      "farge_lys": "#e3edf6"
-    },
-    "Fellestjenester": {
-      "farge": "#1C8A32",
-      "farge_lys": "#DCFAE2"
-    },
     "Datafangst": {
       "farge": "#c9651f",
       "farge_lys": "#fbeadb"
     },
+    "Statistikkproduksjon": {
+      "farge": "#1C8A32",
+      "farge_lys": "#DCFAE2"
+    },
+    "Formidling": {
+      "farge": "#AA336A",
+      "farge_lys": "#CBC3E3"
+    },
+    "Metadata": {
+      "farge": "#2563a8",
+      "farge_lys": "#e3edf6"
+    },
     "Annet": {
       "farge": "#A9A9A9",
-      "farge_lys": "#D3D3D3"
+      "farge_lys": "#D3D3D3"    
     }
     
   },
@@ -34,22 +38,46 @@
       "beskrivelse": "Administrasjon av næringsundersøkelser."
     },
     {
-      "navn": "DaplaCtrl",
-      "kategori": "Fellestjenester",
-      "ikon": "account",
-      "beskrivelse": "Tjeneste for tilgangsstyring på Dapla."
-    },
-    {
-      "navn": "DaplaLab",
-      "kategori": "Annet",
-      "ikon": "notebook",
-      "beskrivelse": "Arbeidsbenk for statistikkproduksjon."
-    },
-    {
       "navn": "DataCollector",
       "kategori": "Datafangst",
       "ikon": "gear",
       "beskrivelse": "Tjeneste for avansert API-innehenting."
+    },
+    {
+      "navn": "DaplaCtrl",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "account",
+      "beskrivelse": "Tjeneste for tilgangsstyring på Dapla."
+    },
+    {
+      "navn": "Kildomat",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "file-code",
+      "beskrivelse": "Automatiserer deler av overgangen fra kildedata til inndata."
+    },
+    {
+      "navn": "Delomat",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "files",
+      "beskrivelse": "Delomaten er en tjeneste som lar Dapla-team dele data med hverandre selv om de behandler personopplysninger ulikt."
+    },
+    {
+      "navn": "Editeringsrammeverk",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "editor-layout",
+      "beskrivelse": ""
+    },
+    {
+      "navn": "Metodebibliotek",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "developer-tools",
+      "beskrivelse": "Metodebibliotek er SSBs bibliotek for statistiske metode funksjoner."
+    },
+    {
+      "navn": "Div fellesbibliotek",
+      "kategori": "Statistikkproduksjon",
+      "ikon": "code-review",
+      "beskrivelse": "Samlepost for fellesfunksjonalitet som eksisterer i egenutviklede Python- og R-pakker i Ssb"
     },
     {
       "navn": "Datadoc",
@@ -64,34 +92,10 @@
       "beskrivelse": "Oversikt over dokumenterte datasett."
     },
     {
-      "navn": "Delomat",
-      "kategori": "Fellestjenester",
-      "ikon": "files",
-      "beskrivelse": "Delomaten er en tjeneste som lar Dapla-team dele data med hverandre selv om de behandler personopplysninger ulikt."
-    },
-    {
-      "navn": "Editeringsrammeverk",
-      "kategori": "Fellestjenester",
-      "ikon": "editor-layout",
-      "beskrivelse": ""
-    },
-    {
-      "navn": "Kildomat",
-      "kategori": "Fellestjenester",
-      "ikon": "file-code",
-      "beskrivelse": "Automatiserer deler av overgangen fra kildedata til inndata."
-    },
-    {
       "navn": "Kudoc",
       "kategori": "Metadata",
       "ikon": "folder-library",
       "beskrivelse": "Metadata om innsamlinger."
-    },
-    {
-      "navn": "Metodebibliotek",
-      "kategori": "Fellestjenester",
-      "ikon": "developer-tools",
-      "beskrivelse": "Metodebibliotek er SSBs bibliotek for statistiske metode funksjoner."
     },
     {
       "navn": "Respondentregister",
@@ -116,6 +120,19 @@
       "kategori": "Metadata",
       "ikon": "book",
       "beskrivelse": "Metadata om statistikkprodukter og publisering."
+    },
+    {
+      "navn": "ssb.no",
+      "kategori": "Formidling",
+      "ikon": "broadcast",
+      "beskrivelse": "Websidene for Ssb"
+    },
+    {
+      "navn": "Egen kode i DaplaLab",
+      "kategori": "Annet",
+      "ikon": "code",
+      "beskrivelse": "Arbeidsbenk for statistikkproduksjon."
     }
+
   ]
 }

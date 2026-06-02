@@ -194,6 +194,19 @@
     margin-bottom: 8px;
     min-width: 1200px;
   }
+  .overordnet-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+  }
+  .overordnet-empty {
+    visibility: hidden; /* Tar plass, men vises ikke */
+  }
+  .overordnet-box {
+    background: #ccc;
+    padding: 10px;
+    text-align: center;
+  }
   .flow {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -540,7 +553,8 @@
   <header>
     <p class="undertitle">GSBPM × Systemer</p>
     <h1>Hvilke systemer støtter de ulike prosessene i GSBPM?</h1>
-    <p class="subtitle">Klikk på et <em>system</em> over for å markere hvor det brukes i produksjonsløpet. Klikk på en <em>delprosess</em> i diagrammet for å se hvilke systemer som støtter den.</p>
+    <p class="subtitle">Prosessmodell for statistikkproduksjon, Generic Statistical Business Process Model (GSBPM), identifiserer og beskriver prosesser som er nødvendige for å produsere offisiell statistikk. Den beskriver faser, delprosesser og overordnede aktiviteter i statistikkproduksjonen. 
+      <br>Klikk på et <em>system</em> nedenfor for å se hvilke delprosesser det støtter, og vice versa på en <em>delprosess</em> for å se hvilke systemer som støtter den.</p>
   </header>
 
   <div id="loadingBox" class="loading">
@@ -559,9 +573,26 @@
       </div>
       <div class="system-groups" id="systemGroups"></div>
     </div>
-
+ 
     <div class="diagram-wrap">
-      <div class="overordnet-banner">Overordnede aktiviteter — kvalitet, metadata, data, prosessdata, kunnskap, leverandører</div>
+<!--      <div class="overordnet-banner">Overordnede aktiviteter — kvalitet, metadata, data, prosessdata, kunnskap, leverandører</div> -->
+    
+      <div class="overordnet-container">
+        <!-- ØVERSTE RAD -->
+        <div class="overordnet-empty"></div>
+        <div class="overordnet-empty"></div>
+        <div class="overordnet-empty"></div>
+
+        <div class="overordnet-box">Kildedata</div>
+        <div class="overordnet-box">Inndata + Klargjorte</div>
+
+        <div class="overordnet-box">Statistikkdata</div>
+
+        <div class="overordnet-box">Utdata</div>
+        <div class="overordnet-empty"></div>
+      </div>
+
+
       <div class="flow" id="flow"></div>
     </div>
 
@@ -739,7 +770,7 @@
 
       const header = document.createElement('div');
       header.className = 'phase-header';
-      header.textContent = fase.navn;
+      header.innerHTML = fase.navn;
       phase.appendChild(header);
 
       const content = document.createElement('div');

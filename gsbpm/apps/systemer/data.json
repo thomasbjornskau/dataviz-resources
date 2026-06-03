@@ -18,8 +18,8 @@
       "farge": "#2563a8",
       "farge_lys": "#e3edf6"
     },
-    "Annet": {
-      "farge": "#A9A9A9",
+    "Infrastruktur": {
+      "farge": "#808080",
       "farge_lys": "#D3D3D3"    
     }
     
@@ -42,12 +42,6 @@
       "kategori": "Datafangst",
       "ikon": "gear",
       "beskrivelse": "Tjeneste for avansert API-innehenting."
-    },
-    {
-      "navn": "DaplaCtrl",
-      "kategori": "Statistikkproduksjon",
-      "ikon": "account",
-      "beskrivelse": "Tjeneste for tilgangsstyring på Dapla."
     },
     {
       "navn": "Kildomat",
@@ -86,10 +80,10 @@
       "beskrivelse": "Dokumentasjon av datasett."
     },
     {
-      "navn": "Datakatalog",
+      "navn": "Dataportal",
       "kategori": "Metadata",
       "ikon": "library",
-      "beskrivelse": "Oversikt over dokumenterte datasett."
+      "beskrivelse": "Søk på tvers av metadatasystemene."
     },
     {
       "navn": "Kudoc",
@@ -122,14 +116,26 @@
       "beskrivelse": "Metadata om statistikkprodukter og publisering."
     },
     {
+      "navn": "Enonic CMS",
+      "kategori": "Formidling",
+      "ikon": "checklist",
+      "beskrivelse": ""
+    },
+    {
       "navn": "ssb.no",
       "kategori": "Formidling",
       "ikon": "broadcast",
       "beskrivelse": "Websidene for Ssb"
     },
     {
-      "navn": "Egen kode i DaplaLab",
-      "kategori": "Annet",
+      "navn": "DaplaCtrl",
+      "kategori": "Infrastruktur",
+      "ikon": "account",
+      "beskrivelse": "Tjeneste for tilgangsstyring på Dapla."
+    },
+    {
+      "navn": "DaplaLab",
+      "kategori": "Infrastruktur",
       "ikon": "code",
       "beskrivelse": "Arbeidsbenk for statistikkproduksjon."
     }

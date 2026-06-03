@@ -7,6 +7,8 @@ Konsumprisindeksen (KPI) som deflator – og omvendt.
 Inspirert av SSBs prisomregner, men utvidet til å håndtere hele tidsserier
 over mange perioder, slik memoet bak prosjektet beskrev.
 
+(https://thomasbjornskau.github.io/dataviz-resources/kpi/faste-priser/index.html)[https://thomasbjornskau.github.io/dataviz-resources/kpi/faste-priser/index.html]
+
 ## Funksjoner
 
 - **Lim inn eller last opp** data (TSV/CSV ved innliming, `.csv`/`.xlsx`/`.xls` ved opplasting).

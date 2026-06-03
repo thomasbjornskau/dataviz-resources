@@ -552,7 +552,7 @@
 <div class="container">
   <header>
     <p class="undertitle">GSBPM × Systemer</p>
-    <h1>Hvilke systemer støtter de ulike prosessene i GSBPM?</h1>
+    <h1>Systemstøtte på sky for de ulike prosessene i GSBPM?</h1>
     <p class="subtitle">Prosessmodell for statistikkproduksjon, Generic Statistical Business Process Model (GSBPM), identifiserer og beskriver prosesser som er nødvendige for å produsere offisiell statistikk. Den beskriver faser, delprosesser og overordnede aktiviteter i statistikkproduksjonen. 
       <br>Klikk på et <em>system</em> nedenfor for å se hvilke delprosesser det støtter, og vice versa på en <em>delprosess</em> for å se hvilke systemer som støtter den.</p>
   </header>
@@ -638,8 +638,8 @@
   async function loadData() {
     try {
       const [gResp, sResp, kResp] = await Promise.all([
-        fetch('../../data/gsbpm.json'),
-        fetch('./data.json'),
+      fetch('../../data/gsbpm.json'),
+      fetch('./data.json'),
         fetch('./koblinger.xlsx')
       ]);
       if (!gResp.ok) throw new Error('../../data/gsbpm.json: HTTP ' + gResp.status);

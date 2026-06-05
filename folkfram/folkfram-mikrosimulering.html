@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fra forventet verdi til individuelle trekk</title>
+<style>
+  :root{
+    --bg:#fbfbf9;
+    --panel:#ffffff;
+    --ink:#1a1a1a;
+    --muted:#5c5c5c;
+    --line:#d9d6cf;
+    --group:#2b6cb0;     /* gruppebasert: rolig blå */
+    --group-soft:#e6eef6;
+    --micro:#107a5b;      /* mikrosimulering: rolig grønn */
+    --micro-soft:#e3f1ea;
+    --ref:#b5651d;        /* referanselinje / forventet verdi */
+    --maxw:980px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:32px 20px 80px}
+  header h1{
+    font-size:clamp(1.7rem,4vw,2.5rem);
+    line-height:1.15;margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;
+  }
+  .ingress{font-size:1.12rem;color:var(--muted);max-width:62ch;margin:0 0 2.4em}
+  h2{font-size:1.3rem;margin:2.6em 0 .6em;font-weight:600;letter-spacing:-0.01em}
+  p{max-width:64ch}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+
+  /* Enkel todelt intro-illustrasjon */
+  .intro-split{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:1.4em 0 0;
+  }
+  .intro-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+  }
+  .intro-card h3{margin:0 0 .4em;font-size:1rem}
+  .intro-card.group{border-top:3px solid var(--group)}
+  .intro-card.micro{border-top:3px solid var(--micro)}
+  .tag{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .tag.group{color:var(--group)}
+  .tag.micro{color:var(--micro)}
+
+  /* Kontrollpanel */
+  .controls{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px 22px;margin:1.2em 0;display:grid;gap:18px;
+  }
+  .ctrl-row{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:680px){.ctrl-row{grid-template-columns:repeat(3,1fr)}}
+  .field label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.3em}
+  .field .val{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:400}
+  input[type=range]{width:100%;accent-color:var(--group)}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{
+    border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:6px 12px;font:inherit;font-size:.9rem;cursor:pointer;
+  }
+  .seg button[aria-pressed=true]{background:var(--group);color:#fff;border-color:var(--group)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    font:inherit;font-weight:600;border-radius:8px;padding:10px 18px;cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--micro);color:#fff}
+  .btn-primary:hover{filter:brightness(.94)}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  .btn:focus-visible{outline:3px solid #88b;outline-offset:2px}
+
+  /* Paneler A/B */
+  .panels{display:grid;grid-template-columns:1fr;gap:18px;margin-top:.4em}
+  @media(min-width:760px){.panels{grid-template-columns:1fr 1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+  .panel.group{border-top:3px solid var(--group)}
+  .panel.micro{border-top:3px solid var(--micro)}
+  .panel h3{margin:0 0 .2em;font-size:1.08rem}
+  .panel .sub{color:var(--muted);font-size:.9rem;margin:0 0 1em}
+
+  .people{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .person{
+    width:30px;height:30px;border-radius:50%;
+    border:2px solid var(--line);background:#f3f1ec;
+    display:grid;place-items:center;font-size:.8rem;color:var(--muted);
+  }
+  .person.birth{background:var(--micro-soft);border-color:var(--micro);color:var(--micro)}
+
+  .formula{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--group-soft);border-radius:8px;padding:12px 14px;
+    font-size:1.05rem;font-variant-numeric:tabular-nums;
+  }
+  .result-big{font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+  .note{font-size:.86rem;color:var(--muted);margin-top:.8em}
+
+  .run-result{
+    background:var(--micro-soft);border-radius:8px;padding:12px 14px;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:1.05rem;
+  }
+
+  /* Histogram */
+  .hist{margin-top:18px}
+  .hist .bar-row{display:grid;grid-template-columns:2.2em 1fr 4em;align-items:center;gap:8px;margin:5px 0;font-variant-numeric:tabular-nums;font-size:.9rem}
+  .hist .barwrap{background:#f0eee8;border-radius:4px;overflow:hidden;height:20px}
+  .hist .bar{height:100%;background:var(--micro);width:0;transition:width .3s}
+  .stat{font-variant-numeric:tabular-nums}
+  .stat .ref{color:var(--ref);font-weight:600}
+  .stat .avg{color:var(--micro);font-weight:600}
+
+  figure{margin:1.2em 0 0}
+  .static-graphic{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
+  figcaption{font-size:.86rem;color:var(--muted);margin-top:.6em}
+  .footnote{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);margin-top:3em;padding-top:1em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Fra forventet verdi til individuelle trekk</h1>
+  <p class="ingress">Befolkningsframskrivinger handler om å beregne hvordan befolkningen kan utvikle seg framover. Den nye modellen bruker mikrosimulering: den simulerer livshendelser for enkeltpersoner, i stedet for bare å beregne forventede verdier for grupper.</p>
+</header>
+
+<section>
+  <h2>To måter å regne på</h2>
+  <p>Tenk deg <strong>fire kvinner</strong> som hver har <strong>25 % sannsynlighet</strong> for å få barn i løpet av et år. To modeller behandler dette helt ulikt.</p>
+  <div class="intro-split">
+    <div class="intro-card group">
+      <span class="tag group">Gruppebasert</span>
+      <h3>Regner på gruppen</h3>
+      <p style="margin:0;font-size:.95rem">Modellen ganger antall personer med sannsynligheten og får ett tall: forventet antall fødsler. 4 × 0,25 = <strong>1</strong>.</p>
+    </div>
+    <div class="intro-card micro">
+      <span class="tag micro">Mikrosimulering</span>
+      <h3>Trekker for hver enkelt</h3>
+      <p style="margin:0;font-size:.95rem">Hver kvinne trekkes individuelt. Resultatet av én kjøring kan bli 0, 1, 2, 3 eller 4 fødsler — det varierer.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Prøv selv</h2>
+  <p>Endre forutsetningene og kjør simuleringen. Panel A regner gruppebasert. Panel B trekker for hver enkelt person.</p>
+
+  <div class="controls" role="group" aria-label="Innstillinger for simulering">
+    <div class="ctrl-row">
+      <div class="field">
+        <label for="nPeople">Antall personer <span class="val" id="nPeopleVal">4</span></label>
+        <input type="range" id="nPeople" min="1" max="20" value="4" step="1"
+               aria-describedby="nPeopleVal">
+      </div>
+      <div class="field">
+        <label for="prob">Sannsynlighet for fødsel <span class="val" id="probVal">25 %</span></label>
+        <input type="range" id="prob" min="0" max="100" value="25" step="1"
+               aria-describedby="probVal">
+      </div>
+      <div class="field">
+        <label id="simsLabel">Antall simuleringer</label>
+        <div class="seg" role="group" aria-labelledby="simsLabel" id="simsSeg">
+          <button data-sims="1" aria-pressed="false">1</button>
+          <button data-sims="10" aria-pressed="false">10</button>
+          <button data-sims="100" aria-pressed="true">100</button>
+          <button data-sims="1000" aria-pressed="false">1000</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="run">Kjør simulering</button>
+      <button class="btn btn-ghost" id="reset">Nullstill</button>
+    </div>
+  </div>
+
+  <div class="panels">
+    <!-- PANEL A -->
+    <div class="panel group">
+      <span class="tag group">Panel A</span>
+      <h3>Gruppebasert beregning</h3>
+      <p class="sub">Forventet verdi for hele gruppen.</p>
+      <div class="people" id="peopleA" aria-hidden="true"></div>
+      <div class="formula" id="formulaA">4 × 0,25 = <strong>1,00</strong></div>
+      <p class="note" id="noteA"></p>
+    </div>
+
+    <!-- PANEL B -->
+    <div class="panel micro">
+      <span class="tag micro">Panel B</span>
+      <h3>Mikrosimulering</h3>
+      <p class="sub">Individuelle trekk. Fylte sirkler = fødsel i siste kjøring.</p>
+      <div class="people" id="peopleB" aria-hidden="true"></div>
+      <div class="run-result" id="runResult">Trykk «Kjør simulering» for å trekke.</div>
+
+      <div class="hist" id="hist" hidden>
+        <div id="bars"></div>
+        <p class="stat" id="statLine"></p>
+      </div>
+    </div>
+  </div>
+
+  <p class="note" id="liveStatus" role="status" aria-live="polite" style="margin-top:1em"></p>
+</section>
+
+<section>
+  <h2>Hva skjer egentlig?</h2>
+  <p>I den gruppebaserte modellen får vi <strong>ett tall</strong>: forventet antall fødsler. I mikrosimuleringen skjer det <strong>et trekk for hver enkelt person</strong>, og derfor kan resultatet variere fra kjøring til kjøring.</p>
+  <p>Når vi kjører simuleringen mange ganger, nærmer gjennomsnittet seg den forventede verdien. Men hver enkelt simulering kan fortsatt gi et annet utfall.</p>
+</section>
+
+<section>
+  <h2>Hvorfor bruke mikrosimulering?</h2>
+  <p>Fordi den regner på enkeltpersoner, kan mikrosimulering ta hensyn til individuelle egenskaper og livsløp. Sannsynlighetene kan for eksempel variere med alder, kjønn, bosted, utdanning eller innvandringsbakgrunn. Det gir et potensial for å fange opp sammensatte sammenhenger som en ren gruppeberegning jevner ut — en forskjell i modellogikk, ikke en påstand om at den ene er mer «riktig».</p>
+</section>
+
+<section>
+  <h2>Statisk forklaringsgrafikk</h2>
+  <p>Standardeksempelet, klart til bruk i artikkel, presentasjon eller skjermbilde. Bygget som SVG, så den er skalerbar.</p>
+  <figure>
+    <div class="static-graphic">
+      <svg viewBox="0 0 720 360" role="img" width="100%"
+           aria-label="Fire kvinner med 25 prosent fødselssannsynlighet. Gruppebasert modell gir forventet verdi 1 fødsel. Mikrosimulering gir mulige utfall fra 0 til 4 fødsler med en binomisk fordeling der 1 fødsel er mest sannsynlig.">
+        <!-- venstre: gruppebasert -->
+        <text x="24" y="34" font-family="sans-serif" font-size="13" font-weight="700" fill="#2b6cb0" letter-spacing="0.5">GRUPPEBASERT</text>
+        <text x="24" y="60" font-family="serif" font-size="16" fill="#1a1a1a">4 kvinner · p = 0,25</text>
+        <g>
+          <circle cx="44" cy="100" r="16" fill="#e6eef6" stroke="#2b6cb0" stroke-width="2"/>
+          <circle cx="86" cy="100" r="16" fill="#e6eef6" stroke="#2b6cb0" stroke-width="2"/>
+          <circle cx="128" cy="100" r="16" fill="#e6eef6" stroke="#2b6cb0" stroke-width="2"/>
+          <circle cx="170" cy="100" r="16" fill="#e6eef6" stroke="#2b6cb0" stroke-width="2"/>
+        </g>
+        <rect x="24" y="140" width="280" height="54" rx="8" fill="#e6eef6"/>
+        <text x="40" y="166" font-family="sans-serif" font-size="15" fill="#1a1a1a">4 × 0,25 =</text>
+        <text x="138" y="170" font-family="sans-serif" font-size="26" font-weight="700" fill="#2b6cb0">1 fødsel</text>
+        <text x="24" y="222" font-family="serif" font-size="13" fill="#5c5c5c">Forventet verdi for gruppen.</text>
+
+        <!-- skille -->
+        <line x1="360" y1="20" x2="360" y2="300" stroke="#d9d6cf" stroke-width="1"/>
+
+        <!-- høyre: mikrosimulering -->
+        <text x="392" y="34" font-family="sans-serif" font-size="13" font-weight="700" fill="#107a5b" letter-spacing="0.5">MIKROSIMULERING</text>
+        <text x="392" y="60" font-family="serif" font-size="16" fill="#1a1a1a">Mulige utfall: 0–4 fødsler</text>
+
+        <!-- binomisk fordeling: 0:.316 1:.422 2:.211 3:.047 4:.004 -->
+        <!-- maks .422 -> skala 200px -->
+        <g font-family="sans-serif" font-size="12" fill="#5c5c5c">
+          <!-- 0 -->
+          <rect x="408" y="240" width="44" height="0" fill="#107a5b"/>
+          <rect x="408" y="105" width="44" height="135" fill="#a9d6c4"/>
+          <text x="430" y="92" text-anchor="middle" fill="#1a1a1a" font-weight="600">0,316</text>
+          <text x="430" y="262" text-anchor="middle">0</text>
+          <!-- 1 (mest sannsynlig) -->
+          <rect x="464" y="60" width="44" height="180" fill="#107a5b"/>
+          <text x="486" y="50" text-anchor="middle" fill="#107a5b" font-weight="700">0,422</text>
+          <text x="486" y="262" text-anchor="middle">1</text>
+          <!-- 2 -->
+          <rect x="520" y="150" width="44" height="90" fill="#a9d6c4"/>
+          <text x="542" y="138" text-anchor="middle" fill="#1a1a1a" font-weight="600">0,211</text>
+          <text x="542" y="262" text-anchor="middle">2</text>
+          <!-- 3 -->
+          <rect x="576" y="220" width="44" height="20" fill="#a9d6c4"/>
+          <text x="598" y="210" text-anchor="middle" fill="#1a1a1a" font-weight="600">0,047</text>
+          <text x="598" y="262" text-anchor="middle">3</text>
+          <!-- 4 -->
+          <rect x="632" y="238" width="44" height="2" fill="#a9d6c4"/>
+          <text x="654" y="230" text-anchor="middle" fill="#1a1a1a" font-weight="600">0,004</text>
+          <text x="654" y="262" text-anchor="middle">4</text>
+        </g>
+        <line x1="408" y1="240" x2="676" y2="240" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="392" y="290" font-family="serif" font-size="13" fill="#5c5c5c">Antall fødsler i én simulering. Snittet over mange kjøringer nærmer seg 1.</text>
+      </svg>
+    </div>
+    <figcaption>Fire kvinner, p = 0,25. Venstre: gruppebasert forventet verdi. Høyre: sannsynlighetsfordeling for antall fødsler i mikrosimulering.</figcaption>
+  </figure>
+</section>
+
+<p class="footnote">Prototype — første versjon. Tallene i fordelingen følger en binomisk fordeling B(n, p). Resultatene i den interaktive simuleringen varierer fra gang til gang siden den ikke bruker fast seed.</p>
+
+</div>
+
+<script>
+"use strict";
+
+/* ---- Tilstand ---- */
+const state = { n: 4, p: 0.25, sims: 100 };
+
+/* ---- Elementer ---- */
+const $ = id => document.getElementById(id);
+const nPeople = $("nPeople"), prob = $("prob");
+const nPeopleVal = $("nPeopleVal"), probVal = $("probVal");
+const peopleA = $("peopleA"), peopleB = $("peopleB");
+const formulaA = $("formulaA"), noteA = $("noteA");
+const runResult = $("runResult");
+const hist = $("hist"), bars = $("bars"), statLine = $("statLine");
+const liveStatus = $("liveStatus");
+
+/* ---- Hjelpere ---- */
+const nf = (x, d=2) => x.toLocaleString("nb-NO", {minimumFractionDigits:d, maximumFractionDigits:d});
+
+/* Tegn personsymboler. births = array av booleans (hvem fikk barn), eller null. */
+function drawPeople(el, n, births){
+  el.innerHTML = "";
+  for(let i=0;i<n;i++){
+    const d = document.createElement("div");
+    d.className = "person" + (births && births[i] ? " birth" : "");
+    d.textContent = births && births[i] ? "•" : "";
+    el.appendChild(d);
+  }
+}
+
+/* Oppdater Panel A (gruppebasert) + personsymboler i begge paneler */
+function refreshStatic(){
+  state.n = +nPeople.value;
+  state.p = +prob.value / 100;
+  nPeopleVal.textContent = state.n;
+  probVal.textContent = (+prob.value) + " %";
+
+  drawPeople(peopleA, state.n, null);
+  drawPeople(peopleB, state.n, null);
+
+  const expected = state.n * state.p;
+  formulaA.innerHTML = `${state.n} × ${nf(state.p)} = <strong>${nf(expected)}</strong>`;
+  noteA.textContent = Number.isInteger(expected)
+    ? "Forventet antall fødsler i gruppen."
+    : "Desimaltallet betyr ikke at en halv person får barn — det er forventet verdi for gruppen samlet.";
+}
+
+/* Én simulering: trekk for hver person, returner antall fødsler + hvem */
+function runOnce(){
+  const births = [];
+  let count = 0;
+  for(let i=0;i<state.n;i++){
+    const birth = Math.random() < state.p;  // trekk: tall < p regnes som fødsel
+    births.push(birth);
+    if(birth) count++;
+  }
+  return { births, count };
+}
+
+/* Kjør state.sims simuleringer, vis siste trekk + fordeling */
+function runSimulation(){
+  refreshStatic(); // sørg for at n og p er ferske
+
+  const counts = {};          // antall fødsler -> hvor mange simuleringer
+  let total = 0, last = null;
+  for(let s=0;s<state.sims;s++){
+    const r = runOnce();
+    counts[r.count] = (counts[r.count] || 0) + 1;
+    total += r.count;
+    last = r;
+  }
+
+  // siste kjøring i personsymboler
+  drawPeople(peopleB, state.n, last.births);
+  runResult.innerHTML = `Siste simulering ga <strong>${last.count}</strong> ${last.count===1?"fødsel":"fødsler"}.`;
+
+  const expected = state.n * state.p;
+  const avg = total / state.sims;
+
+  if(state.sims === 1){
+    hist.hidden = true;
+  } else {
+    hist.hidden = false;
+    drawHist(counts, expected, avg);
+  }
+
+  liveStatus.textContent =
+    `${state.sims} simuleringer kjørt. Gjennomsnitt ${nf(avg)} fødsler. Forventet verdi ${nf(expected)}.`;
+}
+
+/* Stolpediagram over fordelingen */
+function drawHist(counts, expected, avg){
+  const maxK = state.n;
+  let maxCount = 0;
+  for(let k=0;k<=maxK;k++) maxCount = Math.max(maxCount, counts[k]||0);
+
+  bars.innerHTML = "";
+  for(let k=0;k<=maxK;k++){
+    const c = counts[k] || 0;
+    const pct = maxCount ? (c/maxCount*100) : 0;
+    const share = state.sims ? (c/state.sims*100) : 0;
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML =
+      `<span>${k}</span>
+       <span class="barwrap"><span class="bar" style="width:${pct}%"></span></span>
+       <span>${share.toFixed(0)} %</span>`;
+    bars.appendChild(row);
+  }
+
+  statLine.innerHTML =
+    `Gjennomsnitt: <span class="avg">${nf(avg)}</span> · `+
+    `Forventet verdi: <span class="ref">${nf(expected)}</span>`;
+}
+
+/* ---- Hendelser ---- */
+nPeople.addEventListener("input", refreshStatic);
+prob.addEventListener("input", refreshStatic);
+
+$("simsSeg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if(!b) return;
+  [...e.currentTarget.children].forEach(x => x.setAttribute("aria-pressed", x===b));
+  state.sims = +b.dataset.sims;
+});
+
+$("run").addEventListener("click", runSimulation);
+$("reset").addEventListener("click", () => {
+  nPeople.value = 4; prob.value = 25; state.sims = 100;
+  [...$("simsSeg").children].forEach(x =>
+    x.setAttribute("aria-pressed", x.dataset.sims === "100"));
+  refreshStatic();
+  hist.hidden = true;
+  runResult.textContent = "Trykk «Kjør simulering» for å trekke.";
+  liveStatus.textContent = "";
+});
+
+/* Init */
+refreshStatic();
+</script>
+</body>
+</html>

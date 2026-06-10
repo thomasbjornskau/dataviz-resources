@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slik beregner SSB verdien av boligen din</title>
+<meta name="description" content="Pedagogisk forklaring av forskjellen mellom gammel og ny modell for beregning av boligformue.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ssb-gronn:#00824D;
+  --ssb-gronn-morch:#00633B;
+  --ssb-skifer:#274247;
+  --ssb-lys:#EFF8FA;
+  --ssb-blaagraa:#CEDBE6;
+  --ssb-graa:#62919A;
+  --tekst:#274247;
+  --tekst-dempet:#5B7378;
+  --linje:#C9DCE0;
+  --maks-bredde:760px;
+  --maks-bred:980px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+body{
+  margin:0;
+  font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:17px;
+  line-height:1.65;
+  color:var(--tekst);
+  background:#fff;
+}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--ssb-gronn);color:#fff;padding:.6rem 1rem;z-index:10}
+.skip-link:focus{left:0}
+
+/* Topp */
+.topp{
+  background:var(--ssb-skifer);
+  color:#fff;
+  padding:.55rem 1.25rem;
+  font-size:.82rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+.topp span{opacity:.75;font-weight:400}
+
+/* Hero */
+.hero{background:var(--ssb-lys);padding:3.2rem 1.25rem 2.6rem}
+.hero-indre{max-width:var(--maks-bredde);margin:0 auto}
+.eyebrow{
+  color:var(--ssb-gronn);
+  font-size:.8rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  margin:0 0 .8rem;
+}
+h1{
+  font-size:clamp(1.9rem,4.5vw,2.7rem);
+  line-height:1.18;
+  font-weight:800;
+  margin:0 0 .5rem;
+  color:var(--ssb-skifer);
+}
+.undertittel{
+  font-size:clamp(1.05rem,2.2vw,1.25rem);
+  color:var(--ssb-gronn-morch);
+  font-weight:600;
+  margin:0 0 1.4rem;
+}
+.ingress{font-size:1.12rem;line-height:1.7;margin:0}
+
+/* Rolleboks */
+.rolleboks{
+  max-width:var(--maks-bred);
+  margin:-1.6rem auto 0;
+  padding:0 1.25rem;
+  position:relative;
+  z-index:2;
+}
+.rolleboks-indre{
+  background:#fff;
+  border:1px solid var(--linje);
+  border-radius:8px;
+  box-shadow:0 2px 10px rgba(39,66,71,.08);
+  padding:1.4rem 1.6rem 1.5rem;
+}
+.rolleboks h2{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ssb-gronn);margin:0 0 .9rem}
+.roller{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.rolle b{display:block;margin-bottom:.15rem}
+.rolle p{margin:0;font-size:.93rem;color:var(--tekst-dempet)}
+.rolleboks .merk{margin:1rem 0 0;font-size:.93rem;border-top:1px solid var(--linje);padding-top:.8rem}
+@media(max-width:680px){.roller{grid-template-columns:1fr}}
+
+/* Seksjoner */
+main{display:block}
+section{padding:3rem 1.25rem}
+.indre{max-width:var(--maks-bredde);margin:0 auto}
+.indre-bred{max-width:var(--maks-bred);margin:0 auto}
+section h2{
+  font-size:clamp(1.4rem,3vw,1.8rem);
+  color:var(--ssb-skifer);
+  font-weight:800;
+  line-height:1.25;
+  margin:0 0 1rem;
+}
+.seksjonsnr{
+  display:inline-block;
+  background:var(--ssb-gronn);
+  color:#fff;
+  font-size:.95rem;
+  font-weight:700;
+  width:2rem;height:2rem;line-height:2rem;
+  text-align:center;border-radius:50%;
+  margin-right:.6rem;
+  vertical-align:.18em;
+}
+section.tint{background:var(--ssb-lys)}
+p{margin:0 0 1.1rem}
+.figurtekst{font-size:.88rem;color:var(--tekst-dempet);margin-top:.7rem;max-width:640px}
+
+/* Les mer / begrep */
+details.begrep{
+  border:1px solid var(--linje);
+  border-radius:6px;
+  background:#fff;
+  margin:1.1rem 0 1.4rem;
+}
+details.begrep summary{
+  cursor:pointer;
+  padding:.65rem .9rem;
+  font-weight:600;
+  color:var(--ssb-gronn-morch);
+  list-style:none;
+  display:flex;align-items:center;gap:.5rem;
+}
+details.begrep summary::-webkit-details-marker{display:none}
+details.begrep summary::before{
+  content:"+";
+  display:inline-block;
+  width:1.2rem;height:1.2rem;line-height:1.15rem;
+  text-align:center;
+  border:1.5px solid var(--ssb-gronn);
+  border-radius:50%;
+  color:var(--ssb-gronn);
+  font-weight:700;
+  flex:0 0 auto;
+}
+details.begrep[open] summary::before{content:"–"}
+details.begrep .innhold{padding:0 .9rem .9rem 2.6rem;font-size:.95rem}
+details.begrep .innhold p{margin:0 0 .6rem}
+details.begrep .kort{font-weight:600}
+
+/* Figurer */
+.figur{
+  background:#fff;
+  border:1px solid var(--linje);
+  border-radius:8px;
+  padding:1.4rem;
+  margin:1.6rem 0;
+}
+.figur h3{margin:0 0 1rem;font-size:1.02rem;color:var(--ssb-skifer)}
+svg text{font-family:"Open Sans",system-ui,sans-serif}
+
+/* Tidslinje */
+.tidslinje{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:.4rem}
+.tidslinje::before{
+  content:"";position:absolute;top:9px;left:6%;right:6%;
+  height:2px;background:var(--ssb-blaagraa);
+}
+.tl-punkt{position:relative;padding:1.6rem .6rem 0;text-align:left}
+.tl-punkt::before{
+  content:"";position:absolute;top:2px;left:.6rem;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--ssb-gronn);border:3px solid #fff;
+  box-shadow:0 0 0 2px var(--ssb-gronn);
+}
+.tl-aar{font-weight:800;color:var(--ssb-gronn-morch);font-size:1.05rem}
+.tl-punkt p{font-size:.9rem;margin:.2rem 0 0;color:var(--tekst-dempet)}
+@media(max-width:680px){
+  .tidslinje{grid-template-columns:1fr;gap:.4rem}
+  .tidslinje::before{top:8%;bottom:6%;left:7px;right:auto;width:2px;height:auto}
+  .tl-punkt{padding:.2rem 0 .9rem 2rem}
+  .tl-punkt::before{top:6px;left:0}
+}
+
+/* Knapper / segmentkontroll */
+.kontroller{display:flex;flex-wrap:wrap;gap:1.2rem;align-items:flex-end;margin-bottom:1.1rem}
+.kontroll-gruppe{display:flex;flex-direction:column;gap:.35rem}
+.kontroll-gruppe .etikett{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tekst-dempet)}
+.segment{display:inline-flex;border:1.5px solid var(--ssb-gronn);border-radius:6px;overflow:hidden}
+.segment button{
+  appearance:none;border:none;background:#fff;color:var(--ssb-gronn-morch);
+  font:inherit;font-size:.95rem;font-weight:600;
+  padding:.5rem 1rem;cursor:pointer;
+}
+.segment button + button{border-left:1.5px solid var(--ssb-gronn)}
+.segment button[aria-pressed="true"]{background:var(--ssb-gronn);color:#fff}
+.segment button:focus-visible{outline:3px solid var(--ssb-skifer);outline-offset:-3px}
+
+button.handling{
+  appearance:none;border:none;background:var(--ssb-gronn);color:#fff;
+  font:inherit;font-weight:700;font-size:.98rem;
+  padding:.6rem 1.3rem;border-radius:6px;cursor:pointer;
+}
+button.handling:hover{background:var(--ssb-gronn-morch)}
+button.handling:disabled{background:var(--ssb-graa);cursor:default}
+button.handling:focus-visible{outline:3px solid var(--ssb-skifer);outline-offset:2px}
+button.sekundaer{
+  appearance:none;border:1.5px solid var(--ssb-gronn);background:#fff;color:var(--ssb-gronn-morch);
+  font:inherit;font-weight:600;font-size:.95rem;
+  padding:.55rem 1.1rem;border-radius:6px;cursor:pointer;
+}
+button.sekundaer:focus-visible{outline:3px solid var(--ssb-skifer);outline-offset:2px}
+
+/* Kart */
+#kart{width:100%;height:auto;display:block}
+.kart-mikrotekst{
+  margin-top:.8rem;
+  padding:.7rem .9rem;
+  background:var(--ssb-lys);
+  border-radius:6px;
+  font-size:.95rem;
+}
+.legende{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.7rem;font-size:.85rem;color:var(--tekst-dempet)}
+.legende span{display:inline-flex;align-items:center;gap:.4rem}
+.legende i{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid rgba(39,66,71,.35)}
+
+/* Modellbygger */
+.flyt{display:flex;flex-direction:column;gap:0;margin:1rem 0 1.2rem}
+.flyt-trinn{
+  border:1.5px solid var(--linje);
+  border-radius:8px;
+  padding:.85rem 1.1rem;
+  background:#fff;
+  opacity:.28;
+  transition:opacity .35s ease,border-color .35s ease;
+}
+.flyt-trinn.aktiv{opacity:1;border-color:var(--ssb-gronn)}
+.flyt-trinn b{color:var(--ssb-gronn-morch)}
+.flyt-trinn p{margin:.15rem 0 0;font-size:.95rem}
+.flyt-pil{align-self:center;color:var(--ssb-graa);font-size:1.1rem;line-height:1;padding:.15rem 0;opacity:.28;transition:opacity .35s ease}
+.flyt-pil.aktiv{opacity:1;color:var(--ssb-gronn)}
+.flyt-trinn:last-of-type.aktiv{background:var(--ssb-lys)}
+.modell-knapper{display:flex;gap:.8rem;flex-wrap:wrap}
+
+/* Speilet sammenligning */
+.speil{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:.4rem}
+.kjede{border:1px solid var(--linje);border-radius:8px;padding:1.1rem 1.2rem;background:#fff}
+.kjede h4{margin:0 0 .8rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em}
+.kjede.gammel h4{color:var(--ssb-graa)}
+.kjede.ny h4{color:var(--ssb-gronn)}
+.kjede ol{list-style:none;margin:0;padding:0}
+.kjede li{
+  padding:.45rem .7rem;
+  border-radius:5px;
+  font-size:.93rem;
+  background:var(--ssb-lys);
+  margin-bottom:.25rem;
+}
+.kjede.gammel li{background:#EFF3F6}
+.kjede li.pil{background:none;text-align:center;color:var(--ssb-graa);padding:.05rem 0;margin-bottom:.25rem}
+.kjede.ny li.pil{color:var(--ssb-gronn)}
+.kjede li.resultat{font-weight:700;color:#fff}
+.kjede.gammel li.resultat{background:var(--ssb-graa)}
+.kjede.ny li.resultat{background:var(--ssb-gronn)}
+.kjede li .ml-merke{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;background:var(--ssb-skifer);color:#fff;border-radius:3px;padding:.05rem .4rem;margin-left:.4rem;vertical-align:.1em}
+@media(max-width:680px){.speil{grid-template-columns:1fr}}
+
+/* Treffsikkerhet */
+.maal{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:.4rem}
+.maal-kort{border:1px solid var(--linje);border-radius:8px;padding:1rem;background:#fff}
+.maal-kort .retning{font-size:1.7rem;font-weight:800;color:var(--ssb-gronn);line-height:1}
+.maal-kort b{display:block;margin:.4rem 0 .15rem;font-size:.95rem}
+.maal-kort p{margin:0;font-size:.85rem;color:var(--tekst-dempet)}
+@media(max-width:760px){.maal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.maal{grid-template-columns:1fr}}
+
+/* Viktig-boks */
+.viktig{
+  background:var(--ssb-lys);
+  border:1px solid var(--ssb-blaagraa);
+  border-radius:8px;
+  padding:1.1rem 1.3rem;
+  margin:1.4rem 0;
+}
+.viktig b:first-child{color:var(--ssb-gronn-morch)}
+section.tint .viktig{background:#fff}
+
+/* Bunn */
+footer{background:var(--ssb-skifer);color:#fff;padding:2.4rem 1.25rem;font-size:.92rem}
+footer .indre{max-width:var(--maks-bredde)}
+footer a{color:#9FD8BE}
+footer p{margin:0 0 .7rem;opacity:.92}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#innhold">Hopp til innhold</a>
+
+<div class="topp">Forklaringsartikkel <span>· Modell for beregning av boligformue · Prototype</span></div>
+
+<header class="hero">
+  <div class="hero-indre">
+    <p class="eyebrow">Statistikk forklart</p>
+    <h1>Slik beregner SSB verdien av boligen din</h1>
+    <p class="undertittel">Den nye modellen tegner Norges boligmarked på nytt – nedenfra.</p>
+    <p class="ingress">Boligverdien som står i skattemeldingen er ikke en takst, men en beregning. Siden 2009 har SSB hatt en modell som anslår markedsverdien til alle norske boliger. Nå er modellen fornyet. Den nye modellen deler Norge inn i lokale boligmarkeder på en mer presis måte, og treffer derfor bedre – særlig der den gamle bommet mest. Her forklarer vi hva som er endret, hvorfor, og hva maskinlæring faktisk brukes til.</p>
+  </div>
+</header>
+
+<div class="rolleboks">
+  <div class="rolleboks-indre">
+    <h2>Hvem gjør hva?</h2>
+    <div class="roller">
+      <div class="rolle"><b>SSB</b><p>Utvikler, dokumenterer og kvalitetssikrer modellen som beregner boligverdier.</p></div>
+      <div class="rolle"><b>Finansdepartementet</b><p>Er oppdragsgiver og bestemmer hvordan beregningene inngår i skattesystemet.</p></div>
+      <div class="rolle"><b>Skatteetaten</b><p>Bruker beregningene i praksis og svarer på spørsmål om skattekort og skatt.</p></div>
+    </div>
+    <p class="merk">Denne artikkelen handler om modellen – ikke om skatten din.</p>
+  </div>
+</div>
+
+<main id="innhold">
+
+<!-- 1 -->
+<section>
+  <div class="indre">
+    <h2><span class="seksjonsnr">1</span>Hvorfor må boligverdien beregnes?</h2>
+    <p>En bolig har bare én sikker markedsverdi: prisen den faktisk selges for. Men de aller fleste boliger selges ikke i år. Skal boligformue inngå i skattesystemet, trengs det likevel et anslag på hva hver enkelt bolig er verdt – hvert år, for alle landets boliger.</p>
+    <p>Før 2010 ble dette løst med ligningsverdier som i praksis var historiske og tilfeldige. To like boliger i samme gate kunne ha helt ulike ligningsverdier, avhengig av når de var bygget og hvordan verdien var justert gjennom årene. Modellen SSB innførte i 2009 var derfor et stort fremskritt: For første gang ble boligverdiene beregnet systematisk, ut fra faktiske boligsalg og kjennetegn ved boligen – boligtype, areal, alder og beliggenhet.</p>
+    <p>Modellen var god. Men den var bygget på et bestemt kart over Norge, og kart kan bli utdaterte.</p>
+
+    <div class="figur" aria-label="Tidslinje over modellens historie">
+      <h3>Fire årstall som forklarer hvorfor modellen er ny</h3>
+      <div class="tidslinje">
+        <div class="tl-punkt"><span class="tl-aar">2009</span><p>SSBs modell innføres og erstatter de gamle ligningsverdiene.</p></div>
+        <div class="tl-punkt"><span class="tl-aar">2020</span><p>Kommunereformen slår sammen kommuner. Svakheter i modellens geografi blir tydeligere.</p></div>
+        <div class="tl-punkt"><span class="tl-aar">2022–23</span><p>SSB dokumenterer en ny modell med ny geografisk metode.</p></div>
+        <div class="tl-punkt"><span class="tl-aar">2026</span><p>Endringen blir synlig for mange gjennom skattekortet.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="tint">
+  <div class="indre">
+    <h2><span class="seksjonsnr">2</span>Hva var svakhetene ved den gamle modellen?</h2>
+    <p>Den gamle modellen stilte i praksis tre spørsmål om hver bolig: Hvilken boligtype er det? Hvilken region ligger den i? Og hvilken prissone tilhører den?</p>
+
+    <details class="begrep">
+      <summary>Hva er en prissone?</summary>
+      <div class="innhold">
+        <p class="kort">Den gamle modellens geografiske enhet – et område som ble antatt å ha noenlunde likt prisnivå.</p>
+        <p>Prissonene var som hovedregel bundet til kommunegrensene. En prissone kunne ikke gå på tvers av kommuner, selv om boligmarkedet gjorde det.</p>
+      </div>
+    </details>
+
+    <p>Her lå problemet. Boligmarkeder følger ikke kommunegrenser – de følger nabolag, pendlingsmønstre og bystruktur. Så lenge kommunene var små og mange, var avviket håndterbart. Men kommunereformen fra 2020 slo sammen kommuner med svært ulike boligprisnivåer. Når to kommuner med ulikt prisnivå ble én, kunne modellen ende med å behandle dem som ett område – grovere enn før reformen.</p>
+    <p>Det er verdt å være presis her: Modellen ble ikke «feil» i 2020. Den gjorde fortsatt det den var laget for. Men geografien den bygget på – kommuner og kommunebundne prissoner – ble mindre egnet til å beskrive faktiske boligmarkeder.</p>
+    <p>I tillegg hadde modellen en kjent svakhet helt fra starten: Dyre boliger i sentrale strøk, særlig i Oslo, ble ofte verdsatt for lavt. Grove geografiske soner jevner ut nettopp de lokale prisforskjellene som gjør at to boliger noen kilometer fra hverandre kan ha svært ulik kvadratmeterpris.</p>
+
+    <div class="figur">
+      <h3>Når to prisnivåer blir ett gjennomsnitt</h3>
+      <svg viewBox="0 0 720 250" role="img" aria-label="Illustrasjon: To kommuner med ulikt prisnivå slås sammen til én, og lokale prisforskjeller forsvinner i et felles gjennomsnitt.">
+        <text x="20" y="24" font-size="13" font-weight="700" fill="#274247">FØR REFORMEN</text>
+        <path d="M20,40 L170,40 Q160,90 175,130 Q165,170 180,210 L20,210 Z" fill="#62919A"/>
+        <path d="M170,40 L330,40 L330,210 L180,210 Q165,170 175,130 Q160,90 170,40 Z" fill="#CEDBE6"/>
+        <text x="85" y="118" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">Kommune A</text>
+        <text x="85" y="136" font-size="11" fill="#fff" text-anchor="middle">høyt prisnivå</text>
+        <text x="255" y="118" font-size="12" font-weight="700" fill="#274247" text-anchor="middle">Kommune B</text>
+        <text x="255" y="136" font-size="11" fill="#274247" text-anchor="middle">lavt prisnivå</text>
+        <path d="M355,125 L385,125" stroke="#00824D" stroke-width="3" fill="none"/>
+        <path d="M385,118 L398,125 L385,132 Z" fill="#00824D"/>
+        <text x="420" y="24" font-size="13" font-weight="700" fill="#274247">ETTER REFORMEN</text>
+        <rect x="420" y="40" width="280" height="170" fill="#9CB8C3"/>
+        <path d="M553,40 Q543,90 558,130 Q548,170 563,210" stroke="#fff" stroke-width="2" stroke-dasharray="5 5" fill="none" opacity=".7"/>
+        <text x="560" y="118" font-size="12" font-weight="700" fill="#274247" text-anchor="middle">Én sammenslått kommune</text>
+        <text x="560" y="136" font-size="11" fill="#274247" text-anchor="middle">ett felles gjennomsnitt</text>
+      </svg>
+      <p class="figurtekst">Når to områder med ulikt prisnivå behandles som ett, forsvinner lokale forskjeller inn i et gjennomsnitt. Boliger i den dyre delen undervurderes, boliger i den rimelige delen overvurderes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="indre-bred">
+    <div class="indre" style="margin:0 auto">
+      <h2><span class="seksjonsnr">3</span>Hva gjør den nye modellen annerledes?</h2>
+      <p>Den nye modellen snur logikken. I stedet for å starte med kommuner og dele dem inn i soner, starter den med Norges minste geografiske byggeklosser – grunnkretsene – og bygger boligmarkedene opp nedenfra.</p>
+
+      <details class="begrep">
+        <summary>Hva er en grunnkrets?</summary>
+        <div class="innhold">
+          <p class="kort">En liten geografisk enhet – Norge er delt inn i om lag 14&nbsp;000 grunnkretser.</p>
+          <p>Grunnkretsene er langt mer stabile enn kommunegrensene. De endres sjelden, og de er små nok til å skille mellom nabolag med ulikt prisnivå.</p>
+        </div>
+      </details>
+
+      <p>Én grunnkrets er imidlertid som regel for liten til å stå alene. I mange grunnkretser selges det bare en håndfull boliger i året – noen steder ingen. Få salg gir usikre beregninger. Derfor grupperes grunnkretser sammen til <b>beregningsområder</b>: grupper av grunnkretser som ligner hverandre prismessig, og som til sammen har nok boligsalg til å gi et solid datagrunnlag.</p>
+
+      <div class="figur">
+        <h3>Grunnkretser settes sammen til beregningsområder</h3>
+        <svg viewBox="0 0 720 200" role="img" aria-label="Illustrasjon: Flere små grunnkretser med få boligsalg grupperes sammen til ett beregningsområde med nok datagrunnlag.">
+          <g stroke="#fff" stroke-width="2">
+            <path d="M30,60 L95,50 L105,105 L40,118 Z" fill="#9FD8BE"/>
+            <path d="M95,50 L160,58 L152,110 L105,105 Z" fill="#66BD96"/>
+            <path d="M40,118 L105,105 L112,160 L52,168 Z" fill="#66BD96"/>
+            <path d="M105,105 L152,110 L160,162 L112,160 Z" fill="#9FD8BE"/>
+            <path d="M160,58 L218,70 L208,120 L152,110 Z" fill="#CDEBDD"/>
+          </g>
+          <g fill="#274247">
+            <circle cx="70" cy="82" r="3"/><circle cx="128" cy="80" r="3"/>
+            <circle cx="80" cy="140" r="3"/><circle cx="135" cy="135" r="3"/>
+            <circle cx="185" cy="92" r="3"/><circle cx="120" cy="92" r="3"/>
+          </g>
+          <text x="124" y="190" font-size="12" fill="#5B7378" text-anchor="middle">Grunnkretser – få salg hver (prikker)</text>
+          <path d="M255,105 L295,105" stroke="#00824D" stroke-width="3" fill="none"/>
+          <path d="M295,98 L308,105 L295,112 Z" fill="#00824D"/>
+          <path d="M340,58 L470,48 L500,100 L480,165 L360,170 L335,115 Z" fill="#00824D" opacity=".88"/>
+          <g fill="#fff">
+            <circle cx="385" cy="90" r="3"/><circle cx="435" cy="80" r="3"/><circle cx="465" cy="115" r="3"/>
+            <circle cx="395" cy="135" r="3"/><circle cx="440" cy="140" r="3"/><circle cx="415" cy="110" r="3"/>
+          </g>
+          <text x="418" y="190" font-size="12" fill="#5B7378" text-anchor="middle">Ett beregningsområde – nok datagrunnlag</text>
+          <text x="560" y="95" font-size="13" fill="#274247">Prismessig like</text>
+          <text x="560" y="115" font-size="13" fill="#274247">grunnkretser holdes</text>
+          <text x="560" y="135" font-size="13" fill="#274247">sammen.</text>
+        </svg>
+      </div>
+
+      <p>Resultatet er en geografi som tilpasser seg datagrunnlaget. I byer og sentrale strøk, der det selges mange boliger, kan beregningsområdene være små – noen ganger bare noen få grunnkretser. Da fanges lokale prisforskjeller opp. I spredtbygde strøk, der det selges færre boliger, må områdene være større for å gi sikre tall.</p>
+      <p>Og fordi beregningsområdene bygges av grunnkretser, ikke kommuner, spiller det ingen rolle om kommunegrenser flyttes eller kommuner slås sammen. Modellen er blitt robust mot fremtidige kommunereformer.</p>
+    </div>
+
+    <div class="figur" style="margin-top:2rem">
+      <h3>Prøv selv: gammel og ny geografisk inndeling</h3>
+      <div class="kontroller">
+        <div class="kontroll-gruppe">
+          <span class="etikett" id="lbl-inndeling">Inndeling</span>
+          <div class="segment" role="group" aria-labelledby="lbl-inndeling">
+            <button type="button" id="btn-gammel" aria-pressed="true">Gammel</button>
+            <button type="button" id="btn-ny" aria-pressed="false">Ny</button>
+          </div>
+        </div>
+        <div class="kontroll-gruppe">
+          <span class="etikett" id="lbl-boligtype">Boligtype</span>
+          <div class="segment" role="group" aria-labelledby="lbl-boligtype">
+            <button type="button" data-boligtype="enebolig" aria-pressed="false">Enebolig</button>
+            <button type="button" data-boligtype="smaahus" aria-pressed="false">Småhus</button>
+            <button type="button" data-boligtype="leilighet" aria-pressed="true">Leilighet</button>
+          </div>
+        </div>
+      </div>
+      <svg id="kart" viewBox="0 0 680 420" role="img" aria-label="Stilisert kart over en tenkt byregion. Veksler mellom gammel soneinndeling og ny inndeling i beregningsområder."></svg>
+      <div class="legende" id="legende"></div>
+      <div class="kart-mikrotekst" id="mikrotekst" aria-live="polite"></div>
+      <p class="figurtekst">Kartet er en stilisert illustrasjon av en tenkt byregion, ikke et ekte kart. Mønsteret er reelt: små beregningsområder der det selges mye, større der det selges lite – og inndelingen er ulik for ulike boligtyper.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="tint">
+  <div class="indre">
+    <h2><span class="seksjonsnr">4</span>Modellen forklart trinn for trinn</h2>
+    <p>Den nye modellen arbeider i to trinn. Det er verdt å holde dem fra hverandre, for de gjør helt forskjellige ting.</p>
+
+    <p><b>Trinn 1: Maskinlæring tegner kartet.</b> En maskinlæringsmetode – et beslutningstre – brukes til å gruppere grunnkretsene i beregningsområder. Metoden kan beskrives som en systematisk spørrerunde: Den stiller en lang rekke spørsmål om områdene og prisnivåene deres, og deler geografien trinn for trinn, slik at hver gruppe blir mest mulig prismessig ensartet – samtidig som ingen gruppe blir for liten til å gi sikre beregninger.</p>
+
+    <details class="begrep">
+      <summary>Hva er et beslutningstre?</summary>
+      <div class="innhold">
+        <p class="kort">En maskinlæringsmetode som deler data i grupper ved å stille en rekke spørsmål.</p>
+        <p>Hvert spørsmål deler dataene i to. Treet «vokser» til gruppene er så like som mulig innad, gitt kravet om nok observasjoner. Resultatet er ikke en verdi, men en inndeling.</p>
+      </div>
+    </details>
+
+    <p><b>Trinn 2: Regresjon beregner verdien.</b> Innenfor hvert beregningsområde – og separat for hver boligtype – kjøres en hedonisk regresjonsmodell. Den beregner boligverdien ut fra boligens kjennetegn. Forenklet: <i>beregnet boligverdi = lokalt prisnivå, justert for areal, justert for alder, justert for tettsted, pluss andre modelledd.</i></p>
+
+    <details class="begrep">
+      <summary>Hva er hedonisk regresjon?</summary>
+      <div class="innhold">
+        <p class="kort">En metode som beregner verdi ut fra flere kjennetegn ved boligen og området.</p>
+        <p>Ideen er at en boligpris kan dekomponeres: en del skyldes beliggenheten, en del arealet, en del alderen, og så videre. Modellen anslår bidraget fra hvert kjennetegn ved hjelp av faktiske boligsalg.</p>
+      </div>
+    </details>
+
+    <p>Her ligger et poeng som er lett å overse: Beregningsområdet er ikke bare en adresselapp. Fordi regresjonen kjøres separat i hvert område, kan <i>betydningen</i> av areal og alder variere lokalt. En ekstra kvadratmeter er ikke verdt det samme i et bysentrum som i en fjellbygd – og det fanger den nye modellen opp, fordi den i praksis består av mange lokale delmodeller, ikke én nasjonal.</p>
+
+    <div class="viktig">
+      <b>Det viktigste å forstå:</b> Maskinlæringen setter aldri boligverdien. Den tegner kartet – avgjør hvilke grunnkretser som hører sammen. Selve verdiberegningen skjer i trinn 2, med regresjon, en veletablert statistisk metode som SSB har brukt siden 2009. Formuleringen «KI bestemmer boligverdien din» er derfor misvisende. Det presise er: maskinlæring lager bedre geografiske områder; regresjon beregner verdiene innenfor dem.
+    </div>
+
+    <div class="figur">
+      <h3>Modellen, ett trinn om gangen</h3>
+      <div class="flyt" id="flyt">
+        <div class="flyt-trinn" data-trinn="1"><b>1. Boligsalg</b><p>Utgangspunktet: faktiske salg med pris og kjennetegn.</p></div>
+        <div class="flyt-pil" aria-hidden="true">↓</div>
+        <div class="flyt-trinn" data-trinn="2"><b>2. Grunnkretser</b><p>Hvert salg knyttes til en grunnkrets.</p></div>
+        <div class="flyt-pil" aria-hidden="true">↓</div>
+        <div class="flyt-trinn" data-trinn="3"><b>3. Maskinlæring grupperer</b><p>Et beslutningstre samler grunnkretser som ligner prismessig.</p></div>
+        <div class="flyt-pil" aria-hidden="true">↓</div>
+        <div class="flyt-trinn" data-trinn="4"><b>4. Beregningsområder</b><p>Resultatet: lokale boligmarkeder med nok datagrunnlag.</p></div>
+        <div class="flyt-pil" aria-hidden="true">↓</div>
+        <div class="flyt-trinn" data-trinn="5"><b>5. Lokal regresjon</b><p>Innenfor hvert område beregnes verdien ut fra boligens kjennetegn.</p></div>
+        <div class="flyt-pil" aria-hidden="true">↓</div>
+        <div class="flyt-trinn" data-trinn="6"><b>6. Beregnet boligverdi</b><p>Her – og bare her – settes verdien. Dette trinnet er regresjon, ikke maskinlæring.</p></div>
+      </div>
+      <div class="modell-knapper">
+        <button type="button" class="handling" id="neste-trinn">Vis første trinn</button>
+        <button type="button" class="sekundaer" id="nullstill-trinn">Start på nytt</button>
+      </div>
+    </div>
+
+    <div class="figur">
+      <h3>Gammel og ny modell, side om side</h3>
+      <div class="speil">
+        <div class="kjede gammel">
+          <h4>Gammel modell (2009–2025)</h4>
+          <ol>
+            <li>Boligtype</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Region</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Prissone · areal · alder · tettsted</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li class="resultat">Beregnet boligverdi</li>
+          </ol>
+        </div>
+        <div class="kjede ny">
+          <h4>Ny modell (fra 2026)</h4>
+          <ol>
+            <li>Boligtype</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Grunnkretser</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Gruppering av grunnkretser <span class="ml-merke">ML</span></li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Beregningsområde</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li>Lokal regresjon: areal · alder · tettsted m.m.</li>
+            <li class="pil" aria-hidden="true">↓</li>
+            <li class="resultat">Beregnet boligverdi</li>
+          </ol>
+        </div>
+      </div>
+      <p class="figurtekst">Den gamle modellen spurte: hvilken sone tilhører boligen? Den nye spør: hvilket lokalt boligmarked ligner området mest på – og hva betyr boligens egenskaper akkurat der?</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="indre">
+    <h2><span class="seksjonsnr">5</span>Treffer den nye modellen bedre?</h2>
+    <p>Ja – og det kan måles. Når modellens beregnede verdier sammenlignes med faktiske salgspriser, gjør den nye modellen det bedre enn den gamle på flere mål samtidig.</p>
+
+    <div class="figur">
+      <h3>Ny modell sammenlignet med gammel</h3>
+      <div class="maal">
+        <div class="maal-kort"><span class="retning" aria-hidden="true">↓</span><b>Gjennomsnittlig feil</b><p>Lavere avvik mellom beregnet verdi og faktisk salgspris.</p></div>
+        <div class="maal-kort"><span class="retning" aria-hidden="true">↓</span><b>Medianfeil</b><p>Også den typiske feilen er mindre, ikke bare gjennomsnittet.</p></div>
+        <div class="maal-kort"><span class="retning" aria-hidden="true">↑</span><b>Forklaringskraft</b><p>Modellen fanger opp mer av prisforskjellene mellom boliger.</p></div>
+        <div class="maal-kort"><span class="retning" aria-hidden="true">↑</span><b>Dyre boliger i Oslo</b><p>Vesentlig bedre treff der den gamle modellen bommet mest.</p></div>
+      </div>
+      <p class="figurtekst">Tallene bak disse målene finnes i SSBs metodedokumentasjon (2022–2023) og settes inn her før publisering.</p>
+    </div>
+
+    <details class="begrep">
+      <summary>Hva er forklaringskraft (R²)?</summary>
+      <div class="innhold">
+        <p class="kort">Et mål på hvor mye av variasjonen i boligpriser modellen fanger opp.</p>
+        <p>En forklaringskraft på 1 ville bety at modellen traff alle salgspriser perfekt. Ingen modell gjør det. Men jo høyere tallet er, desto mer av prisforskjellene mellom boliger klarer modellen å forklare.</p>
+      </div>
+    </details>
+
+    <p>Forbedringen er størst der den gamle modellen var svakest: dyre boliger i Oslo treffes vesentlig bedre. Den finmaskede geografien gjør at høyprisområder ikke lenger drukner i sonegjennomsnitt.</p>
+    <p>To nøkterne forbehold hører med. For det første: Også den nye modellen kan undervurdere enkelte svært dyre boliger, blant annet fordi de aller dyreste boligene er underrepresentert i datagrunnlaget – de selges sjelden, og noen omsettes på måter som ikke fanges like godt opp. For det andre: Modellen gir beregninger, ikke fasitsvar. For en enkelt bolig kan anslaget fortsatt avvike fra hva boligen faktisk ville blitt solgt for. Det modellen lover, er at avvikene samlet sett er mindre og jevnere fordelt enn før.</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="tint">
+  <div class="indre">
+    <h2><span class="seksjonsnr">6</span>Hva betyr dette for deg?</h2>
+    <p>For mange boligeiere vil den beregnede boligverdien endre seg – noen opp, noen ned – fordi modellen nå beskriver det lokale boligmarkedet mer presist. En endret boligverdi er likevel ikke det samme som endret skatt. Skatten avhenger av flere forhold, blant annet verdsettelsesrabatter, gjeld og øvrig formue. Spørsmål om skattekort og skatt besvares av Skatteetaten.</p>
+    <p>Det viktigste å ta med seg er dette: Den gamle modellen bygget på grove geografiske soner som fulgte kommunegrensene. Den nye bygger beregningsområder nedenfra, av grunnkretser, med maskinlæring som verktøy for inndelingen – og beregner deretter boligverdien med lokale regresjonsmodeller. Derfor fanger den opp lokale prisforskjeller bedre enn den gamle.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="indre">
+    <p><b>Om denne siden.</b> Pedagogisk prototype. Kartet og illustrasjonene er stiliserte, og nøkkeltall settes inn fra metodedokumentasjonen før publisering.</p>
+    <p>Vil du gå dypere? Se SSBs metodedokumentasjon for ny modell (2022–2023) og notatet om den opprinnelige modellen (2009). <i>(Lenker settes inn.)</i></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Stilisert kart: jittret rutenett av "grunnkretser" ---------- */
+  var NX = 14, NY = 9;
+  var W = 680, H = 420;
+  var M = 8;
+  var cw = (W - 2*M) / NX, ch = (H - 2*M) / NY;
+
+  // Deterministisk pseudotilfeldighet, så kartet er likt hver gang
+  function rng(seed){
+    return function(){
+      seed = (seed * 1664525 + 1013904223) % 4294967296;
+      return seed / 4294967296;
+    };
+  }
+
+  // Jittrede hjørnepunkter som deles mellom naboceller -> tessellering
+  var rand = rng(42);
+  var pts = [];
+  for (var j = 0; j <= NY; j++){
+    pts[j] = [];
+    for (var i = 0; i <= NX; i++){
+      var jx = (i === 0 || i === NX) ? 0 : (rand() - 0.5) * cw * 0.55;
+      var jy = (j === 0 || j === NY) ? 0 : (rand() - 0.5) * ch * 0.55;
+      pts[j][i] = [M + i*cw + jx, M + j*ch + jy];
+    }
+  }
+
+  function cellCenter(i, j){
+    var p = [pts[j][i], pts[j][i+1], pts[j+1][i+1], pts[j+1][i]];
+    return [(p[0][0]+p[1][0]+p[2][0]+p[3][0])/4, (p[0][1]+p[1][1]+p[2][1]+p[3][1])/4];
+  }
+
+  // "Bysentrum" i den tenkte regionen
+  var CX = M + 0.62 * (W - 2*M), CY = M + 0.42 * (H - 2*M);
+  function distFromCenter(i, j){
+    var c = cellCenter(i, j);
+    var dx = (c[0]-CX) / (W/2), dy = (c[1]-CY) / (H/2);
+    return Math.sqrt(dx*dx + dy*dy);
+  }
+
+  /* ---- Gammel inndeling: kommuner + kommunebundne prissoner ---- */
+  function kommune(i, j){
+    var c = cellCenter(i, j);
+    var grense = M + (0.40 + 0.06*Math.sin(c[1]/70)) * (W - 2*M);
+    if (c[1] > M + 0.72*(H - 2*M) && c[0] < M + 0.55*(W - 2*M)) return 2;
+    return (c[0] < grense) ? 0 : 1;
+  }
+  function gammelSone(i, j){
+    var k = kommune(i, j);
+    if (k === 0) return 0;                              // kommune A: \u00e9n sone
+    if (k === 2) return 20;                             // kommune C: \u00e9n sone
+    return 10 + (distFromCenter(i, j) < 0.52 ? 0 : 1);  // kommune B: to soner
+  }
+
+  /* ---- Ny inndeling: klynger av grunnkretser, størrelse etter avstand ---- */
+  function nyInndeling(boligtype){
+    var cfg = {
+      leilighet: {r1: 0.32, r2: 0.62, s1: 1, s2: 4, s3: 20},
+      smaahus:   {r1: 0.26, r2: 0.58, s1: 2, s2: 5, s3: 18},
+      enebolig:  {r1: 0.20, r2: 0.52, s1: 2, s2: 6, s3: 16}
+    }[boligtype];
+
+    var order = [];
+    for (var j = 0; j < NY; j++)
+      for (var i = 0; i < NX; i++)
+        order.push({i:i, j:j, d: distFromCenter(i, j)});
+    order.sort(function(a,b){ return a.d - b.d; });
+
+    var group = {};
+    var gid = 0;
+    function key(i,j){ return i + "," + j; }
+    function target(d){ return d < cfg.r1 ? cfg.s1 : (d < cfg.r2 ? cfg.s2 : cfg.s3); }
+
+    order.forEach(function(c){
+      if (group[key(c.i,c.j)] !== undefined) return;
+      var want = target(c.d);
+      var queue = [c], taken = 0;
+      while (queue.length && taken < want){
+        var cur = queue.shift();
+        var k = key(cur.i, cur.j);
+        if (group[k] !== undefined) continue;
+        group[k] = gid;
+        taken++;
+        [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(dxy){
+          var ni = cur.i + dxy[0], nj = cur.j + dxy[1];
+          if (ni >= 0 && ni < NX && nj >= 0 && nj < NY && group[key(ni,nj)] === undefined){
+            queue.push({i:ni, j:nj, d: distFromCenter(ni,nj)});
+          }
+        });
+      }
+      gid++;
+    });
+    return {group: group, count: gid};
+  }
+
+  /* ---- Farger ---- */
+  var GRONNE = ["#00824D","#1A9D49","#66BD96","#9FD8BE","#CDEBDD","#2E8B6A"];
+  function fargeNy(g){ return GRONNE[g % GRONNE.length]; }
+  function fargeGammel(s){
+    var map = {0:"#62919A", 1:"#9CB8C3", 10:"#CEDBE6", 11:"#7FA3AD", 20:"#B7CDD6"};
+    return map[s] || "#CEDBE6";
+  }
+
+  /* ---- Tegning ---- */
+  var svg = document.getElementById("kart");
+  var NS = "http://www.w3.org/2000/svg";
+
+  function tegn(modus, boligtype){
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var groupOf, fill;
+    if (modus === "gammel"){
+      groupOf = function(i,j){ return gammelSone(i,j); };
+      fill = fargeGammel;
+    } else {
+      var ny = nyInndeling(boligtype);
+      groupOf = function(i,j){ return ny.group[i + "," + j]; };
+      fill = fargeNy;
+    }
+
+    for (var j = 0; j < NY; j++){
+      for (var i = 0; i < NX; i++){
+        var p = [pts[j][i], pts[j][i+1], pts[j+1][i+1], pts[j+1][i]];
+        var poly = document.createElementNS(NS, "polygon");
+        poly.setAttribute("points", p.map(function(q){ return q[0] + "," + q[1]; }).join(" "));
+        poly.setAttribute("fill", fill(groupOf(i,j)));
+        poly.setAttribute("stroke", "#ffffff");
+        poly.setAttribute("stroke-width", modus === "ny" ? "0.8" : "0.5");
+        poly.setAttribute("stroke-opacity", modus === "ny" ? "0.55" : "0.25");
+        svg.appendChild(poly);
+      }
+    }
+
+    // Grenser mellom grupper (tykke streker)
+    function strek(a, b){
+      var ln = document.createElementNS(NS, "line");
+      ln.setAttribute("x1", a[0]); ln.setAttribute("y1", a[1]);
+      ln.setAttribute("x2", b[0]); ln.setAttribute("y2", b[1]);
+      ln.setAttribute("stroke", "#274247");
+      ln.setAttribute("stroke-width", "2.2");
+      ln.setAttribute("stroke-linecap", "round");
+      svg.appendChild(ln);
+    }
+    for (var j2 = 0; j2 < NY; j2++){
+      for (var i2 = 0; i2 < NX; i2++){
+        var g0 = groupOf(i2, j2);
+        if (i2 + 1 < NX && groupOf(i2+1, j2) !== g0) strek(pts[j2][i2+1], pts[j2+1][i2+1]);
+        if (j2 + 1 < NY && groupOf(i2, j2+1) !== g0) strek(pts[j2+1][i2], pts[j2+1][i2+1]);
+      }
+    }
+
+    var ramme = document.createElementNS(NS, "rect");
+    ramme.setAttribute("x", M); ramme.setAttribute("y", M);
+    ramme.setAttribute("width", W - 2*M); ramme.setAttribute("height", H - 2*M);
+    ramme.setAttribute("fill", "none");
+    ramme.setAttribute("stroke", "#274247");
+    ramme.setAttribute("stroke-width", "2.2");
+    svg.appendChild(ramme);
+
+    var sirkel = document.createElementNS(NS, "circle");
+    sirkel.setAttribute("cx", CX); sirkel.setAttribute("cy", CY);
+    sirkel.setAttribute("r", "5");
+    sirkel.setAttribute("fill", "#274247");
+    sirkel.setAttribute("stroke", "#fff");
+    sirkel.setAttribute("stroke-width", "2");
+    svg.appendChild(sirkel);
+    var lbl = document.createElementNS(NS, "text");
+    lbl.setAttribute("x", CX + 10); lbl.setAttribute("y", CY + 4);
+    lbl.setAttribute("font-size", "12");
+    lbl.setAttribute("font-weight", "700");
+    lbl.setAttribute("fill", "#274247");
+    lbl.setAttribute("stroke", "#ffffff");
+    lbl.setAttribute("stroke-width", "3");
+    lbl.setAttribute("paint-order", "stroke");
+    lbl.textContent = "Bysentrum";
+    svg.appendChild(lbl);
+  }
+
+  /* ---- Legende og mikrotekst ---- */
+  var legende = document.getElementById("legende");
+  var mikro = document.getElementById("mikrotekst");
+  var btNavn = {enebolig: "eneboliger", smaahus: "småhus", leilighet: "leiligheter"};
+
+  function oppdaterTekst(modus, boligtype){
+    if (modus === "gammel"){
+      legende.innerHTML =
+        '<span><i style="background:#62919A"></i>Kommune A (\u00e9n sone)</span>' +
+        '<span><i style="background:#CEDBE6"></i>Kommune B \u2013 sentral sone</span>' +
+        '<span><i style="background:#7FA3AD"></i>Kommune B \u2013 ytre sone</span>' +
+        '<span><i style="background:#B7CDD6"></i>Kommune C</span>' +
+        '<span>Tykk strek: sonegrense</span>';
+      mikro.innerHTML = "<b>Gammel inndeling:</b> Få og store soner, bundet til kommunegrensene. " +
+        "Sonene kan ikke krysse en kommunegrense – selv der boligmarkedet gjør det.";
+    } else {
+      legende.innerHTML =
+        '<span><i style="background:#00824D"></i></span>' +
+        '<span><i style="background:#66BD96"></i></span>' +
+        '<span><i style="background:#CDEBDD"></i>Beregningsområder (fargene skiller naboområder)</span>' +
+        '<span>Tykk strek: områdegrense</span>';
+      mikro.innerHTML = "<b>Ny inndeling for " + btNavn[boligtype] + ":</b> " +
+        "I sentrum er det mange salg – små områder gir presisjon. " +
+        "I omlandet er det færre salg – større områder gir sikkerhet. " +
+        "Bytt boligtype og se at inndelingen endrer seg: hver boligtype har sitt eget kart.";
+    }
+  }
+
+  /* ---- Tilstand og knapper ---- */
+  var modus = "gammel";
+  var boligtype = "leilighet";
+
+  var btnGammel = document.getElementById("btn-gammel");
+  var btnNy = document.getElementById("btn-ny");
+  var btKnapper = Array.prototype.slice.call(document.querySelectorAll("[data-boligtype]"));
+
+  function render(){
+    btnGammel.setAttribute("aria-pressed", String(modus === "gammel"));
+    btnNy.setAttribute("aria-pressed", String(modus === "ny"));
+    btKnapper.forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-boligtype") === boligtype));
+    });
+    tegn(modus, boligtype);
+    oppdaterTekst(modus, boligtype);
+  }
+
+  btnGammel.addEventListener("click", function(){ modus = "gammel"; render(); });
+  btnNy.addEventListener("click", function(){ modus = "ny"; render(); });
+  btKnapper.forEach(function(b){
+    b.addEventListener("click", function(){
+      boligtype = b.getAttribute("data-boligtype");
+      if (modus === "gammel") modus = "ny";
+      render();
+    });
+  });
+
+  render();
+
+  /* ---------- Modellbygger ---------- */
+  var trinn = Array.prototype.slice.call(document.querySelectorAll(".flyt-trinn"));
+  var piler = Array.prototype.slice.call(document.querySelectorAll(".flyt-pil"));
+  var aktiv = 0;
+  var nesteBtn = document.getElementById("neste-trinn");
+  var nullBtn = document.getElementById("nullstill-trinn");
+
+  function visTrinn(){
+    trinn.forEach(function(t, idx){ t.classList.toggle("aktiv", idx < aktiv); });
+    piler.forEach(function(p, idx){ p.classList.toggle("aktiv", idx < aktiv - 1); });
+    nesteBtn.disabled = aktiv >= trinn.length;
+    nesteBtn.textContent = aktiv >= trinn.length ? "Alle trinn vist" :
+      (aktiv === 0 ? "Vis første trinn" : "Vis neste trinn");
+  }
+  nesteBtn.addEventListener("click", function(){
+    if (aktiv < trinn.length){ aktiv++; visTrinn(); }
+  });
+  nullBtn.addEventListener("click", function(){ aktiv = 0; visTrinn(); });
+  visTrinn();
+})();
+</script>
+</body>
+</html>

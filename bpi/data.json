@@ -1,0 +1,188 @@
+{
+  "meta": {
+    "kilde": "SSB modell for beregning av boligformue, koeffisientleveranse skatteår 2024 (prod 2025-05-30)",
+    "formel": "totalverdi = areal × exp(konstantledd + log_areal·ln(areal) + aldersledd + grunnkrets_koef) × korreksjonsfaktor",
+    "arealtype": "p-rom (primærrom)",
+    "aldersgrupper": {
+      "1": "Nyere (referanse)",
+      "2": "Eldre",
+      "3": "Middels gammel",
+      "4": "Eldst"
+    },
+    "forbehold": "Anslag fra statistisk modell, ikke takst. Stedsnavn angir representativt prisnivå."
+  },
+  "nabolag": {
+    "0301-hoy": {
+      "grunnkrets": "03010401",
+      "kommune": "Oslo",
+      "navn": "Indre by vest (høyt prisnivå)",
+      "boligtype": {
+        "1": {
+          "konstantledd": 11.019478,
+          "log_areal": -0.308565,
+          "alder": {
+            "1": 0.0,
+            "2": -0.099102,
+            "3": -0.180944,
+            "4": -0.06824
+          },
+          "grunnkrets_koef": 2.047395,
+          "korreksjonsfaktor": 1.015917
+        },
+        "2": {
+          "konstantledd": 12.917325,
+          "log_areal": -0.338561,
+          "alder": {
+            "1": 0.0,
+            "2": 0.067992,
+            "3": 0.104585,
+            "4": 0.119718
+          },
+          "grunnkrets_koef": 0.449392,
+          "korreksjonsfaktor": 1.009251
+        },
+        "3": {
+          "konstantledd": 11.724953,
+          "log_areal": 0.048377,
+          "alder": {
+            "1": 0.0,
+            "2": -0.091465,
+            "3": -0.1268,
+            "4": -0.1513
+          },
+          "grunnkrets_koef": 0.108444,
+          "korreksjonsfaktor": 1.010022
+        }
+      }
+    },
+    "0301-mid": {
+      "grunnkrets": "03012208",
+      "kommune": "Oslo",
+      "navn": "Indre by øst (midlere prisnivå)",
+      "boligtype": {
+        "1": {
+          "konstantledd": 13.35205,
+          "log_areal": -0.376442,
+          "alder": {
+            "1": 0.0,
+            "2": -0.045452,
+            "3": -0.070054,
+            "4": -0.055465
+          },
+          "grunnkrets_koef": 0.051117,
+          "korreksjonsfaktor": 1.017456
+        },
+        "2": {
+          "konstantledd": 13.308525,
+          "log_areal": -0.335636,
+          "alder": {
+            "1": 0.0,
+            "2": -0.088188,
+            "3": -0.080307,
+            "4": -0.132515
+          },
+          "grunnkrets_koef": -0.028074,
+          "korreksjonsfaktor": 1.008471
+        },
+        "3": {
+          "konstantledd": 12.877772,
+          "log_areal": -0.310086,
+          "alder": {
+            "1": 0.0,
+            "2": -0.033762,
+            "3": -0.073801,
+            "4": -0.104105
+          },
+          "grunnkrets_koef": 0.0,
+          "korreksjonsfaktor": 1.007052
+        }
+      }
+    },
+    "0301-lav": {
+      "grunnkrets": "03014123",
+      "kommune": "Oslo",
+      "navn": "Groruddalen (lavere prisnivå)",
+      "boligtype": {
+        "1": {
+          "konstantledd": 13.803756,
+          "log_areal": -0.482019,
+          "alder": {
+            "1": 0.0,
+            "2": -0.045437,
+            "3": -0.149491,
+            "4": -0.145952
+          },
+          "grunnkrets_koef": -0.056145,
+          "korreksjonsfaktor": 1.010998
+        },
+        "2": {
+          "konstantledd": 13.385929,
+          "log_areal": -0.4006,
+          "alder": {
+            "1": 0.0,
+            "2": -0.071769,
+            "3": -0.175325,
+            "4": -0.188553
+          },
+          "grunnkrets_koef": -0.088227,
+          "korreksjonsfaktor": 1.008157
+        },
+        "3": {
+          "konstantledd": 13.939861,
+          "log_areal": -0.304026,
+          "alder": {
+            "1": 0.0,
+            "2": -0.047723,
+            "3": -0.935366,
+            "4": -0.935366
+          },
+          "grunnkrets_koef": -1.239427,
+          "korreksjonsfaktor": 1.013233
+        }
+      }
+    },
+    "3201-baerum": {
+      "grunnkrets": "32010701",
+      "kommune": "Bærum",
+      "navn": "Bærum (typisk prisnivå)",
+      "boligtype": {
+        "1": {
+          "konstantledd": 13.028889,
+          "log_areal": -0.314024,
+          "alder": {
+            "1": 0.0,
+            "2": 0.04761,
+            "3": -0.12914,
+            "4": -0.063575
+          },
+          "grunnkrets_koef": -0.17209,
+          "korreksjonsfaktor": 1.014898
+        },
+        "2": {
+          "konstantledd": 13.440833,
+          "log_areal": -0.389667,
+          "alder": {
+            "1": 0.0,
+            "2": -0.028273,
+            "3": -0.068805,
+            "4": -0.151472
+          },
+          "grunnkrets_koef": -0.099809,
+          "korreksjonsfaktor": 1.005544
+        },
+        "3": {
+          "konstantledd": 12.474684,
+          "log_areal": -0.20846,
+          "alder": {
+            "1": 0.0,
+            "2": -0.249091,
+            "3": -0.270935,
+            "4": -0.265743
+          },
+          "grunnkrets_koef": 0.0,
+          "korreksjonsfaktor": 1.005144
+        }
+      }
+    }
+  }
+}

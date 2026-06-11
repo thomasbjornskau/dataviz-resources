@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test selv: slik beregnes boligverdien</title>
+<meta name="description" content="Interaktiv forklaring av SSBs modell for boligverdi. Test verdikalkulatoren med ekte koeffisienter for Oslo og Bærum.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#274247;
+  --green:#00824D;
+  --green-dark:#005C36;
+  --green-tint:#D7EEE3;
+  --bg:#EFF8FA;
+  --border:#C4DCDD;
+  --white:#FFFFFF;
+  --grey:#5B7378;
+  --old:#8AA2A7;
+  --maxw:48rem;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+body{margin:0;font-family:"Open Sans",Arial,sans-serif;font-size:1.0625rem;line-height:1.65;color:var(--dark);background:var(--white)}
+h1,h2,h3{line-height:1.25;font-weight:700;color:var(--dark)}
+h1{font-size:clamp(1.7rem,4.5vw,2.5rem);margin:0 0 .75rem}
+h2{font-size:clamp(1.3rem,3vw,1.65rem);margin:0 0 .85rem}
+h3{font-size:1.1rem;margin:0 0 .5rem}
+p{margin:0 0 1.1rem}
+a{color:var(--green);text-underline-offset:2px}
+a:hover{color:var(--green-dark)}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:2px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.25rem}
+.skip{position:absolute;left:-999px}
+.skip:focus{position:static;display:inline-block;margin:.5rem;color:var(--green)}
+
+header.hero{background:var(--bg);padding:3rem 0 2.25rem;border-bottom:1px solid var(--border)}
+.kicker{font-size:.82rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--green);margin:0 0 .9rem}
+.ingress{font-size:1.18rem;line-height:1.6;max-width:40rem}
+
+.boks{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.15rem 1.4rem;margin:2rem 0}
+.boks h3{margin-top:0}
+.boks p:last-child{margin-bottom:0}
+
+section{padding:2.75rem 0}
+section:nth-of-type(even){background:var(--bg)}
+.eyebrow{display:inline-block;font-weight:700;color:var(--green);font-size:.9rem;margin-bottom:.3rem}
+
+/* Generisk interaktiv ramme */
+.modul{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:1.5rem 0}
+section:nth-of-type(odd) .modul{background:var(--bg)}
+.modul h3{margin-top:0}
+
+/* Knapperader */
+.felt{margin:0 0 1.15rem}
+.felt > .merk{display:block;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin:0 0 .45rem}
+.btn-rad{display:flex;flex-wrap:wrap;gap:.5rem}
+.btn{font:inherit;font-weight:600;border:2px solid var(--green);border-radius:6px;background:var(--white);color:var(--green);padding:.4rem 1rem;cursor:pointer}
+.btn:hover{background:var(--green-tint)}
+.btn[aria-pressed="true"]{background:var(--green);color:var(--white)}
+
+/* Slidere */
+.slider-rad{display:flex;align-items:center;gap:1rem}
+input[type=range]{flex:1;accent-color:var(--green);height:1.4rem}
+.slider-verdi{font-weight:700;font-variant-numeric:tabular-nums;min-width:5.5rem;text-align:right;color:var(--dark)}
+
+/* Resultatkort */
+.resultat{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.25rem 0 0}
+@media (max-width:560px){.resultat{grid-template-columns:1fr}}
+.res-kort{background:var(--green-tint);border:1px solid var(--green);border-radius:8px;padding:1rem 1.2rem}
+.res-kort .merk{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--green-dark);margin:0 0 .25rem}
+.res-tall{font-size:1.9rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--dark);line-height:1.1}
+.res-enhet{font-size:.9rem;color:var(--grey);font-weight:400}
+
+/* Formelvisning */
+.formel{margin:1.25rem 0 0;padding:1rem 1.2rem;background:var(--white);border:1px dashed var(--border);border-radius:8px;font-size:.95rem;overflow-x:auto}
+section:nth-of-type(odd) .formel{background:var(--bg)}
+.formel code{font-family:"Open Sans",monospace;white-space:nowrap}
+.formel .ledd{display:inline-block;padding:.1rem .3rem;border-radius:4px;font-weight:700}
+.ledd-konst{background:#E4F4EC;color:var(--green-dark)}
+.ledd-areal{background:#D9E8F0;color:#274274}
+.ledd-alder{background:#F3E3D2;color:#9F6715}
+.ledd-gk{background:#E9DEF6;color:#5B3EA8}
+.ledd-korr{background:#EFE2E9;color:#A3136C}
+.formel-forklaring{font-size:.85rem;color:var(--grey);margin:.85rem 0 0;line-height:1.5}
+.formel-forklaring .ledd{font-size:.8rem}
+
+/* Kart */
+.kart-flex{display:grid;grid-template-columns:1fr;gap:1rem}
+#kart{width:100%;height:auto;display:block;background:var(--white);border-radius:6px;border:1px solid var(--border)}
+section:nth-of-type(odd) #kart{background:var(--bg)}
+.kart-nabolag{cursor:pointer;transition:opacity .15s}
+.kart-nabolag:hover{opacity:.82}
+.kart-hint{font-size:.9rem;color:var(--grey);margin:.5rem 0 0}
+
+/* Gammel/ny mini */
+.gn-veksle{display:flex;gap:.5rem;margin:0 0 1rem}
+.gn-figur{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:560px){.gn-figur{grid-template-columns:1fr}}
+.gn-rute{border-radius:8px;padding:1rem;text-align:center;border:1px solid var(--border)}
+.gn-rute h4{margin:0 0 .6rem;font-size:.95rem}
+
+/* Begrep */
+details.begrep{border:1px solid var(--border);border-radius:8px;background:var(--white);margin:.85rem 0}
+section:nth-of-type(even) details.begrep{background:var(--white)}
+details.begrep summary{cursor:pointer;list-style:none;padding:.75rem 1rem;font-weight:700;color:var(--green);display:flex;gap:.55rem;align-items:baseline}
+details.begrep summary::-webkit-details-marker{display:none}
+details.begrep summary::before{content:"+";font-weight:700;font-size:1.05rem}
+details.begrep[open] summary::before{content:"–"}
+details.begrep .mer{padding:0 1rem 1rem;font-size:.95rem;border-top:1px dashed var(--border);padding-top:.75rem}
+
+.viktig{background:var(--green-tint);border:1px solid var(--green);border-radius:8px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.viktig h3{margin-top:0;color:var(--green-dark)}
+.viktig p:last-child{margin-bottom:0}
+
+.lasting{padding:2rem;text-align:center;color:var(--grey)}
+
+footer{background:var(--dark);color:var(--white);padding:2.25rem 0;font-size:.92rem;margin-top:1rem}
+footer strong{color:var(--white)}
+footer .liten{font-size:.85rem;opacity:.85}
+</style>
+</head>
+<body>
+<a class="skip" href="#kalkulator">Hopp til kalkulatoren</a>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Test selv</p>
+    <h1>Slik beregnes verdien av boligen din</h1>
+    <p class="ingress">Boligverdien i skattemeldingen er et anslag fra en statistisk modell – ikke
+    en takst, og ikke satt av kunstig intelligens. Her kan du selv prøve modellen med ekte
+    koeffisienter for Oslo og Bærum, og se nøyaktig hva som skjer i hvert trinn.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="boks" role="note">
+    <h3>Hvem gjør hva?</h3>
+    <p><strong>SSB</strong> lager og dokumenterer modellen. <strong>Finansdepartementet</strong>
+    bestemmer hvordan anslagene brukes i skatten. <strong>Skatteetaten</strong> svarer på spørsmål
+    om skattekort og skatt. Denne siden handler om modellen – ikke om skatteberegning. En beregnet
+    boligverdi er ikke det samme som skatt.</p>
+  </div>
+</div>
+
+<main>
+<section id="kalkulator-seksjon">
+  <div class="wrap">
+    <span class="eyebrow">Hovedverktøy</span>
+    <h2>Verdikalkulatoren</h2>
+    <p>Velg et nabolag, en boligtype, et areal og en alder. Kalkulatoren bruker de faktiske
+    koeffisientene fra SSBs modell og regner ut kvadratmeterpris og samlet boligverdi mens du
+    justerer. Legg merke til at det er ren regning – hvert tall i formelen kommer fra modellen.</p>
+
+    <div class="modul" id="kalkulator">
+      <div class="felt">
+        <span class="merk">Nabolag</span>
+        <div class="btn-rad" id="velg-nabolag" role="group" aria-label="Velg nabolag"></div>
+      </div>
+      <div class="felt">
+        <span class="merk">Boligtype</span>
+        <div class="btn-rad" id="velg-boligtype" role="group" aria-label="Velg boligtype">
+          <button type="button" class="btn" data-bt="1" aria-pressed="false">Enebolig</button>
+          <button type="button" class="btn" data-bt="2" aria-pressed="false">Småhus</button>
+          <button type="button" class="btn" data-bt="3" aria-pressed="true">Leilighet</button>
+        </div>
+      </div>
+      <div class="felt">
+        <span class="merk">Areal (p-rom)</span>
+        <div class="slider-rad">
+          <input type="range" id="areal" min="25" max="250" step="5" value="70"
+                 aria-label="Areal i kvadratmeter primærrom">
+          <span class="slider-verdi" id="areal-verdi">70 m²</span>
+        </div>
+      </div>
+      <div class="felt">
+        <span class="merk">Alder</span>
+        <div class="btn-rad" id="velg-alder" role="group" aria-label="Velg aldersgruppe">
+          <button type="button" class="btn" data-ald="1" aria-pressed="true">Nyere</button>
+          <button type="button" class="btn" data-ald="3" aria-pressed="false">Middels</button>
+          <button type="button" class="btn" data-ald="2" aria-pressed="false">Eldre</button>
+          <button type="button" class="btn" data-ald="4" aria-pressed="false">Eldst</button>
+        </div>
+      </div>
+
+      <div class="resultat" aria-live="polite">
+        <div class="res-kort">
+          <p class="merk">Kvadratmeterpris</p>
+          <p class="res-tall"><span id="ut-kvm">–</span> <span class="res-enhet">kr/m²</span></p>
+        </div>
+        <div class="res-kort">
+          <p class="merk">Beregnet boligverdi</p>
+          <p class="res-tall"><span id="ut-total">–</span> <span class="res-enhet">kr</span></p>
+        </div>
+      </div>
+
+      <div class="formel">
+        <code>verdi = areal ×
+          e<sup>(<span class="ledd ledd-konst" id="f-konst">·</span>
+          + <span class="ledd ledd-areal" id="f-areal">·</span>
+          + <span class="ledd ledd-alder" id="f-alder">·</span>
+          + <span class="ledd ledd-gk" id="f-gk">·</span>)</sup>
+          × <span class="ledd ledd-korr" id="f-korr">·</span></code>
+        <p class="formel-forklaring">
+          <span class="ledd ledd-konst">konstantledd</span> grunnivå for boligtypen ·
+          <span class="ledd ledd-areal">arealledd</span> log_areal × ln(areal) – prisen per m² synker med størrelsen ·
+          <span class="ledd ledd-alder">aldersledd</span> justering for alder ·
+          <span class="ledd ledd-gk">grunnkretsledd</span> det lokale prisnivået ·
+          <span class="ledd ledd-korr">korreksjon</span> tilbakeregning fra logaritmisk form
+        </p>
+      </div>
+    </div>
+
+    <p>Bytt mellom nabolagene og se hvordan <em>grunnkretsleddet</em> alene flytter verdien kraftig,
+    selv om boligen er nøyaktig den samme. Det er dette leddet den nye modellen beregner mer presist
+    enn før – fordi det nå gjelder et lite, lokalt område i stedet for en stor kommunesone.</p>
+  </div>
+</section>
+
+<section id="kart-seksjon">
+  <div class="wrap">
+    <span class="eyebrow">Geografi</span>
+    <h2>Det lokale prisnivået</h2>
+    <p>Klikk på et nabolag i kartet for å sende det rett inn i kalkulatoren over. Fargen viser
+    grunnkretsleddet: jo mørkere grønt, jo høyere lokalt prisnivå. Forskjellen mellom nabolagene er
+    ekte – hentet fra modellens koeffisienter.</p>
+
+    <div class="modul">
+      <div class="kart-flex">
+        <svg id="kart" viewBox="0 0 100 72" role="img"
+             aria-label="Skjematisk kart over fire nabolag i Oslo og Bærum, fargelagt etter lokalt prisnivå. Klikkbart."></svg>
+        <p class="kart-hint" id="kart-hint">Tips: klikk et nabolag for å bruke det i kalkulatoren.</p>
+      </div>
+    </div>
+
+    <p class="formel-forklaring" style="font-size:.85rem">Kartet er skjematisk – det viser ikke ekte
+    grunnkretsgrenser, men plasseringen av nabolagene relativt til hverandre er omtrentlig riktig.
+    Tallene bak fargene er derimot modellens faktiske koeffisienter.</p>
+  </div>
+</section>
+<section id="gammelny-seksjon">
+  <div class="wrap">
+    <span class="eyebrow">Hva er nytt</span>
+    <h2>Fra grov sone til lokalt område</h2>
+    <p>Den gamle modellen delte landet i store soner bundet til kommunegrensene. Hele Bærum kunne
+    være ett prisområde. Den nye modellen bygger små beregningsområder av grunnkretser, slik at
+    lokale prisforskjeller fanges opp. Trykk for å se kontrasten.</p>
+
+    <div class="modul">
+      <div class="gn-veksle btn-rad" role="group" aria-label="Velg modell">
+        <button type="button" class="btn" id="gn-gammel" aria-pressed="true">Gammel modell</button>
+        <button type="button" class="btn" id="gn-ny" aria-pressed="false">Ny modell</button>
+      </div>
+      <svg id="gn-kart" viewBox="0 0 100 66" role="img"
+           aria-label="Illustrasjon som veksler mellom én stor sone for hele området (gammel modell) og mange små beregningsområder (ny modell)."></svg>
+      <p class="kart-hint" id="gn-tekst"></p>
+    </div>
+
+    <details class="begrep">
+      <summary>Grunnkrets <span style="font-weight:400;color:var(--dark)">– modellens minste byggekloss</span></summary>
+      <p class="mer">Norge har rundt 14 000 grunnkretser. De er langt mer stabile enn kommunegrenser
+      og små nok til å skille nabolag med ulikt prisnivå.</p>
+    </details>
+    <details class="begrep">
+      <summary>Beregningsområde <span style="font-weight:400;color:var(--dark)">– grunnkretser gruppert sammen</span></summary>
+      <p class="mer">Én grunnkrets har ofte for få boligsalg til en sikker beregning. Derfor
+      grupperes nærliggende grunnkretser med likt prisnivå sammen til de har nok salg – mange små
+      områder i sentrum, større områder i utkanten. De rundt 14 000 grunnkretsene blir til om lag
+      1 200 beregningsområder, separat for hver boligtype.</p>
+    </details>
+
+    <div class="viktig">
+      <h3>Maskinlæringen setter ikke verdien</h3>
+      <p>En maskinlæringsmetode brukes bare til å gruppere grunnkretser til beregningsområder – altså
+      til å tegne kartet. Selve boligverdien beregnes med hedonisk regresjon, den samme typen
+      statistisk metode SSB har brukt siden 2009. Det du nettopp regnet ut i kalkulatoren, er
+      regresjon: koeffisienter ganget og lagt sammen. Ingen KI i det trinnet.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Om denne siden.</strong> Pedagogisk prototype fra SSB. Kalkulatoren bruker faktiske
+    koeffisienter fra modellen for skatteår 2024. Kartet er skjematisk. En beregnet boligverdi er et
+    modellanslag, ikke en takst, og ikke det samme som skatt.</p>
+    <p class="liten">Metode: Bø og Nygård, «Nye beregningsområder i boligformuesmodellen» (SSB
+    Notater 2023/3), og Medby og Takle, «Modell for beregning av boligformue». Funksjonsform:
+    ln(kvadratmeterpris) = konstantledd + log_areal·ln(areal) + aldersledd + grunnkretsledd.</p>
+  </div>
+</footer>
+<script>
+(function(){
+  "use strict";
+  var DATA=null, GEO=null;
+  var valgt={nabolag:null, bt:"3", areal:70, ald:"1"};
+
+  var fmt=new Intl.NumberFormat("nb-NO",{maximumFractionDigits:0});
+
+  Promise.all([
+    fetch("data.json").then(function(r){return r.json();}),
+    fetch("grunnkretser.geojson").then(function(r){return r.json();})
+  ]).then(function(res){
+    DATA=res[0]; GEO=res[1];
+    valgt.nabolag=Object.keys(DATA.nabolag)[0];
+    byggNabolagsknapper();
+    tegnKart();
+    tegnGammelNy("gammel");
+    oppdater();
+  }).catch(function(e){
+    document.getElementById("kalkulator").innerHTML=
+      '<p class="lasting">Kunne ikke laste data. På GitHub Pages eller en lokal server '+
+      '(ikke ved å åpne filen direkte) vil kalkulatoren fungere.</p>';
+  });
+
+  /* ---- Nabolagsknapper ---- */
+  function byggNabolagsknapper(){
+    var c=document.getElementById("velg-nabolag");
+    c.innerHTML="";
+    Object.keys(DATA.nabolag).forEach(function(key){
+      var nb=DATA.nabolag[key];
+      var b=document.createElement("button");
+      b.type="button"; b.className="btn"; b.dataset.nb=key;
+      b.setAttribute("aria-pressed", String(key===valgt.nabolag));
+      b.textContent=nb.navn.replace(/ \(.*\)/,"");
+      b.addEventListener("click",function(){ settNabolag(key); });
+      c.appendChild(b);
+    });
+  }
+  function settNabolag(key){
+    valgt.nabolag=key;
+    document.querySelectorAll("#velg-nabolag .btn").forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.nb===key));
+    });
+    document.querySelectorAll(".kart-nabolag").forEach(function(el){
+      el.setAttribute("stroke-width", el.dataset.nb===key ? "1.4" : "0.4");
+      el.setAttribute("stroke", el.dataset.nb===key ? "#274247" : "#FFFFFF");
+    });
+    oppdater();
+  }
+
+  /* ---- Boligtype og alder ---- */
+  document.querySelectorAll("#velg-boligtype .btn").forEach(function(b){
+    b.addEventListener("click",function(){
+      valgt.bt=b.dataset.bt;
+      document.querySelectorAll("#velg-boligtype .btn").forEach(function(x){
+        x.setAttribute("aria-pressed", String(x===b));
+      });
+      oppdater();
+    });
+  });
+  document.querySelectorAll("#velg-alder .btn").forEach(function(b){
+    b.addEventListener("click",function(){
+      valgt.ald=b.dataset.ald;
+      document.querySelectorAll("#velg-alder .btn").forEach(function(x){
+        x.setAttribute("aria-pressed", String(x===b));
+      });
+      oppdater();
+    });
+  });
+  var arealEl=document.getElementById("areal");
+  arealEl.addEventListener("input",function(){
+    valgt.areal=parseInt(arealEl.value,10);
+    document.getElementById("areal-verdi").textContent=valgt.areal+" m²";
+    oppdater();
+  });
+
+  /* ---- Beregning ---- */
+  function oppdater(){
+    if(!DATA) return;
+    var nb=DATA.nabolag[valgt.nabolag];
+    var d=nb.boligtype[valgt.bt];
+    if(!d){ // boligtype mangler for dette nabolaget
+      document.getElementById("ut-kvm").textContent="–";
+      document.getElementById("ut-total").textContent="–";
+      return;
+    }
+    var a=valgt.areal;
+    var arealledd=d.log_areal*Math.log(a);
+    var aldersledd=d.alder[valgt.ald];
+    var lnkvm=d.konstantledd + arealledd + aldersledd + d.grunnkrets_koef;
+    var kvm=Math.exp(lnkvm)*d.korreksjonsfaktor;
+    var total=kvm*a;
+    document.getElementById("ut-kvm").textContent=fmt.format(kvm);
+    document.getElementById("ut-total").textContent=fmt.format(total);
+
+    // Formelledd med tallverdier
+    document.getElementById("f-konst").textContent=d.konstantledd.toFixed(2);
+    document.getElementById("f-areal").textContent=arealledd.toFixed(2);
+    document.getElementById("f-alder").textContent=aldersledd.toFixed(2);
+    document.getElementById("f-gk").textContent=d.grunnkrets_koef.toFixed(2);
+    document.getElementById("f-korr").textContent=d.korreksjonsfaktor.toFixed(3);
+  }
+
+  /* ---- Kart ---- */
+  function kvmFor(key){
+    var b=DATA.nabolag[key].boligtype["3"];
+    if(!b) return 0;
+    return Math.exp(b.konstantledd+b.log_areal*Math.log(70)+b.alder["3"]+b.grunnkrets_koef)*b.korreksjonsfaktor;
+  }
+  function farge(kvm){
+    // Spenn kalibrert mot faktisk kvm-pris i utvalget (~36k..150k)
+    var t=Math.max(0,Math.min(1,(kvm-30000)/(155000-30000)));
+    var lys=[214,238,226], mork=[0,88,52];
+    var r=Math.round(lys[0]+(mork[0]-lys[0])*t);
+    var g=Math.round(lys[1]+(mork[1]-lys[1])*t);
+    var b=Math.round(lys[2]+(mork[2]-lys[2])*t);
+    return "rgb("+r+","+g+","+b+")";
+  }
+  function tegnKart(){
+    var svg=document.getElementById("kart");
+    var NS="http://www.w3.org/2000/svg";
+    // bakgrunn
+    var bg=document.createElementNS(NS,"rect");
+    bg.setAttribute("x",0);bg.setAttribute("y",0);bg.setAttribute("width",100);bg.setAttribute("height",72);
+    bg.setAttribute("fill","#E8F0F2");
+    svg.appendChild(bg);
+
+    GEO.features.forEach(function(f){
+      var key=f.properties.id;
+      var nb=DATA.nabolag[key];
+      var kvm=kvmFor(key);
+      var ring=f.geometry.coordinates[0];
+      var d="M"+ring.map(function(p){return p[0]+","+(72-p[1]);}).join("L")+"Z";
+      var path=document.createElementNS(NS,"path");
+      path.setAttribute("d",d);
+      path.setAttribute("fill",farge(kvm));
+      path.setAttribute("stroke","#FFFFFF");
+      path.setAttribute("stroke-width","0.4");
+      path.setAttribute("class","kart-nabolag");
+      path.dataset.nb=key;
+      path.setAttribute("role","button");
+      path.setAttribute("tabindex","0");
+      path.setAttribute("aria-label",nb.navn+" – klikk for å bruke i kalkulatoren");
+      path.addEventListener("click",function(){ settNabolag(key); flyttTilKalkulator(); });
+      path.addEventListener("keydown",function(e){
+        if(e.key==="Enter"||e.key===" "){ e.preventDefault(); settNabolag(key); }
+      });
+      svg.appendChild(path);
+
+      // etikett
+      var cx=ring.reduce(function(s,p){return s+p[0];},0)/ring.length;
+      var cy=ring.reduce(function(s,p){return s+p[1];},0)/ring.length;
+      var t=document.createElementNS(NS,"text");
+      t.setAttribute("x",cx);t.setAttribute("y",72-cy);
+      t.setAttribute("text-anchor","middle");
+      t.setAttribute("font-size","3");
+      t.setAttribute("font-weight","700");
+      t.setAttribute("fill", kvm>95000 ? "#FFFFFF" : "#274247");
+      t.setAttribute("paint-order","stroke");
+      t.setAttribute("pointer-events","none");
+      t.textContent=f.properties.navn;
+      svg.appendChild(t);
+    });
+    settNabolag(valgt.nabolag);
+
+    // Legende
+    var lx=8, ly=66, lw=40, steps=6;
+    for(var s=0;s<steps;s++){
+      var lkvm=30000+(155000-30000)*(s/(steps-1));
+      var seg=document.createElementNS(NS,"rect");
+      seg.setAttribute("x",lx+s*(lw/steps));seg.setAttribute("y",ly);
+      seg.setAttribute("width",lw/steps);seg.setAttribute("height",2.5);
+      seg.setAttribute("fill",farge(lkvm));seg.setAttribute("pointer-events","none");
+      svg.appendChild(seg);
+    }
+    function legtekst(x,anchor,txt){
+      var e=document.createElementNS(NS,"text");
+      e.setAttribute("x",x);e.setAttribute("y",ly+5.6);e.setAttribute("text-anchor",anchor);
+      e.setAttribute("font-size","2.6");e.setAttribute("fill","#5B7378");e.setAttribute("pointer-events","none");
+      e.textContent=txt;svg.appendChild(e);
+    }
+    legtekst(lx,"start","lavere prisnivå");
+    legtekst(lx+lw,"end","høyere");
+  }
+  function flyttTilKalkulator(){
+    var hint=document.getElementById("kart-hint");
+    var nb=DATA.nabolag[valgt.nabolag];
+    hint.textContent="Valgt: "+nb.navn+". Se kalkulatoren over.";
+  }
+
+  /* ---- Gammel/ny mini ---- */
+  function tegnGammelNy(modus){
+    var svg=document.getElementById("gn-kart");
+    var NS="http://www.w3.org/2000/svg";
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var bg=document.createElementNS(NS,"rect");
+    bg.setAttribute("width",100);bg.setAttribute("height",66);bg.setAttribute("fill","#E8F0F2");
+    svg.appendChild(bg);
+
+    function rute(x,y,w,h,fill){
+      var r=document.createElementNS(NS,"rect");
+      r.setAttribute("x",x);r.setAttribute("y",y);r.setAttribute("width",w);r.setAttribute("height",h);
+      r.setAttribute("fill",fill);r.setAttribute("stroke","#274247");r.setAttribute("stroke-width","0.5");
+      svg.appendChild(r);
+    }
+    if(modus==="gammel"){
+      rute(10,8,80,44,"#9FD8BE");
+      var t=document.createElementNS(NS,"text");
+      t.setAttribute("x",50);t.setAttribute("y",32);t.setAttribute("text-anchor","middle");
+      t.setAttribute("font-size","4.5");t.setAttribute("font-weight","700");t.setAttribute("fill","#274247");
+      t.textContent="Ett prisområde for hele Bærum";
+      svg.appendChild(t);
+    }else{
+      var farger=["#CDEBDD","#9FD8BE","#66BD96","#1A9D49","#00824D","#5FAE8C","#73BFA0","#3D9B77"];
+      var i=0;
+      for(var gy=0;gy<3;gy++){
+        for(var gx=0;gx<5;gx++){
+          // sentrum (midten) får mindre ruter -> tegn som flere små i midtcellen
+          rute(10+gx*16,8+gy*15,16,15,farger[(i++)%farger.length]);
+        }
+      }
+      var t2=document.createElementNS(NS,"text");
+      t2.setAttribute("x",50);t2.setAttribute("y",62);t2.setAttribute("text-anchor","middle");
+      t2.setAttribute("font-size","3.4");t2.setAttribute("fill","#5B7378");
+      t2.textContent="Mange små beregningsområder med ulikt prisnivå";
+      svg.appendChild(t2);
+    }
+    document.getElementById("gn-tekst").textContent = modus==="gammel"
+      ? "Gammel modell: én stor sone bundet til kommunen. Lokale forskjeller jevnes ut."
+      : "Ny modell: mange små beregningsområder. Hvert nabolag får sitt eget prisnivå.";
+  }
+  document.getElementById("gn-gammel").addEventListener("click",function(){
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("gn-ny").setAttribute("aria-pressed","false");
+    tegnGammelNy("gammel");
+  });
+  document.getElementById("gn-ny").addEventListener("click",function(){
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("gn-gammel").setAttribute("aria-pressed","false");
+    tegnGammelNy("ny");
+  });
+})();
+</script>
+</body>
+</html>

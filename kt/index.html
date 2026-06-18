@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI og arbeidsmarkedet — en interaktiv modellberegning</title>
+<style>
+  :root {
+    --ink:        #11181f;
+    --ink-soft:   #3a4750;
+    --paper:      #f6f4ef;
+    --panel:      #ffffff;
+    --line:       #d9d4c8;
+    --ssb:        #1a4d8f;   /* forankring: KVARTS-blått */
+    --ssb-deep:   #0f2f59;
+    --amber:      #c47b14;   /* illustrativt / antatt */
+    --amber-soft: #e8b15c;
+    --grid:       #e7e2d6;
+    --bnp:        #2c7a5b;
+    --danger:     #a23b2e;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    line-height: 1.6;
+    font-size: 18px;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- typografi ---- */
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ssb); font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(30px, 5.5vw, 52px);
+    line-height: 1.05; letter-spacing: -.015em;
+    margin: .35em 0 .3em; font-weight: 700;
+  }
+  h2 {
+    font-size: clamp(22px, 3.4vw, 30px);
+    line-height: 1.15; letter-spacing: -.01em;
+    margin: 2.6em 0 .5em; font-weight: 700;
+  }
+  .lede { font-size: clamp(19px, 2.4vw, 23px); color: var(--ink-soft); max-width: 40ch; }
+  p { max-width: 66ch; }
+  .src { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--ink-soft); }
+
+  /* ---- hero ---- */
+  header.hero { padding: 64px 0 8px; border-bottom: 1px solid var(--line); }
+
+  /* ---- tre effekter ---- */
+  .effects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 28px 0 8px; }
+  .effect {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 2px;
+    padding: 18px 16px; position: relative;
+  }
+  .effect .sign { font-family: ui-monospace, Menlo, monospace; font-weight: 700; font-size: 22px; }
+  .effect.up   .sign { color: var(--danger); }
+  .effect.down .sign { color: var(--bnp); }
+  .effect h3 { margin: 6px 0 4px; font-size: 17px; }
+  .effect p  { font-size: 14.5px; color: var(--ink-soft); margin: 0; line-height: 1.45; }
+  @media (max-width: 680px){ .effects { grid-template-columns: 1fr; } }
+
+  /* ---- simulator ---- */
+  .sim {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 3px;
+    margin: 32px 0; overflow: hidden;
+  }
+  .sim-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; padding: 18px 22px 0; flex-wrap: wrap;
+  }
+  .sim-head h2 { margin: 0; font-size: 21px; }
+  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+  .toggle button {
+    font: inherit; font-size: 14px; border: 0; background: var(--paper);
+    padding: 7px 14px; cursor: pointer; color: var(--ink-soft);
+  }
+  .toggle button[aria-pressed="true"] { background: var(--ssb); color: #fff; }
+  .chart-area { padding: 8px 14px 0; }
+  svg { display: block; width: 100%; height: auto; }
+  .controls { padding: 6px 22px 24px; }
+
+  .slider-row { margin: 18px 0 6px; }
+  .slider-row label { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; }
+  .slider-row .val { font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: var(--ssb); }
+  input[type=range] { width: 100%; margin: 8px 0 2px; accent-color: var(--ssb); }
+  .hint { font-size: 13px; color: var(--ink-soft); margin: 2px 0 0; }
+
+  .switches { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; margin-top: 18px; }
+  @media (max-width: 680px){ .switches { grid-template-columns: 1fr; } }
+  .switch { display: flex; gap: 11px; align-items: flex-start; padding: 11px 0; border-top: 1px solid var(--grid); }
+  .switch input { margin-top: 5px; width: 17px; height: 17px; accent-color: var(--amber); flex: none; }
+  .switch .tt { font-size: 15px; }
+  .switch .tt b { font-weight: 700; }
+  .switch.modelled input { accent-color: var(--ssb); }
+  .switch .tag {
+    font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: .04em;
+    padding: 1px 6px; border-radius: 2px; vertical-align: middle; margin-left: 6px; white-space: nowrap;
+  }
+  .tag.kvarts { background: #e7eef7; color: var(--ssb-deep); }
+  .tag.illus  { background: #f6ecd7; color: var(--amber); }
+  .switch p { font-size: 13px; color: var(--ink-soft); margin: 3px 0 0; }
+
+  /* readout */
+  .readout { display: flex; gap: 26px; flex-wrap: wrap; padding: 16px 22px; background: var(--paper); border-top: 1px solid var(--line); }
+  .ro { }
+  .ro .k { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+  .ro .v { font-size: 26px; font-weight: 700; line-height: 1.1; }
+  .ro .v small { font-size: 14px; font-weight: 400; color: var(--ink-soft); }
+
+  /* live-badge */
+  .live { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-soft); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-soft); }
+  .dot.ok { background: var(--bnp); }
+  .live.ok .dot { animation: pulse 2.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* caveats */
+  .caveats { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 2px; padding: 8px 22px; margin: 16px 0; }
+  .caveats summary { cursor: pointer; font-weight: 700; padding: 12px 0; font-size: 16px; }
+  .caveats ul { margin: 0 0 14px; padding-left: 20px; }
+  .caveats li { font-size: 15px; color: var(--ink-soft); margin: 7px 0; max-width: 64ch; }
+
+  footer { border-top: 1px solid var(--line); margin-top: 56px; padding: 28px 0 70px; }
+  footer p { font-size: 13.5px; color: var(--ink-soft); max-width: 70ch; }
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--ink-soft); padding: 4px 22px 16px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 22px; height: 0; border-top-width: 3px; border-top-style: solid; }
+
+  @media (prefers-reduced-motion: reduce){ * { animation: none !important; transition: none !important; } }
+  :focus-visible { outline: 2px solid var(--ssb); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Økonomiske analyser 3/2026 · interaktiv</div>
+    <h1>Når maskinen blir mer produktiv, hva skjer med jobbene?</h1>
+    <p class="lede">Samme produktivitetsløft drar arbeidsledigheten opp på kort sikt og verdiskapingen opp på lang sikt. Skru på antakelsene og se hvor de havner.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <p style="margin-top:28px">Økt bruk av kunstig intelligens virker inn på arbeidsmarkedet gjennom tre kanaler som trekker i ulik retning. SSBs modellberegning med <b>KVARTS</b> fanger bare én av dem — produktivitetskanalen. De to andre er holdt utenfor. Det er verdt å ha klart for seg når tallene leses.</p>
+
+  <div class="effects">
+    <div class="effect up">
+      <div class="sign">↑ ledighet</div>
+      <h3>Automatisering</h3>
+      <p>KI overtar oppgaver som før ble gjort av folk. Isolert sett færre i arbeid.</p>
+    </div>
+    <div class="effect down">
+      <div class="sign">↓ så ↑</div>
+      <h3>Produktivitet</h3>
+      <p>Frigjort arbeidskraft løfter produksjon per time. Demper de negative virkningene.</p>
+    </div>
+    <div class="effect down">
+      <div class="sign">↓ ledighet</div>
+      <h3>Innovasjon</h3>
+      <p>Høyere produktivitet → lønn → etterspørsel → nye næringer og oppgaver.</p>
+    </div>
+  </div>
+  <p class="src">Acemoglu (2025); Acemoglu og Restrepo (2018)</p>
+
+  <h2>Modellberegningen</h2>
+  <p>KVARTS-beregningen lar økt KI-bruk gi høyere vekst i total faktorproduktivitet (TFP) i markedsrettete næringer, faset inn gradvis 2025–2034. Dra i glideren mellom SSBs to forløp: et lavt anslag (Acemoglu 2025, ~0,7 % over ti år) og et høyt (Aghion og Bunel 2024, ~7 %).</p>
+
+  <div class="sim">
+    <div class="sim-head">
+      <h2 id="chartTitle">Avvik i AKU-ledigheten fra referansebanen</h2>
+      <div class="toggle" role="group" aria-label="Velg figur">
+        <button id="btnAku" aria-pressed="true">Ledighet</button>
+        <button id="btnBnp" aria-pressed="false">BNP Fastlands-Norge</button>
+      </div>
+    </div>
+
+    <div class="chart-area">
+      <svg id="chart" viewBox="0 0 800 380" role="img" aria-label="Graf over avvik fra referansebanen 2024–2034"></svg>
+    </div>
+    <div class="legend">
+      <span><i class="swatch" style="border-top-color:var(--ssb)"></i> KVARTS-forankret (produktivitet)</span>
+      <span><i class="swatch" style="border-top-color:var(--amber); border-top-style:dashed"></i> Illustrativt påslag (dine antakelser)</span>
+    </div>
+
+    <div class="controls">
+      <div class="slider-row">
+        <label for="tfp">TFP-effekt av KI <span class="val" id="tfpVal">Lavt anslag · 0,7 %</span></label>
+        <input type="range" id="tfp" min="0" max="100" value="0" step="1" aria-describedby="tfpHint">
+        <p class="hint" id="tfpHint">Glir kontinuerlig fra SSBs lave til høye forløp. Bare denne kanalen er beregnet i KVARTS.</p>
+      </div>
+
+      <div class="switches">
+        <div class="switch modelled">
+          <input type="checkbox" id="swProd" checked disabled>
+          <div class="tt">
+            <b>Produktivitetskanalen</b><span class="tag kvarts">KVARTS</span>
+            <p>Alltid på. Dette er det modellberegningen faktisk viser.</p>
+          </div>
+        </div>
+        <div class="switch">
+          <input type="checkbox" id="swAuto">
+          <div class="tt">
+            <b>Automatiseringseffekt</b><span class="tag illus">illustrativt</span>
+            <p>Skru inn det KVARTS holdt utenfor: KI som erstatter arbeidere. Trekker ledigheten opp.</p>
+          </div>
+        </div>
+        <div class="switch">
+          <input type="checkbox" id="swInno">
+          <div class="tt">
+            <b>Innovasjonseffekt</b><span class="tag illus">illustrativt</span>
+            <p>Nye produkter og næringer på lengre sikt. Trekker ledigheten ned igjen mot slutten.</p>
+          </div>
+        </div>
+        <div class="switch">
+          <input type="checkbox" id="swHetero">
+          <div class="tt">
+            <b>Næringsheterogenitet</b><span class="tag illus">illustrativt</span>
+            <p>Filippucci mfl. (2026): 0,1 pp i primær, 2,8 pp i IKT/finans. Forsterker spredningen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="readout">
+      <div class="ro">
+        <div class="k" id="ro1k">Snitt-avvik 2025–2034</div>
+        <div class="v" id="ro1v">+0,1 <small>pp</small></div>
+      </div>
+      <div class="ro">
+        <div class="k">Topp-AKU 2028</div>
+        <div class="v" id="roPeak">4,7 <small>%</small></div>
+      </div>
+      <div class="ro" style="margin-left:auto; text-align:right">
+        <div class="k">Dagens AKU-ledighet (sesongjustert)</div>
+        <div class="v" id="roLive">4,6 <small>%</small></div>
+        <div class="live" id="liveBadge"><span class="dot"></span><span id="liveTxt">embedded · 2026M04</span></div>
+      </div>
+    </div>
+  </div>
+
+  <details class="caveats">
+    <summary>Hva beregningen ikke fanger opp</summary>
+    <ul>
+      <li>Automatiseringseffekten — der KI erstatter arbeidere — inngår ikke eksplisitt. Beregningen kan derfor undervurdere de negative sysselsettingsvirkningene.</li>
+      <li>Innovasjonseffekten, nye produkter, oppgaver og næringer, fanges i liten grad opp. Slike effekter er vanskelige å tallfeste.</li>
+      <li>Alle markedsrettete næringer og arbeidstakere antas å bli likt påvirket. Filippucci mfl. (2026) viser store forskjeller mellom næringer.</li>
+      <li>Modellen fanger ikke endringer i kompetansebehov på tvers av yrker og utdanningsgrupper.</li>
+      <li>Inntektsøkningen fordeles mellom arbeidskraft og kapital basert på historiske faktorinntektsandeler.</li>
+    </ul>
+  </details>
+
+  <p>I høyalternativet blir AKU-ledigheten i snitt om lag 1,3 prosentpoeng høyere enn referansebanen, et nivå rundt 6 % i 2028 — ikke sett siden bankkrisen tidlig på 1990-tallet. I begge forløp stabiliserer ledighetseffekten seg etter fire år. BNP Fastlands-Norge faller først, men løftes over referansebanen på sikt når produksjonspotensialet øker.</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Om tallene.</b> TFP-forløp og avvik er hentet fra Økonomiske analyser 3/2026, figur 3.3 og 3.4 (KVARTS-beregning, avvik fra referansebanen i Vigtel 2025). De stiplede påslagene for automatisering, innovasjon og næringsheterogenitet er <i>illustrative</i> — de er ikke modellberegnet av SSB, men lar leseren utforske kanalene boksen bevisst holder utenfor. «Dagens AKU-ledighet» hentes live fra SSB tabell 13760 (sesongjustert, 15–74 år) via PxWebApi v2, med embedded fallback.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- modelldata fra artikkelen ----------
+  const YEARS = [2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034];
+  // AKU-avvik (pp). Lavt: snitt ~0,1, topp ~0,15. Høyt: snitt ~1,3, topp ~1,5. Stabiliserer etter 4 år.
+  // formede baner: 0 i 2024, bygger til topp ~2028, flater ut.
+  const akuShape = [0, 0.35, 0.72, 0.95, 1.00, 0.97, 0.95, 0.94, 0.93, 0.93, 0.93]; // andel av toppnivå
+  const AKU_LOW_PEAK = 0.15, AKU_HIGH_PEAK = 1.50;
+  // BNP-indeks (referanse=100). Lavt dropper marginalt så svakt opp; høyt dropper til ~99,6 så opp mot ~103.
+  const bnpShape = [0, -0.6, -0.9, -0.7, -0.2, 0.4, 1.1, 1.8, 2.5, 3.1, 3.6]; // for høyt, i indekspoeng
+  let view = "aku";
+
+  const $ = id => document.getElementById(id);
+  const tfp = $("tfp");
+
+  function tfpFrac(){ return +tfp.value / 100; } // 0=lavt, 1=høyt
+  function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function akuSeries(){
+    const t = tfpFrac();
+    const peak = lerp(AKU_LOW_PEAK, AKU_HIGH_PEAK, t);
+    let s = akuShape.map(f => f*peak);
+    // illustrative påslag
+    if($("swAuto").checked){
+      // automatisering: vedvarende ekstra påslag, vokser med TFP
+      const add = lerp(0.10, 0.55, t);
+      s = s.map((v,i)=> v + add * Math.min(1, i/3) );
+    }
+    if($("swInno").checked){
+      // innovasjon: drar ned mot slutten (negativ mot år 6+)
+      s = s.map((v,i)=> v - lerp(0.05,0.45,t) * Math.max(0,(i-4))/6 );
+    }
+    if($("swHetero").checked){
+      // heterogenitet: forsterker toppen noe
+      s = s.map((v,i)=> v * (1 + 0.12*akuShape[i]) );
+    }
+    return s;
+  }
+  function bnpSeries(){
+    const t = tfpFrac();
+    let s = bnpShape.map(v => v * lerp(0.12, 1.0, t)); // lavt forløp gir ~1/8 av høyt
+    if($("swAuto").checked){ s = s.map((v,i)=> v - lerp(0.1,0.5,t)*Math.min(1,i/3)); }
+    if($("swInno").checked){ s = s.map((v,i)=> v + lerp(0.1,0.7,t)*Math.max(0,(i-4))/6); }
+    return s.map(v => 100 + v);
+  }
+
+  // ---------- SVG-tegning ----------
+  const NS="http://www.w3.org/2000/svg";
+  const W=800,H=380, M={t:24,r:20,b:42,l:54};
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+
+  function el(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+
+  function draw(){
+    const svg=$("chart"); svg.innerHTML="";
+    const isAku = view==="aku";
+    const data = isAku ? akuSeries() : bnpSeries();
+    let ymin, ymax, zero;
+    if(isAku){ ymin=Math.min(0,Math.min(...data)); ymax=Math.max(1.7, Math.max(...data)*1.1); zero=0; }
+    else { ymin=Math.min(98.8, Math.min(...data)-0.3); ymax=Math.max(104, Math.max(...data)+0.3); zero=100; }
+
+    const x = i => M.l + (i/(YEARS.length-1))*iw;
+    const y = v => M.t + ih - ((v-ymin)/(ymax-ymin))*ih;
+
+    // gridlines + y-ticks
+    const ticks = isAku ? [0,0.4,0.8,1.2,1.6] : [99,100,101,102,103,104];
+    ticks.forEach(tk=>{
+      if(tk<ymin||tk>ymax) return;
+      svg.appendChild(el("line",{x1:M.l,x2:M.l+iw,y1:y(tk),y2:y(tk),stroke:"var(--grid)","stroke-width":1}));
+      const lab=el("text",{x:M.l-10,y:y(tk)+4,"text-anchor":"end","font-size":12,fill:"var(--ink-soft)","font-family":"ui-monospace,Menlo,monospace"});
+      lab.textContent = isAku ? tk.toFixed(1).replace(".",",") : tk;
+      svg.appendChild(lab);
+    });
+    // referanselinje (zero/100)
+    svg.appendChild(el("line",{x1:M.l,x2:M.l+iw,y1:y(zero),y2:y(zero),stroke:"var(--ink-soft)","stroke-width":1.5,"stroke-dasharray":"2 3"}));
+    const rl=el("text",{x:M.l+iw,y:y(zero)-7,"text-anchor":"end","font-size":11.5,fill:"var(--ink-soft)"});
+    rl.textContent="referansebane"; svg.appendChild(rl);
+
+    // x-ticks (annethvert år)
+    YEARS.forEach((yr,i)=>{ if(i%2!==0 && i!==YEARS.length-1) return;
+      const lab=el("text",{x:x(i),y:H-14,"text-anchor":"middle","font-size":12,fill:"var(--ink-soft)","font-family":"ui-monospace,Menlo,monospace"});
+      lab.textContent=yr; svg.appendChild(lab);
+    });
+
+    // hvis illustrative påslag er på: tegn KVARTS-grunnlinje solid + total stiplet
+    const anyIllus = $("swAuto").checked || $("swInno").checked || $("swHetero").checked;
+    const baseData = isAku ? baseAku() : baseBnp();
+
+    function path(series,opts){
+      let d="";
+      series.forEach((v,i)=>{ d += (i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
+      svg.appendChild(el("path",Object.assign({d,fill:"none"},opts)));
+    }
+
+    if(anyIllus){
+      // KVARTS-grunnlinje (solid blå) + total (stiplet amber)
+      path(baseData,{stroke:"var(--ssb)","stroke-width":2.5,"stroke-linejoin":"round","stroke-linecap":"round"});
+      path(data,{stroke:"var(--amber)","stroke-width":2.5,"stroke-dasharray":"6 5","stroke-linejoin":"round","stroke-linecap":"round"});
+      // skraver mellom
+      let area="";
+      data.forEach((v,i)=>{ area+=(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)+" "; });
+      for(let i=baseData.length-1;i>=0;i--){ area+="L"+x(i).toFixed(1)+" "+y(baseData[i]).toFixed(1)+" "; }
+      area+="Z";
+      svg.insertBefore(el("path",{d:area,fill:"var(--amber)","fill-opacity":0.09,stroke:"none"}), svg.firstChild.nextSibling);
+    } else {
+      path(data,{stroke:"var(--ssb)","stroke-width":2.8,"stroke-linejoin":"round","stroke-linecap":"round"});
+      // punkt på 2028
+      svg.appendChild(el("circle",{cx:x(4),cy:y(data[4]),r:4,fill:"var(--ssb)"}));
+    }
+
+    // y-akse-etikett
+    const yl=el("text",{x:16,y:M.t+ih/2,"text-anchor":"middle","font-size":12,fill:"var(--ink-soft)",transform:`rotate(-90 16 ${M.t+ih/2})`});
+    yl.textContent = isAku ? "prosentpoeng avvik" : "indeks, referanse = 100";
+    svg.appendChild(yl);
+  }
+
+  // grunnlinjer uten illustrative påslag (kun produktivitet)
+  function baseAku(){ const t=tfpFrac(); const peak=lerp(AKU_LOW_PEAK,AKU_HIGH_PEAK,t); return akuShape.map(f=>f*peak); }
+  function baseBnp(){ const t=tfpFrac(); return bnpShape.map(v=>100+v*lerp(0.12,1.0,t)); }
+
+  // ---------- readout ----------
+  let liveAku = 4.6; // embedded fallback
+  function update(){
+    draw();
+    const t=tfpFrac();
+    const aku=akuSeries();
+    const avg=(aku.slice(1).reduce((a,b)=>a+b,0)/(aku.length-1));
+    $("ro1v").innerHTML = "+"+avg.toFixed(2).replace(".",",")+" <small>pp</small>";
+    const peak2028 = liveAku + aku[4];
+    $("roPeak").innerHTML = peak2028.toFixed(1).replace(".",",")+" <small>%</small>";
+    // tfp-etikett
+    const pctTfp = lerp(0.7,7.0,t);
+    let lbl;
+    if(t<0.04) lbl="Lavt anslag · 0,7 %";
+    else if(t>0.96) lbl="Høyt anslag · 7 %";
+    else lbl="≈ "+pctTfp.toFixed(1).replace(".",",")+" %";
+    $("tfpVal").textContent=lbl;
+  }
+
+  // ---------- toggles ----------
+  function setView(v){
+    view=v;
+    $("btnAku").setAttribute("aria-pressed", v==="aku");
+    $("btnBnp").setAttribute("aria-pressed", v==="bnp");
+    $("chartTitle").textContent = v==="aku" ? "Avvik i AKU-ledigheten fra referansebanen" : "Avvik i BNP Fastlands-Norge fra referansebanen";
+    $("ro1k").textContent = v==="aku" ? "Snitt-avvik 2025–2034" : "BNP-løft 2034";
+    if(v==="aku"){ update(); }
+    else {
+      draw();
+      const b=bnpSeries();
+      $("ro1v").innerHTML="+"+(b[10]-100).toFixed(1).replace(".",",")+" <small>indeks</small>";
+      const aku=akuSeries();
+      $("roPeak").innerHTML=(liveAku+aku[4]).toFixed(1).replace(".",",")+" <small>%</small>";
+      const t=tfpFrac(), pctTfp=lerp(0.7,7.0,t);
+      $("tfpVal").textContent = t<0.04?"Lavt anslag · 0,7 %":t>0.96?"Høyt anslag · 7 %":"≈ "+pctTfp.toFixed(1).replace(".",",")+" %";
+    }
+  }
+  $("btnAku").onclick=()=>setView("aku");
+  $("btnBnp").onclick=()=>setView("bnp");
+  function refresh(){ if(view==="aku"){ update(); } else { setView("bnp"); } }
+  $("tfp").addEventListener("input", refresh);
+  ["swAuto","swInno","swHetero"].forEach(id=>$(id).addEventListener("change", refresh));
+
+  // ---------- live SSB ----------
+  function fetchLive(){
+    const url="https://data.ssb.no/api/pxwebapi/v2-beta/tables/13760/data?lang=no&valueCodes%5BKjonn%5D=0&valueCodes%5BAlder%5D=15-74&valueCodes%5BJustering%5D=S&valueCodes%5BContentsCode%5D=ArbledProsArbstyrk&valueCodes%5BTid%5D=top(1)&outputFormat=json-stat2";
+    fetch(url).then(r=> r.ok ? r.json() : Promise.reject(r.status)).then(j=>{
+      const vals=j.value||[]; const v=vals[vals.length-1];
+      const dim=j.dimension && j.dimension.Tid; let per="";
+      if(dim){ const ix=dim.category.index; per=Object.keys(ix)[Object.keys(ix).length-1]; }
+      if(typeof v==="number"){
+        liveAku=v;
+        $("roLive").innerHTML=v.toFixed(1).replace(".",",")+" <small>%</small>";
+        $("liveTxt").textContent="live · SSB 13760 · "+per;
+        $("liveBadge").classList.add("ok");
+        $("liveBadge").querySelector(".dot").classList.add("ok");
+        update();
+      }
+    }).catch(()=>{ /* behold embedded fallback */ });
+  }
+
+  // init
+  update(); fetchLive();
+})();
+</script>
+</body>
+</html>

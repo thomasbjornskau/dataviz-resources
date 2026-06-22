@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nb">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Å lese en krysstabell · interaktiv forklaring</title>
+<title>How to read a cross-table · an interactive explainer</title>
 <style>
   /* ---------------------------------------------------------------
      Designtokens
@@ -266,10 +266,10 @@
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="wordmark"><span class="dot"></span>Tabellanatomi</div>
-    <nav class="lang-switch" aria-label="Språk">
-      <a href="#" class="active" aria-current="page">NO</a>
-      <a href="index.en.html">EN</a>
+    <div class="wordmark"><span class="dot"></span>Table anatomy</div>
+    <nav class="lang-switch" aria-label="Language">
+      <a href="index.html">NO</a>
+      <a href="#" class="active" aria-current="page">EN</a>
     </nav>
   </div>
 </div>
@@ -278,39 +278,39 @@
 
   <!-- HERO -->
   <header class="hero wrap">
-    <p class="eyebrow">Interaktiv forklaring</p>
-    <h1>En tabell er ikke et bilde. Den er et oppslagsverk.</h1>
-    <p class="lede">Hver celle svarer på et bestemt spørsmål – men bare hvis du vet hvilket. Skru på bryterne under og se hvordan rader, kolonner, totaler og prosenter forandrer hva tabellen forteller.</p>
-    <span class="badge"><span class="tick">✓</span> Alle tall er fiktive og laget for forklaringen</span>
+    <p class="eyebrow">Interactive explainer</p>
+    <h1>A table isn't a picture. It's a reference work.</h1>
+    <p class="lede">Every cell answers a specific question — but only if you know which one. Flip the switches below and watch how rows, columns, totals and percentages change what the table is telling you.</p>
+    <span class="badge"><span class="tick">✓</span> All figures are fictitious, made for the explainer</span>
   </header>
 
   <!-- STEG 1: DIMENSJONER -->
   <section class="step wrap" id="dim">
     <div class="step-head">
-      <div class="step-num">Del 1</div>
-      <h2>To dimensjoner: hva som står nedover, og hva som står bortover</h2>
-      <p>En krysstabell deler de samme personene opp på to måter samtidig. Det som varierer <em>nedover</em> kalles raddimensjonen, det som varierer <em>bortover</em> er kolonnedimensjonen. Bytt om på dem og se at innholdet er det samme – bare snudd.</p>
+      <div class="step-num">Part 1</div>
+      <h2>Two dimensions: what runs down, and what runs across</h2>
+      <p>A cross-table splits the same people two ways at once. What varies <em>down</em> the page is the row dimension; what varies <em>across</em> is the column dimension. Swap them and you'll see the content is identical — just turned on its side.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Rader (nedover)</span>
-          <div class="seg" id="seg-rows" role="group" aria-label="Velg raddimensjon">
-            <button data-var="aldersgruppe" aria-pressed="true">Aldersgruppe</button>
-            <button data-var="kjonn">Kjønn</button>
-            <button data-var="landbakgrunn">Landbakgrunn</button>
+          <span class="ctrl-label">Rows (down)</span>
+          <div class="seg" id="seg-rows" role="group" aria-label="Choose row dimension">
+            <button data-var="aldersgruppe" aria-pressed="true">Age group</button>
+            <button data-var="kjonn">Sex</button>
+            <button data-var="landbakgrunn">Background</button>
           </div>
         </div>
         <div class="ctrl">
-          <span class="ctrl-label">Kolonner (bortover)</span>
-          <div class="seg" id="seg-cols" role="group" aria-label="Velg kolonnedimensjon">
-            <button data-var="kjonn" aria-pressed="true">Kjønn</button>
-            <button data-var="aldersgruppe">Aldersgruppe</button>
-            <button data-var="landbakgrunn">Landbakgrunn</button>
+          <span class="ctrl-label">Columns (across)</span>
+          <div class="seg" id="seg-cols" role="group" aria-label="Choose column dimension">
+            <button data-var="kjonn" aria-pressed="true">Sex</button>
+            <button data-var="aldersgruppe">Age group</button>
+            <button data-var="landbakgrunn">Background</button>
           </div>
-          <p class="ctrl-hint">Velger du samme variabel som raden, bytter raden automatisk.</p>
+          <p class="ctrl-hint">Pick the same variable as the row and the row will switch automatically.</p>
         </div>
       </div>
 
@@ -319,9 +319,9 @@
           <table id="tbl-dim" aria-live="polite"></table>
         </div>
         <div class="legend">
-          <span><span class="swatch" style="background:var(--accent)"></span> Raddimensjon</span>
-          <span><span class="swatch" style="background:var(--blue)"></span> Kolonnedimensjon</span>
-          <span>Tall = antall personer (fiktivt)</span>
+          <span><span class="swatch" style="background:var(--accent)"></span> Row dimension</span>
+          <span><span class="swatch" style="background:var(--blue)"></span> Column dimension</span>
+          <span>Figures = number of people (fictitious)</span>
         </div>
       </div>
     </div>
@@ -330,22 +330,22 @@
   <!-- STEG 2: NESTING vs STABLING -->
   <section class="step wrap" id="nest">
     <div class="step-head">
-      <div class="step-num">Del 2</div>
-      <h2>Nesting og stabling: to måter å få plass til mer</h2>
-      <p>Skal du vise en variabel til, har du to valg. <strong>Nesting</strong> legger den nye inni den gamle – hver aldersgruppe brytes ned på kjønn. <strong>Stabling</strong> setter den nye ved siden av som en uavhengig blokk. Forskjellen avgjør om totalene betyr noe.</p>
+      <div class="step-num">Part 2</div>
+      <h2>Nesting and stacking: two ways to fit in more</h2>
+      <p>To show another variable, you have two choices. <strong>Nesting</strong> places the new one inside the old — each age group is broken down by sex. <strong>Stacking</strong> sets the new one alongside as an independent block. The difference decides whether the totals mean anything.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Andre variabel i raden</span>
-          <div class="seg" id="seg-nest" role="group" aria-label="Velg hvordan andre variabel legges til">
-            <button data-mode="none" aria-pressed="true">Ingen</button>
+          <span class="ctrl-label">Second variable in the row</span>
+          <div class="seg" id="seg-nest" role="group" aria-label="Choose how the second variable is added">
+            <button data-mode="none" aria-pressed="true">None</button>
             <button data-mode="nest">Nesting</button>
-            <button data-mode="stack">Stabling</button>
+            <button data-mode="stack">Stacking</button>
           </div>
-          <p class="ctrl-hint" id="nest-hint">Bare aldersgruppe nedover. Legg til kjønn med nesting eller stabling.</p>
+          <p class="ctrl-hint" id="nest-hint">Age group only, running down. Add sex by nesting or stacking.</p>
         </div>
       </div>
 
@@ -354,43 +354,43 @@
           <table id="tbl-nest" aria-live="polite"></table>
         </div>
         <div class="legend" id="nest-legend">
-          <span>Tall = antall personer (fiktivt)</span>
+          <span>Figures = number of people (fictitious)</span>
         </div>
       </div>
     </div>
 
     <div class="callout" id="nest-callout">
-      <strong>Nesting:</strong> hver gruppe deles videre. Underradene summerer seg opp til gruppen over.
+      <strong>Nesting:</strong> each group is split further. The sub-rows add up to the group above.
     </div>
   </section>
 
   <!-- STEG 3: TOTALER / MARGINALER -->
   <section class="step wrap" id="total">
     <div class="step-head">
-      <div class="step-num">Del 3</div>
-      <h2>Totaler er svar, ikke pynt</h2>
-      <p>En total – det statistikere kaller en <em>marginal</em> – er summen langs kanten av tabellen. Radtotalen svarer «hvor mange er det i denne raden totalt?», kolonnetotalen det samme bortover, og hjørnet nederst til høyre er alle til sammen. Skru dem på og se hvor de hører hjemme.</p>
+      <div class="step-num">Part 3</div>
+      <h2>Totals are answers, not decoration</h2>
+      <p>A total — what statisticians call a <em>marginal</em> — is the sum along the edge of the table. The row total answers "how many in this row altogether?", the column total does the same going down, and the bottom-right corner is everyone combined. Switch them on and see where each belongs.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
           <label class="switch">
             <input type="checkbox" id="sw-rowtot" checked>
             <span class="track"></span>
-            <span class="switch-text">Radtotaler (sum bortover)</span>
+            <span class="switch-text">Row totals (sum across)</span>
           </label>
         </div>
         <div class="ctrl">
           <label class="switch">
             <input type="checkbox" id="sw-coltot" checked>
             <span class="track"></span>
-            <span class="switch-text">Kolonnetotaler (sum nedover)</span>
+            <span class="switch-text">Column totals (sum down)</span>
           </label>
         </div>
         <div class="ctrl">
-          <p class="ctrl-hint">Hjørnet nederst til høyre dukker opp når begge er på – det er totalsummen, og den må stemme begge veier.</p>
+          <p class="ctrl-hint">The bottom-right corner appears when both are on — it's the grand total, and it has to match both ways.</p>
         </div>
       </div>
 
@@ -400,7 +400,7 @@
         </div>
         <div class="legend">
           <span><span class="swatch" style="background:var(--total)"></span> Total / marginal</span>
-          <span>Tall = antall personer (fiktivt)</span>
+          <span>Figures = number of people (fictitious)</span>
         </div>
       </div>
     </div>
@@ -409,43 +409,43 @@
   <!-- STEG 4: DE TRE PROSENTTYPENE (hovedpoeng) -->
   <section class="step wrap" id="pct">
     <div class="step-head">
-      <div class="step-num">Del 4 · kjernen</div>
-      <h2>Tre prosenter, tre helt ulike spørsmål</h2>
-      <p>Her snubler de fleste. Samme celle kan gjøres om til prosent på tre måter, og de betyr ikke det samme. Velg en type under – tabellen viser hvilken retning prosenten regnes i, og hva som summerer seg til 100.</p>
+      <div class="step-num">Part 4 · the heart of it</div>
+      <h2>Three percentages, three entirely different questions</h2>
+      <p>This is where most people trip up. The same cell can be turned into a percentage three ways, and they don't mean the same thing. Pick a type below — the table shows which direction the percentage runs, and what adds up to 100.</p>
     </div>
 
     <div class="pct-cards">
       <div class="pct-card col" id="card-col" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Kolonneprosent</div>
-        <h4>Av alle i kolonnen</h4>
-        <p>«Blant kvinner – hvor stor andel er 30–44 år?» Hver kolonne summerer til 100.</p>
+        <div class="tag">Column percent</div>
+        <h4>Of everyone in the column</h4>
+        <p>"Among women — what share are aged 30–44?" Each column adds up to 100.</p>
       </div>
       <div class="pct-card row" id="card-row" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Radprosent</div>
-        <h4>Av alle i raden</h4>
-        <p>«Blant de som er 30–44 – hvor stor andel er kvinner?» Hver rad summerer til 100.</p>
+        <div class="tag">Row percent</div>
+        <h4>Of everyone in the row</h4>
+        <p>"Among those aged 30–44 — what share are women?" Each row adds up to 100.</p>
       </div>
       <div class="pct-card tot" id="card-tot" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Totalprosent</div>
-        <h4>Av alle til sammen</h4>
-        <p>«Hvor stor andel av hele befolkningen er kvinner på 30–44?» Hele tabellen summerer til 100.</p>
+        <div class="tag">Total percent</div>
+        <h4>Of everyone combined</h4>
+        <p>"What share of the whole population are women aged 30–44?" The whole table adds up to 100.</p>
       </div>
     </div>
 
     <div class="board" style="margin-top:26px">
       <div class="controls">
-        <h3>Visning</h3>
+        <h3>View</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Prosenttype</span>
-          <div class="seg" id="seg-pct" role="group" aria-label="Velg prosenttype">
-            <button data-pct="count" aria-pressed="true">Antall</button>
-            <button data-pct="col">Kolonne&nbsp;%</button>
-            <button data-pct="row">Rad&nbsp;%</button>
+          <span class="ctrl-label">Percentage type</span>
+          <div class="seg" id="seg-pct" role="group" aria-label="Choose percentage type">
+            <button data-pct="count" aria-pressed="true">Count</button>
+            <button data-pct="col">Column&nbsp;%</button>
+            <button data-pct="row">Row&nbsp;%</button>
             <button data-pct="tot">Total&nbsp;%</button>
           </div>
         </div>
         <div class="ctrl">
-          <p class="ctrl-hint" id="pct-explain">Rå antall personer. Velg en prosenttype for å se hvilken vei den regnes.</p>
+          <p class="ctrl-hint" id="pct-explain">Raw count of people. Pick a percentage type to see which way it runs.</p>
         </div>
       </div>
 
@@ -454,22 +454,22 @@
           <table id="tbl-pct" aria-live="polite"></table>
         </div>
         <div class="legend" id="pct-legend">
-          <span>Antall personer (fiktivt)</span>
+          <span>Number of people (fictitious)</span>
         </div>
       </div>
     </div>
 
     <div class="callout" id="pct-callout">
-      Samme datapunkt – kvinner på 30–44 – får tre forskjellige tall avhengig av hvilken prosent du velger. Det er ikke en feil; de svarer på tre forskjellige spørsmål.
+      The same data point — women aged 30–44 — gets three different numbers depending on which percentage you choose. That's not an error; they answer three different questions.
     </div>
   </section>
 
   <!-- AVSLUTNING -->
   <section class="step wrap" id="end">
     <div class="step-head">
-      <div class="step-num">Til slutt</div>
-      <h2>Les retningen før du leser tallet</h2>
-      <p class="body">Når du møter en prosenttabell neste gang: finn først ut hva som summerer til 100. Det forteller deg hvilket spørsmål forfatteren stilte – og om det er det samme spørsmålet du selv lurte på. En godt merket tabell sier det rett ut. En dårlig merket lar deg gjette, og da gjetter folk gjerne feil.</p>
+      <div class="step-num">In closing</div>
+      <h2>Read the direction before you read the number</h2>
+      <p class="body">Next time you meet a percentage table: first work out what adds up to 100. That tells you which question the author asked — and whether it's the same question you were wondering about. A well-labelled table says it outright. A poorly labelled one lets you guess, and people tend to guess wrong.</p>
     </div>
   </section>
 
@@ -477,8 +477,8 @@
 
 <footer>
   <div class="wrap">
-    <span>Interaktiv forklaring · tabellanatomi · alle tall er fiktive</span>
-    <span>Bygget som en frittstående side · ingen sporing</span>
+    <span>Interactive explainer · table anatomy · all figures are fictitious</span>
+    <span>Built as a standalone page · no tracking</span>
   </div>
 </footer>
 
@@ -492,25 +492,25 @@
    ================================================================= */
 
 const LABELS = {
-  kjonn:        { navn: "Kjønn",        verdier: ["Kvinner", "Menn"] },
-  aldersgruppe: { navn: "Aldersgruppe", verdier: ["16–29 år", "30–44 år", "45–66 år"] },
-  landbakgrunn: { navn: "Landbakgrunn", verdier: ["Norge", "Øvrige"] },
+  kjonn:        { navn: "Sex",        verdier: ["Women", "Men"] },
+  aldersgruppe: { navn: "Age group", verdier: ["16–29", "30–44", "45–66"] },
+  landbakgrunn: { navn: "Background", verdier: ["Norway", "Other"] },
 };
 
-/* Plassering av sumraden (kolonnetotalen).
-   Nordisk/SSB-sedvane setter totalen ØVERST; angelsaksisk konvensjon
-   nederst. Norsk versjon: true. Engelsk versjon: false. */
-const TOTAL_FIRST = true;
+/* Placement of the totals row (the column total).
+   Nordic / SSB custom puts the total at the TOP; the Anglo convention
+   puts it at the BOTTOM. Norwegian version: true. English version: false. */
+const TOTAL_FIRST = false;
 
 /* Grunntabell: antall personer per (kjonn, aldersgruppe, landbakgrunn).
    Designet så marginaltallene blir rene og lette å lese. */
 const CUBE = {
-  "Kvinner|16–29 år|Norge": 130, "Kvinner|16–29 år|Øvrige": 50,
-  "Kvinner|30–44 år|Norge": 210, "Kvinner|30–44 år|Øvrige": 60,
-  "Kvinner|45–66 år|Norge": 120, "Kvinner|45–66 år|Øvrige": 30,
-  "Menn|16–29 år|Norge":    150, "Menn|16–29 år|Øvrige":    70,
-  "Menn|30–44 år|Norge":    140, "Menn|30–44 år|Øvrige":    40,
-  "Menn|45–66 år|Norge":    170, "Menn|45–66 år|Øvrige":    50,
+  "Women|16–29|Norway": 130, "Women|16–29|Other": 50,
+  "Women|30–44|Norway": 210, "Women|30–44|Other": 60,
+  "Women|45–66|Norway": 120, "Women|45–66|Other": 30,
+  "Men|16–29|Norway":   150, "Men|16–29|Other":   70,
+  "Men|30–44|Norway":   140, "Men|30–44|Other":   40,
+  "Men|45–66|Norway":   170, "Men|45–66|Other":   50,
 };
 
 /* Summér grunntabellen ned til ett eller to variabler. */
@@ -529,11 +529,11 @@ function marginal(vars) {
 
 function fmt(n) {
   if (n === null || n === undefined) return "";
-  // norsk: mellomrom som tusenskille
-  return n.toLocaleString("nb-NO");
+  // engelsk: komma som tusenskille
+  return n.toLocaleString("en-GB");
 }
 function fmtPct(n) {
-  return n.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " %";
+  return n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
 }
 
 /* =================================================================
@@ -546,8 +546,8 @@ function renderDim() {
   const data = marginal([dimState.rows, dimState.cols]);
   const tbl = document.getElementById("tbl-dim");
 
-  let h = `<caption>Antall personer etter ${rv.navn.toLowerCase()} og ${cv.navn.toLowerCase()}</caption>`;
-  h += `<div class="caption-sub">${rv.navn} nedover · ${cv.navn} bortover</div>`;
+  let h = `<caption>Number of people by ${rv.navn.toLowerCase()} and ${cv.navn.toLowerCase()}</caption>`;
+  h += `<div class="caption-sub">${rv.navn} down · ${cv.navn} across</div>`;
   h += `<thead><tr><th class="corner" style="color:var(--accent)">${rv.navn}</th>`;
   for (const c of cv.verdier) h += `<th class="colspan-head" style="color:var(--blue)">${c}</th>`;
   h += `</tr></thead><tbody>`;
@@ -616,17 +616,17 @@ function renderNest() {
   let h = "", cap = "", hint = "", callout = "";
 
   if (nestMode === "none") {
-    cap = "Antall personer etter aldersgruppe";
-    h += `<thead><tr><th class="corner">Aldersgruppe</th><th>Antall</th></tr></thead><tbody>`;
+    cap = "Number of people by age group";
+    h += `<thead><tr><th class="corner">Age group</th><th>Count</th></tr></thead><tbody>`;
     for (const a of ag) h += `<tr><th>${a}</th><td class="num">${fmt(byAge[a])}</td></tr>`;
     h += `</tbody>`;
-    hint = "Bare aldersgruppe nedover. Legg til kjønn med nesting eller stabling.";
-    callout = `<strong>Én variabel:</strong> ingenting å bryte ned ennå. Velg nesting eller stabling for å se forskjellen.`;
+    hint = "Age group only, running down. Add sex by nesting or stacking.";
+    callout = `<strong>One variable:</strong> nothing to break down yet. Choose nesting or stacking to see the difference.`;
   }
 
   if (nestMode === "nest") {
-    cap = "Antall personer etter aldersgruppe, brutt ned på kjønn";
-    h += `<thead><tr><th class="corner">Aldersgruppe · kjønn</th><th>Antall</th></tr></thead><tbody>`;
+    cap = "Number of people by age group, broken down by sex";
+    h += `<thead><tr><th class="corner">Age group · sex</th><th>Count</th></tr></thead><tbody>`;
     for (const a of ag) {
       h += `<tr><th class="group-label">${a}</th><td class="num is-total">${fmt(byAge[a])}</td></tr>`;
       for (const k of kj) {
@@ -634,23 +634,23 @@ function renderNest() {
       }
     }
     h += `</tbody>`;
-    hint = "Kjønn ligger inni hver aldersgruppe. De to underradene summerer til gruppen over.";
-    callout = `<strong>Nesting:</strong> hver gruppe deles videre. Underradene (kvinner + menn) summerer seg opp til gruppen over – det er derfor gruppeoverskriften er en total.`;
+    hint = "Sex sits inside each age group. The two sub-rows add up to the group above.";
+    callout = `<strong>Nesting:</strong> each group is split further. The sub-rows (women + men) add up to the group above — that's why the group heading is a total.`;
   }
 
   if (nestMode === "stack") {
-    cap = "Antall personer etter aldersgruppe og etter kjønn";
-    h += `<thead><tr><th class="corner">Kategori</th><th>Antall</th></tr></thead><tbody>`;
-    h += `<tr><th class="group-label">Aldersgruppe</th><td></td></tr>`;
+    cap = "Number of people by age group and by sex";
+    h += `<thead><tr><th class="corner">Category</th><th>Count</th></tr></thead><tbody>`;
+    h += `<tr><th class="group-label">Age group</th><td></td></tr>`;
     for (const a of ag) h += `<tr><th class="indent">${a}</th><td class="num">${fmt(byAge[a])}</td></tr>`;
-    h += `<tr><th class="group-label">Kjønn</th><td></td></tr>`;
+    h += `<tr><th class="group-label">Sex</th><td></td></tr>`;
     for (const k of kj) h += `<tr><th class="indent">${k}</th><td class="num">${fmt(byKjonn[k])}</td></tr>`;
     h += `</tbody>`;
-    hint = "To uavhengige blokker under hverandre. Begge dekker hele befolkningen hver for seg.";
-    callout = `<strong>Stabling:</strong> to selvstendige oppstillinger satt under hverandre. Begge blokkene summerer til den samme totalbefolkningen – de deler den bare opp på hver sin måte. Du kan ikke summere på tvers av blokkene.`;
+    hint = "Two independent blocks, one under the other. Each covers the whole population on its own.";
+    callout = `<strong>Stacking:</strong> two self-contained breakdowns set one under the other. Both blocks add up to the same total population — they just divide it up in different ways. You can't sum across the blocks.`;
   }
 
-  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Tall = antall personer (fiktivt)</div>` + h;
+  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Figures = number of people (fictitious)</div>` + h;
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
 }
@@ -670,17 +670,17 @@ function renderTotal() {
   const d = marginal(["aldersgruppe", "kjonn"]);
   const grand = Object.values(CUBE).reduce((a, b) => a + b, 0);
 
-  let h = `<caption>Antall personer etter aldersgruppe og kjønn</caption>`;
-  h += `<div class="caption-sub">Marginaler vises langs kanten</div>`;
-  h += `<thead><tr><th class="corner">Aldersgruppe</th>`;
+  let h = `<caption>Number of people by age group and sex</caption>`;
+  h += `<div class="caption-sub">Marginals shown along the edge</div>`;
+  h += `<thead><tr><th class="corner">Age group</th>`;
   for (const k of kj) h += `<th>${k}</th>`;
-  if (totState.rowTot) h += `<th class="is-total">Alle</th>`;
+  if (totState.rowTot) h += `<th class="is-total">All</th>`;
   h += `</tr></thead><tbody>`;
 
   // Kolonnetotal-raden (sum nedover) bygges separat for fleksibel plassering
   let marginRow = "";
   if (totState.colTot) {
-    marginRow = `<tr><th class="is-total">Alle</th>`;
+    marginRow = `<tr><th class="is-total">All</th>`;
     for (const k of kj) {
       let colSum = 0;
       for (const a of ag) colSum += d[`${a}|${k}`];
@@ -715,16 +715,16 @@ document.getElementById("sw-coltot").addEventListener("change", e => { totState.
 let pctMode = "count";
 
 const PCT_TEXT = {
-  count: "Rå antall personer. Velg en prosenttype for å se hvilken vei den regnes.",
-  col:   "Kolonneprosent: hver celle deles på kolonnens total. Kvinner-kolonnen summerer til 100 %, menn-kolonnen til 100 %.",
-  row:   "Radprosent: hver celle deles på radens total. Hver aldersrad summerer til 100 % på tvers av kjønn.",
-  tot:   "Totalprosent: hver celle deles på totalsummen. Alle cellene til sammen summerer til 100 %.",
+  count: "Raw count of people. Pick a percentage type to see which way it runs.",
+  col:   "Column percent: each cell is divided by its column total. The women column adds up to 100%, the men column to 100%.",
+  row:   "Row percent: each cell is divided by its row total. Each age row adds up to 100% across sex.",
+  tot:   "Total percent: each cell is divided by the grand total. All cells together add up to 100%.",
 };
 const PCT_LEGEND = {
-  count: `<span>Antall personer (fiktivt)</span>`,
-  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Summerer til 100 % nedover hver kolonne</span>`,
-  row:   `<span><span class="swatch" style="background:var(--accent)"></span> Summerer til 100 % bortover hver rad</span>`,
-  tot:   `<span><span class="swatch" style="background:var(--total)"></span> Hele tabellen summerer til 100 %</span>`,
+  count: `<span>Number of people (fictitious)</span>`,
+  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Adds up to 100% down each column</span>`,
+  row:   `<span><span class="swatch" style="background:var(--accent)"></span> Adds up to 100% across each row</span>`,
+  tot:   `<span><span class="swatch" style="background:var(--total)"></span> The whole table adds up to 100%</span>`,
 };
 
 function renderPct() {
@@ -774,18 +774,18 @@ function renderPct() {
     }
   }
 
-  let h = `<caption>${pctMode === "count" ? "Antall" : "Andel"} personer etter aldersgruppe og kjønn</caption>`;
+  let h = `<caption>${pctMode === "count" ? "Number of" : "Share of"} people by age group and sex</caption>`;
   h += `<div class="caption-sub">${
-    pctMode === "count" ? "Med marginaler langs kanten" :
-    pctMode === "col" ? "Kolonneprosent · hver kolonne = 100 %" :
-    pctMode === "row" ? "Radprosent · hver rad = 100 %" :
-    "Totalprosent · hele tabellen = 100 %"}</div>`;
-  h += `<thead><tr><th class="corner">Aldersgruppe</th>`;
+    pctMode === "count" ? "With marginals along the edge" :
+    pctMode === "col" ? "Column percent · each column = 100%" :
+    pctMode === "row" ? "Row percent · each row = 100%" :
+    "Total percent · the whole table = 100%"}</div>`;
+  h += `<thead><tr><th class="corner">Age group</th>`;
   for (const k of kj) h += `<th>${k}</th>`;
-  h += `<th class="is-total">Alle</th></tr></thead><tbody>`;
+  h += `<th class="is-total">All</th></tr></thead><tbody>`;
 
   // Kolonnemarginal-raden bygges separat så den kan plasseres øverst eller nederst
-  let marginRow = `<tr><th class="is-total">Alle</th>`;
+  let marginRow = `<tr><th class="is-total">All</th>`;
   for (const k of kj) marginRow += `<td class="num is-total">${totalCellVal("col", k)}</td>`;
   marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totalCellVal("grand")}</td></tr>`;
 
@@ -793,7 +793,7 @@ function renderPct() {
   for (const a of ag) {
     dataRows += `<tr><th>${a}</th>`;
     for (const k of kj) {
-      const hl = (a === "30–44 år" && k === "Kvinner") ? " pulse-target" : "";
+      const hl = (a === "30–44" && k === "Women") ? " pulse-target" : "";
       dataRows += `<td class="num ${cellClass}${hl}">${valueOf(a, k)}</td>`;
     }
     dataRows += `<td class="num is-total">${totalCellVal("row", a)}</td></tr>`;

@@ -5,160 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How to read a cross-table · an interactive explainer</title>
 <style>
-  /* ---------------------------------------------------------------
-     Designtokens
-     Palett: kjølig blå-grå "statistikkbyrå"-base, ett varmt
-     fremhevingstegl for det leseren skal se på, og en dempet
-     grønn for totaler/marginaler. Bevisst IKKE cream+serif-defaulten.
-  ----------------------------------------------------------------*/
   :root {
-    --ink:        #1a2230;   /* nesten-svart blåtone, brødtekst   */
-    --ink-soft:   #54607a;   /* dempet tekst, bildetekst          */
-    --paper:      #f7f8fa;   /* sidebakgrunn, lys kjølig          */
-    --card:       #ffffff;   /* tabellflate                       */
-    --line:       #d9dee7;   /* hårlinjer                         */
+    --ink:        #1a2230;
+    --ink-soft:   #54607a;
+    --paper:      #f7f8fa;
+    --card:       #ffffff;
+    --line:       #d9dee7;
     --line-soft:  #eceff4;
-    --accent:     #b8482e;   /* tegl – det leseren skal feste seg ved */
-    --accent-bg:  #fbe9e4;   /* svak teglflate for fremheving     */
-    --total:      #2f6b54;   /* dempet grønn – totaler/marginaler */
+    --accent:     #b8482e;
+    --accent-bg:  #fbe9e4;
+    --total:      #2f6b54;
     --total-bg:   #e4efe9;
-    --blue:       #2b5d9c;   /* sekundær – kolonnedimensjon       */
+    --blue:       #2b5d9c;
     --blue-bg:    #e5edf6;
     --shadow:     0 1px 2px rgba(26,34,48,.06), 0 8px 28px rgba(26,34,48,.06);
     --r:          10px;
   }
-
   * { box-sizing: border-box; }
-
   html { -webkit-text-size-adjust: 100%; }
-
   body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
+    margin: 0; background: var(--paper); color: var(--ink);
     font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-    font-size: 18px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+    font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased;
   }
-
-  /* Utility/data-skrift: tabular tall er hele poenget */
-  .ui, table, .expr, .toggles, .legend, .eyebrow, .badge, .lang-switch, footer {
+  .ui, table, .expr, .toggles, .legend, .eyebrow, .badge, .lang-switch, footer,
+  .rule, .rule-bad, .rule-good {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
-
   table, .num { font-variant-numeric: tabular-nums; }
 
-  /* ---------------------------------------------------------------
-     Topplinje
-  ----------------------------------------------------------------*/
-  .topbar {
-    border-bottom: 1px solid var(--line);
-    background: var(--card);
-    position: sticky; top: 0; z-index: 50;
-  }
-  .topbar-inner {
-    max-width: 1080px; margin: 0 auto; padding: 12px 24px;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  }
-  .wordmark {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 13px; font-weight: 600; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--ink-soft);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .wordmark .dot {
-    width: 9px; height: 9px; border-radius: 2px; background: var(--accent);
-    display: inline-block;
-  }
+  .topbar { border-bottom: 1px solid var(--line); background: var(--card); position: sticky; top: 0; z-index: 50; }
+  .topbar-inner { max-width: 1080px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .wordmark { font-family: "Inter", system-ui, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 10px; }
+  .wordmark .dot { width: 9px; height: 9px; border-radius: 2px; background: var(--accent); display: inline-block; }
   .lang-switch { display: flex; gap: 2px; font-size: 13px; }
-  .lang-switch a {
-    color: var(--ink-soft); text-decoration: none; padding: 4px 9px;
-    border-radius: 6px; font-weight: 500;
-  }
+  .lang-switch a { color: var(--ink-soft); text-decoration: none; padding: 4px 9px; border-radius: 6px; font-weight: 500; }
   .lang-switch a.active { background: var(--ink); color: #fff; }
 
-  /* ---------------------------------------------------------------
-     Layout
-  ----------------------------------------------------------------*/
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-
   .hero { padding: 72px 0 40px; max-width: 760px; }
-  .eyebrow {
-    font-size: 12.5px; font-weight: 600; letter-spacing: .14em;
-    text-transform: uppercase; color: var(--accent); margin: 0 0 18px;
-  }
-  h1 {
-    font-size: clamp(34px, 5.2vw, 56px); line-height: 1.06;
-    margin: 0 0 22px; font-weight: 600; letter-spacing: -.015em;
-  }
+  .eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  h1 { font-size: clamp(34px, 5.2vw, 56px); line-height: 1.06; margin: 0 0 22px; font-weight: 600; letter-spacing: -.015em; }
   .lede { font-size: 21px; color: var(--ink-soft); margin: 0; line-height: 1.5; }
-
-  .badge {
-    display: inline-flex; align-items: center; gap: 7px;
-    margin-top: 28px; font-size: 13px; color: var(--ink-soft);
-    background: var(--card); border: 1px solid var(--line);
-    padding: 7px 13px; border-radius: 999px;
-  }
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 28px; font-size: 13px; color: var(--ink-soft); background: var(--card); border: 1px solid var(--line); padding: 7px 13px; border-radius: 999px; }
   .badge .tick { color: var(--accent); font-weight: 700; }
 
   section.step { padding: 46px 0; border-top: 1px solid var(--line); }
   .step-head { max-width: 720px; margin-bottom: 30px; }
-  .step-num {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 13px; font-weight: 600; color: var(--accent);
-    letter-spacing: .06em; margin-bottom: 10px;
-  }
+  .step-num { font-family: "Inter", system-ui, sans-serif; font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: .06em; margin-bottom: 10px; }
   h2 { font-size: clamp(25px, 3.4vw, 33px); line-height: 1.15; margin: 0 0 14px; font-weight: 600; letter-spacing: -.01em; }
   .step-head p { font-size: 18.5px; color: var(--ink-soft); margin: 0; }
-
   p.body { max-width: 680px; }
 
-  /* ---------------------------------------------------------------
-     Interaktiv tavle: kontroller + tabell side om side
-  ----------------------------------------------------------------*/
-  .board {
-    display: grid; grid-template-columns: 260px 1fr; gap: 26px;
-    align-items: start;
-  }
+  .board { display: grid; grid-template-columns: 260px 1fr; gap: 26px; align-items: start; }
   @media (max-width: 820px) { .board { grid-template-columns: 1fr; } }
-
-  .controls {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: var(--r); padding: 20px; box-shadow: var(--shadow);
-    position: sticky; top: 76px;
-  }
+  .controls { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); position: sticky; top: 76px; }
   @media (max-width: 820px) { .controls { position: static; } }
-
-  .controls h3 {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--ink-soft); margin: 0 0 16px; font-weight: 600;
-  }
+  .controls h3 { font-family: "Inter", system-ui, sans-serif; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 16px; font-weight: 600; }
   .ctrl { margin-bottom: 18px; }
   .ctrl:last-child { margin-bottom: 0; }
-  .ctrl-label {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 13px; font-weight: 600; color: var(--ink);
-    display: block; margin-bottom: 8px;
-  }
-  .ctrl-hint {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 12px; color: var(--ink-soft); margin: 6px 0 0; line-height: 1.4;
-  }
+  .ctrl-label { font-family: "Inter", system-ui, sans-serif; font-size: 13px; font-weight: 600; color: var(--ink); display: block; margin-bottom: 8px; }
+  .ctrl-hint { font-family: "Inter", system-ui, sans-serif; font-size: 12px; color: var(--ink-soft); margin: 6px 0 0; line-height: 1.4; }
 
-  /* Segmenterte knapper */
   .seg { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 2px; gap: 2px; flex-wrap: wrap; }
-  .seg button {
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 13px; font-weight: 500; border: 0; background: transparent;
-    color: var(--ink-soft); padding: 6px 12px; border-radius: 6px; cursor: pointer;
-    transition: background .15s, color .15s;
-  }
+  .seg button { font-family: "Inter", system-ui, sans-serif; font-size: 13px; font-weight: 500; border: 0; background: transparent; color: var(--ink-soft); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s; }
   .seg button:hover { color: var(--ink); }
   .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(26,34,48,.12); }
 
-  /* Bryter */
   .switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
   .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
   .track { width: 40px; height: 23px; background: var(--line); border-radius: 999px; position: relative; transition: background .18s; flex: none; }
@@ -168,98 +81,62 @@
   .switch input:focus-visible + .track { outline: 2px solid var(--ink); outline-offset: 2px; }
   .switch-text { font-family:"Inter",system-ui,sans-serif; font-size:13.5px; font-weight:500; }
 
-  /* ---------------------------------------------------------------
-     Tabell
-  ----------------------------------------------------------------*/
-  .table-card {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden;
-  }
+  .table-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
   .table-scroll { overflow-x: auto; padding: 8px; }
   table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
-  caption {
-    text-align: left; padding: 14px 16px 4px; font-size: 14px;
-    font-weight: 600; color: var(--ink); font-family:"Inter",system-ui,sans-serif;
-  }
-  .caption-sub {
-    padding: 0 16px 12px; font-size: 12.5px; color: var(--ink-soft);
-    font-family:"Inter",system-ui,sans-serif; border-bottom: 1px solid var(--line-soft);
-  }
+  caption { text-align: left; padding: 14px 16px 4px; font-size: 14px; font-weight: 600; color: var(--ink); font-family:"Inter",system-ui,sans-serif; }
+  .caption-sub { padding: 0 16px 12px; font-size: 12.5px; color: var(--ink-soft); font-family:"Inter",system-ui,sans-serif; border-bottom: 1px solid var(--line-soft); }
   th, td { padding: 9px 14px; text-align: right; white-space: nowrap; }
-  thead th {
-    font-family:"Inter",system-ui,sans-serif; font-weight: 600; font-size: 12.5px;
-    color: var(--ink-soft); border-bottom: 1px solid var(--line);
-    letter-spacing: .01em;
-  }
+  thead th { font-family:"Inter",system-ui,sans-serif; font-weight: 600; font-size: 12.5px; color: var(--ink-soft); border-bottom: 1px solid var(--line); letter-spacing: .01em; }
   thead th.corner { text-align: left; }
-  thead th.colspan-head {
-    text-align: center; color: var(--blue);
-    border-bottom: 1px solid var(--blue-bg);
-  }
-  tbody th {
-    font-family:"Inter",system-ui,sans-serif; text-align: left; font-weight: 500;
-    font-size: 13.5px; color: var(--ink);
-  }
+  thead th.colspan-head { text-align: center; color: var(--blue); border-bottom: 1px solid var(--blue-bg); }
+  tbody th { font-family:"Inter",system-ui,sans-serif; text-align: left; font-weight: 500; font-size: 13.5px; color: var(--ink); }
   tbody th.indent { padding-left: 28px; font-weight: 400; color: var(--ink-soft); }
   tbody th.group-label { color: var(--ink); font-weight: 600; }
   td { color: var(--ink); }
   tbody tr + tr td, tbody tr + tr th { border-top: 1px solid var(--line-soft); }
 
-  /* Markeringsklasser settes/fjernes av JS */
   .is-total { background: var(--total-bg); color: var(--total); font-weight: 600; }
   th.is-total { color: var(--total); }
   .pulse { animation: pulse 1.1s ease; }
   @keyframes pulse { 0% { background: var(--accent-bg); } 100% { background: transparent; } }
+  .pct-col { background: var(--blue-bg); }
+  .pct-row { background: var(--accent-bg); }
 
-  .pct-col  { background: var(--blue-bg); }
-  .pct-row  { background: var(--accent-bg); }
-  .pct-cell-of-total { box-shadow: inset 0 0 0 2px var(--total); }
-
-  /* Legende under tabell */
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 16px;
-    border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-soft);
-  }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 16px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-soft); }
   .legend span { display: inline-flex; align-items: center; gap: 7px; }
   .swatch { width: 13px; height: 13px; border-radius: 3px; flex: none; }
 
-  /* "Hva spør prosenten om" – tre kort */
   .pct-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
   @media (max-width: 760px) { .pct-cards { grid-template-columns: 1fr; } }
-  .pct-card {
-    border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px;
-    background: var(--card); cursor: pointer; transition: border-color .15s, transform .15s, box-shadow .15s;
-  }
+  .pct-card { border: 1px solid var(--line); border-radius: var(--r); padding: 18px 18px 16px; background: var(--card); cursor: pointer; transition: border-color .15s, transform .15s, box-shadow .15s; position: relative; }
   .pct-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
   .pct-card[aria-pressed="true"] { border-color: var(--accent); box-shadow: var(--shadow); }
-  .pct-card .tag {
-    font-family:"Inter",system-ui,sans-serif; font-size:11.5px; font-weight:600;
-    letter-spacing:.08em; text-transform:uppercase; margin-bottom:9px;
-  }
-  .pct-card.col .tag  { color: var(--blue); }
-  .pct-card.row .tag  { color: var(--accent); }
-  .pct-card.tot .tag  { color: var(--total); }
+  .pct-card .tag { font-family:"Inter",system-ui,sans-serif; font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin-bottom:9px; }
+  .pct-card.col .tag { color: var(--blue); }
+  .pct-card.row .tag { color: var(--accent); }
+  .pct-card.tot .tag { color: var(--total); }
   .pct-card h4 { font-family:"Inter",system-ui,sans-serif; font-size:16px; margin:0 0 7px; font-weight:600; }
   .pct-card p { margin:0; font-size:13.5px; color: var(--ink-soft); line-height:1.45; }
+  .pct-card .pin { font-family:"Inter",system-ui,sans-serif; font-size:11px; font-weight:600; display:inline-block; margin-top:11px; padding:3px 9px; border-radius:999px; }
+  .pin.rec { background: var(--total-bg); color: var(--total); }
+  .pin.rare { background: var(--accent-bg); color: var(--accent); }
 
-  .callout {
-    background: var(--card); border-left: 3px solid var(--accent);
-    border-radius: 0 var(--r) var(--r) 0; padding: 16px 20px; margin: 24px 0 0;
-    max-width: 680px; font-size: 16px; color: var(--ink);
-  }
+  .callout { background: var(--card); border-left: 3px solid var(--accent); border-radius: 0 var(--r) var(--r) 0; padding: 16px 20px; margin: 24px 0 0; max-width: 680px; font-size: 16px; color: var(--ink); }
   .callout strong { color: var(--accent); }
+
+  .rule { background: var(--total-bg); border: 1px solid #cfe2d9; border-radius: var(--r); padding: 20px 22px; margin: 26px 0 0; max-width: 720px; }
+  .rule h4 { font-size: 15px; margin: 0 0 10px; color: var(--total); font-weight: 600; letter-spacing:.02em; }
+  .rule p { margin: 0 0 10px; font-size: 14.5px; color: var(--ink); line-height: 1.5; }
+  .rule p:last-child { margin-bottom: 0; }
+  .rule strong { color: var(--total); }
 
   footer { border-top: 1px solid var(--line); margin-top: 30px; padding: 34px 0 60px; color: var(--ink-soft); font-size: 13.5px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
-
   a.inline { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-bg); }
   a.inline:hover { border-bottom-color: var(--accent); }
-
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
@@ -280,155 +157,136 @@
   <header class="hero wrap">
     <p class="eyebrow">Interactive explainer</p>
     <h1>A table isn't a picture. It's a reference work.</h1>
-    <p class="lede">Every cell answers a specific question — but only if you know which one. Flip the switches below and watch how rows, columns, totals and percentages change what the table is telling you.</p>
+    <p class="lede">Every cell answers a specific question — but only if you know which one. We use one running example: level of education and employment. Flip the switches and watch how rows, columns, totals and percentages change what the table is telling you.</p>
     <span class="badge"><span class="tick">✓</span> All figures are fictitious, made for the explainer</span>
   </header>
 
-  <!-- STEG 1: DIMENSJONER -->
+  <!-- DEL 1: DIMENSJONER -->
   <section class="step wrap" id="dim">
     <div class="step-head">
       <div class="step-num">Part 1</div>
-      <h2>Two dimensions: what runs down, and what runs across</h2>
-      <p>A cross-table splits the same people two ways at once. What varies <em>down</em> the page is the row dimension; what varies <em>across</em> is the column dimension. Swap them and you'll see the content is identical — just turned on its side.</p>
+      <h2>Two variables crossed: what runs down, and what runs across</h2>
+      <p>A cross-table splits the same people by two variables at once. Here they are <em>employment status</em> and <em>level of education</em>. What varies down the page is the row dimension; what varies across is the column dimension. Swap which way they run and you'll see the content is identical — just turned on its side.</p>
     </div>
 
     <div class="board">
       <div class="controls">
         <h3>Controls</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Rows (down)</span>
-          <div class="seg" id="seg-rows" role="group" aria-label="Choose row dimension">
-            <button data-var="aldersgruppe" aria-pressed="true">Age group</button>
-            <button data-var="kjonn">Sex</button>
-            <button data-var="landbakgrunn">Background</button>
+          <span class="ctrl-label">Orientation</span>
+          <div class="seg" id="seg-orient" role="group" aria-label="Choose orientation">
+            <button data-orient="ut-cols" aria-pressed="true">Education across</button>
+            <button data-orient="ut-rows">Education down</button>
           </div>
-        </div>
-        <div class="ctrl">
-          <span class="ctrl-label">Columns (across)</span>
-          <div class="seg" id="seg-cols" role="group" aria-label="Choose column dimension">
-            <button data-var="kjonn" aria-pressed="true">Sex</button>
-            <button data-var="aldersgruppe">Age group</button>
-            <button data-var="landbakgrunn">Background</button>
-          </div>
-          <p class="ctrl-hint">Pick the same variable as the row and the row will switch automatically.</p>
+          <p class="ctrl-hint">Same figures, turned on their side. We keep these two variables throughout the whole explainer.</p>
         </div>
       </div>
 
       <div class="table-card">
-        <div class="table-scroll">
-          <table id="tbl-dim" aria-live="polite"></table>
-        </div>
+        <div class="table-scroll"><table id="tbl-dim" aria-live="polite"></table></div>
         <div class="legend">
           <span><span class="swatch" style="background:var(--accent)"></span> Row dimension</span>
           <span><span class="swatch" style="background:var(--blue)"></span> Column dimension</span>
-          <span>Figures = number of people (fictitious)</span>
+          <span>Figures in thousands of people (fictitious)</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- STEG 2: NESTING vs STABLING -->
-  <section class="step wrap" id="nest">
-    <div class="step-head">
-      <div class="step-num">Part 2</div>
-      <h2>Nesting and stacking: two ways to fit in more</h2>
-      <p>To show another variable, you have two choices. <strong>Nesting</strong> places the new one inside the old — each age group is broken down by sex. <strong>Stacking</strong> sets the new one alongside as an independent block. The difference decides whether the totals mean anything.</p>
-    </div>
-
-    <div class="board">
-      <div class="controls">
-        <h3>Controls</h3>
-        <div class="ctrl">
-          <span class="ctrl-label">Second variable in the row</span>
-          <div class="seg" id="seg-nest" role="group" aria-label="Choose how the second variable is added">
-            <button data-mode="none" aria-pressed="true">None</button>
-            <button data-mode="nest">Nesting</button>
-            <button data-mode="stack">Stacking</button>
-          </div>
-          <p class="ctrl-hint" id="nest-hint">Age group only, running down. Add sex by nesting or stacking.</p>
-        </div>
-      </div>
-
-      <div class="table-card">
-        <div class="table-scroll">
-          <table id="tbl-nest" aria-live="polite"></table>
-        </div>
-        <div class="legend" id="nest-legend">
-          <span>Figures = number of people (fictitious)</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout" id="nest-callout">
-      <strong>Nesting:</strong> each group is split further. The sub-rows add up to the group above.
-    </div>
-  </section>
-
-  <!-- STEG 3: TOTALER / MARGINALER -->
+  <!-- DEL 2: TOTALER / MARGINALER -->
   <section class="step wrap" id="total">
     <div class="step-head">
-      <div class="step-num">Part 3</div>
+      <div class="step-num">Part 2</div>
       <h2>Totals are answers, not decoration</h2>
-      <p>A total — what statisticians call a <em>marginal</em> — is the sum along the edge of the table. The row total answers "how many in this row altogether?", the column total does the same going down, and the bottom-right corner is everyone combined. Switch them on and see where each belongs.</p>
+      <p>A total — what statisticians call a <em>marginal</em> — is the sum along the edge of the table. The row total answers "how many in this row altogether?", the column total does the same going down, and the corner is everyone combined. Switch them on and see where each belongs. Totals are basic table anatomy — they come before we start building the table out.</p>
     </div>
 
     <div class="board">
       <div class="controls">
         <h3>Controls</h3>
         <div class="ctrl">
-          <label class="switch">
-            <input type="checkbox" id="sw-rowtot" checked>
-            <span class="track"></span>
-            <span class="switch-text">Row totals (sum across)</span>
-          </label>
+          <label class="switch"><input type="checkbox" id="sw-rowtot" checked><span class="track"></span><span class="switch-text">Row totals (sum across)</span></label>
         </div>
         <div class="ctrl">
-          <label class="switch">
-            <input type="checkbox" id="sw-coltot" checked>
-            <span class="track"></span>
-            <span class="switch-text">Column totals (sum down)</span>
-          </label>
+          <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Column totals (sum down)</span></label>
         </div>
-        <div class="ctrl">
-          <p class="ctrl-hint">The bottom-right corner appears when both are on — it's the grand total, and it has to match both ways.</p>
-        </div>
+        <div class="ctrl"><p class="ctrl-hint">The corner appears when both are on — it's the grand total, and it has to match both ways.</p></div>
       </div>
 
       <div class="table-card">
-        <div class="table-scroll">
-          <table id="tbl-total" aria-live="polite"></table>
-        </div>
+        <div class="table-scroll"><table id="tbl-total" aria-live="polite"></table></div>
         <div class="legend">
           <span><span class="swatch" style="background:var(--total)"></span> Total / marginal</span>
-          <span>Figures = number of people (fictitious)</span>
+          <span>Figures in thousands of people (fictitious)</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- STEG 4: DE TRE PROSENTTYPENE (hovedpoeng) -->
+  <!-- DEL 3: STABLING OG NESTING -->
+  <section class="step wrap" id="nest">
+    <div class="step-head">
+      <div class="step-num">Part 3</div>
+      <h2>One distribution, two distributions, or one inside another</h2>
+      <p>The cross-table in Part 1 already showed two variables crossed. This part builds up to it step by step, so you can see what separates the ways of putting a table together. We go from the simplest to the most composite.</p>
+    </div>
+
+    <div class="board">
+      <div class="controls">
+        <h3>Controls</h3>
+        <div class="ctrl">
+          <span class="ctrl-label">Construction</span>
+          <div class="seg" id="seg-nest" role="group" aria-label="Choose construction">
+            <button data-mode="none" aria-pressed="true">One distribution</button>
+            <button data-mode="stack">Stacking</button>
+            <button data-mode="nest">Nesting</button>
+          </div>
+          <p class="ctrl-hint" id="nest-hint"></p>
+        </div>
+        <div class="ctrl" id="nest-dir-wrap" style="display:none">
+          <span class="ctrl-label">Which way is it nested?</span>
+          <div class="seg" id="seg-nest-dir" role="group" aria-label="Choose nesting direction">
+            <button data-dir="ut-first" aria-pressed="true">Employment within education</button>
+            <button data-dir="ys-first">Education within employment</button>
+          </div>
+          <p class="ctrl-hint">Nesting can run either way. The order decides what is read "within" what.</p>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll"><table id="tbl-nest" aria-live="polite"></table></div>
+        <div class="legend" id="nest-legend"><span>Figures in thousands of people (fictitious)</span></div>
+      </div>
+    </div>
+
+    <div class="callout" id="nest-callout"></div>
+  </section>
+
+  <!-- DEL 4: PROSENT -->
   <section class="step wrap" id="pct">
     <div class="step-head">
       <div class="step-num">Part 4 · the heart of it</div>
-      <h2>Three percentages, three entirely different questions</h2>
-      <p>This is where most people trip up. The same cell can be turned into a percentage three ways, and they don't mean the same thing. Pick a type below — the table shows which direction the percentage runs, and what adds up to 100.</p>
+      <h2>Three percentages, three different questions — and one is usually right</h2>
+      <p>This is where most people trip up. The same cell can be turned into a percentage three ways, and they don't mean the same thing. But they aren't equal options: which one you should pick depends on what your background variable is. Pick a type below and see which direction the percentage runs.</p>
     </div>
 
     <div class="pct-cards">
       <div class="pct-card col" id="card-col" role="button" tabindex="0" aria-pressed="false">
         <div class="tag">Column percent</div>
         <h4>Of everyone in the column</h4>
-        <p>"Among women — what share are aged 30–44?" Each column adds up to 100.</p>
+        <p>"Among those with higher education — what share are employed?" Each column adds up to 100.</p>
+        <span class="pin rec">Usually right here</span>
       </div>
       <div class="pct-card row" id="card-row" role="button" tabindex="0" aria-pressed="false">
         <div class="tag">Row percent</div>
         <h4>Of everyone in the row</h4>
-        <p>"Among those aged 30–44 — what share are women?" Each row adds up to 100.</p>
+        <p>"Among the employed — what share have higher education?" Each row adds up to 100.</p>
       </div>
       <div class="pct-card tot" id="card-tot" role="button" tabindex="0" aria-pressed="false">
         <div class="tag">Total percent</div>
         <h4>Of everyone combined</h4>
-        <p>"What share of the whole population are women aged 30–44?" The whole table adds up to 100.</p>
+        <p>"What share of the whole population are employed people with higher education?" The whole table adds up to 100.</p>
+        <span class="pin rare">Rarely used</span>
       </div>
     </div>
 
@@ -444,23 +302,19 @@
             <button data-pct="tot">Total&nbsp;%</button>
           </div>
         </div>
-        <div class="ctrl">
-          <p class="ctrl-hint" id="pct-explain">Raw count of people. Pick a percentage type to see which way it runs.</p>
-        </div>
+        <div class="ctrl"><p class="ctrl-hint" id="pct-explain"></p></div>
       </div>
 
       <div class="table-card">
-        <div class="table-scroll">
-          <table id="tbl-pct" aria-live="polite"></table>
-        </div>
-        <div class="legend" id="pct-legend">
-          <span>Number of people (fictitious)</span>
-        </div>
+        <div class="table-scroll"><table id="tbl-pct" aria-live="polite"></table></div>
+        <div class="legend" id="pct-legend"></div>
       </div>
     </div>
 
-    <div class="callout" id="pct-callout">
-      The same data point — women aged 30–44 — gets three different numbers depending on which percentage you choose. That's not an error; they answer three different questions.
+    <div class="rule">
+      <h4>The rule of thumb: percentage on the background variable</h4>
+      <p>When one variable explains another, you usually compute the percentage <strong>within each value of the background variable</strong>. Here education is the background and employment is what we want to explain — so we ask "what share are employed within each level of education?". With education as columns that makes it <strong>column percent</strong>, and each column adds up to 100.</p>
+      <p>That makes the numbers directly comparable: 53%, 69%, 86% employed — the share rises clearly with education. The opposite percentage answers a different question, and <strong>total percent is rarely used</strong> — mostly when you want to show what share of the whole a single combination makes up.</p>
     </div>
   </section>
 
@@ -469,7 +323,7 @@
     <div class="step-head">
       <div class="step-num">In closing</div>
       <h2>Read the direction before you read the number</h2>
-      <p class="body">Next time you meet a percentage table: first work out what adds up to 100. That tells you which question the author asked — and whether it's the same question you were wondering about. A well-labelled table says it outright. A poorly labelled one lets you guess, and people tend to guess wrong.</p>
+      <p class="body">When you meet a percentage table: first work out what adds up to 100. That tells you which question the author asked — and whether it's the same question you were wondering about. Then ask whether the percentage was computed on the background variable, as it usually should be. A well-labelled table says this outright. A poorly labelled one lets you guess, and people tend to guess wrong.</p>
     </div>
   </section>
 
@@ -484,218 +338,123 @@
 
 <script>
 /* =================================================================
-   DATA — fiktiv, SSB-aktig miniverden.
-   Én "befolkning" delt på tre kategoriske variabler. Tallene er
-   runde og åpenbart syntetiske. Vi lagrer celletellinger for hvert
-   par av variabler ved behov, men bygger alt fra én underliggende
-   krysstabell kjonn × aldersgruppe × landbakgrunn.
+   DATA — fiktiv miniverden: utdanningsnivå × yrkesstatus.
+   Bakgrunnsvariabel = utdanning; avhengig variabel = yrkesstatus.
+   Realistisk mønster: yrkesaktiv-andelen stiger med utdanning.
+   Figures in thousands of people, round and obviously synthetic.
    ================================================================= */
 
 const LABELS = {
-  kjonn:        { navn: "Sex",        verdier: ["Women", "Men"] },
-  aldersgruppe: { navn: "Age group", verdier: ["16–29", "30–44", "45–66"] },
-  landbakgrunn: { navn: "Background", verdier: ["Norway", "Other"] },
+  utdanning:   { navn: "Education",   verdier: ["Lower secondary", "Upper secondary", "Higher education"] },
+  yrkesstatus: { navn: "Employment",  verdier: ["Employed", "Not employed"] },
 };
 
-/* Placement of the totals row (the column total).
-   Nordic / SSB custom puts the total at the TOP; the Anglo convention
-   puts it at the BOTTOM. Norwegian version: true. English version: false. */
+/* Sumraden (kolonnetotalen) nederst (angelsaksisk konvensjon) på engelsk. */
 const TOTAL_FIRST = false;
 
-/* Grunntabell: antall personer per (kjonn, aldersgruppe, landbakgrunn).
-   Designet så marginaltallene blir rene og lette å lese. */
 const CUBE = {
-  "Women|16–29|Norway": 130, "Women|16–29|Other": 50,
-  "Women|30–44|Norway": 210, "Women|30–44|Other": 60,
-  "Women|45–66|Norway": 120, "Women|45–66|Other": 30,
-  "Men|16–29|Norway":   150, "Men|16–29|Other":   70,
-  "Men|30–44|Norway":   140, "Men|30–44|Other":   40,
-  "Men|45–66|Norway":   170, "Men|45–66|Other":   50,
+  "Lower secondary|Employed":   320, "Lower secondary|Not employed":   280,
+  "Upper secondary|Employed":   760, "Upper secondary|Not employed":   340,
+  "Higher education|Employed":  690, "Higher education|Not employed":  110,
 };
 
-/* Summér grunntabellen ned til ett eller to variabler. */
 function marginal(vars) {
-  // vars: array av variabelnavn vi vil beholde. Returnerer map nøkkel->sum.
   const out = {};
   for (const key in CUBE) {
-    const [k, a, l] = key.split("|");
-    const lookup = { kjonn: k, aldersgruppe: a, landbakgrunn: l };
-    const parts = vars.map(v => lookup[v]);
-    const nk = parts.join("|");
+    const [u, y] = key.split("|");
+    const lookup = { utdanning: u, yrkesstatus: y };
+    const nk = vars.map(v => lookup[v]).join("|");
     out[nk] = (out[nk] || 0) + CUBE[key];
   }
   return out;
 }
+function fmt(n) { return (n === null || n === undefined) ? "" : n.toLocaleString("en-GB"); }
+function fmtPct(n) { return n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%"; }
 
-function fmt(n) {
-  if (n === null || n === undefined) return "";
-  // engelsk: komma som tusenskille
-  return n.toLocaleString("en-GB");
-}
-function fmtPct(n) {
-  return n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
-}
-
-/* =================================================================
-   DEL 1 — Dimensjoner (rad × kolonne, bytt fritt)
-   ================================================================= */
-const dimState = { rows: "aldersgruppe", cols: "kjonn" };
-
-function renderDim() {
-  const rv = LABELS[dimState.rows], cv = LABELS[dimState.cols];
-  const data = marginal([dimState.rows, dimState.cols]);
-  const tbl = document.getElementById("tbl-dim");
-
-  let h = `<caption>Number of people by ${rv.navn.toLowerCase()} and ${cv.navn.toLowerCase()}</caption>`;
-  h += `<div class="caption-sub">${rv.navn} down · ${cv.navn} across</div>`;
-  h += `<thead><tr><th class="corner" style="color:var(--accent)">${rv.navn}</th>`;
-  for (const c of cv.verdier) h += `<th class="colspan-head" style="color:var(--blue)">${c}</th>`;
-  h += `</tr></thead><tbody>`;
-  for (const r of rv.verdier) {
-    h += `<tr><th>${r}</th>`;
-    for (const c of cv.verdier) {
-      const v = data[`${r}|${c}`] ?? data[`${c}|${r}`] ?? 0;
-      h += `<td class="num">${fmt(v)}</td>`;
-    }
-    h += `</tr>`;
-  }
-  h += `</tbody>`;
-  tbl.innerHTML = h;
-}
+const GRAND = Object.values(CUBE).reduce((a, b) => a + b, 0);
 
 function wireSeg(id, onPick) {
   const box = document.getElementById(id);
   box.addEventListener("click", e => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
+    const btn = e.target.closest("button"); if (!btn) return;
     [...box.querySelectorAll("button")].forEach(b => b.setAttribute("aria-pressed", "false"));
     btn.setAttribute("aria-pressed", "true");
     onPick(btn);
   });
 }
-
-wireSeg("seg-rows", btn => {
-  dimState.rows = btn.dataset.var;
-  if (dimState.cols === dimState.rows) {
-    // skyv kolonnen til en annen variabel
-    const alt = Object.keys(LABELS).find(v => v !== dimState.rows);
-    dimState.cols = alt;
-    syncSeg("seg-cols", alt);
-  }
-  renderDim();
-});
-wireSeg("seg-cols", btn => {
-  dimState.cols = btn.dataset.var;
-  if (dimState.rows === dimState.cols) {
-    const alt = Object.keys(LABELS).find(v => v !== dimState.cols);
-    dimState.rows = alt;
-    syncSeg("seg-rows", alt);
-  }
-  renderDim();
-});
-function syncSeg(id, varName) {
+function syncSeg(id, attr, val) {
   const box = document.getElementById(id);
-  [...box.querySelectorAll("button")].forEach(b =>
-    b.setAttribute("aria-pressed", b.dataset.var === varName ? "true" : "false"));
+  [...box.querySelectorAll("button")].forEach(b => b.setAttribute("aria-pressed", b.dataset[attr] === val ? "true" : "false"));
 }
 
 /* =================================================================
-   DEL 2 — Nesting vs stabling
-   Rad = aldersgruppe; andre variabel = kjønn.
+   DEL 1 — Dimensjoner (orientering: utdanning som kolonne eller rad)
    ================================================================= */
-let nestMode = "none";
+let orient = "ut-cols";
 
-function renderNest() {
-  const tbl = document.getElementById("tbl-nest");
-  const ag = LABELS.aldersgruppe.verdier;
-  const kj = LABELS.kjonn.verdier;
-  const byAge = marginal(["aldersgruppe"]);
-  const byAgeKjonn = marginal(["aldersgruppe", "kjonn"]);
-  const byKjonn = marginal(["kjonn"]);
+function renderDim() {
+  const tbl = document.getElementById("tbl-dim");
+  const d = marginal(["utdanning", "yrkesstatus"]);
+  const ut = LABELS.utdanning.verdier, ys = LABELS.yrkesstatus.verdier;
 
-  let h = "", cap = "", hint = "", callout = "";
+  let rowsVar, colsVar, rowVals, colVals;
+  if (orient === "ut-cols") { rowsVar = LABELS.yrkesstatus; colsVar = LABELS.utdanning;   rowVals = ys; colVals = ut; }
+  else                      { rowsVar = LABELS.utdanning;   colsVar = LABELS.yrkesstatus; rowVals = ut; colVals = ys; }
 
-  if (nestMode === "none") {
-    cap = "Number of people by age group";
-    h += `<thead><tr><th class="corner">Age group</th><th>Count</th></tr></thead><tbody>`;
-    for (const a of ag) h += `<tr><th>${a}</th><td class="num">${fmt(byAge[a])}</td></tr>`;
-    h += `</tbody>`;
-    hint = "Age group only, running down. Add sex by nesting or stacking.";
-    callout = `<strong>One variable:</strong> nothing to break down yet. Choose nesting or stacking to see the difference.`;
+  function cell(rv, cv) {
+    return orient === "ut-cols" ? d[`${cv}|${rv}`] : d[`${rv}|${cv}`];
   }
 
-  if (nestMode === "nest") {
-    cap = "Number of people by age group, broken down by sex";
-    h += `<thead><tr><th class="corner">Age group · sex</th><th>Count</th></tr></thead><tbody>`;
-    for (const a of ag) {
-      h += `<tr><th class="group-label">${a}</th><td class="num is-total">${fmt(byAge[a])}</td></tr>`;
-      for (const k of kj) {
-        h += `<tr><th class="indent">${k}</th><td class="num">${fmt(byAgeKjonn[`${a}|${k}`])}</td></tr>`;
-      }
-    }
-    h += `</tbody>`;
-    hint = "Sex sits inside each age group. The two sub-rows add up to the group above.";
-    callout = `<strong>Nesting:</strong> each group is split further. The sub-rows (women + men) add up to the group above — that's why the group heading is a total.`;
+  let h = `<caption>Number of people by ${rowsVar.navn.toLowerCase()} and ${colsVar.navn.toLowerCase()}</caption>`;
+  h += `<div class="caption-sub">${rowsVar.navn} down · ${colsVar.navn} across</div>`;
+  h += `<thead><tr><th class="corner" style="color:var(--accent)">${rowsVar.navn}</th>`;
+  for (const c of colVals) h += `<th class="colspan-head">${c}</th>`;
+  h += `</tr></thead><tbody>`;
+  for (const r of rowVals) {
+    h += `<tr><th>${r}</th>`;
+    for (const c of colVals) h += `<td class="num">${fmt(cell(r, c))}</td>`;
+    h += `</tr>`;
   }
-
-  if (nestMode === "stack") {
-    cap = "Number of people by age group and by sex";
-    h += `<thead><tr><th class="corner">Category</th><th>Count</th></tr></thead><tbody>`;
-    h += `<tr><th class="group-label">Age group</th><td></td></tr>`;
-    for (const a of ag) h += `<tr><th class="indent">${a}</th><td class="num">${fmt(byAge[a])}</td></tr>`;
-    h += `<tr><th class="group-label">Sex</th><td></td></tr>`;
-    for (const k of kj) h += `<tr><th class="indent">${k}</th><td class="num">${fmt(byKjonn[k])}</td></tr>`;
-    h += `</tbody>`;
-    hint = "Two independent blocks, one under the other. Each covers the whole population on its own.";
-    callout = `<strong>Stacking:</strong> two self-contained breakdowns set one under the other. Both blocks add up to the same total population — they just divide it up in different ways. You can't sum across the blocks.`;
-  }
-
-  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Figures = number of people (fictitious)</div>` + h;
-  document.getElementById("nest-hint").textContent = hint;
-  document.getElementById("nest-callout").innerHTML = callout;
+  h += `</tbody>`;
+  tbl.innerHTML = h;
 }
-
-wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
+wireSeg("seg-orient", btn => { orient = btn.dataset.orient; renderDim(); });
 
 /* =================================================================
-   DEL 3 — Totaler / marginaler
-   Rad = aldersgruppe, kolonne = kjønn.
+   DEL 2 — Totaler / marginaler
+   Fixed: education across (columns), employment down (rows).
    ================================================================= */
 const totState = { rowTot: true, colTot: true };
 
 function renderTotal() {
   const tbl = document.getElementById("tbl-total");
-  const ag = LABELS.aldersgruppe.verdier;
-  const kj = LABELS.kjonn.verdier;
-  const d = marginal(["aldersgruppe", "kjonn"]);
-  const grand = Object.values(CUBE).reduce((a, b) => a + b, 0);
+  const ut = LABELS.utdanning.verdier, ys = LABELS.yrkesstatus.verdier;
+  const d = marginal(["utdanning", "yrkesstatus"]);
 
-  let h = `<caption>Number of people by age group and sex</caption>`;
+  let h = `<caption>Number of people by employment and education</caption>`;
   h += `<div class="caption-sub">Marginals shown along the edge</div>`;
-  h += `<thead><tr><th class="corner">Age group</th>`;
-  for (const k of kj) h += `<th>${k}</th>`;
+  h += `<thead><tr><th class="corner">Employment</th>`;
+  for (const u of ut) h += `<th>${u}</th>`;
   if (totState.rowTot) h += `<th class="is-total">All</th>`;
   h += `</tr></thead><tbody>`;
 
-  // Kolonnetotal-raden (sum nedover) bygges separat for fleksibel plassering
   let marginRow = "";
   if (totState.colTot) {
     marginRow = `<tr><th class="is-total">All</th>`;
-    for (const k of kj) {
-      let colSum = 0;
-      for (const a of ag) colSum += d[`${a}|${k}`];
-      marginRow += `<td class="num is-total">${fmt(colSum)}</td>`;
+    for (const u of ut) {
+      let cs = 0; for (const y of ys) cs += d[`${u}|${y}`];
+      marginRow += `<td class="num is-total">${fmt(cs)}</td>`;
     }
-    if (totState.rowTot) marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${fmt(grand)}</td>`;
+    if (totState.rowTot) marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${fmt(GRAND)}</td>`;
     marginRow += `</tr>`;
   }
 
   let dataRows = "";
-  for (const a of ag) {
-    dataRows += `<tr><th>${a}</th>`;
-    let rowSum = 0;
-    for (const k of kj) { const v = d[`${a}|${k}`]; rowSum += v; dataRows += `<td class="num">${fmt(v)}</td>`; }
-    if (totState.rowTot) dataRows += `<td class="num is-total">${fmt(rowSum)}</td>`;
+  for (const y of ys) {
+    dataRows += `<tr><th>${y}</th>`;
+    let rs = 0;
+    for (const u of ut) { const v = d[`${u}|${y}`]; rs += v; dataRows += `<td class="num">${fmt(v)}</td>`; }
+    if (totState.rowTot) dataRows += `<td class="num is-total">${fmt(rs)}</td>`;
     dataRows += `</tr>`;
   }
 
@@ -703,128 +462,178 @@ function renderTotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 }
-
 document.getElementById("sw-rowtot").addEventListener("change", e => { totState.rowTot = e.target.checked; renderTotal(); });
 document.getElementById("sw-coltot").addEventListener("change", e => { totState.colTot = e.target.checked; renderTotal(); });
 
 /* =================================================================
-   DEL 4 — De tre prosenttypene (kjernen)
-   Rad = aldersgruppe, kolonne = kjønn. Alltid med marginaler,
-   så leseren ser hva som summerer til 100.
+   DEL 3 — Stabling og nesting
+   Rekkefølge: Én fordeling → Stabling → Nesting.
+   ================================================================= */
+let nestMode = "none";
+let nestDir = "ut-first";
+
+function renderNest() {
+  const tbl = document.getElementById("tbl-nest");
+  const ut = LABELS.utdanning.verdier, ys = LABELS.yrkesstatus.verdier;
+  const byUt = marginal(["utdanning"]);
+  const byYs = marginal(["yrkesstatus"]);
+  const d = marginal(["utdanning", "yrkesstatus"]);
+
+  let h = "", cap = "", hint = "", callout = "";
+  document.getElementById("nest-dir-wrap").style.display = (nestMode === "nest") ? "" : "none";
+
+  if (nestMode === "none") {
+    cap = "Number of employed and not employed";
+    h += `<thead><tr><th class="corner">Employment</th><th>Count</th></tr></thead><tbody>`;
+    for (const y of ys) h += `<tr><th>${y}</th><td class="num">${fmt(byYs[y])}</td></tr>`;
+    h += `<tr><th class="is-total">All</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    h += `</tbody>`;
+    hint = "One variable, one distribution — employment for the whole population. The simplest case.";
+    callout = `<strong>One distribution:</strong> just one variable divides the population. The total at the bottom is the whole population.`;
+  }
+
+  if (nestMode === "stack") {
+    cap = "Two distributions stacked one under the other";
+    h += `<thead><tr><th class="corner">Variable</th><th>Count</th></tr></thead><tbody>`;
+    h += `<tr><th class="group-label">Employment</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    for (const y of ys) h += `<tr><th class="indent">${y}</th><td class="num">${fmt(byYs[y])}</td></tr>`;
+    h += `<tr><th class="group-label">Education</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    for (const u of ut) h += `<tr><th class="indent">${u}</th><td class="num">${fmt(byUt[u])}</td></tr>`;
+    h += `</tbody>`;
+    hint = "Two independent distributions set one under the other. Each block divides the whole population its own way.";
+    callout = `<strong>Stacking:</strong> two self-contained distributions, one under the other. Both blocks have the same total — the whole population — because they just divide it up in different ways. You can't sum across the blocks.`;
+  }
+
+  if (nestMode === "nest") {
+    if (nestDir === "ut-first") {
+      cap = "Employment within each level of education";
+      h += `<thead><tr><th class="corner">Education · employment</th><th>Count</th></tr></thead><tbody>`;
+      for (const u of ut) {
+        h += `<tr><th class="group-label">${u}</th><td class="num is-total">${fmt(byUt[u])}</td></tr>`;
+        for (const y of ys) h += `<tr><th class="indent">${y}</th><td class="num">${fmt(d[`${u}|${y}`])}</td></tr>`;
+      }
+      h += `</tbody>`;
+      hint = "Employment broken down within each level of education. The sub-rows add up to the group above.";
+      callout = `<strong>Nesting:</strong> this is exactly the cross-table from Part 1, written out row by row. Each education group is split by employment, and the sub-totals (employed + not) become the group total above.`;
+    } else {
+      cap = "Level of education within each employment status";
+      h += `<thead><tr><th class="corner">Employment · education</th><th>Count</th></tr></thead><tbody>`;
+      for (const y of ys) {
+        h += `<tr><th class="group-label">${y}</th><td class="num is-total">${fmt(byYs[y])}</td></tr>`;
+        for (const u of ut) h += `<tr><th class="indent">${u}</th><td class="num">${fmt(d[`${u}|${y}`])}</td></tr>`;
+      }
+      h += `</tbody>`;
+      hint = "Same figures, nested the other way: education broken down within each employment status.";
+      callout = `<strong>Nesting — the other way:</strong> same data points, but now each employment status is split by education. Which way you nest decides what is read "within" what — and so which question the table answers first.`;
+    }
+  }
+
+  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Figures in thousands of people (fictitious)</div>` + h;
+  document.getElementById("nest-hint").textContent = hint;
+  document.getElementById("nest-callout").innerHTML = callout;
+}
+wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
+wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
+
+/* =================================================================
+   DEL 4 — Prosent (kjernen)
+   Fixed: education across (columns = background), employment down.
    ================================================================= */
 let pctMode = "count";
 
 const PCT_TEXT = {
   count: "Raw count of people. Pick a percentage type to see which way it runs.",
-  col:   "Column percent: each cell is divided by its column total. The women column adds up to 100%, the men column to 100%.",
-  row:   "Row percent: each cell is divided by its row total. Each age row adds up to 100% across sex.",
-  tot:   "Total percent: each cell is divided by the grand total. All cells together add up to 100%.",
+  col:   "Column percent: each cell is divided by its column total. Each level of education adds up to 100% — the recommended choice here, because education is the background variable.",
+  row:   "Row percent: each cell is divided by its row total. Answers \u201camong the employed, what education do they have?\u201d — a different, often less relevant question.",
+  tot:   "Total percent: each cell is divided by the grand total. All cells add up to 100%. Rarely used — mostly to show what share of the whole a combination makes up.",
 };
 const PCT_LEGEND = {
-  count: `<span>Number of people (fictitious)</span>`,
-  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Adds up to 100% down each column</span>`,
+  count: `<span>Figures in thousands of people (fictitious)</span>`,
+  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Adds up to 100% down each column · recommended</span>`,
   row:   `<span><span class="swatch" style="background:var(--accent)"></span> Adds up to 100% across each row</span>`,
   tot:   `<span><span class="swatch" style="background:var(--total)"></span> The whole table adds up to 100%</span>`,
 };
 
 function renderPct() {
   const tbl = document.getElementById("tbl-pct");
-  const ag = LABELS.aldersgruppe.verdier;
-  const kj = LABELS.kjonn.verdier;
-  const d = marginal(["aldersgruppe", "kjonn"]);
-  const grand = Object.values(CUBE).reduce((a, b) => a + b, 0);
+  const ut = LABELS.utdanning.verdier, ys = LABELS.yrkesstatus.verdier;
+  const d = marginal(["utdanning", "yrkesstatus"]);
 
-  // forhåndsregn marginaler
-  const rowSum = {}, colSum = {};
-  for (const a of ag) rowSum[a] = kj.reduce((s, k) => s + d[`${a}|${k}`], 0);
-  for (const k of kj) colSum[k] = ag.reduce((s, a) => s + d[`${a}|${k}`], 0);
+  const colSum = {}, rowSum = {};
+  for (const u of ut) colSum[u] = ys.reduce((s, y) => s + d[`${u}|${y}`], 0);
+  for (const y of ys) rowSum[y] = ut.reduce((s, u) => s + d[`${u}|${y}`], 0);
 
-  const cellClass =
-    pctMode === "col" ? "pct-col" :
-    pctMode === "row" ? "pct-row" : "";
+  const cellClass = pctMode === "col" ? "pct-col" : pctMode === "row" ? "pct-row" : "";
 
-  function valueOf(a, k) {
-    const v = d[`${a}|${k}`];
+  function valueOf(y, u) {
+    const v = d[`${u}|${y}`];
     if (pctMode === "count") return fmt(v);
-    if (pctMode === "col")   return fmtPct(100 * v / colSum[k]);
-    if (pctMode === "row")   return fmtPct(100 * v / rowSum[a]);
-    if (pctMode === "tot")   return fmtPct(100 * v / grand);
+    if (pctMode === "col")   return fmtPct(100 * v / colSum[u]);
+    if (pctMode === "row")   return fmtPct(100 * v / rowSum[y]);
+    if (pctMode === "tot")   return fmtPct(100 * v / GRAND);
   }
-  function totalCellVal(kind, key) {
-    // kind: "row" (radmarginal), "col" (kolonnemarginal), "grand"
+  function totVal(kind, key) {
     if (pctMode === "count") {
-      if (kind === "row") return fmt(rowSum[key]);
       if (kind === "col") return fmt(colSum[key]);
-      return fmt(grand);
+      if (kind === "row") return fmt(rowSum[key]);
+      return fmt(GRAND);
     }
     if (pctMode === "col") {
-      if (kind === "row") return fmtPct(100 * rowSum[key] / grand); // radmarginal som andel av total
-      if (kind === "col") return fmtPct(100);                        // hver kolonne summerer til 100
+      if (kind === "col") return fmtPct(100);
+      if (kind === "row") return fmtPct(100 * rowSum[key] / GRAND);
       return fmtPct(100);
     }
     if (pctMode === "row") {
-      if (kind === "row") return fmtPct(100);                        // hver rad summerer til 100
-      if (kind === "col") return fmtPct(100 * colSum[key] / grand);
+      if (kind === "col") return fmtPct(100 * colSum[key] / GRAND);
+      if (kind === "row") return fmtPct(100);
       return fmtPct(100);
     }
     if (pctMode === "tot") {
-      if (kind === "row") return fmtPct(100 * rowSum[key] / grand);
-      if (kind === "col") return fmtPct(100 * colSum[key] / grand);
+      if (kind === "col") return fmtPct(100 * colSum[key] / GRAND);
+      if (kind === "row") return fmtPct(100 * rowSum[key] / GRAND);
       return fmtPct(100);
     }
   }
 
-  let h = `<caption>${pctMode === "count" ? "Number of" : "Share of"} people by age group and sex</caption>`;
+  let h = `<caption>${pctMode === "count" ? "Number of" : "Share of"} people by employment and education</caption>`;
   h += `<div class="caption-sub">${
     pctMode === "count" ? "With marginals along the edge" :
-    pctMode === "col" ? "Column percent · each column = 100%" :
-    pctMode === "row" ? "Row percent · each row = 100%" :
+    pctMode === "col" ? "Column percent · each level of education = 100%" :
+    pctMode === "row" ? "Row percent · each employment row = 100%" :
     "Total percent · the whole table = 100%"}</div>`;
-  h += `<thead><tr><th class="corner">Age group</th>`;
-  for (const k of kj) h += `<th>${k}</th>`;
+  h += `<thead><tr><th class="corner">Employment</th>`;
+  for (const u of ut) h += `<th>${u}</th>`;
   h += `<th class="is-total">All</th></tr></thead><tbody>`;
 
-  // Kolonnemarginal-raden bygges separat så den kan plasseres øverst eller nederst
   let marginRow = `<tr><th class="is-total">All</th>`;
-  for (const k of kj) marginRow += `<td class="num is-total">${totalCellVal("col", k)}</td>`;
-  marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totalCellVal("grand")}</td></tr>`;
+  for (const u of ut) marginRow += `<td class="num is-total">${totVal("col", u)}</td>`;
+  marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totVal("grand")}</td></tr>`;
 
   let dataRows = "";
-  for (const a of ag) {
-    dataRows += `<tr><th>${a}</th>`;
-    for (const k of kj) {
-      const hl = (a === "30–44" && k === "Women") ? " pulse-target" : "";
-      dataRows += `<td class="num ${cellClass}${hl}">${valueOf(a, k)}</td>`;
+  for (const y of ys) {
+    dataRows += `<tr><th>${y}</th>`;
+    for (const u of ut) {
+      const hl = (y === "Employed" && u === "Higher education") ? " pulse-target" : "";
+      dataRows += `<td class="num ${cellClass}${hl}">${valueOf(y, u)}</td>`;
     }
-    dataRows += `<td class="num is-total">${totalCellVal("row", a)}</td></tr>`;
+    dataRows += `<td class="num is-total">${totVal("row", y)}</td></tr>`;
   }
 
   h += TOTAL_FIRST ? (marginRow + dataRows) : (dataRows + marginRow);
   h += `</tbody>`;
-
   tbl.innerHTML = h;
+
   document.getElementById("pct-explain").textContent = PCT_TEXT[pctMode];
   document.getElementById("pct-legend").innerHTML = PCT_LEGEND[pctMode];
-
-  // synk kortene
-  for (const [id, mode] of [["card-col","col"],["card-row","row"],["card-tot","tot"]]) {
+  for (const [id, mode] of [["card-col","col"],["card-row","row"],["card-tot","tot"]])
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
-  }
-  syncSeg2("seg-pct", pctMode);
+  syncSeg("seg-pct", "pct", pctMode);
 
-  // puls på det fremhevede datapunktet ved bytte
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const t = tbl.querySelector(".pulse-target");
     if (t) { t.classList.add("pulse"); setTimeout(() => t.classList.remove("pulse"), 1100); }
   }
 }
-
-function syncSeg2(id, mode) {
-  const box = document.getElementById(id);
-  [...box.querySelectorAll("button")].forEach(b =>
-    b.setAttribute("aria-pressed", b.dataset.pct === mode ? "true" : "false"));
-}
-
 document.getElementById("seg-pct").addEventListener("click", e => {
   const btn = e.target.closest("button"); if (!btn) return;
   pctMode = btn.dataset.pct; renderPct();
@@ -838,8 +647,8 @@ for (const [id, mode] of [["card-col","col"],["card-row","row"],["card-tot","tot
 
 /* init */
 renderDim();
-renderNest();
 renderTotal();
+renderNest();
 renderPct();
 </script>
 </body>

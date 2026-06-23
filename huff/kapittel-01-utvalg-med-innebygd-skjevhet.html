@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tallvett 1 – Utvalg med innebygd skjevhet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ssb-green:#00824D; --ssb-green-dark:#00583A; --ssb-green-tint:#B6E5C9; --ssb-green-wash:#E8F5EE;
+    --ssb-deep:#274247; --ssb-deep-2:#1A2D31;
+    --ssb-sand:#ECEAE3; --ssb-sand-2:#F6F5F1;
+    --ssb-red:#C3553A; --ssb-red-tint:#F4DDD6;
+    --ssb-ink:#21383C; --ssb-grey:#62696B; --ssb-line:#D4D2CB; --ssb-white:#FFFFFF;
+    --age-young:#CDEBD9; --age-old:#1F4A3C;
+    --maxw:760px; --r:4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--ssb-sand-2);color:var(--ssb-ink);
+    font-family:"Open Sans",system-ui,sans-serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:"Roboto",system-ui,sans-serif;line-height:1.18;color:var(--ssb-deep);font-weight:700;}
+  h1{font-size:clamp(2rem,5vw,3rem);margin:0 0 .4em;letter-spacing:-.01em;}
+  h2{font-size:clamp(1.35rem,3.4vw,1.9rem);margin:0 0 .4em;}
+  p{margin:0 0 1em;}
+  strong{font-weight:700;color:var(--ssb-deep);}
+  em{color:var(--ssb-green-dark);font-style:italic;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  header.masthead{background:var(--ssb-deep);color:#fff;padding:14px 0;border-bottom:4px solid var(--ssb-green);}
+  .masthead .wrap{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .brand{font-family:"Roboto";font-weight:700;font-size:1.05rem;}
+  .brand .dot{color:var(--ssb-green-tint);}
+  .masthead .sub{font-size:.82rem;color:#AEC4C4;letter-spacing:.04em;text-transform:uppercase;}
+
+  .hero{background:linear-gradient(180deg,var(--ssb-deep),var(--ssb-deep-2));color:#fff;padding:48px 0 40px;}
+  .eyebrow{font-family:"Roboto Mono",monospace;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ssb-green-tint);margin-bottom:16px;}
+  .hero h1{color:#fff;}
+  .hero .lead{font-size:1.18rem;color:#D7E2E0;max-width:42ch;}
+
+  main{padding:34px 0 30px;}
+  .framing{max-width:62ch;}
+  .framing p{font-size:1.08rem;}
+
+  /* ---------- MODUL ---------- */
+  .lab{background:var(--ssb-deep);color:#fff;margin:30px 0;border-radius:8px;overflow:hidden;border:1px solid #16282b;}
+  .lab-head{padding:24px 26px 0;}
+  .lab-head .eyebrow{color:var(--ssb-green-tint);}
+  .lab-head h2{color:#fff;}
+  .lab-head p{color:#C2D2D1;font-size:.98rem;margin:0;}
+  .lab-head strong, .lab-body strong{color:#fff;}
+  .lab-body{padding:20px 26px 26px;}
+
+  .pop-wrap{background:var(--ssb-deep-2);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;}
+  .pop-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:.82rem;color:#C2D2D1;margin-bottom:12px;}
+  .age-ramp{display:inline-flex;align-items:center;gap:8px;}
+  .ramp-bar{width:90px;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--age-young),var(--age-old));display:inline-block;}
+  .leg-pick{display:inline-flex;align-items:center;gap:6px;}
+  .leg-dot{width:13px;height:13px;border-radius:50%;background:#3a5d62;display:inline-block;}
+  .leg-dot.on{background:#fff;box-shadow:0 0 0 2px var(--ssb-green-tint);}
+  #grid{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;}
+  .person{aspect-ratio:1/1;border-radius:50%;opacity:.42;transition:opacity .3s,box-shadow .3s,transform .3s;}
+  .person.picked{opacity:1;box-shadow:0 0 0 2.4px #fff,0 0 7px rgba(182,229,201,.6);transform:scale(1.1);z-index:2;}
+
+  .controls{margin:4px 0 20px;}
+  .skew-row{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .skew-row label{font-size:.9rem;color:#D5E3E2;white-space:nowrap;font-weight:600;}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;
+    background:linear-gradient(90deg,var(--ssb-green) 0%,#5b7d80 55%,var(--ssb-red) 100%);outline:none;min-width:160px;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--ssb-deep);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--ssb-deep);cursor:pointer;}
+  .skew-ends{display:flex;justify-content:space-between;font-size:.78rem;color:#9FB7B6;margin-bottom:16px;}
+  .skew-ends b{color:#C2D2D1;font-weight:600;}
+
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .btn{cursor:pointer;font-family:"Open Sans";font-weight:600;font-size:.9rem;border-radius:var(--r);padding:10px 16px;border:1.5px solid transparent;transition:background .15s,border-color .15s,box-shadow .15s;}
+  .btn-kiaer{background:var(--ssb-green);color:#fff;}
+  .btn-kiaer:hover{background:#00945a;}
+  .btn-kiaer.active{box-shadow:0 0 0 2px var(--ssb-green-tint);}
+  .btn-ghost{background:transparent;color:#D5E3E2;border-color:#4a6b70;}
+  .btn-ghost:hover{border-color:#6f9398;color:#fff;}
+  .btn:focus-visible{outline:3px solid var(--ssb-green-tint);outline-offset:2px;}
+  input[type=range]:focus-visible{outline:3px solid var(--ssb-green-tint);outline-offset:4px;}
+
+  .axis-block{background:var(--ssb-deep-2);border-radius:var(--r);padding:22px 22px 16px;margin-top:20px;}
+  .axis-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#9FB7B6;margin-bottom:34px;}
+  .axis{position:relative;height:70px;margin:0 10px;}
+  .axis-line{position:absolute;left:0;right:0;top:44px;height:3px;background:#3a5d62;border-radius:2px;}
+  .tick{position:absolute;top:40px;width:1px;height:11px;background:#3a5d62;}
+  .tick-lab{position:absolute;top:54px;font-family:"Roboto Mono",monospace;font-size:.66rem;color:#7e9897;transform:translateX(-50%);}
+  .truth-marker{position:absolute;top:8px;height:48px;width:3px;background:var(--ssb-green-tint);border-radius:2px;transition:left .3s;}
+  .truth-flag{position:absolute;top:-28px;transform:translateX(-50%);background:var(--ssb-green-tint);color:var(--ssb-deep-2);
+    font-family:"Roboto Mono",monospace;font-weight:500;font-size:.74rem;padding:3px 8px;border-radius:3px;white-space:nowrap;}
+  .truth-flag::after{content:"";position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ssb-green-tint);border-bottom:0;}
+  .meas-marker{position:absolute;top:33px;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--ssb-red);transform:translateX(-50%);transition:left .3s,border-color .3s;z-index:3;}
+  .meas-flag{position:absolute;top:62px;transform:translateX(-50%);font-family:"Roboto Mono",monospace;font-weight:500;font-size:.74rem;white-space:nowrap;transition:left .3s,color .3s;color:#fff;}
+  .gap-band{position:absolute;top:42px;height:7px;border-radius:3px;transition:left .3s,width .3s,background .3s;opacity:.85;}
+
+  .gap-callout{margin-top:16px;text-align:center;font-size:1.06rem;color:#E4EDEC;min-height:2.4em;display:flex;align-items:center;justify-content:center;}
+  .gap-callout .num{font-family:"Roboto Mono",monospace;font-weight:500;padding:0 .15em;}
+  .gap-callout .num.bad{color:#F2B8A8;}
+  .gap-callout .num.ok{color:var(--ssb-green-tint);}
+
+  .verdict{margin-top:14px;font-size:.95rem;color:#D9E5E4;border-top:1px solid #3a5d62;padding-top:14px;}
+  .verdict strong{color:#fff;}
+
+  .aside-text{max-width:62ch;margin:30px auto 0;}
+  .aside-text h2{margin-top:1.4em;}
+  figure.quote{margin:1.8em 0;padding:20px 24px;background:var(--ssb-green-wash);border-left:4px solid var(--ssb-green);border-radius:0 var(--r) var(--r) 0;}
+  figure.quote p{font-size:1.12rem;font-style:italic;color:var(--ssb-green-dark);margin:0;}
+  figure.quote figcaption{margin-top:.5em;font-style:normal;font-size:.88rem;color:var(--ssb-grey);}
+  aside.fact{margin:1.8em 0;background:#fff;border:1px solid var(--ssb-line);border-top:4px solid var(--ssb-deep);border-radius:var(--r);padding:20px 22px;}
+  aside.fact h3{margin:0 0 .5em;color:var(--ssb-deep);font-size:.92rem;text-transform:uppercase;letter-spacing:.06em;font-family:"Roboto Mono",monospace;}
+  aside.fact ul{margin:.2em 0 0;padding-left:1.1em;}
+  aside.fact li{margin:.3em 0;font-size:.94rem;}
+
+  .checklist{background:#fff;border:1px solid var(--ssb-line);border-radius:var(--r);padding:4px 24px 18px;margin:1.6em 0;}
+  .checklist h3{color:var(--ssb-green-dark);font-size:1.05rem;}
+  .checklist ul{list-style:none;padding:0;margin:0;}
+  .checklist li{padding:11px 0 11px 32px;position:relative;border-bottom:1px solid var(--ssb-sand);font-size:1rem;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist li::before{content:"";position:absolute;left:2px;top:15px;width:17px;height:17px;border-radius:50%;background:var(--ssb-green-wash);border:2px solid var(--ssb-green);}
+  .checklist li::after{content:"";position:absolute;left:7px;top:18px;width:5px;height:9px;border:solid var(--ssb-green);border-width:0 2px 2px 0;transform:rotate(45deg);}
+
+  .takeaway{background:var(--ssb-green);color:#fff;border-radius:6px;padding:26px 28px;margin:34px auto 24px;max-width:62ch;}
+  .takeaway .eyebrow{color:var(--ssb-green-tint);margin-bottom:8px;}
+  .takeaway p{font-size:1.28rem;font-family:"Roboto";font-weight:500;line-height:1.4;margin:0;}
+
+  footer{background:var(--ssb-deep-2);color:#9FB4B4;padding:26px 0;font-size:.84rem;}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  footer a{color:var(--ssb-green-tint);}
+
+  @media (max-width:640px){
+    body{font-size:17px;}
+    #grid{grid-template-columns:repeat(14,1fr);}
+    .skew-row{flex-wrap:wrap;}
+    .gap-callout{font-size:1rem;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="brand">Tallvett<span class="dot">.</span></span>
+    <span class="sub">Kritisk sans for tall · Kapittel 1 av 26</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Utvalg med innebygd skjevhet</div>
+    <h1>Det er ikke hvor mange du spør</h1>
+    <p class="lead">Et tall kan være helt riktig regnet ut og likevel bomme – hvis du spurte feil folk. Dra i utvalget under og se det skje.</p>
+  </div>
+</section>
+
+<main>
+<div class="wrap">
+
+  <div class="framing">
+    <p>Du vil vite hvor stor andel av Norge som betaler med mobil. Du kan ikke spørre alle, så du spør et utvalg. Spørsmålet som avgjør alt: <strong>hvem havner i utvalget – og hvem mangler?</strong></p>
+  </div>
+
+  <!-- ============ MODUL ============ -->
+  <section class="lab" aria-label="Interaktivt: trekk et utvalg fra Norge">
+    <div class="lab-head">
+      <div class="eyebrow">Prøv selv</div>
+      <h2>Trekk et utvalg fra Norge</h2>
+      <p>100 personer, fargelagt etter alder. Den grønne streken er <strong>sannheten</strong> – andelen i hele befolkningen. Den står spikret fast. Dra skalaen og se ditt eget tall gli vekk fra den.</p>
+    </div>
+    <div class="lab-body">
+
+      <div class="pop-wrap">
+        <div class="pop-legend">
+          <span class="age-ramp">Alder: <span class="ramp-bar"></span> ung → eldre</span>
+          <span class="leg-pick"><span class="leg-dot on"></span> trukket til utvalget</span>
+        </div>
+        <div id="grid" role="img" aria-label="100 personer fargelagt etter alder; de trukne lyser opp"></div>
+      </div>
+
+      <div class="controls">
+        <div class="skew-row">
+          <label for="skew">Slik trekker du:</label>
+          <input type="range" id="skew" min="0" max="100" value="80" aria-describedby="skewEnds">
+        </div>
+        <div class="skew-ends" id="skewEnds">
+          <span><b>Tilfeldig</b> fra folkeregisteret</span>
+          <span>Nettpanel / <b>Facebook-undersøkelse</b></span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-kiaer" id="kiaerBtn">Trekk som Kiær (stratifisert)</button>
+          <button class="btn btn-ghost" id="redrawBtn">Trekk på nytt</button>
+        </div>
+      </div>
+
+      <div class="axis-block">
+        <div class="axis-title">Andel som betaler med mobil</div>
+        <div class="axis" id="axis">
+          <div class="axis-line"></div>
+          <div class="tick" style="left:0%"></div><div class="tick-lab" style="left:0%">0%</div>
+          <div class="tick" style="left:25%"></div><div class="tick-lab" style="left:25%">25%</div>
+          <div class="tick" style="left:50%"></div><div class="tick-lab" style="left:50%">50%</div>
+          <div class="tick" style="left:75%"></div><div class="tick-lab" style="left:75%">75%</div>
+          <div class="tick" style="left:100%"></div><div class="tick-lab" style="left:100%">100%</div>
+          <div class="gap-band" id="gapBand"></div>
+          <div class="truth-marker" id="truthMark"><div class="truth-flag" id="truthFlag">Sannheten</div></div>
+          <div class="meas-marker" id="measMark"></div>
+          <div class="meas-flag" id="measFlag">Ditt tall</div>
+        </div>
+      </div>
+
+      <div class="gap-callout" id="callout" aria-live="polite"></div>
+      <div class="verdict" id="verdict" aria-live="polite"></div>
+
+    </div>
+  </section>
+  <!-- ============ /MODUL ============ -->
+
+  <div class="framing" style="margin-top:26px;">
+    <p>Legg merke til at <strong>den grønne streken aldri flytter seg.</strong> Sannheten om Norge er den samme uansett hvordan du spør. Det eneste som beveger seg er ditt tall – og det avhenger bare av metoden, ikke av befolkningen.</p>
+    <p>Dra mot <em>Facebook-undersøkelse</em>, og utvalget ditt lyser opp ungt: de yngre svarer, de eldre faller fra. Siden mobilbetaling henger sammen med alder, drar tallet ditt oppover, vekk fra sannheten. Det er <strong>ikke regnefeil</strong> – tallet er korrekt for dem du spurte. Det er bare feil folk.</p>
+    <p>Trykk <em>Trekk på nytt</em> noen ganger med skalaen på tilfeldig: tallet spriker litt rundt streken, men bommer ikke systematisk. Skru opp skjevheten og trekk på nytt: nå bommer det <strong>samme vei hver gang</strong>. Det er forskjellen på tilfeldig støy og innebygd skjevhet.</p>
+  </div>
+
+  <div class="aside-text">
+    <h2>Mannen som løste dette</h2>
+    <p>Knappen heter «Trekk som Kiær» av en grunn. I 1895 reiste direktøren for det norske statistikkbyrået til Bern med en idé som nesten var en provokasjon: at man kunne si noe pålitelig om <em>hele</em> befolkningen uten å telle alle – så lenge utvalget var <em>bevisst</em> sammensatt til å speile den. Datidens regel var at bare en full folketelling kunne gi sann statistikk. Mottakelsen var, med hans egne ord, «skarp».</p>
+
+    <figure class="quote">
+      <p>Et representativt utvalg skulle være «et fotografi som gjengir originalens detaljer i deres sanne relative proporsjoner».</p>
+      <figcaption>Kiærs eget bilde på metoden. Vi vet ikke nøyaktig hvordan ordvekslingen i salen gikk – kildene forteller bare at motstanden var hard.</figcaption>
+    </figure>
+
+    <p>Det er nettopp det «Trekk som Kiær» gjør: i stedet for å håpe at tilfeldigheten jevner ut alderen, sørger den for at utvalget har <strong>riktig andel</strong> unge, middelaldrende og eldre – samme proporsjoner som befolkningen. Da legger tallet seg på sannheten, og holder seg der når du trekker på nytt. Prøv: dra skalaen til tilfeldig, trekk noen ganger, og trykk så Kiær. Markøren slutter å vandre.</p>
+
+    <aside class="fact">
+      <h3>Anders Nicolai Kiær (1838–1919)</h3>
+      <ul>
+        <li>Grunnla Statistisk sentralbyrå og var direktør fra 1876 til 1913.</li>
+        <li>La fram «den representative metode» i Bern i 1895 og forsvarte den i møte etter møte tross hard motstand.</li>
+        <li>Brukte ikke tilfeldig trekning, men <em>bevisst sammensatte</em> utvalg basert på kjent kunnskap om befolkningen – en tidlig form for stratifisering.</li>
+        <li>Metoden ble offisielt anbefalt i 1903 og endelig akseptert i 1925 – da handlet striden ikke lenger om <em>om</em> man skulle bruke utvalg, men <em>hvordan</em>.</li>
+      </ul>
+    </aside>
+
+    <h2>Hva du bør spørre om</h2>
+    <div class="checklist">
+      <h3>Når noen viser deg et tall om «folk flest»</h3>
+      <ul>
+        <li>Hvem er med i utvalget – og hvem mangler helt?</li>
+        <li>Hvordan ble de valgt? Meldte de seg selv, eller ble de trukket?</li>
+        <li>Henger det vi måler sammen med hvem som svarer? (Da blir skjevheten farlig.)</li>
+        <li>Hjelper det at utvalget er stort? Nei – et stort skjevt utvalg bommer like mye.</li>
+      </ul>
+    </div>
+
+    <h2>Hvorfor det betyr noe</h2>
+    <p>Representativitet er ikke en selvfølge. Det er en <strong>bragd</strong> – noe man må bygge med omhu hver gang. Det er lett å glemme i en tid da hvem som helst kan lage en nettavstemning på sekunder og kalle resultatet «folkets mening». Et nettpanel er ikke et speil av Norge; det er et speil av dem som var på nett og gadd å svare.</p>
+    <p>Femti år etter Bern skrev Darrell Huff en hel bok om hva som skjer når folk glemmer det Kiær beviste. Den åpner – ikke tilfeldig – med nettopp utvalget med innebygd skjevhet. Kiær viste at det går an å gjøre det riktig. Huff minnet oss om hvor lett det er å la være.</p>
+  </div>
+
+  <div class="takeaway">
+    <div class="eyebrow">Huskeregel</div>
+    <p>Et stort utvalg redder deg ikke. Det avgjørende er ikke hvor mange du spurte, men om de ligner på dem du uttaler deg om.</p>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Tallvett · Kapittel 1: Utvalg med innebygd skjevhet</span>
+    <span>Visuell profil etter <a href="https://design.ssb.no/#/">SSBs designsystem</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const N=100, K=40;
+  const AGE_MIN=18, AGE_SPAN=67;
+
+  let people=[];
+  let mode="skew";
+  let truth=0;
+
+  const grid=document.getElementById("grid");
+  const skew=document.getElementById("skew");
+  const kiaerBtn=document.getElementById("kiaerBtn");
+  const redrawBtn=document.getElementById("redrawBtn");
+  const truthMark=document.getElementById("truthMark");
+  const truthFlag=document.getElementById("truthFlag");
+  const measMark=document.getElementById("measMark");
+  const measFlag=document.getElementById("measFlag");
+  const gapBand=document.getElementById("gapBand");
+  const callout=document.getElementById("callout");
+  const verdict=document.getElementById("verdict");
+
+  function ageColor(t){
+    const ca=[205,235,217], cb=[31,74,60];
+    const r=Math.round(ca[0]+(cb[0]-ca[0])*t);
+    const g=Math.round(ca[1]+(cb[1]-ca[1])*t);
+    const b=Math.round(ca[2]+(cb[2]-ca[2])*t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function buildPopulation(){
+    people=[];
+    for(let i=0;i<N;i++){
+      const age=AGE_MIN+Math.floor(Math.random()*AGE_SPAN);
+      const p=1/(1+Math.exp((age-55)/8));
+      const uses=Math.random()<(0.15+0.83*p);
+      people.push({age,uses,picked:false});
+    }
+    truth=people.filter(p=>p.uses).length/N;
+  }
+
+  function buildGrid(){
+    grid.innerHTML="";
+    people.forEach(p=>{
+      const d=document.createElement("div");
+      d.className="person";
+      d.style.background=ageColor((p.age-AGE_MIN)/AGE_SPAN);
+      grid.appendChild(d);
+      p.el=d;
+    });
+  }
+
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+
+  function drawSkew(s){
+    people.forEach(p=>p.picked=false);
+    const w=people.map(p=>{
+      const young=1-(p.age-AGE_MIN)/AGE_SPAN;
+      return (1-s)*1 + s*Math.pow(young,2)*6;
+    });
+    const chosen=new Set();
+    while(chosen.size<K){
+      let tot=0; for(let i=0;i<N;i++) if(!chosen.has(i)) tot+=w[i];
+      let r=Math.random()*tot;
+      for(let i=0;i<N;i++){ if(chosen.has(i))continue; r-=w[i]; if(r<=0){chosen.add(i);break;} }
+    }
+    chosen.forEach(i=>people[i].picked=true);
+  }
+
+  function drawKiaer(){
+    people.forEach(p=>p.picked=false);
+    const groups={a:[],b:[],c:[]};
+    people.forEach((p,i)=>{(p.age<40?groups.a:p.age<60?groups.b:groups.c).push(i);});
+    const out=new Set();
+    ["a","b","c"].forEach(g=>{
+      const idx=groups[g].slice(); const kk=Math.round(K*idx.length/N);
+      shuffle(idx); idx.slice(0,kk).forEach(i=>out.add(i));
+    });
+    const all=[...Array(N).keys()]; shuffle(all);
+    for(const i of all){ if(out.size>=K)break; out.add(i); }
+    [...out].slice(0,K).forEach(i=>people[i].picked=true);
+  }
+
+  function measuredShare(){
+    const s=people.filter(p=>p.picked);
+    return s.length? s.filter(p=>p.uses).length/s.length : 0;
+  }
+  function pickedAvgAge(){
+    const s=people.filter(p=>p.picked);
+    return s.reduce((a,p)=>a+p.age,0)/s.length;
+  }
+
+  function render(){
+    people.forEach(p=>p.el.classList.toggle("picked",p.picked));
+    const m=measuredShare();
+    const tPct=truth*100, mPct=m*100;
+    const diff=mPct-tPct, absd=Math.abs(diff);
+
+    truthMark.style.left=tPct+"%";
+    truthFlag.textContent="Sannheten "+Math.round(tPct)+"%";
+    measMark.style.left=mPct+"%";
+    measFlag.style.left=mPct+"%";
+    measFlag.textContent="Ditt tall "+Math.round(mPct)+"%";
+
+    const lo=Math.min(tPct,mPct), hi=Math.max(tPct,mPct);
+    gapBand.style.left=lo+"%";
+    gapBand.style.width=(hi-lo)+"%";
+
+    let col,cls;
+    if(absd<=6){ col="rgba(182,229,201,.7)"; cls="ok"; measMark.style.borderColor="var(--ssb-green)"; }
+    else if(absd<=12){ col="rgba(217,136,62,.6)"; cls="bad"; measMark.style.borderColor="#D9883E"; }
+    else { col="rgba(195,85,58,.7)"; cls="bad"; measMark.style.borderColor="var(--ssb-red)"; }
+    gapBand.style.background=col;
+    measFlag.style.color = absd<=6 ? "var(--ssb-green-tint)" : "#F2B8A8";
+
+    if(absd<1){
+      callout.innerHTML=`Ditt tall treffer sannheten – <span class="num ok">blink</span>.`;
+    }else{
+      const dir = diff>0 ? "for høyt" : "for lavt";
+      callout.innerHTML=`Du bommer med <span class="num ${cls}">${absd.toFixed(0)} prosentpoeng</span> (${dir}).`;
+    }
+
+    const avgAge=Math.round(pickedAvgAge());
+    let v="";
+    if(mode==="kiaer"){
+      v=`<strong>Kiærs metode.</strong> Utvalget har riktig andel unge og eldre (snittalder ${avgAge} år), så bildet får sanne proporsjoner. Trekk på nytt – det blir liggende nær streken.`;
+    }else{
+      const s=+skew.value;
+      if(s<=15) v=`<strong>Nær tilfeldig.</strong> Snittalder i utvalget er ${avgAge} år, omtrent som befolkningen. Tallet spriker litt fra gang til gang, men bommer ikke systematisk.`;
+      else if(s<=55) v=`<strong>Litt skjevt.</strong> Utvalget er yngre enn Norge (snittalder ${avgAge} år). De eldre faller fra, og tallet begynner å dra oppover.`;
+      else v=`<strong>Sterkt skjevt.</strong> Nesten bare yngre svarer (snittalder ${avgAge} år). Tallet bommer mye – og samme vei hver gang du trekker.`;
+    }
+    verdict.innerHTML=v;
+  }
+
+  function runSkew(){ mode="skew"; kiaerBtn.classList.remove("active"); drawSkew(+skew.value/100); render(); }
+  function runKiaer(){ mode="kiaer"; kiaerBtn.classList.add("active"); drawKiaer(); render(); }
+
+  skew.addEventListener("input",runSkew);
+  kiaerBtn.addEventListener("click",runKiaer);
+  redrawBtn.addEventListener("click",()=>{ mode==="kiaer"?runKiaer():runSkew(); });
+
+  buildPopulation(); buildGrid(); runSkew();
+})();
+</script>
+</body>
+</html>

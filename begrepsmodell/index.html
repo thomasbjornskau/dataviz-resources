@@ -47,7 +47,7 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 .bryter input{accent-color:var(--aksent);width:15px;height:15px;margin:0}
 .teller{margin-left:auto;font-size:13px;color:var(--svak);white-space:nowrap}
 
-.spalter{display:grid;grid-template-columns:minmax(0,1fr) 358px;gap:40px;padding-top:26px;align-items:start}
+.spalter{padding-top:26px;max-width:840px}
 
 .lag{margin:0 0 34px;scroll-margin-top:76px}
 .lag-hode{display:flex;align-items:baseline;gap:10px;padding-bottom:7px;border-bottom:1px solid var(--haarstrek);margin-bottom:6px}
@@ -71,12 +71,16 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 .rad .varsel{color:var(--varsel);margin-left:5px;font-size:12px}
 .rad[aria-pressed="true"] .varsel{color:#e8c9b4}
 
-.detalj{position:sticky;top:74px}
-.kort{border:1px solid var(--haarstrek);border-radius:3px;padding:22px;background:var(--flate)}
+.utdyping{margin:3px 0 10px;max-width:600px}
+.kort{border:1px solid var(--haarstrek);border-left:3px solid var(--aksent);border-radius:0 3px 3px 0;padding:16px 18px;background:var(--flate)}
 .kort-merke{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--svak);font-weight:600;margin:0 0 6px}
-.kort-term{font-size:21px;font-weight:600;margin:0 0 12px;line-height:1.25}
+.kort-term{display:none}
 .kort-def{margin:0;font-size:15px}
-.kort-bolk{border-top:1px solid var(--haarstrek);padding-top:14px;margin-top:16px}
+@media (prefers-reduced-motion:no-preference){.utdyping{animation:inn .16s ease-out}}
+@keyframes inn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.kort-bolk{border-top:1px solid var(--haarstrek);padding-top:11px;margin-top:12px}
+.kort-bolk.linje{display:flex;gap:18px;flex-wrap:wrap}
+.kort-bolk.linje div{min-width:120px}
 .kort-bolk h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--svak);font-weight:600;margin:0 0 8px}
 .kort-bolk p{margin:0;font-size:14px;color:var(--dempet)}
 .lenkeknapp{font:inherit;font-size:14px;background:none;border:0;padding:0;margin:0 0 5px;display:block;
@@ -93,7 +97,25 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 .chip:hover{border-color:var(--aksent);color:var(--aksent)}
 .chip.utvidet{border-style:dashed;color:var(--dempet)}
 
-.par-liste{display:grid;gap:15px;max-width:820px;padding-top:26px}
+.nett{padding-top:26px;max-width:820px}
+.nett h2{font-size:17px;font-weight:600;margin:0 0 5px}
+.nett .les{font-size:14px;color:var(--dempet);margin:0 0 4px;max-width:62ch}
+.nett svg{width:100%;height:auto;display:block;margin:10px 0 0}
+.bue{fill:none;stroke-width:1.2;transition:opacity .15s,stroke-width .15s}
+.bue.samme{stroke:#b9bcb7}
+.bue.kryss{stroke:var(--aksent);stroke-width:1.6}
+.nett.fokus .bue{opacity:.12}
+.nett.fokus .bue.paa{opacity:1;stroke-width:2.4}
+.n-navn{font-size:13px;fill:var(--blekk);cursor:pointer}
+.n-lag{font-size:10px;letter-spacing:.09em;fill:var(--svak);text-transform:uppercase;font-weight:600}
+.n-rad{fill:transparent;cursor:pointer}
+.n-rad:hover{fill:rgba(39,66,71,.05)}
+.n-prikk{fill:var(--svak)}
+.tegnforklaring{display:flex;gap:20px;font-size:13px;color:var(--dempet);margin:14px 0 0;flex-wrap:wrap}
+.tegnforklaring span{display:flex;align-items:center;gap:7px}
+.tegnforklaring i{width:22px;height:0;border-top:2px solid;display:inline-block}
+
+.par-liste{display:grid;gap:15px;max-width:820px;padding-top:30px}
 .par{border:1px solid var(--haarstrek);border-radius:3px;overflow:hidden}
 .par-topp{display:grid;grid-template-columns:1fr 1fr}
 .par-side{padding:15px 17px;cursor:pointer}
@@ -107,8 +129,6 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 .fot p{margin:0 0 8px}
 
 @media (max-width:900px){
-  .spalter{grid-template-columns:1fr;gap:22px}
-  .detalj{position:static;order:-1}
   .par-topp{grid-template-columns:1fr}
   .par-side:first-child{border-right:0;border-bottom:1px solid var(--haarstrek)}
   header{padding:34px 0 18px}
@@ -140,15 +160,24 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 </div>
 
 <div id="panel-tre">
-  <div class="spalter">
-    <main id="tre"></main>
-    <aside class="detalj" id="detalj" aria-live="polite"></aside>
-  </div>
+  <div class="spalter"><main id="tre" aria-live="polite"></main></div>
 </div>
 
 <div id="panel-kjede" hidden><main id="kjede" style="padding-top:26px;max-width:820px"></main></div>
 
-<div id="panel-par" hidden><div class="par-liste" id="par-liste"></div></div>
+<div id="panel-par" hidden>
+  <div class="nett" id="nett">
+    <h2>Hvor forvirringen sitter</h2>
+    <p class="les">Hvert begrep som forveksles med et annet, med en bue til det det forveksles med. Buene er nesten alle korte — forvirringen oppstår mellom naboer i samme gren, ikke på tvers av modellen. Den ene lange buen er derfor den mest interessante.</p>
+    <p class="les">Hold over en rad for å isolere den. Klikk for å gå til begrepet i treet.</p>
+    <div id="nett-svg"></div>
+    <div class="tegnforklaring">
+      <span><i style="border-color:var(--aksent)"></i> krysser en grense i modellen</span>
+      <span><i style="border-color:#b9bcb7"></i> naboer i samme gren</span>
+    </div>
+  </div>
+  <div class="par-liste" id="par-liste"></div>
+</div>
 
 <div class="fot">
   <p>Arbeidsutkast. Definisjonene er skrevet for å skape felles forståelse raskt, ikke for å være juridisk eller metodisk uttømmende. Der modellen berører forvaltede definisjoner — variabler, klassifikasjoner, kvalitetsbegreper — er det de forvaltede kildene som gjelder.</p>
@@ -423,8 +452,30 @@ function passer(b){
 
 function radHtml(b){
   const v = b.par && b.par.length ? '<span class="varsel" aria-hidden="true">&#9651;</span>' : "";
-  return '<button class="rad' + (b.k ? "" : " utvidet") + '" data-id="' + b.id +
-    '" aria-pressed="' + (state.valgt === b.id) + '">' + esc(b.t) + v + '</button>';
+  const valgt = state.valgt === b.id;
+  let h = '<button class="rad' + (b.k ? "" : " utvidet") + '" data-id="' + b.id +
+    '" aria-pressed="' + valgt + '" aria-expanded="' + valgt + '">' + esc(b.t) + v + '</button>';
+  if(valgt) h += '<div class="utdyping">' + kortHtml(b) + '</div>';
+  return h;
+}
+
+function kortHtml(b){
+  const l = MODELL.find(x => x.id === b.lag);
+  let h = '<div class="kort"><p class="kort-merke">' + esc(l.navn) + ' &rsaquo; ' + esc(b.gruppe) +
+    (b.k ? "" : " &middot; utvidet") + '</p><p class="kort-def">' + esc(b.d) + '</p>';
+  if(b.par && b.par.length){
+    h += '<div class="kort-bolk"><h3>Ikke det samme som</h3>';
+    b.par.forEach(p => { if(kart[p]) h += '<button class="lenkeknapp" data-hopp="' + p + '">' + esc(kart[p].t) + '</button>'; });
+    h += '</div>';
+  }
+  if(b.f || b.hvor){
+    h += '<div class="kort-bolk linje">';
+    if(b.f){ const fa = FASER.find(x => x.n === b.f);
+      h += '<div><h3>Møter deg i</h3><p>' + fa.n + '. ' + esc(fa.navn) + '</p></div>'; }
+    if(b.hvor) h += '<div><h3>Forvaltes</h3><p>' + esc(b.hvor) + '</p></div>';
+    h += '</div>';
+  }
+  return h + '</div>';
 }
 
 function tegnStripe(){
@@ -459,28 +510,40 @@ function tegnTre(){
   tegnStripe();
 }
 
-function tegnDetalj(){
-  const d = el("detalj");
-  if(!state.valgt){
-    d.innerHTML = '<div class="kort"><p class="kort-merke">Ingen valgt</p>' +
-      '<p class="kort-def">Velg et begrep for å se definisjonen, hva det ofte forveksles med, og hvor i kjeden du møter det.</p></div>';
-    return;
-  }
-  const b = kart[state.valgt], l = MODELL.find(x => x.id === b.lag);
-  let h = '<div class="kort"><p class="kort-merke">' + esc(l.navn) + ' &rsaquo; ' + esc(b.gruppe) +
-    (b.k ? "" : " &middot; utvidet") + '</p><h2 class="kort-term">' + esc(b.t) + '</h2>' +
-    '<p class="kort-def">' + esc(b.d) + '</p>';
-  if(b.par && b.par.length){
-    h += '<div class="kort-bolk"><h3>Ikke det samme som</h3>';
-    b.par.forEach(p => { if(kart[p]) h += '<button class="lenkeknapp" data-hopp="' + p + '">' + esc(kart[p].t) + '</button>'; });
-    h += '</div>';
-  }
-  if(b.f){
-    const fa = FASER.find(x => x.n === b.f);
-    h += '<div class="kort-bolk"><h3>Møter deg i</h3><p>' + fa.n + '. ' + esc(fa.navn) + '</p></div>';
-  }
-  if(b.hvor) h += '<div class="kort-bolk"><h3>Hvor det forvaltes</h3><p>' + esc(b.hvor) + '</p></div>';
-  d.innerHTML = h + '</div>';
+function tegnNett(){
+  const noder = alle.filter(b => b.par && b.par.length);
+  const sett = new Set(), kanter = [];
+  noder.forEach(b => b.par.forEach(p => {
+    if(!kart[p]) return;
+    const n = [b.id, p].sort().join("|");
+    if(!sett.has(n)){ sett.add(n); kanter.push([b.id, p]); }
+  }));
+  const y = {}; let cy = 30, sisteLag = null;
+  const rader = [];
+  noder.forEach(b => {
+    if(b.lag !== sisteLag){
+      sisteLag = b.lag;
+      rader.push({type:"lag", navn:MODELL.find(l => l.id === b.lag).navn, y:cy + 9});
+      cy += 26;
+    }
+    y[b.id] = cy + 8; rader.push({type:"n", b:b, y:cy + 8}); cy += 24;
+  });
+  const H = cy + 16, X = 250;
+  let s = '<svg viewBox="0 0 700 ' + H + '" role="img" aria-label="Buediagram over begreper som forveksles">';
+  kanter.forEach(([a, b2], i) => {
+    const y1 = y[a], y2 = y[b2], d = Math.abs(y2 - y1);
+    const cx = Math.min(X + 40 + d * 0.75, 690);
+    const kryss = kart[a].lag !== kart[b2].lag;
+    s += '<path class="bue ' + (kryss ? "kryss" : "samme") + '" data-a="' + a + '" data-b="' + b2 +
+      '" d="M' + X + ' ' + y1 + ' Q' + cx + ' ' + ((y1 + y2) / 2) + ' ' + X + ' ' + y2 + '"/>';
+  });
+  rader.forEach(r => {
+    if(r.type === "lag"){ s += '<text class="n-lag" x="' + (X - 18) + '" y="' + r.y + '" text-anchor="end">' + esc(r.navn) + '</text>'; return; }
+    s += '<g data-id="' + r.b.id + '"><rect class="n-rad" x="0" y="' + (r.y - 12) + '" width="700" height="24"/>' +
+      '<text class="n-navn" x="' + (X - 18) + '" y="' + (r.y + 4) + '" text-anchor="end">' + esc(r.b.t) + '</text>' +
+      '<circle class="n-prikk" cx="' + X + '" cy="' + r.y + '" r="2.5"/></g>';
+  });
+  el("nett-svg").innerHTML = s + '</svg>';
 }
 
 function tegnKjede(){
@@ -516,26 +579,39 @@ function velg(id, hopp){
   if(state.valgt && !kart[state.valgt].k && !state.utvidet){
     state.utvidet = true; el("vis-utvidet").checked = true; tegnTeller(); tegnKjede();
   }
-  tegnTre(); tegnDetalj();
+  tegnTre();
+  if(state.valgt){
+    const r = el("tre").querySelector('.rad[data-id="' + state.valgt + '"]');
+    if(r && hopp && r.scrollIntoView) r.scrollIntoView({block:"center"});
+  }
 }
 
 function gaaTil(id){
   if(state.visning !== "tre") bytt("tre");
   velg(id, true);
-  const s = el("lag-" + kart[id].lag);
-  if(s) s.scrollIntoView({block:"start"});
 }
 
 el("tre").addEventListener("click", e => {
+  const h = e.target.closest("[data-hopp]");
+  if(h){ velg(h.dataset.hopp, true); return; }
   const g = e.target.closest(".gruppe-hode");
   if(g){ const n = g.dataset.nokkel; state.lukket[n] = !state.lukket[n]; tegnTre(); return; }
   const r = e.target.closest(".rad");
   if(r) velg(r.dataset.id);
 });
-el("detalj").addEventListener("click", e => {
-  const h = e.target.closest("[data-hopp]");
-  if(h) velg(h.dataset.hopp, true);
+el("nett-svg").addEventListener("click", e => {
+  const g = e.target.closest("g[data-id]");
+  if(g) gaaTil(g.dataset.id);
 });
+el("nett-svg").addEventListener("mouseover", e => {
+  const g = e.target.closest("g[data-id]");
+  if(!g) return;
+  const id = g.dataset.id;
+  el("nett").classList.add("fokus");
+  el("nett-svg").querySelectorAll(".bue").forEach(p =>
+    p.classList.toggle("paa", p.dataset.a === id || p.dataset.b === id));
+});
+el("nett-svg").addEventListener("mouseleave", () => el("nett").classList.remove("fokus"));
 el("kjede").addEventListener("click", e => {
   const c = e.target.closest(".chip");
   if(c) gaaTil(c.dataset.id);
@@ -570,7 +646,7 @@ function bytt(v){
 }
 ["tre","kjede","par"].forEach(v => el("fane-" + v).addEventListener("click", () => bytt(v)));
 
-tegnTeller(); tegnTre(); tegnDetalj(); tegnKjede(); tegnPar();
+tegnTeller(); tegnTre(); tegnKjede(); tegnPar(); tegnNett();
 </script>
 </body>
 </html>

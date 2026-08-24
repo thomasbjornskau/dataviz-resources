@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ett tall kan være én person</title>
+<meta name="description" content="Hvorfor statistikk noen ganger ikke er helt nøyaktig — med vilje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAE0;
+  --paper-2:#F7F4EE;
+  --ink:#1A1713;
+  --ink-70:#4E463C;
+  --ink-40:#8B8172;
+  --rule:#D6CDBD;
+  --blue:#2E4A7D;   /* mengden */
+  --red:#C4302B;    /* den ene */
+  --dim:#CFC6B6;    /* utelukket */
+
+  --display:"Jost","Helvetica Neue",Arial,sans-serif;
+  --body:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
+  --measure:33rem;
+  --wide:56rem;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:1.12rem;line-height:1.6;
+}
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 1.4rem}
+.col{max-width:var(--measure);margin:0 auto}
+
+h1,h2,h3,.kicker,.big,button,.tbl th{font-family:var(--display)}
+.kicker{
+  font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--red);margin:0 0 1.2rem
+}
+h1{
+  font-size:clamp(2.6rem,8vw,5rem);font-weight:600;line-height:.98;
+  letter-spacing:-.03em;margin:0 0 1.2rem;text-wrap:balance
+}
+.deck{font-size:clamp(1.2rem,2.6vw,1.5rem);line-height:1.42;color:var(--ink-70);margin:0 0 2.4rem;max-width:28rem}
+h2{
+  font-size:clamp(1.6rem,4vw,2.3rem);font-weight:600;line-height:1.08;
+  letter-spacing:-.022em;margin:0 0 1rem;text-wrap:balance
+}
+p{margin:0 0 1.15rem}
+.section{margin-top:5rem}
+.note{font-size:.85rem;line-height:1.55;color:var(--ink-40);margin-top:1rem}
+.note b{color:var(--ink-70);font-weight:500}
+
+/* ---------- prikker ---------- */
+.dots{display:flex;flex-wrap:wrap;gap:3px;max-width:34rem;margin:0 0 1.3rem}
+.dot{
+  width:9px;height:9px;border-radius:50%;background:var(--blue);
+  transition:background .45s ease,transform .45s ease
+}
+.dot.out{background:var(--dim)}
+.dot.one{background:var(--red);transform:scale(1.9)}
+@media (min-width:700px){ .dot{width:11px;height:11px} }
+
+.counter{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;margin-bottom:1rem}
+.big{
+  font-size:clamp(3.4rem,11vw,6rem);font-weight:600;line-height:.9;
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums
+}
+.big.alone{color:var(--red)}
+.counter-lbl{font-size:1.02rem;color:var(--ink-70);max-width:16rem;line-height:1.3}
+
+.steps{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.4rem 0 0}
+button{
+  font-family:var(--display);font-size:.92rem;font-weight:500;
+  padding:.55rem 1rem;border:1.5px solid var(--ink);background:transparent;color:var(--ink);
+  cursor:pointer;border-radius:2rem;transition:background .18s,color .18s,opacity .18s
+}
+button:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+button.done{background:var(--ink);color:var(--paper)}
+button:disabled{opacity:.3;cursor:default}
+button.reset{border-color:var(--ink-40);color:var(--ink-40);font-size:.82rem;padding:.45rem .85rem}
+button.reset:hover{background:var(--ink-40);color:var(--paper)}
+
+/* ---------- panel ---------- */
+.panel{
+  background:var(--paper-2);border:1.5px solid var(--ink);
+  padding:1.7rem 1.4rem 1.5rem;margin:2.6rem auto
+}
+.panel h2{margin-bottom:.4rem}
+.panel-sub{color:var(--ink-70);font-size:1rem;margin:0 0 1.5rem;max-width:34rem}
+
+/* ---------- to tabeller ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:600px){ .two{grid-template-columns:1fr} }
+.tbl{border:1.5px solid var(--ink);background:var(--paper-2);padding:.9rem .95rem}
+.tbl h3{font-family:var(--display);font-size:.82rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin:0 0 .7rem;color:var(--ink-70)}
+.tbl-row{display:flex;justify-content:space-between;gap:1rem;padding:.32rem 0;font-size:1rem}
+.tbl-row + .tbl-row{border-top:1px solid var(--rule)}
+.tbl-row.hit{color:var(--red);font-weight:600}
+.tbl-row .v{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl-dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:.7rem}
+.tbl-dots .dot{width:8px;height:8px}
+
+.calc{
+  border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);
+  padding:1.1rem 1.1rem;margin-top:1rem;font-variant-numeric:tabular-nums;
+  font-size:1rem;line-height:1.85;min-height:3rem
+}
+.calc .lbl{color:rgba(239,234,224,.6)}
+.calc .out{
+  font-family:var(--display);font-size:clamp(1.6rem,5vw,2.4rem);font-weight:600;
+  letter-spacing:-.02em;display:block;margin-top:.5rem;color:#F0A6A2
+}
+
+/* ---------- beskyttelse ---------- */
+.cells{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ink);border:1.5px solid var(--ink)}
+.cell{background:var(--paper-2);padding:.7rem .6rem;min-height:5.4rem}
+.cell-lbl{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-40);margin-bottom:.35rem;font-family:var(--display);font-weight:500}
+.cell-num{font-family:var(--display);font-size:1.5rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;transition:color .4s}
+.cell.moved .cell-num{color:var(--red)}
+.cell-dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:.45rem;min-height:9px}
+.cell-dots .dot{width:8px;height:8px}
+@media (max-width:600px){ .cells{grid-template-columns:repeat(3,1fr)} .cell-num{font-size:1.25rem} }
+
+.readout{font-size:1rem;color:var(--ink-70);margin-top:1.2rem;min-height:3rem}
+.readout strong{color:var(--ink)}
+
+/* ---------- tidslinje ---------- */
+.time{border-left:2px solid var(--ink);padding-left:1.3rem;margin:2rem 0}
+.time-item{margin-bottom:1.5rem;position:relative}
+.time-item::before{
+  content:"";position:absolute;left:-1.72rem;top:.55rem;
+  width:9px;height:9px;border-radius:50%;background:var(--red)
+}
+.time-when{font-family:var(--display);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-40);display:block;margin-bottom:.15rem}
+.time-item p{margin:0;font-size:1.02rem;line-height:1.5}
+
+.pull{
+  font-family:var(--display);font-size:clamp(1.5rem,4.5vw,2.1rem);font-weight:500;
+  line-height:1.18;letter-spacing:-.02em;color:var(--ink);
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  padding:1.6rem 0;margin:3rem 0;text-wrap:balance
+}
+
+footer{
+  border-top:1.5px solid var(--rule);margin-top:5rem;padding:1.6rem 0 4rem;
+  font-size:.82rem;color:var(--ink-40);line-height:1.7
+}
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.01ms !important} }
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- ===== HERO ===== -->
+<section class="wrap" style="padding-top:4.5rem">
+  <div class="col">
+    <p class="kicker">Om tall og mennesker</p>
+    <h1>Ett tall kan være én person</h1>
+    <p class="deck">Statistikk handler om grupper. Men hvis gruppen blir liten nok, er den ikke lenger en gruppe. Da er den deg.</p>
+  </div>
+</section>
+
+<section class="wrap section" style="margin-top:2.5rem">
+  <div class="col">
+    <p>Her er en norsk kommune. De minste kommunene våre har rundt to hundre innbyggere. Hver prikk er én person.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="col">
+    <div class="counter">
+      <span class="big" id="cnt">214</span>
+      <span class="counter-lbl" id="cntLbl">personer i kommunen</span>
+    </div>
+    <div class="dots" id="dotField" aria-hidden="true"></div>
+    <div class="steps" id="steps"></div>
+    <p class="note" id="heroNote">Trykk på ett kjennetegn av gangen. Ingen av dem er hemmelige — alt sammen er ting naboen din vet.</p>
+  </div>
+</section>
+
+<section class="wrap section">
+  <div class="col">
+    <h2>Fire helt vanlige opplysninger</h2>
+    <p>Kjønn. Aldersgruppe. Utdanning. Hvilken del av kommunen du bor i. Ingenting av dette er sensitivt hver for seg, og alt sammen finnes i offisiell statistikk.</p>
+    <p>Til sammen er de nok til å peke ut én person.</p>
+    <p>Og da blir alt annet i den samme tabellen — inntekt, helse, hva som helst — opplysninger om <em>den personen</em>. Ikke om en gruppe.</p>
+  </div>
+</section>
+
+
+<!-- ===== ANGREPET ===== -->
+<section class="wrap section">
+  <div class="col">
+    <h2>Det trengs ikke engang en liten kommune</h2>
+    <p>Her er to tabeller fra samme sted. Begge er publisert etter reglene. Ingen av dem sier noe om en enkeltperson.</p>
+    <p>Se hva som skjer når du legger dem ved siden av hverandre.</p>
+  </div>
+</section>
+
+<section class="wrap">
+<div class="panel col" style="max-width:var(--measure)">
+  <h2 style="font-size:1.35rem">To harmløse tabeller</h2>
+  <p class="panel-sub">Gjennomsnittlig inntekt for aldersgruppen 60–64 år i én kommune. Samme tabell, to år på rad.</p>
+
+  <div class="two">
+    <div class="tbl">
+      <h3>Publisert 2024</h3>
+      <div class="tbl-row"><span>Personer</span><span class="v">8</span></div>
+      <div class="tbl-row"><span>Snittinntekt</span><span class="v">486 000</span></div>
+      <div class="tbl-dots" id="dotsA"></div>
+    </div>
+    <div class="tbl">
+      <h3>Publisert 2025</h3>
+      <div class="tbl-row"><span>Personer</span><span class="v">7</span></div>
+      <div class="tbl-row"><span>Snittinntekt</span><span class="v">442 000</span></div>
+      <div class="tbl-dots" id="dotsB"></div>
+    </div>
+  </div>
+
+  <div class="calc" id="calc"><span class="lbl">Én person har flyttet eller gått av med pensjon i løpet av året.</span></div>
+
+  <div class="steps" style="margin-top:1.1rem">
+    <button id="calcBtn" type="button">Regn ut</button>
+    <button id="calcReset" class="reset" type="button" hidden>Start på nytt</button>
+  </div>
+  <p class="note">Tallene er konstruert for eksempelet. Regnestykket er ekte, og er en av grunnene til at statistikkbyråer må se på publiseringer i sammenheng, ikke én tabell av gangen.</p>
+</div>
+</section>
+
+<section class="wrap section">
+  <div class="col">
+    <p class="pull">Ingen av de to tabellene brøt en eneste regel. Det var forskjellen mellom dem som var problemet.</p>
+  </div>
+</section>
+
+
+<!-- ===== HVA SSB GJØR ===== -->
+<section class="wrap section">
+  <div class="col">
+    <h2>Derfor stemmer ikke alltid tallene</h2>
+    <p>Statistisk sentralbyrå har flere måter å hindre dette på. Den enkleste er å slå sammen grupper til de blir store nok. Den nest enkleste er å holde tilbake tall som er for små — det er de tomme rutene og prikkene du av og til ser i en tabell.</p>
+    <p>Og så er det en tredje: å endre tallet litt.</p>
+    <p>I SSBs tabell over befolkningen i grunnkretser gjelder en enkel regel. Står det 1 eller 2 i en rute, blir det gjort om til 0 eller 3. Det er ikke en feil. Det er gjort med vilje, og det står i tabellen.</p>
+  </div>
+</section>
+
+<section class="wrap">
+<div class="panel col" style="max-width:var(--measure)">
+  <h2 style="font-size:1.35rem">Se hva regelen gjør</h2>
+  <p class="panel-sub">Tolv ruter fra en befolkningstabell. Hver prikk er én person.</p>
+  <div class="cells" id="cells"></div>
+  <p class="readout" id="cellsOut">Dette er de faktiske tallene. Fire av rutene inneholder én eller to personer.</p>
+  <div class="steps">
+    <button id="protectBtn" type="button">Slå på beskyttelsen</button>
+  </div>
+  <p class="note">Regelen er SSBs egen, hentet fra tabellmerknaden til <b>tabell 04362, alders- og kjønnsfordeling for grunnkretsenes befolkning</b>. Rutene i eksempelet er konstruert.</p>
+</div>
+</section>
+
+<section class="wrap section">
+  <div class="col">
+    <p>Prisen er tydelig: noen tall er ikke helt riktige. Gevinsten er at ingen kan finne en enkeltperson i dem.</p>
+    <p>Det er den byttehandelen all offisiell statistikk må gjøre. Jo mer detaljert du vil publisere, jo mer må du gjøre med tallene.</p>
+  </div>
+</section>
+
+
+<!-- ===== USA ===== -->
+<section class="wrap section">
+  <div class="col">
+    <h2>Og så ble det politikk</h2>
+    <p>Amerikanerne kom fram til at deres gamle beskyttelse ikke holdt lenger. Det finnes for mye annen data å koble mot. Før folketellingen i 2020 gikk de derfor over til en metode som legger til kontrollert støy i tallene.</p>
+    <p>De hadde ikke regnet med reaksjonen.</p>
+
+    <div class="time">
+      <div class="time-item">
+        <span class="time-when">2018–2020</span>
+        <p>Census Bureau varsler at publiserte tall vil bli endret for å beskytte folk. Kritikere kaller det «fake data». En delstat går til søksmål for å stoppe det.</p>
+      </div>
+      <div class="time-item">
+        <span class="time-when">2020–2021</span>
+        <p>Folketallet for hver delstat røres ikke. Men de detaljerte tallene — de som brukes til å tegne valgkretser — endres nok til at både forskere og politikere reagerer.</p>
+      </div>
+      <div class="time-item">
+        <span class="time-when">Juni 2026</span>
+        <p>Handelsdepartementet forbyr hele familien av metoder som endrer publiserte tall. Uten høring. Byråene er fortsatt lovpålagt å beskytte folk, men står igjen med to verktøy av seks.</p>
+      </div>
+    </div>
+
+    <p>Hvorfor ble det så betent akkurat der? Fordi amerikansk folketellingsdata ikke bare er statistikk. Den fordeler seter i nasjonalforsamlingen og bestemmer hvor valgkretsene går. Detaljerte tall om hvem som bor hvor er både verktøyet for å sikre at minoriteter blir representert — og verktøyet for å tegne kretser til fordel for ett parti.</p>
+    <p>Én av forskerne bak metoden kaller situasjonen en amerikansk personvernkrise.</p>
+  </div>
+</section>
+
+
+<!-- ===== AVSLUTNING ===== -->
+<section class="wrap section">
+  <div class="col">
+    <h2>Hva du kan ta med deg</h2>
+    <p>Neste gang du ser et tall som ikke helt summerer seg, eller en rute i en tabell som er tom: det er sannsynligvis ikke slurv. Det er noen som har bestemt at akkurat der er gruppen for liten.</p>
+    <p>Den avgjørelsen kan gjøres på flere måter, og hver måte har en pris. Det som skjedde i USA, viser hva som står på spill når noen andre enn fagfolkene bestemmer hvilken pris som skal betales.</p>
+    <p>Et statistikkbyrå kan miste tilliten din på to måter. Ved at tallene er for langt fra virkeligheten. Og ved at opplysningene om deg ikke er godt nok beskyttet. Det er hele jobben å holde begge deler i sjakk samtidig.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="col">
+    Basert på en kommentar av Hege M. Bøvelstad, Seksjon for metoder i SSB.<br>
+    Alle eksempeltall er konstruerte. Metodereglene som vises er ekte.<br>
+    Arbeidsutkast — ikke redigert for publisering.
+  </div>
+</footer>
+
+</main>
+
+<script>
+"use strict";
+
+/* ===== 1. HERO: fra 214 til 1 ===== */
+(function(){
+  var TOTAL = 214;
+  var stages = [
+    {t:"Kvinne",                n:103, lbl:"kvinner i kommunen"},
+    {t:"40–44 år",              n:7,   lbl:"kvinner i førtiårene"},
+    {t:"Høyere utdanning",      n:3,   lbl:"med universitetsutdanning"},
+    {t:"Bor i sentrumskretsen", n:1,   lbl:"Én person. Nå snakker vi ikke lenger om statistikk."}
+  ];
+
+  var field = document.getElementById("dotField");
+  var cnt = document.getElementById("cnt");
+  var lbl = document.getElementById("cntLbl");
+  var steps = document.getElementById("steps");
+  var note = document.getElementById("heroNote");
+  if(!field) return;
+
+  var dots = [];
+  for(var i=0;i<TOTAL;i++){
+    var d = document.createElement("span");
+    d.className = "dot";
+    field.appendChild(d);
+    dots.push(d);
+  }
+
+  var at = -1;
+
+  function paint(n){
+    dots.forEach(function(d,k){
+      d.classList.toggle("out", k >= n);
+      d.classList.toggle("one", n === 1 && k === 0);
+    });
+  }
+
+  function animateTo(from, to){
+    var t0 = null, dur = 550;
+    function frame(ts){
+      if(!t0) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 3);
+      cnt.textContent = Math.round(from + (to - from) * e);
+      if(p < 1) requestAnimationFrame(frame);
+      else cnt.textContent = to;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var btns = [];
+  stages.forEach(function(s, i){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s.t;
+    b.disabled = (i !== 0);
+    b.addEventListener("click", function(){ advance(i); });
+    steps.appendChild(b);
+    btns.push(b);
+  });
+
+  var reset = document.createElement("button");
+  reset.type = "button";
+  reset.className = "reset";
+  reset.textContent = "Start på nytt";
+  reset.hidden = true;
+  reset.addEventListener("click", function(){ restart(); });
+  steps.appendChild(reset);
+
+  function advance(i){
+    if(i !== at + 1) return;
+    at = i;
+    var s = stages[i];
+    var prev = i === 0 ? TOTAL : stages[i-1].n;
+    animateTo(prev, s.n);
+    paint(s.n);
+    lbl.textContent = s.lbl;
+    cnt.classList.toggle("alone", s.n === 1);
+    btns[i].classList.add("done");
+    btns[i].disabled = true;
+    if(btns[i+1]) btns[i+1].disabled = false;
+    if(i === stages.length - 1){
+      note.innerHTML = "Fire opplysninger. Ingen av dem hemmelige. Det holdt.";
+      reset.hidden = false;
+    }
+  }
+
+  function restart(){
+    at = -1;
+    cnt.textContent = TOTAL;
+    cnt.classList.remove("alone");
+    lbl.textContent = "personer i kommunen";
+    paint(TOTAL);
+    btns.forEach(function(b,i){ b.classList.remove("done"); b.disabled = (i !== 0); });
+    note.textContent = "Trykk på ett kjennetegn av gangen. Ingen av dem er hemmelige — alt sammen er ting naboen din vet.";
+    reset.hidden = true;
+  }
+
+  paint(TOTAL);
+})();
+
+
+/* ===== 2. TO TABELLER: differanseangrepet ===== */
+(function(){
+  var A = {n:8, snitt:486000};
+  var B = {n:7, snitt:442000};
+
+  function fill(el, n, redLast){
+    if(!el) return;
+    el.innerHTML = "";
+    for(var i=0;i<n;i++){
+      var d = document.createElement("span");
+      d.className = "dot" + (redLast && i === n-1 ? " one" : "");
+      el.appendChild(d);
+    }
+  }
+  fill(document.getElementById("dotsA"), A.n, true);
+  fill(document.getElementById("dotsB"), B.n, false);
+
+  var calc = document.getElementById("calc");
+  var btn = document.getElementById("calcBtn");
+  var reset = document.getElementById("calcReset");
+  if(!calc || !btn) return;
+
+  var sumA = A.n * A.snitt;
+  var sumB = B.n * B.snitt;
+  var diff = sumA - sumB;
+
+  var nb = function(x){ return x.toLocaleString("nb-NO"); };
+
+  var lines = [
+    '<span class="lbl">Samlet inntekt 2024</span> &nbsp; 8 × 486 000 = <b>' + nb(sumA) + '</b>',
+    '<span class="lbl">Samlet inntekt 2025</span> &nbsp; 7 × 442 000 = <b>' + nb(sumB) + '</b>',
+    '<span class="lbl">Differanse</span> &nbsp; ' + nb(sumA) + ' − ' + nb(sumB) + ' =' +
+      '<span class="out">' + nb(diff) + ' kr</span>' +
+      '<span class="lbl">Inntekten til den ene personen som forsvant.</span>'
+  ];
+
+  btn.addEventListener("click", function(){
+    btn.disabled = true;
+    calc.innerHTML = "";
+    lines.forEach(function(html, i){
+      setTimeout(function(){
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        calc.appendChild(div);
+        if(i === lines.length - 1) reset.hidden = false;
+      }, i * 700);
+    });
+  });
+
+  reset.addEventListener("click", function(){
+    calc.innerHTML = '<span class="lbl">Én person har flyttet eller gått av med pensjon i løpet av året.</span>';
+    btn.disabled = false;
+    reset.hidden = true;
+  });
+})();
+
+
+/* ===== 3. SSBs regel: 1 og 2 blir 0 eller 3 ===== */
+(function(){
+  var truth = [6, 2, 11, 4, 1, 9, 3, 14, 2, 7, 1, 5];
+  var labels = ["0–4 år","5–9","10–14","15–19","20–24","25–29","30–34","35–39","40–44","45–49","50–54","55–59"];
+  var published = truth.map(function(v, i){
+    if(v > 2) return v;
+    return (i % 2 === 0) ? 3 : 0;
+  });
+
+  var host = document.getElementById("cells");
+  var out = document.getElementById("cellsOut");
+  var btn = document.getElementById("protectBtn");
+  if(!host) return;
+
+  var nodes = [];
+  truth.forEach(function(v, i){
+    var c = document.createElement("div");
+    c.className = "cell";
+    c.innerHTML =
+      '<div class="cell-lbl">' + labels[i] + '</div>' +
+      '<div class="cell-num">' + v + '</div>' +
+      '<div class="cell-dots"></div>';
+    host.appendChild(c);
+    nodes.push(c);
+  });
+
+  function drawDots(i, n){
+    var box = nodes[i].querySelector(".cell-dots");
+    box.innerHTML = "";
+    for(var k=0;k<n;k++){
+      var d = document.createElement("span");
+      d.className = "dot";
+      box.appendChild(d);
+    }
+  }
+  truth.forEach(function(v,i){ drawDots(i, v); });
+
+  var changed = truth.filter(function(v){ return v <= 2; }).length;
+  var sumT = truth.reduce(function(a,b){ return a+b; }, 0);
+  var sumP = published.reduce(function(a,b){ return a+b; }, 0);
+
+  var on = false;
+  btn.addEventListener("click", function(){
+    on = !on;
+    var src = on ? published : truth;
+    nodes.forEach(function(c, i){
+      c.querySelector(".cell-num").textContent = src[i];
+      c.classList.toggle("moved", on && truth[i] !== published[i]);
+      drawDots(i, src[i]);
+    });
+    btn.textContent = on ? "Vis de faktiske tallene" : "Slå på beskyttelsen";
+    out.innerHTML = on
+      ? '<strong>' + changed + ' av 12 ruter er endret.</strong> Ingen av dem viser lenger én eller to personer. Summen har gått fra ' + sumT + ' til ' + sumP + ' — det er prisen.'
+      : 'Dette er de faktiske tallene. ' + changed + ' av rutene inneholder én eller to personer.';
+  });
+})();
+</script>
+</body>
+</html>

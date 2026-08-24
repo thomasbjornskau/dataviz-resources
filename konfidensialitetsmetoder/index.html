@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Det tekniske valget som ble politisk</title>
+<meta name="description" content="Om konfidensialitetsmetoder, datakvalitet og hvem som bestemmer hva i offisiell statistikk.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E7EBEA;
+  --card:#F4F7F6;
+  --ink:#122E2C;
+  --ink-70:#39514F;
+  --ink-45:#6E8381;
+  --ink-25:#A3B2B0;
+  --rule:#C7D3D1;
+  --pub:#0E6B86;
+  --gap:#A32E4E;
+  --off:#9AA6A4;
+
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --measure:34rem;
+  --wide:62rem;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:1.0625rem;
+  line-height:1.62;
+  font-synthesis-weight:none;
+}
+
+/* ---------- struktur ---------- */
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 1.5rem}
+.col{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.wide{max-width:var(--wide);margin-left:auto;margin-right:auto}
+
+/* Cellemotivet: en fin rutenettlinje som følger sidens seksjoner.
+   Den er ikke dekor — den er tabellcella, som er hele sakens materiale. */
+.rulebox{border-top:1px solid var(--rule);padding-top:.75rem;margin-top:4.5rem}
+
+/* ---------- typografi ---------- */
+h1,h2,h3,.eyebrow,.label,.num,button,.badge{font-family:var(--display)}
+.eyebrow{
+  font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-45);margin:0 0 1.25rem
+}
+h1{
+  font-size:clamp(2.35rem,6.2vw,4.1rem);
+  font-weight:700;line-height:1.02;letter-spacing:-.028em;
+  margin:0 0 1.1rem;text-wrap:balance
+}
+.deck{
+  font-size:clamp(1.12rem,2.1vw,1.35rem);line-height:1.5;color:var(--ink-70);
+  margin:0 0 2rem;max-width:32rem
+}
+h2{
+  font-size:clamp(1.4rem,3vw,1.85rem);font-weight:600;letter-spacing:-.018em;
+  line-height:1.15;margin:0 0 .9rem;text-wrap:balance
+}
+h3{font-size:1.02rem;font-weight:600;letter-spacing:-.005em;margin:0 0 .35rem}
+p{margin:0 0 1.1rem}
+a{color:var(--pub);text-underline-offset:2px}
+strong{font-weight:600}
+.lede::first-letter{font-size:1em}
+.byline{
+  font-family:var(--mono);font-size:.78rem;color:var(--ink-45);
+  letter-spacing:.02em;margin:0 0 3rem
+}
+.caption{
+  font-family:var(--mono);font-size:.735rem;line-height:1.55;color:var(--ink-45);
+  margin:.85rem 0 0;letter-spacing:.005em
+}
+.caption b{color:var(--ink-70);font-weight:500}
+
+/* ---------- widget-skall ---------- */
+.widget{
+  background:var(--card);
+  border:1px solid var(--rule);
+  margin:3.25rem auto;
+  padding:1.65rem 1.5rem 1.4rem;
+}
+.widget-head{margin-bottom:1.35rem}
+.widget-kicker{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-45);display:block;margin-bottom:.45rem
+}
+.widget-sub{font-size:.95rem;color:var(--ink-70);margin:.15rem 0 0;max-width:38rem}
+
+/* ---------- knapper / kontroller ---------- */
+button{
+  font-family:var(--display);font-size:.83rem;font-weight:500;
+  border:1px solid var(--ink-25);background:transparent;color:var(--ink);
+  padding:.48rem .9rem;cursor:pointer;border-radius:0;
+  transition:background .15s,border-color .15s,color .15s;
+}
+button:hover{border-color:var(--ink);background:rgba(18,46,44,.05)}
+button:focus-visible{outline:2px solid var(--pub);outline-offset:2px}
+button[aria-pressed="true"],button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.seg{display:flex;flex-wrap:wrap}
+.seg button{margin-right:-1px}
+
+/* ---------- hero-rutenett ---------- */
+.grid-hero{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  border-top:1px solid var(--rule);border-left:1px solid var(--rule);
+  max-width:31rem;
+}
+.cellx{
+  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.94rem;font-variant-numeric:tabular-nums;
+  color:var(--ink);background:transparent;
+  transition:background .5s ease,color .5s ease;
+}
+.cellx.changed{background:rgba(163,46,78,.13);color:var(--gap);font-weight:600}
+.hero-readout{
+  font-family:var(--mono);font-size:.8rem;color:var(--ink-70);
+  margin-top:.9rem;display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center
+}
+.hero-readout .n{color:var(--gap);font-weight:600}
+
+/* ---------- verktøykasse ---------- */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.tool{background:var(--card);padding:1rem .95rem 1.05rem;transition:opacity .35s,background .35s}
+.tool.banned{opacity:.42;background:#EDF0EF}
+.tool.banned h3{text-decoration:line-through;text-decoration-thickness:1px}
+.tool-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.tool p{font-size:.87rem;line-height:1.45;color:var(--ink-70);margin:.3rem 0 .7rem}
+.badge{
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+  border:1px solid var(--ink-25);color:var(--ink-45);padding:.18rem .38rem;white-space:nowrap
+}
+.badge.ssb{border-color:var(--ink-70);color:var(--ink-70)}
+.demo{font-family:var(--mono);font-size:.78rem;letter-spacing:.01em;color:var(--ink-45)}
+.demo b{color:var(--ink);font-weight:500}
+.demo .arrow{color:var(--ink-25);padding:0 .35rem}
+.demo .alt{color:var(--gap);font-weight:500}
+.tool.banned .demo .alt{color:var(--ink-45)}
+.verdict{
+  border-top:1px solid var(--rule);margin-top:1.25rem;padding-top:1rem;
+  font-size:.95rem;color:var(--ink-70);min-height:3.2rem
+}
+.verdict strong{color:var(--ink)}
+
+/* ---------- detaljnivå ---------- */
+.levels{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.lvl{
+  background:var(--card);display:grid;
+  grid-template-columns:11.5rem 1fr 6.5rem;gap:1rem;align-items:center;
+  padding:.72rem .9rem;cursor:pointer;transition:background .2s
+}
+.lvl:hover{background:#EDF1F0}
+.lvl.active{background:var(--ink);color:var(--card)}
+.lvl.active .lvl-name{color:var(--card)}
+.lvl.active .lvl-meta{color:rgba(244,247,246,.62)}
+.lvl-name{font-family:var(--display);font-size:.88rem;font-weight:500}
+.lvl-meta{font-family:var(--mono);font-size:.7rem;color:var(--ink-45);margin-top:.1rem}
+.bar-track{height:.55rem;background:rgba(18,46,44,.09);position:relative}
+.lvl.active .bar-track{background:rgba(244,247,246,.18)}
+.bar-fill{height:100%;background:var(--gap);width:0;transition:width .6s cubic-bezier(.22,.8,.3,1)}
+.lvl-val{
+  font-family:var(--mono);font-size:.86rem;text-align:right;font-variant-numeric:tabular-nums;
+  color:var(--gap);font-weight:500
+}
+.lvl.active .lvl-val{color:#F0A8B9}
+.mathbox{
+  font-family:var(--mono);font-size:.76rem;line-height:1.75;color:var(--ink-70);
+  border-top:1px solid var(--rule);margin-top:1.2rem;padding-top:1rem
+}
+.mathbox .k{color:var(--ink-45)}
+.mathbox .v{color:var(--ink);font-weight:500}
+
+/* ---------- styringsstigen ---------- */
+.ladder{border:1px solid var(--rule);background:var(--card)}
+.rung{
+  display:grid;grid-template-columns:2.1rem 1fr;gap:.85rem;
+  padding:.8rem .95rem;border-bottom:1px solid var(--rule);
+  transition:background .3s
+}
+.rung:last-child{border-bottom:none}
+.rung-n{font-family:var(--mono);font-size:.75rem;color:var(--ink-25);padding-top:.2rem}
+.rung h3{font-size:.92rem;margin-bottom:.15rem}
+.rung p{font-size:.83rem;line-height:1.45;color:var(--ink-70);margin:0}
+.rung.pol{background:rgba(163,46,78,.075)}
+.rung.pol .rung-n{color:var(--gap)}
+.divider{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.42rem .95rem;background:var(--ink);color:var(--card);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase
+}
+.divider span:last-child{margin-left:auto;opacity:.6;text-transform:none;letter-spacing:.02em}
+.preset-note{
+  font-size:.92rem;color:var(--ink-70);border-top:1px solid var(--rule);
+  margin-top:1.15rem;padding-top:1rem;min-height:3.6rem
+}
+
+/* ---------- sluttnoter ---------- */
+.takeaways{border-top:2px solid var(--ink);padding-top:1.4rem;margin-top:1rem}
+.takeaways ol{margin:0;padding-left:0;list-style:none;counter-reset:t}
+.takeaways li{
+  counter-increment:t;position:relative;padding-left:2.1rem;margin-bottom:1rem;
+  font-size:1.02rem
+}
+.takeaways li::before{
+  content:counter(t,decimal-leading-zero);position:absolute;left:0;top:.28rem;
+  font-family:var(--mono);font-size:.72rem;color:var(--ink-45)
+}
+.sources{font-size:.88rem;color:var(--ink-70)}
+.sources li{margin-bottom:.5rem}
+footer{
+  border-top:1px solid var(--rule);margin-top:4rem;padding:1.5rem 0 4rem;
+  font-family:var(--mono);font-size:.72rem;color:var(--ink-45);line-height:1.7
+}
+
+.flag{
+  border-left:2px solid var(--gap);padding:.15rem 0 .15rem .95rem;margin:1.6rem 0;
+  font-size:.92rem;color:var(--ink-70)
+}
+
+@media (max-width:640px){
+  .lvl{grid-template-columns:1fr;gap:.45rem}
+  .lvl-val{text-align:left}
+  .grid-hero{grid-template-columns:repeat(6,1fr)}
+  .widget{padding:1.25rem 1rem 1.15rem;margin-left:-.35rem;margin-right:-.35rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="wrap" style="padding-top:5rem">
+  <div class="wide">
+    <p class="eyebrow">Metode og tillit</p>
+    <h1>Det tekniske valget som ble politisk</h1>
+    <p class="deck">I juni fikk amerikanske statistikkbyråer beskjed ovenfra om hvilke konfidensialitetsmetoder de får lov til å bruke. Saken handler ikke egentlig om metoder. Den handler om hvem som bestemmer hvor grensen går.</p>
+    <p class="byline">Interaktiv gjennomgang · basert på kommentar av Hege M. Bøvelstad, Seksjon for metoder</p>
+  </div>
+
+  <div class="wide">
+    <div class="grid-hero" id="heroGrid" aria-hidden="true"></div>
+    <div class="hero-readout">
+      <span><span class="n" id="heroCount">0</span> av 48 celler er ikke det faktiske tallet</span>
+      <button id="heroToggle" type="button">Vis de sanne tallene</button>
+    </div>
+    <p class="caption">Utsnitt av en tabell på grunnkretsnivå, fordelt på kjønn og aldersgruppe. Regelen som er brukt er SSBs egen: i tabell 04362 er <b>alle ett-tall og to-tall endret til 0 eller 3</b> av personvernhensyn. Tallene i rutenettet er konstruerte for illustrasjonen; regelen er ekte.</p>
+  </div>
+</section>
+
+
+<!-- ============ 1. HVA SKJEDDE ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Hva instruksen faktisk gjør</h2>
+    <p>Det amerikanske handelsdepartementet innførte i juni nye regler for hvordan U.S. Census Bureau og Bureau of Economic Analysis skal beskytte konfidensialitet. Reglene kom uten høring og uten mulighet for faglige innspill.</p>
+    <p>Instruksen sier at aggregering skal være hovedmetoden. Prikking skal bare brukes unntaksvis. Og all støylegging forbys — altså hele familien av metoder som endrer publiserte tall kontrollert for å redusere risikoen for at enkeltpersoner kan gjenkjennes.</p>
+    <p>Det høres ut som en avgrensning. Se hva som blir igjen.</p>
+  </div>
+</section>
+
+<section class="wrap">
+<div class="widget wide">
+  <div class="widget-head">
+    <span class="widget-kicker">Interaktiv · 01</span>
+    <h2 style="margin-bottom:.3rem">Konfidensialitetsverktøykassa</h2>
+    <p class="widget-sub">Seks metoder for å hindre at enkeltpersoner kan gjenkjennes i publisert statistikk. Slå på instruksen og se hva som står igjen.</p>
+  </div>
+
+  <div style="margin-bottom:1.2rem">
+    <button id="banToggle" type="button" aria-pressed="false">Anvend instruksen fra juni 2026</button>
+  </div>
+
+  <div class="tools" id="tools"></div>
+  <p class="verdict" id="verdict">Alle seks metodene er tilgjengelige. Statistikkbyrået velger den som passer best til den enkelte statistikken.</p>
+  <p class="caption">Eksempeltallene i hver rute er illustrasjoner av hva metoden gjør med en tallrekke, ikke uttrekk fra en bestemt tabell. Merkingen <b>i bruk i SSB</b> bygger på Bøvelstads gjennomgang: avrunding brukes i mange SSB-statistikker, Cell Key brukes i microdata.no, aggregering og prikking er standardverktøy.</p>
+</div>
+</section>
+
+
+<!-- ============ 2. HVORFOR IKKE EN DETALJ ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Hvorfor dette ikke er en teknisk detalj</h2>
+    <p>Den vanligste innvendingen mot å bry seg om konfidensialitetsmetoder er at effekten er forsvinnende liten. Og det stemmer — på toppen. Beskyttelse som er gratis på landsnivå kan koste alt på detaljnivå.</p>
+    <p>SSB har en dokumentert regel for grunnkretstabellene: ett-tall og to-tall endres til 0 eller 3. Den maksimale endringen i én celle er altså to personer. To personer er ingenting i et folketall på 5,6 millioner. To personer kan være en femtedel av en celle i en tabell over kjønn og alder i én grunnkrets.</p>
+    <p>Det er den samme regelen hele veien. Det som endrer seg, er hvor detaljert vi publiserer.</p>
+  </div>
+</section>
+
+<section class="wrap">
+<div class="widget wide">
+  <div class="widget-head">
+    <span class="widget-kicker">Interaktiv · 02</span>
+    <h2 style="margin-bottom:.3rem">Samme regel, ulik konsekvens</h2>
+    <p class="widget-sub">Velg publiseringsnivå. Endringen i tallet er den samme — inntil to personer. Betydningen er det ikke.</p>
+  </div>
+
+  <div class="levels" id="levels"></div>
+  <div class="mathbox" id="mathbox"></div>
+  <p class="caption">Cellestørrelsene er <b>gjennomsnitt regnet ut fra publiserte størrelsesordener</b>: ca. 5,6 mill. innbyggere, 15 fylker, drøyt 350 kommuner, ca. 14 000 grunnkretser, og 38 celler per grunnkrets når du krysser to kjønn med nitten femårsgrupper. Reelle tabeller er skjeve — mange celler er mye mindre enn gjennomsnittet, noen er mye større. Poenget er størrelsesorden, ikke presisjon.</p>
+</div>
+</section>
+
+<section class="wrap">
+  <div class="col">
+    <div class="flag">
+      <strong>Verdt å sjekke før publisering:</strong> Metadata for tabell 04362 sier at aggregering av kretstall til kommunenivå <em>kan gi avvik</em> fra kommunetallene. En SSB-artikkel fra 2018 sier at metoden er laget slik at summering fortsatt blir riktig. Disse to formuleringene trekker i hver sin retning, og bør avklares med Seksjon for befolkningsstatistikk før dette går ut.
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 3. HVORFOR DET BLE POLITISK ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Hvorfor akkurat folketellingen</h2>
+    <p>I USA er detaljerte folketellingstall råstoff i en maktkamp. Tallene fordeler seter i Representantenes hus, bestemmer antall valgmannsstemmer og styrer store føderale overføringer. Hvert tiende år tegnes valgkretsene på nytt, med data om hvor folk bor og hvordan befolkningen er sammensatt.</p>
+    <p>De samme dataene brukes til to motsatte formål. De kontrollerer om minoritetsgrupper får reell politisk representasjon. Og de gjør det mulig å tegne kretser strategisk til fordel for ett parti.</p>
+    <p>Da Census Bureau tok i bruk differensielt personvern før 2020-tellingen, ble støy lagt til nettopp der dataene er mest detaljerte. Selve folketallet på delstatsnivå ble ikke rørt. Men på de nivåene der valgkretser tegnes, ble endringene synlige — og der møtte metoden både faglig kritikk, et søksmål og anklager om at byrået publiserte «fake data».</p>
+    <p>Beskyttelse av personvernet ble av noen lest som manipulasjon av tall. Det er en lærdom uavhengig av metode: <strong>hvis brukerne ikke forstår hva du har gjort med tallene, fyller de inn sin egen forklaring.</strong></p>
+  </div>
+</section>
+
+
+<!-- ============ 4. SPEILET ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Speilet: hva ville en tilsvarende instruks rammet her?</h2>
+    <p>Det er lett å lese dette som en amerikansk historie om en spesielt polarisert institusjon. Men se på verktøykassa igjen. Av de fire metodefamiliene instruksen fjerner, er tre i aktiv bruk i SSB i dag: avrunding i en rekke statistikker, Cell Key i microdata.no, og syntetiske data som mulighet der annet ikke strekker til.</p>
+    <p>En norsk instruks med samme innhold ville ikke vært et prinsipielt tap. Den ville vært en konkret endring av hva vi kan publisere. Grunnkretstabellene måtte enten blitt grovere, eller fått vesentlig mer prikking. Microdata.no måtte bygget om.</p>
+  </div>
+</section>
+
+
+<!-- ============ 5. HVEM BESTEMMER ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Den egentlige striden</h2>
+    <p>Det er ikke kontroversielt at politiske myndigheter setter overordnede krav til personvern og til offisiell statistikk. Det er en normal del av styringen. Kritikken mot juni-instruksen handler om noe annet: den bestemmer hvilke <em>faglige metoder</em> byråene kan velge mellom.</p>
+    <p>Beslutningene om konfidensialitet ligger på en stige. Spørsmålet er hvor på stigen grensen mellom politisk mandat og faglig skjønn går.</p>
+  </div>
+</section>
+
+<section class="wrap">
+<div class="widget wide">
+  <div class="widget-head">
+    <span class="widget-kicker">Interaktiv · 03</span>
+    <h2 style="margin-bottom:.3rem">Hvor går grensen?</h2>
+    <p class="widget-sub">Fem beslutninger, fra lovkrav til enkeltpublisering. Velg en modell og se hvilke av dem som avgjøres politisk.</p>
+  </div>
+
+  <div class="seg" id="presets" style="margin-bottom:1.2rem"></div>
+  <div class="ladder" id="ladder"></div>
+  <p class="preset-note" id="presetNote"></p>
+  <p class="caption">Stigen er en <b>analytisk modell</b>, ikke en gjengivelse av lovtekst. Plasseringen for Norge bygger på at statistikkloven fastsetter SSBs faglige uavhengighet; den nøyaktige avgrensningen bør sjekkes mot loven og mot Finansdepartementets styringsdokumenter før dette brukes utenfor huset.</p>
+</div>
+</section>
+
+
+<!-- ============ LANDING ============ -->
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Tre ting å ta med videre</h2>
+    <div class="takeaways">
+      <ol>
+        <li>Konfidensialitet er ikke en teknisk detalj som ligger etter publiseringsbeslutningen. Metodevalget <em>er</em> en beslutning om hvor detaljert statistikk vi kan tilby.</li>
+        <li>Kostnaden ved beskyttelse er ujevnt fordelt. Den er nær null på aggregerte nivåer og betydelig i de detaljerte tabellene brukerne etterspør mest.</li>
+        <li>Handlingsrommet til å velge metode er verdt å forsvare eksplisitt, ikke bare forutsette. Det forsvares best ved å dokumentere og forklare valgene før noen ber om det.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="col rulebox">
+    <h2>Kilder</h2>
+    <ul class="sources">
+      <li>Hege M. Bøvelstad: <em>Konfidensialitetsmetoder har blitt politisk i USA — en påminnelse for SSB</em>, Byrånettet, 20.8.2026, med tilhørende kildesamling.</li>
+      <li>Department of Commerce: <em>Disclosure Avoidance for Statistical Products</em>.</li>
+      <li>Felles uttalelse fra amerikanske fagorganisasjoner om instruksen og prosessen bak den.</li>
+      <li>Census Bureau: <em>2020 Census Disclosure Avoidance Handbook</em>; <em>Disclosure Avoidance for the 1970–2010 Censuses</em>.</li>
+      <li>SSB, Statistikkbanken tabell 04362 — <em>Alders- og kjønnsfordeling for grunnkretsenes befolkning</em>, tabellmerknader om konfidensialitetsbehandling.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="wide">
+    Arbeidsutkast. Ikke redigert eller kvalitetssikret for publisering.<br>
+    Tallgrunnlag: størrelsesordener fra SSBs befolkningsstatistikk. Metoderegel: tabellmerknad 04362.<br>
+    Bygget som én statisk HTML-fil uten avhengigheter utover skriftene.
+  </div>
+</footer>
+
+</main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   1. HERO — SSBs egen regel anvendt på et rutenett
+   Regel (tabell 04362): verdier på 1 og 2 endres til 0 eller 3.
+   ========================================================= */
+(function(){
+  var grid = document.getElementById("heroGrid");
+  var countEl = document.getElementById("heroCount");
+  var btn = document.getElementById("heroToggle");
+  if(!grid) return;
+
+  // Konstruerte, men realistisk skjeve celleverdier for grunnkrets x kjønn x alder.
+  var truth = [
+     7, 2,11, 4, 1, 9, 3,14,
+     2, 6, 1,18, 5, 2, 8, 1,
+    12, 3, 2, 7,21, 1, 4, 6,
+     1, 9, 5, 2,10, 3,16, 2,
+     4, 1,13, 6, 2, 8, 1, 5,
+     9, 2, 3,11, 1, 7, 2,19
+  ];
+  // Deterministisk valg mellom 0 og 3 (i praksis styrt av en metode som
+  // balanserer summen; her låst til et fast mønster for reproduserbarhet).
+  var published = truth.map(function(v,i){
+    if(v > 2) return v;
+    return (i % 2 === 0) ? 3 : 0;
+  });
+
+  var cells = [];
+  for(var i=0;i<truth.length;i++){
+    var d = document.createElement("div");
+    d.className = "cellx";
+    grid.appendChild(d);
+    cells.push(d);
+  }
+
+  var changedIdx = [];
+  for(var j=0;j<truth.length;j++){ if(truth[j] !== published[j]) changedIdx.push(j); }
+
+  var showingTruth = false;
+
+  function render(useTruth){
+    var src = useTruth ? truth : published;
+    cells.forEach(function(c,k){
+      c.textContent = src[k];
+      var isChanged = !useTruth && truth[k] !== published[k];
+      c.classList.toggle("changed", isChanged);
+    });
+    countEl.textContent = useTruth ? "0" : String(changedIdx.length);
+    btn.textContent = useTruth ? "Vis publiserte tall" : "Vis de sanne tallene";
+  }
+
+  // Start med sannheten, la den bli publisert.
+  render(true);
+  btn.textContent = "Vis de sanne tallene";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){
+    render(false);
+  } else {
+    setTimeout(function(){
+      countEl.textContent = String(changedIdx.length);
+      btn.textContent = "Vis de sanne tallene";
+      changedIdx.forEach(function(idx, n){
+        setTimeout(function(){
+          cells[idx].textContent = published[idx];
+          cells[idx].classList.add("changed");
+        }, 70 * n);
+      });
+    }, 900);
+  }
+
+  btn.addEventListener("click", function(){
+    showingTruth = !showingTruth;
+    render(showingTruth);
+  });
+})();
+
+
+/* =========================================================
+   2. VERKTØYKASSA
+   ========================================================= */
+(function(){
+  var tools = [
+    {
+      navn:"Aggregering",
+      hva:"Slå sammen grupper eller områder til cellene blir store nok.",
+      demo:["4 · 1 · 2 · 9", "16"],
+      ssb:true, banned:false
+    },
+    {
+      navn:"Prikking",
+      hva:"Hold tilbake celler som er for små. Naboceller må ofte skjules også.",
+      demo:["4 · 1 · 2 · 9", "4 · : · : · 9"],
+      ssb:true, banned:false
+    },
+    {
+      navn:"Avrunding",
+      hva:"Rund alle verdier til nærmeste base, for eksempel 3 eller 5.",
+      demo:["4 · 1 · 2 · 9", "3 · 0 · 3 · 9"],
+      ssb:true, banned:true
+    },
+    {
+      navn:"Cell Key",
+      hva:"Legg til en liten, fast forstyrrelse per celle. Samme celle får samme endring hver gang.",
+      demo:["4 · 1 · 2 · 9", "5 · 0 · 3 · 8"],
+      ssb:true, banned:true
+    },
+    {
+      navn:"Differensielt personvern",
+      hva:"Legg til kontrollert støy med et formelt, målbart personvernbudsjett.",
+      demo:["4 · 1 · 2 · 9", "6 · 0 · 1 · 11"],
+      ssb:false, banned:true
+    },
+    {
+      navn:"Syntetiske data",
+      hva:"Erstatt observasjoner med modellerte verdier som bevarer strukturen.",
+      demo:["4 · 1 · 2 · 9", "3 · 2 · 2 · 10"],
+      ssb:false, banned:true
+    }
+  ];
+
+  var host = document.getElementById("tools");
+  var verdict = document.getElementById("verdict");
+  var toggle = document.getElementById("banToggle");
+  if(!host) return;
+
+  tools.forEach(function(t){
+    var el = document.createElement("div");
+    el.className = "tool";
+    el.dataset.banned = t.banned ? "1" : "0";
+    el.innerHTML =
+      '<div class="tool-top"><h3>' + t.navn + '</h3>' +
+      (t.ssb ? '<span class="badge ssb">I bruk i SSB</span>' : '<span class="badge">Ikke i bruk</span>') +
+      '</div>' +
+      '<p>' + t.hva + '</p>' +
+      '<div class="demo"><b>' + t.demo[0] + '</b><span class="arrow">&rarr;</span><span class="alt">' + t.demo[1] + '</span></div>';
+    host.appendChild(el);
+  });
+
+  var on = false;
+  toggle.addEventListener("click", function(){
+    on = !on;
+    toggle.setAttribute("aria-pressed", on ? "true" : "false");
+    toggle.textContent = on ? "Fjern instruksen" : "Anvend instruksen fra juni 2026";
+    Array.prototype.forEach.call(host.children, function(el){
+      el.classList.toggle("banned", on && el.dataset.banned === "1");
+    });
+    verdict.innerHTML = on
+      ? '<strong>Igjen i kassa: 2 av 6.</strong> Byrået er fortsatt lovpålagt å beskytte respondentene, men kan bare velge mellom å slå sammen og å holde tilbake. Tre av de fire metodene som forsvinner er i aktiv bruk i SSB i dag.'
+      : 'Alle seks metodene er tilgjengelige. Statistikkbyrået velger den som passer best til den enkelte statistikken.';
+  });
+})();
+
+
+/* =========================================================
+   3. DETALJNIVÅ — samme regel, ulik konsekvens
+   Alt regnes ut i klartekst under, slik at leseren kan etterprøve.
+   ========================================================= */
+(function(){
+  var BEFOLKNING = 5600000;   // ca., avrundet
+  var MAKS_ENDRING = 2;       // SSBs regel i 04362 flytter en celle med høyst 2
+
+  var levels = [
+    {navn:"Norge",                     enheter:1,      delfelt:1,  note:"Ett tall"},
+    {navn:"Fylke",                     enheter:15,     delfelt:1,  note:"15 fylker"},
+    {navn:"Kommune",                   enheter:355,    delfelt:1,  note:"drøyt 350 kommuner"},
+    {navn:"Grunnkrets",                enheter:14000,  delfelt:1,  note:"ca. 14 000 grunnkretser"},
+    {navn:"Grunnkrets, kjønn og alder",enheter:14000,  delfelt:38, note:"2 kjønn × 19 femårsgrupper"}
+  ];
+
+  levels.forEach(function(l){
+    l.celle = BEFOLKNING / (l.enheter * l.delfelt);
+    l.feil  = MAKS_ENDRING / l.celle * 100;
+  });
+
+  var maxFeil = Math.max.apply(null, levels.map(function(l){ return l.feil; }));
+
+  var host = document.getElementById("levels");
+  var math = document.getElementById("mathbox");
+  if(!host) return;
+
+  function fmt(n){
+    if(n >= 1000) return Math.round(n).toLocaleString("nb-NO");
+    if(n >= 100)  return Math.round(n).toLocaleString("nb-NO");
+    return n.toFixed(1).replace(".", ",");
+  }
+  function pct(n){
+    if(n < 0.001) return n.toFixed(5).replace(".", ",") + " %";
+    if(n < 0.1)   return n.toFixed(4).replace(".", ",") + " %";
+    if(n < 1)     return n.toFixed(2).replace(".", ",") + " %";
+    return n.toFixed(1).replace(".", ",") + " %";
+  }
+
+  var rows = [];
+  var userActed = false;
+  levels.forEach(function(l, i){
+    var row = document.createElement("div");
+    row.className = "lvl";
+    row.tabIndex = 0;
+    row.setAttribute("role","button");
+    row.innerHTML =
+      '<div><div class="lvl-name">' + l.navn + '</div><div class="lvl-meta">' + l.note + '</div></div>' +
+      '<div class="bar-track"><div class="bar-fill"></div></div>' +
+      '<div class="lvl-val">' + pct(l.feil) + '</div>';
+    host.appendChild(row);
+    rows.push(row);
+
+    function pick(){ userActed = true; select(i); }
+    row.addEventListener("click", pick);
+    row.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); pick(); }
+    });
+  });
+
+  function select(i){
+    var l = levels[i];
+    rows.forEach(function(r,k){ r.classList.toggle("active", k === i); });
+    // Logaritmisk skala: ellers blir alt annet enn siste rad usynlig.
+    rows.forEach(function(r,k){
+      var f = levels[k].feil;
+      var w = Math.max(1.5, (Math.log10(f) - Math.log10(0.00002)) / (Math.log10(maxFeil) - Math.log10(0.00002)) * 100);
+      r.querySelector(".bar-fill").style.width = w + "%";
+    });
+    math.innerHTML =
+      '<span class="k">publiseringsnivå</span>  <span class="v">' + l.navn + '</span><br>' +
+      '<span class="k">antall celler</span>     <span class="v">' + (l.enheter * l.delfelt).toLocaleString("nb-NO") + '</span><br>' +
+      '<span class="k">gjennomsnittscelle</span> <span class="v">5 600 000 ÷ ' + (l.enheter * l.delfelt).toLocaleString("nb-NO") + ' ≈ ' + fmt(l.celle) + ' personer</span><br>' +
+      '<span class="k">maks endring</span>      <span class="v">2 personer</span><br>' +
+      '<span class="k">utslag i tallet</span>   <span class="v">2 ÷ ' + fmt(l.celle) + ' ≈ ' + pct(l.feil) + '</span>';
+  }
+
+  select(0);
+  // Vis stigningen én gang ved innlasting.
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var seq = [1,2,3,4], t = 500;
+    seq.forEach(function(idx, n){
+      setTimeout(function(){ if(!userActed) select(idx); }, t + n*520);
+    });
+    setTimeout(function(){ if(!userActed) select(3); }, t + seq.length*520 + 1100);
+  }
+})();
+
+
+/* =========================================================
+   4. STYRINGSSTIGEN
+   ========================================================= */
+(function(){
+  var rungs = [
+    {t:"Skal opplysningene beskyttes?", p:"Fastsatt i lov. Ingen statistikkbyråer velger dette selv."},
+    {t:"Hvilket beskyttelsesnivå kreves?", p:"Overordnet krav: hvor stor risiko for gjenkjenning er akseptabel."},
+    {t:"Hvilken metodefamilie skal brukes?", p:"Aggregering, prikking, avrunding, støylegging, syntetiske data — eller kombinasjoner."},
+    {t:"Hvordan settes parameterne?", p:"Avrundingsbase, terskelverdier, personvernbudsjett. Her avgjøres hvor mye tallene faktisk endres."},
+    {t:"Hva publiseres i den enkelte statistikken?", p:"Detaljnivå, tabellstruktur og hva som holdes tilbake."}
+  ];
+
+  var presets = [
+    {
+      navn:"Norsk utgangspunkt",
+      grense:2,
+      note:"Politiske myndigheter setter rammene for personvern og for offisiell statistikk. Metodevalg, parameterisering og publiseringsbeslutninger ligger til fagetaten, forankret i statistikklovens bestemmelse om faglig uavhengighet."
+    },
+    {
+      navn:"Vanlig internasjonalt",
+      grense:2,
+      note:"De fleste europeiske statistikkbyråer opererer med samme grense: lovgiver setter kravet, byrået velger metoden. Eurostat og FNs statistiske prinsipper bygger på det samme skillet."
+    },
+    {
+      navn:"USA etter juni 2026",
+      grense:3,
+      note:"Instruksen flytter grensen ett trinn ned. Aggregering er utpekt som hovedmetode, prikking begrenset til unntak, og støylegging forbudt. Byrået har fortsatt ansvaret for at respondentene beskyttes, men ikke lenger fritt valg av hvordan."
+    }
+  ];
+
+  var ladderEl = document.getElementById("ladder");
+  var presetEl = document.getElementById("presets");
+  var noteEl = document.getElementById("presetNote");
+  if(!ladderEl) return;
+
+  function build(grense){
+    ladderEl.innerHTML = "";
+    rungs.forEach(function(r, i){
+      if(i === grense){
+        var d = document.createElement("div");
+        d.className = "divider";
+        d.innerHTML = "<span>Grense</span><span>over: politisk mandat &nbsp;·&nbsp; under: faglig skjønn</span>";
+        ladderEl.appendChild(d);
+      }
+      var el = document.createElement("div");
+      el.className = "rung" + (i < grense ? " pol" : "");
+      el.innerHTML =
+        '<div class="rung-n">' + String(i+1).padStart(2,"0") + '</div>' +
+        '<div><h3>' + r.t + '</h3><p>' + r.p + '</p></div>';
+      ladderEl.appendChild(el);
+    });
+  }
+
+  presets.forEach(function(p, i){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = p.navn;
+    b.addEventListener("click", function(){
+      Array.prototype.forEach.call(presetEl.children, function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      build(p.grense);
+      noteEl.textContent = p.note;
+    });
+    presetEl.appendChild(b);
+    if(i === 0){ b.classList.add("on"); }
+  });
+
+  build(presets[0].grense);
+  noteEl.textContent = presets[0].note;
+})();
+</script>
+</body>
+</html>

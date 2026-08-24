@@ -97,6 +97,30 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 .chip:hover{border-color:var(--aksent);color:var(--aksent)}
 .chip.utvidet{border-style:dashed;color:var(--dempet)}
 
+.graf{padding-top:26px;max-width:820px}
+.graf h2{font-size:17px;font-weight:600;margin:0 0 5px}
+.graf .les{font-size:14px;color:var(--dempet);margin:0 0 14px;max-width:62ch}
+.graf-styring{display:flex;align-items:center;gap:12px;margin:0 0 6px;flex-wrap:wrap}
+.graf-styring label{cursor:default}
+.graf svg{width:100%;height:auto;display:block;touch-action:none}
+.lenke{stroke:var(--svak);fill:none;transition:opacity .15s}
+.graf.fokus .lenke{opacity:.1}
+.graf.fokus .lenke.paa{opacity:.85}
+.node circle{cursor:grab;transition:opacity .15s}
+.node.drar circle{cursor:grabbing}
+.node text{font-size:12.5px;fill:var(--blekk);pointer-events:none;font-weight:600}
+.graf.fokus .node{opacity:.32}
+.graf.fokus .node.paa{opacity:1}
+.n-spine{fill:var(--aksent-lys);stroke:var(--aksent);stroke-width:1}
+.n-tvers{fill:#eeeeea;stroke:#9aa09d;stroke-width:1}
+.n-meta{fill:#dbe5e3;stroke:var(--aksent);stroke-width:1;stroke-dasharray:3 2}
+.n-fag{fill:#efedf7;stroke:var(--fag);stroke-width:1}
+.graf-note{font-size:14px;color:var(--dempet);min-height:76px;margin-top:10px;
+  border-top:1px solid var(--haarstrek);padding-top:12px;max-width:62ch}
+.graf-note b{font-weight:600;color:var(--blekk)}
+.graf-note ul{margin:6px 0 0;padding-left:18px}
+.graf-note li{margin:2px 0}
+
 .nett{padding-top:26px;max-width:820px}
 .nett h2{font-size:17px;font-weight:600;margin:0 0 5px}
 .nett .les{font-size:14px;color:var(--dempet);margin:0 0 4px;max-width:62ch}
@@ -152,6 +176,7 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
   <div class="faner" role="tablist" aria-label="Visning">
     <button role="tab" id="fane-tre" aria-selected="true">Tre</button>
     <button role="tab" id="fane-kjede" aria-selected="false">Kjede</button>
+    <button role="tab" id="fane-graf" aria-selected="false">Avhengigheter</button>
     <button role="tab" id="fane-par" aria-selected="false">Forvirringspar</button>
   </div>
   <input id="sok" type="search" placeholder="Søk i begreper" aria-label="Søk i begreper">
@@ -164,6 +189,20 @@ h1{font-size:29px;line-height:1.2;font-weight:600;margin:0 0 12px;letter-spacing
 </div>
 
 <div id="panel-kjede" hidden><main id="kjede" style="padding-top:26px;max-width:820px"></main></div>
+
+<div id="panel-graf" hidden>
+  <div class="graf">
+    <h2>Hvilke lag forutsetter hverandre</h2>
+    <p class="les">En strek fra ett lag til et annet betyr at minst én definisjon her ikke lar seg formulere uten å låne et begrep derfra. Tykkelsen er antall slike lån. Dra i nodene, hold over en for å isolere den.</p>
+    <div class="graf-styring">
+      <label class="bryter" for="terskel">Vis koblinger med minst</label>
+      <input type="range" id="terskel" min="1" max="5" value="1" style="flex:0 1 160px">
+      <span id="terskel-tall" style="font-size:13px;color:var(--dempet);min-width:78px">1 referanse</span>
+    </div>
+    <div id="graf-svg"></div>
+    <div id="graf-note" class="graf-note"></div>
+  </div>
+</div>
 
 <div id="panel-par" hidden>
   <div class="nett" id="nett">
@@ -510,6 +549,167 @@ function tegnTre(){
   tegnStripe();
 }
 
+const GENERISK = new Set(["behov","bruker","verdi","analyse","standard","term","begrep",
+  "definisjon","periode","kobling","koding","bygging","figur","artikkel","utforming","enhet"]);
+
+function byggGraf(){
+  const sortert = [...alle].sort((a,b) => b.t.length - a.t.length);
+  const laan = {};
+  alle.forEach(kilde => {
+    let rest = " " + kilde.d.toLowerCase() + " ";
+    sortert.forEach(maal => {
+      if(maal.id === kilde.id) return;
+      const t = maal.t.toLowerCase();
+      if(t.length < 5 || GENERISK.has(t)) return;
+      const re = new RegExp("(^|[^a-zæøå])" + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+        "(a|e|en|et|er|ene|s|ens|ets)?([^a-zæøå]|$)", "i");
+      if(!re.test(rest)) return;
+      rest = rest.replace(re, " ");
+      if(maal.lag === kilde.lag) return;
+      const n = kilde.lag + ">" + maal.lag;
+      (laan[n] = laan[n] || []).push(kilde.t + " → " + maal.t);
+    });
+  });
+  const lenker = {};
+  Object.entries(laan).forEach(([n, liste]) => {
+    const [a, b] = n.split(">");
+    const key = [a, b].sort().join("|");
+    const l = lenker[key] = lenker[key] || {a:key.split("|")[0], b:key.split("|")[1], vekt:0, detalj:[]};
+    l.vekt += liste.length;
+    liste.forEach(x => l.detalj.push({fra:a, til:b, tekst:x}));
+  });
+  return Object.values(lenker);
+}
+
+const GRAF = {noder:[], lenker:[], alpha:0, drar:null, over:null, terskel:1};
+
+function startGraf(){
+  const TVERS = ["kvalitet","metadata","roller","plattform"];
+  GRAF.lenker = byggGraf();
+  GRAF.noder = MODELL.map((l, i) => {
+    const v = i / MODELL.length * Math.PI * 2;
+    return {id:l.id, navn:l.navn, n:l.grupper.reduce((s,g) => s + g.b.length, 0),
+      klasse: l.fag ? "n-fag" : l.id === "meta" ? "n-meta" : TVERS.includes(l.id) ? "n-tvers" : "n-spine",
+      x:350 + Math.cos(v) * 170, y:250 + Math.sin(v) * 150, vx:0, vy:0};
+  });
+  GRAF.noder.forEach(n => n.r = 11 + Math.sqrt(n.n) * 3);
+  GRAF.alpha = 1;
+  for(let i = 0; i < 260; i++) steg();
+  tegnGraf();
+}
+
+function steg(){
+  const N = GRAF.noder, indeks = {};
+  N.forEach(n => indeks[n.id] = n);
+  for(let i = 0; i < N.length; i++) for(let j = i + 1; j < N.length; j++){
+    const a = N[i], b = N[j];
+    let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.1;
+    const min = a.r + b.r + 22;
+    const kraft = (12000 / (d * d)) + (d < min ? (min - d) * 0.35 : 0);
+    dx /= d; dy /= d;
+    a.vx -= dx * kraft; a.vy -= dy * kraft; b.vx += dx * kraft; b.vy += dy * kraft;
+  }
+  GRAF.lenker.forEach(l => {
+    const a = indeks[l.a], b = indeks[l.b];
+    if(!a || !b) return;
+    let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.1;
+    const maal = Math.max(78, 165 - l.vekt * 14);
+    const kraft = (d - maal) * 0.012 * Math.min(l.vekt, 4);
+    dx /= d; dy /= d;
+    a.vx += dx * kraft; a.vy += dy * kraft; b.vx -= dx * kraft; b.vy -= dy * kraft;
+  });
+  N.forEach(n => {
+    n.vx += (350 - n.x) * 0.009; n.vy += (250 - n.y) * 0.011;
+    if(GRAF.drar === n.id){ n.vx = n.vy = 0; return; }
+    n.vx *= 0.82; n.vy *= 0.82;
+    n.x += n.vx * GRAF.alpha; n.y += n.vy * GRAF.alpha;
+    n.x = Math.max(n.r + 4, Math.min(700 - n.r - 4, n.x));
+    n.y = Math.max(n.r + 14, Math.min(500 - n.r - 4, n.y));
+  });
+  GRAF.alpha = Math.max(0.12, GRAF.alpha * 0.994);
+}
+
+function tegnGraf(){
+  const indeks = {};
+  GRAF.noder.forEach(n => indeks[n.id] = n);
+  let s = '<svg viewBox="0 0 700 510" role="img" aria-label="Nettverk over avhengigheter mellom lagene">';
+  GRAF.lenker.filter(l => l.vekt >= GRAF.terskel).forEach(l => {
+    const a = indeks[l.a], b = indeks[l.b];
+    const paa = GRAF.over && (l.a === GRAF.over || l.b === GRAF.over);
+    s += '<path class="lenke' + (paa ? " paa" : "") + '" stroke-width="' + (0.7 + l.vekt * 0.75) +
+      '" d="M' + a.x.toFixed(1) + ' ' + a.y.toFixed(1) + ' L' + b.x.toFixed(1) + ' ' + b.y.toFixed(1) + '"/>';
+  });
+  GRAF.noder.forEach(n => {
+    const paa = GRAF.over === n.id || (GRAF.over && GRAF.lenker.some(l =>
+      l.vekt >= GRAF.terskel && ((l.a === n.id && l.b === GRAF.over) || (l.b === n.id && l.a === GRAF.over))));
+    s += '<g class="node' + (paa ? " paa" : "") + (GRAF.drar === n.id ? " drar" : "") + '" data-id="' + n.id + '">' +
+      '<circle class="' + n.klasse + '" cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + n.r.toFixed(1) + '"/>' +
+      '<text x="' + n.x.toFixed(1) + '" y="' + (n.y - n.r - 6).toFixed(1) + '" text-anchor="middle">' + esc(n.navn) + '</text></g>';
+  });
+  el("graf-svg").innerHTML = s + '</svg>';
+}
+
+function grafNote(id){
+  if(!id){ el("graf-note").innerHTML = '<span style="color:var(--svak)">Hold over et lag for å se hva koblingene består av.</span>'; return; }
+  const n = GRAF.noder.find(x => x.id === id);
+  const rel = GRAF.lenker.filter(l => (l.a === id || l.b === id) && l.vekt >= GRAF.terskel)
+    .sort((a,b) => b.vekt - a.vekt);
+  const ut = [], inn = [];
+  rel.forEach(l => l.detalj.forEach(d => (d.fra === id ? ut : inn).push(d.tekst)));
+  let h = '<b>' + esc(n.navn) + '</b> — ' + n.n + ' begreper, ' + rel.length + ' koblinger.';
+  if(ut.length) h += '<div style="margin-top:6px">Låner fra andre lag: ' + ut.slice(0,5).map(esc).join(" &middot; ") +
+    (ut.length > 5 ? " &middot; +" + (ut.length - 5) : "") + '</div>';
+  if(inn.length) h += '<div style="margin-top:4px">Lånes ut til andre lag: ' + inn.slice(0,5).map(esc).join(" &middot; ") +
+    (inn.length > 5 ? " &middot; +" + (inn.length - 5) : "") + '</div>';
+  el("graf-note").innerHTML = h;
+}
+
+function grafPos(e){
+  const svg = el("graf-svg").querySelector("svg");
+  const r = svg.getBoundingClientRect();
+  return {x:(e.clientX - r.left) / r.width * 700, y:(e.clientY - r.top) / r.height * 510};
+}
+
+el("graf-svg").addEventListener("pointerover", e => {
+  const g = e.target.closest("g[data-id]");
+  if(!g || GRAF.drar) return;
+  GRAF.over = g.dataset.id; el("graf-svg").parentElement.classList.add("fokus");
+  tegnGraf(); grafNote(GRAF.over);
+});
+el("graf-svg").addEventListener("pointerdown", e => {
+  const g = e.target.closest("g[data-id]");
+  if(!g) return;
+  GRAF.drar = g.dataset.id; GRAF.alpha = 0.9;
+  el("graf-svg").setPointerCapture && e.target.setPointerCapture(e.pointerId);
+  if(!GRAF.løkke) løkke();
+});
+el("graf-svg").addEventListener("pointermove", e => {
+  if(!GRAF.drar) return;
+  const p = grafPos(e), n = GRAF.noder.find(x => x.id === GRAF.drar);
+  n.x = p.x; n.y = p.y;
+});
+["pointerup","pointercancel"].forEach(t => el("graf-svg").addEventListener(t, () => { GRAF.drar = null; }));
+el("graf-svg").addEventListener("pointerleave", () => {
+  if(GRAF.drar) return;
+  GRAF.over = null; el("graf-svg").parentElement.classList.remove("fokus");
+  tegnGraf(); grafNote(null);
+});
+el("terskel").addEventListener("input", e => {
+  GRAF.terskel = +e.target.value;
+  el("terskel-tall").textContent = GRAF.terskel + (GRAF.terskel === 1 ? " referanse" : " referanser");
+  tegnGraf(); grafNote(GRAF.over);
+});
+
+function løkke(){
+  GRAF.løkke = true;
+  const kjør = () => {
+    steg(); tegnGraf();
+    if(GRAF.drar || GRAF.alpha > 0.13) requestAnimationFrame(kjør);
+    else GRAF.løkke = false;
+  };
+  requestAnimationFrame(kjør);
+}
+
 function tegnNett(){
   const noder = alle.filter(b => b.par && b.par.length);
   const sett = new Set(), kanter = [];
@@ -636,17 +836,17 @@ el("sok").addEventListener("input", e => { state.sok = e.target.value; tegnTre()
 
 function bytt(v){
   state.visning = v;
-  ["tre","kjede","par"].forEach(x => {
+  ["tre","kjede","graf","par"].forEach(x => {
     el("fane-" + x).setAttribute("aria-selected", x === v);
     el("panel-" + x).hidden = x !== v;
   });
-  const skjul = v === "par";
+  const skjul = v === "par" || v === "graf";
   el("sok").style.visibility = skjul ? "hidden" : "visible";
   el("vis-utvidet").parentElement.style.visibility = skjul ? "hidden" : "visible";
 }
-["tre","kjede","par"].forEach(v => el("fane-" + v).addEventListener("click", () => bytt(v)));
+["tre","kjede","graf","par"].forEach(v => el("fane-" + v).addEventListener("click", () => bytt(v)));
 
-tegnTeller(); tegnTre(); tegnKjede(); tegnPar(); tegnNett();
+tegnTeller(); tegnTre(); tegnKjede(); tegnPar(); tegnNett(); startGraf(); grafNote(null);
 </script>
 </body>
 </html>

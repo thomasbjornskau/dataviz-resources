@@ -159,7 +159,7 @@
     if (overstory) {
       const a = data[0], b = data[data.length - 1];
       [a,b].forEach(d => {
-        svg.appendChild(svgEl('circle', {cx:x(d.year), cy:y(d.value), r:6, fill:'white', stroke:'#8d3c32', 'stroke-width':3}));
+        svg.appendChild(svgEl('circle', {cx:x(d.year), cy:y(d.value), r:6, fill:'white', stroke:'#9b2f20', 'stroke-width':3}));
         svg.appendChild(svgEl('text', {x:x(d.year), y:y(d.value)-13, 'text-anchor':'middle', class:'annotation-label'}, `${d.year} · ${fmt(d.value)}`));
       });
       const midX = (x(a.year)+x(b.year))/2;

@@ -11,29 +11,36 @@
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
-    <div class="wrap header-inner">
-      <div class="course-mark" aria-label="ESTP Data Visualization course">
-        <span class="course-kicker">ESTP · Data Visualization</span>
-        <span class="module-label">Module 3</span>
+    <div class="page-shell site-header__inner">
+      <div>
+        <p class="eyebrow">ESTP · Data Visualization</p>
+        <p class="site-header__module">Module 3 — Storytelling with Visuals</p>
       </div>
-      <nav class="course-thread" aria-label="Course progression">
-        <span>1 · Relationship</span><span>2 · Audience & purpose</span><strong>3 · Narrative</strong>
-      </nav>
+      <a class="source-link source-link--header" href="https://www.ssb.no/en/statbank/table/04232" target="_blank" rel="noopener">SSB table 04232 ↗</a>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero wrap" aria-labelledby="hero-title">
-      <p class="eyebrow">Module 3 · Storytelling with Visuals</p>
-      <h1 id="hero-title">Turn data into a visual story</h1>
-      <p class="hero-lead">A chart shows data. A visual story helps the reader understand what matters in it.</p>
-      <p class="hero-principle">Storytelling is the deliberate sequencing of attention.</p>
-      <div class="hero-question" aria-label="Module sequence">
-        <span>data</span><span aria-hidden="true">→</span><span>observation</span><span aria-hidden="true">→</span><span>focus</span><span aria-hidden="true">→</span><span>context</span><span aria-hidden="true">→</span><strong>narrative</strong>
+    <section class="hero page-shell" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="section-kicker">Module 2 established the purpose. Module 3 guides attention.</p>
+        <h1 id="hero-title">Turn data into a visual story</h1>
+        <p class="hero__lead">A chart shows data. A visual story helps the reader understand what matters in it.</p>
+        <div class="hero__chain" aria-label="Reasoning chain from data to narrative">
+          <span>data</span><span aria-hidden="true">→</span><span>observation</span><span aria-hidden="true">→</span><span>focus</span><span aria-hidden="true">→</span><span>context</span><span aria-hidden="true">→</span><strong>narrative</strong>
+        </div>
+      </div>
+      <div class="hero__teaser" aria-label="Storytelling principle applied to the Norway fertility series">
+        <p class="teaser-label">Storytelling is the deliberate sequencing of attention.</p>
+        <div class="teaser-flow" aria-hidden="true">
+          <span class="teaser-number">2.75</span><span>→</span><span>1.98</span><span>→</span><span>1.40</span><span>→</span><span>1.48</span>
+        </div>
+        <p class="teaser-question">What matters in the full series?</p>
       </div>
     </section>
 
-    <section class="main-demo section wrap" aria-labelledby="from-chart-title">
+    <section class="main-demo demo-section" aria-labelledby="from-chart-title">
+      <div class="page-shell">
       <div class="section-intro narrow">
         <p class="eyebrow">From chart to story</p>
         <h2 id="from-chart-title">The data stays the same. The storytelling layer changes.</h2>
@@ -114,13 +121,14 @@
         <strong>Total fertility rate is an indicator, not a headcount.</strong>
         <p>SSB defines it as the average number of live-born children a woman would have if the age-specific fertility rates observed in that year applied throughout ages 15–49, assuming no mortality. It is a period measure, not the completed number of children actually born to a cohort of women.</p>
       </aside>
+      </div>
     </section>
 
-    <section class="principle-break wrap" aria-label="Central principle">
+    <section class="principle-break page-shell" aria-label="Central principle">
       <p><strong>Start with a real statistical insight.</strong> Then make it easier to see — without making the data say more than it actually does.</p>
     </section>
 
-    <section class="section wrap" aria-labelledby="attention-title">
+    <section class="section page-shell" aria-labelledby="attention-title">
       <div class="section-intro narrow">
         <p class="eyebrow">2 · Guide attention deliberately</p>
         <h2 id="attention-title">Hierarchy changes the reading experience, not the data</h2>
@@ -144,7 +152,7 @@
       </div>
     </section>
 
-    <section class="section wrap" aria-labelledby="annotation-title">
+    <section class="section page-shell" aria-labelledby="annotation-title">
       <div class="section-intro narrow">
         <p class="eyebrow">Annotations should add meaning</p>
         <h2 id="annotation-title">Label the relevance, not just the value</h2>
@@ -164,7 +172,7 @@
       <p class="annotation-rule">Useful annotations can mark a turning point, unusual value, change in direction, sourced event or meaningful comparison. Keep them close to the data they explain.</p>
     </section>
 
-    <section class="section wrap" aria-labelledby="editor-title">
+    <section class="section page-shell" aria-labelledby="editor-title">
       <div class="section-intro narrow">
         <p class="eyebrow">3 · Every chart should move the story forward</p>
         <h2 id="editor-title">Does this chart move the story forward?</h2>
@@ -204,7 +212,7 @@
     </section>
 
     <section class="section integrity-section" aria-labelledby="overstory-title">
-      <div class="wrap">
+      <div class="page-shell">
         <div class="section-intro narrow">
           <p class="eyebrow">5 · Do not let storytelling override statistical integrity</p>
           <h2 id="overstory-title">When the story becomes too strong</h2>
@@ -237,7 +245,7 @@
       </div>
     </section>
 
-    <section class="section wrap" aria-labelledby="mode-title">
+    <section class="section page-shell" aria-labelledby="mode-title">
       <div class="section-intro narrow">
         <p class="eyebrow">Story versus exploration</p>
         <h2 id="mode-title">Who decides where to look?</h2>
@@ -262,7 +270,7 @@
       </div>
     </section>
 
-    <section class="section wrap final-transform" aria-labelledby="final-title">
+    <section class="section page-shell final-transform" aria-labelledby="final-title">
       <div class="section-intro narrow">
         <p class="eyebrow">Final transformation</p>
         <h2 id="final-title">Chart versus story</h2>
@@ -279,40 +287,45 @@
       </div>
     </section>
 
-    <section class="final-takeaway">
-      <div class="wrap final-grid">
-        <div>
-          <p class="eyebrow">Final takeaway</p>
-          <h2>Good storytelling does not add drama to the data. It removes the work required to see what matters.</h2>
-        </div>
-        <ol class="takeaway-list">
-          <li><strong>Start with a message, not a pile of charts.</strong> The message should come from a genuine statistical observation.</li>
-          <li><strong>Guide attention deliberately.</strong> Use hierarchy, contrast, annotation and sequence.</li>
-          <li><strong>Make every chart earn its place.</strong> Each step should contribute something new.</li>
-          <li><strong>Use context and comparison to create meaning.</strong> A number becomes more useful when it has a relevant reference.</li>
-          <li><strong>Protect statistical integrity.</strong> Do not hide uncertainty, cherry-pick evidence or turn correlation into causation.</li>
-        </ol>
+    <section class="final page-shell" aria-labelledby="final-takeaway-title">
+      <p class="section-kicker">Module 3</p>
+      <h2 class="final-statement" id="final-takeaway-title">Good storytelling does not add drama to the data. It removes the work required to see what matters.</h2>
+      <div class="recap" aria-label="Five key takeaways">
+        <span><b>1</b>Start with a genuine statistical message, not a pile of charts.</span>
+        <span><b>2</b>Guide attention deliberately with hierarchy, contrast, annotation and sequence.</span>
+        <span><b>3</b>Make every chart earn its place by contributing new evidence.</span>
+        <span><b>4</b>Use context and comparison to make the statistical meaning easier to see.</span>
+        <span><b>5</b>Protect statistical integrity: do not cherry-pick evidence or turn correlation into causation.</span>
       </div>
     </section>
 
-    <section class="sources wrap" aria-labelledby="sources-title">
+    <section class="source-section page-shell" aria-labelledby="sources-title">
+      <p class="section-kicker">Statistical integrity</p>
       <h2 id="sources-title">Sources and data notes</h2>
-      <p><strong>Source: Statistics Norway (SSB).</strong> Main series: StatBank table <a href="https://www.ssb.no/en/statbank1/table/04232" target="_blank" rel="noopener">04232 – Total fertility rate, women</a>. Context series: <a href="https://www.ssb.no/en/statbank1/table/07872" target="_blank" rel="noopener">07872 – Mean age of parent at first child's birth</a>.</p>
-      <p>Local extracts were assembled and checked on <strong>27 August 2026</strong>. Latest complete annual observation: <strong>2025</strong>. Both tables were updated by SSB on 12 March 2026. No smoothing, interpolation or modelled values are used on this page.</p>
-      <details>
-        <summary>Data handling and metadata</summary>
-        <p>Table 04232 is filtered to Norway total, content “Total fertility rate, women”, years 1968–2025. Table 07872 uses content “Mothers age at first birth”, years 1961–2025; the coordinated context chart displays 1968–2025 to align with the fertility series. Display labels may round TFR to two decimals; plotted values retain the precision available in the local extract.</p>
-        <p>SSB notes for table 07872 that figures for 1961–1985 were recalculated with new data in 2009. The page does not annotate external historical events and makes no causal claim from the two time series alone.</p>
-      </details>
+      <div class="source-grid">
+        <div>
+          <h3>SSB table 04232</h3>
+          <p><strong>Total fertility rate, women.</strong> Norway, 1968–2025.</p>
+          <p>The total fertility rate is a period indicator based on age-specific fertility rates, not a literal count of children born to a woman.</p>
+          <a class="source-link" href="https://www.ssb.no/en/statbank/table/04232" target="_blank" rel="noopener">Open StatBank table ↗</a>
+        </div>
+        <div>
+          <h3>SSB table 07872</h3>
+          <p><strong>Mean age of parent at first child's birth.</strong> This page uses mothers' mean age as contextual evidence.</p>
+          <p>The two series are shown together for context only. Their co-movement does not establish causality.</p>
+          <a class="source-link" href="https://www.ssb.no/en/statbank/table/07872" target="_blank" rel="noopener">Open StatBank table ↗</a>
+        </div>
+        <div>
+          <h3>Static teaching extract</h3>
+          <p>Data and metadata checked: <strong>27 August 2026</strong>. Latest complete annual observation: <strong>2025</strong>.</p>
+          <p>Table 04232 is filtered to Norway total and total fertility rate. Table 07872 uses mothers' age at first birth; the context chart displays 1968–2025 to align with the fertility series. No smoothing, interpolation or modelled values are used.</p>
+          <p>SSB notes that figures for 1961–1985 in table 07872 were recalculated with new data in 2009.</p>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <p><strong>Course progression</strong></p>
-      <p>Module 1: What relationship should the visualization reveal? → Module 2: Who needs to understand it, and why? → <strong>Module 3: How do we guide the reader through the insight?</strong></p>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="page-shell"><p>ESTP Data Visualization · Module 3</p><p>Statistics Norway data · static teaching extract checked 27 August 2026</p></div></footer>
 
   <script src="data/data.js"></script>
   <script src="script.js"></script>

@@ -20,10 +20,10 @@ No build step, API key, server-side component or JavaScript framework is require
 **Statistics Norway (SSB)**
 
 1. StatBank table **04232 — Total fertility rate, women (C), 1968–2025**  
-   https://www.ssb.no/en/statbank1/table/04232
+   https://www.ssb.no/en/statbank/table/04232
 
 2. StatBank table **07872 — Mean age of parent at first child's birth, 1961–2025**  
-   https://www.ssb.no/en/statbank1/table/07872
+   https://www.ssb.no/en/statbank/table/07872
 
 Current table metadata checked 2026-08-27. Both tables report an update time of 2026-03-12 08:00, with 2025 as the latest complete annual observation.
 
@@ -82,13 +82,16 @@ The context chart shows that mean age at first birth increased over the broad pe
 
 ## Visual design
 
-The page uses SSB's published visual identity as inspiration:
+The page deliberately reuses the established ESTP Module 1/2 system rather than introducing a new theme:
 
-- SSB dark 5: `#274247`
-- SSB dark 1: `#F0F8F9`
-- SSB green 4: `#00824D`
-- SSB purple 3 (sparingly): `#7E5EE8`
-- generous white space and restrained supporting elements
-- Roboto/Open Sans when available, with Arial fallback
+- `#274247` SSB dark green/blue
+- `#00824D` SSB green
+- `#F0F8F9` light background
+- `#C3DCDC` supporting mid-tone
+- `#7E5EE8` interaction/focus accent
+- `#1B2E32` main text
+- Arial/Helvetica typography, 1180 px maximum page width, rectangular controls, restrained chart gridlines and minimal decoration
 
-Reference: https://profil.ssb.no/
+## Visual system
+
+Module 3 reuses the same stylesheet foundation as ESTP Data Visualization Modules 1 and 2: the same CSS variables, 1180 px page shell, typography hierarchy, header/footer treatment, rectangular controls, chart gridlines, focus state, responsive breakpoints and reduced-motion behaviour. Module 3-specific rules are appended after the shared Module 2 stylesheet and introduce only the interaction patterns required for storytelling.

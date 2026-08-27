@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ESTP Data Visualization Module 1: choosing chart types by analytical task and visual encoding, using real Statistics Norway data.">
+  <title>Choosing the right chart — ESTP Data Visualization</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="page-shell site-header__inner">
+      <div>
+        <p class="eyebrow">ESTP · Data Visualization</p>
+        <p class="site-header__module">Module 1 — In-depth Review of Different Chart Types</p>
+      </div>
+      <a class="source-link source-link--header" href="https://www.ssb.no/en/statbank/table/06913" target="_blank" rel="noopener">SSB table 06913 ↗</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-shell" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="section-kicker">Chart choice is a reasoning problem</p>
+        <h1 id="hero-title">Choosing the right chart</h1>
+        <p class="hero__lead">There is no universally best chart. The useful question is which visual structure makes the statistical relationship easiest to see.</p>
+        <div class="hero__chain" aria-label="Reasoning chain from data to chart">
+          <span>data</span><span aria-hidden="true">→</span><span>question</span><span aria-hidden="true">→</span><span>encoding</span><span aria-hidden="true">→</span><strong>chart form</strong>
+        </div>
+      </div>
+      <div class="hero__teaser" aria-label="A schematic showing the same marks as a line and as bars">
+        <svg viewBox="0 0 420 230" role="img" aria-labelledby="teaser-title teaser-desc">
+          <title id="teaser-title">Same marks, different visual structure</title>
+          <desc id="teaser-desc">Four positions are first connected into a line and then shown as bars, illustrating that chart forms are built from encodings.</desc>
+          <g class="teaser-grid" aria-hidden="true">
+            <line x1="36" y1="46" x2="390" y2="46"/><line x1="36" y1="91" x2="390" y2="91"/><line x1="36" y1="136" x2="390" y2="136"/><line x1="36" y1="181" x2="390" y2="181"/>
+          </g>
+          <g class="teaser-line" transform="translate(0,-8)">
+            <path d="M55,152 L145,116 L235,126 L325,63"/>
+            <circle cx="55" cy="152" r="5"/><circle cx="145" cy="116" r="5"/><circle cx="235" cy="126" r="5"/><circle cx="325" cy="63" r="5"/>
+          </g>
+          <g class="teaser-bars" transform="translate(32,6)">
+            <rect x="40" y="176" width="27" height="25"/><rect x="130" y="145" width="27" height="56"/><rect x="220" y="153" width="27" height="48"/><rect x="310" y="97" width="27" height="104"/>
+          </g>
+          <text x="52" y="29">position + connection</text>
+          <text x="226" y="218">position + length</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="principles page-shell" aria-labelledby="principles-title">
+      <p class="section-kicker">Five takeaways</p>
+      <h2 id="principles-title">Think about what the reader must see</h2>
+
+      <article class="principle">
+        <div class="principle__number" aria-hidden="true">1</div>
+        <div class="principle__body">
+          <h3>Start with the analytical task, not the chart type</h3>
+          <p>Comparing, showing change, distribution, relationships, composition or flow each call for different visual structures. Name the task before naming the chart.</p>
+          <div class="task-strip" aria-label="Analytical tasks">
+            <span>compare</span><span>change</span><span>distribution</span><span>relationship</span><span>composition</span><span>flow</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="principle principle--central">
+        <div class="principle__number" aria-hidden="true">2</div>
+        <div class="principle__body">
+          <h3>Chart types are combinations of visual encodings</h3>
+          <p>Position, length, area, colour, connection and direction are the building blocks. Understanding these is more useful than memorising a list of chart types.</p>
+          <div class="encoding-mini" aria-label="Visual encoding building blocks">
+            <span><i class="mini-mark mini-position" aria-hidden="true"></i>Position</span>
+            <span><i class="mini-mark mini-length" aria-hidden="true"></i>Length</span>
+            <span><i class="mini-mark mini-area" aria-hidden="true"></i>Area</span>
+            <span><i class="mini-mark mini-colour" aria-hidden="true"></i>Colour</span>
+            <span><i class="mini-mark mini-connection" aria-hidden="true"></i>Connection</span>
+            <span><i class="mini-mark mini-direction" aria-hidden="true"></i>Direction</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="principle">
+        <div class="principle__number" aria-hidden="true">3</div>
+        <div class="principle__body">
+          <h3>Use the simplest chart that preserves the insight</h3>
+          <p>Bar and line charts are powerful because readers understand them quickly. More specialised charts should earn their complexity by revealing a structure that simpler charts cannot.</p>
+          <div class="simplicity-rule"><span>familiar structure</span><span aria-hidden="true">→</span><strong>faster comparison</strong></div>
+        </div>
+      </article>
+
+      <article class="principle">
+        <div class="principle__number" aria-hidden="true">4</div>
+        <div class="principle__body">
+          <h3>Specialised charts reveal structures that classic charts cannot</h3>
+          <p>Treemaps can show hierarchy, Sankey diagrams flow, heatmaps patterns across two dimensions, and dot plots compact comparisons. Use them when the data genuinely contains that structure.</p>
+          <div class="specialised-row" aria-label="Schematic chart structures, not statistical data">
+            <span><b>Treemap</b><small>hierarchy → area</small></span>
+            <span><b>Sankey</b><small>flow → connection + width + direction</small></span>
+            <span><b>Heatmap</b><small>two dimensions → position + colour</small></span>
+            <span><b>Dot plot</b><small>comparison → position</small></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="principle">
+        <div class="principle__number" aria-hidden="true">5</div>
+        <div class="principle__body">
+          <h3>The best chart is the one that makes the relevant comparison easy</h3>
+          <p>A technically correct chart can still be a poor choice if the reader has to work hard to see the pattern, difference or relationship that matters. Correctness is necessary; perceptual effort still matters.</p>
+          <div class="comparison-rule"><span>What needs to be compared?</span><strong>Make that comparison direct.</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="demo-section" aria-labelledby="demo-title">
+      <div class="page-shell">
+        <p class="section-kicker">Main interactive example</p>
+        <h2 id="demo-title">Same data. Different question. Different chart.</h2>
+        <p class="section-intro">The dataset stays largely the same. The analytical question changes — and with it, the visual encoding that deserves priority.</p>
+
+        <div class="data-status" id="data-status" role="status" aria-live="polite">Loading current data from Statistics Norway table 06913…</div>
+
+        <div class="question-tabs" role="tablist" aria-label="Choose an analytical question">
+          <button type="button" role="tab" aria-selected="true" aria-controls="chart-panel" id="question-population" data-question="population">How has the population changed over time?</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="chart-panel" id="question-growth" data-question="growth">How large was population growth in different years?</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="chart-panel" id="question-components" data-question="components">What components contributed to population change?</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="chart-panel" id="question-patterns" data-question="patterns">When were births, deaths or migration particularly high or low?</button>
+        </div>
+
+        <div class="reasoning-chain" aria-live="polite">
+          <div><span>Data</span><strong id="chain-data">SSB 06913 · annual population statistics</strong></div>
+          <div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Question</span><strong id="chain-question">Change over time</strong></div>
+          <div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Encoding</span><strong id="chain-encoding">position + connection</strong></div>
+          <div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Chart form</span><strong id="chain-chart">line chart</strong></div>
+        </div>
+
+        <div class="chart-layout" id="chart-panel" role="tabpanel" aria-labelledby="question-population">
+          <div class="chart-card">
+            <div class="chart-heading">
+              <div>
+                <p class="chart-eyebrow" id="chart-eyebrow">Population 1 January · persons</p>
+                <h3 id="chart-title">Norway's population, 1951–2026</h3>
+              </div>
+              <div class="chart-controls" id="chart-controls"></div>
+            </div>
+            <div class="chart-wrap" id="chart-wrap">
+              <svg id="main-chart" role="img" aria-labelledby="chart-title chart-description"></svg>
+              <div class="chart-tooltip" id="chart-tooltip" role="tooltip" hidden></div>
+            </div>
+            <p class="chart-description" id="chart-description">Population is a stock measured on 1 January. The line connects annual observations so change and continuity are easy to follow.</p>
+            <div class="chart-readout" id="chart-readout" aria-live="polite"></div>
+          </div>
+
+          <aside class="why-panel" aria-label="Chart choice explanation">
+            <div>
+              <p class="why-label">Why this chart?</p>
+              <p id="why-this">Position on a common vertical scale gives accurate values; connection makes the temporal sequence explicit.</p>
+            </div>
+            <div>
+              <p class="why-label">Why not the obvious alternative?</p>
+              <p id="why-not">A bar chart is valid, but 76 bars place more visual emphasis on individual annual magnitudes than on the long-run trajectory.</p>
+            </div>
+            <div class="integrity-note" id="integrity-note">
+              <p class="why-label">Statistical integrity</p>
+              <p>Population 1 January is a stock. The other main variables in table 06913 are flows during the calendar year. The page never treats them as interchangeable.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="encodings page-shell" aria-labelledby="encodings-title">
+      <p class="section-kicker">From encoding to chart</p>
+      <h2 id="encodings-title">Charts are assembled from a small visual vocabulary</h2>
+      <p class="section-intro">Select an encoding. The current chart above will highlight marks that use it, while the examples below show how the same building block appears in different chart forms.</p>
+
+      <div class="encoding-selector" role="group" aria-label="Select a visual encoding">
+        <button type="button" data-encoding-control="position" aria-pressed="false">Position</button>
+        <button type="button" data-encoding-control="length" aria-pressed="false">Length</button>
+        <button type="button" data-encoding-control="area" aria-pressed="false">Area</button>
+        <button type="button" data-encoding-control="colour" aria-pressed="false">Colour</button>
+        <button type="button" data-encoding-control="connection" aria-pressed="false">Connection</button>
+        <button type="button" data-encoding-control="direction" aria-pressed="false">Direction</button>
+        <button type="button" class="encoding-reset" id="encoding-reset">Clear highlight</button>
+      </div>
+
+      <div class="encoding-detail" id="encoding-detail" aria-live="polite">
+        <div class="encoding-detail__visual" aria-hidden="true">
+          <svg viewBox="0 0 270 130">
+            <line x1="30" y1="105" x2="240" y2="105" class="axis-line"/>
+            <circle cx="74" cy="77" r="7" data-encoding="position area colour"/>
+            <circle cx="135" cy="53" r="13" data-encoding="position area colour"/>
+            <circle cx="205" cy="35" r="18" data-encoding="position area colour"/>
+            <path d="M74 77 L135 53 L205 35" data-encoding="connection direction"/>
+            <rect x="52" y="85" width="20" height="20" data-encoding="position length"/>
+            <rect x="113" y="70" width="20" height="35" data-encoding="position length"/>
+            <rect x="183" y="52" width="20" height="53" data-encoding="position length"/>
+          </svg>
+        </div>
+        <div>
+          <h3 id="encoding-detail-title">Select a building block</h3>
+          <p id="encoding-detail-text">A chart form is a convention for combining encodings. The useful question is not merely what the chart is called, but which perceptual channel carries the comparison.</p>
+        </div>
+      </div>
+
+      <div class="chart-form-table" role="table" aria-label="Chart forms and their main encodings">
+        <div role="row"><strong role="cell">Bar chart</strong><span role="cell">position + length</span></div>
+        <div role="row"><strong role="cell">Line chart</strong><span role="cell">position + connection</span></div>
+        <div role="row"><strong role="cell">Scatter plot</strong><span role="cell">position × position</span></div>
+        <div role="row"><strong role="cell">Treemap</strong><span role="cell">area + hierarchy</span></div>
+        <div role="row"><strong role="cell">Heatmap</strong><span role="cell">position + colour</span></div>
+        <div role="row"><strong role="cell">Sankey</strong><span role="cell">connection + width + direction</span></div>
+      </div>
+
+      <div class="structure-warning">
+        <strong>Do not manufacture structure.</strong>
+        <p>Table 06913 has annual totals, not origin–destination migration links and not a hierarchy. A Sankey or treemap would therefore be semantically wrong for this dataset, even if it looked impressive.</p>
+      </div>
+    </section>
+
+    <section class="source-section page-shell" aria-labelledby="source-title">
+      <p class="section-kicker">Source and transformations</p>
+      <h2 id="source-title">What is statistical source data — and what is visual transformation?</h2>
+      <div class="source-grid">
+        <div>
+          <h3>Source data</h3>
+          <p><strong>Statistics Norway, StatBank table 06913</strong>: “Population 1 January and population changes during the calendar year (M) 1951–2026”. Unit: persons. Table updated 15 April 2026.</p>
+          <p class="source-note"><strong>Historical qualification:</strong> SSB notes that population figures for 1951, 1956, 1961, 1962 and 1966–1970 do not match population figures in some other tables.</p>
+          <p><a class="source-link" href="https://www.ssb.no/en/statbank/table/06913" target="_blank" rel="noopener">Open table 06913 at Statistics Norway ↗</a></p>
+        </div>
+        <div>
+          <h3>Transformations on this page</h3>
+          <p>Outflows are given a negative plotting sign only in the contribution view. The heatmap converts each series to within-series percentiles for pattern scanning. Neither transformation changes the underlying source counts shown in readouts.</p>
+        </div>
+        <div>
+          <h3>Retrieval</h3>
+          <p>The site is static and makes a browser GET request to SSB's PxWebApi v2. Successful responses are cached in the browser to make the page more resilient to temporary API interruptions.</p>
+          <p><a class="source-link" href="https://www.ssb.no/en/api/pxwebapiv2" target="_blank" rel="noopener">SSB PxWebApi v2 guide ↗</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="final page-shell" aria-labelledby="final-title">
+      <p class="final-statement" id="final-title">Do not ask “Which chart should I use?” until you have asked “What comparison should the reader be able to make?”</p>
+      <div class="recap" aria-label="Five key takeaways recap">
+        <span><b>1</b> Task before chart</span>
+        <span><b>2</b> Charts = encodings</span>
+        <span><b>3</b> Preserve insight simply</span>
+        <span><b>4</b> Specialised charts must earn complexity</span>
+        <span><b>5</b> Make the relevant comparison easy</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="page-shell">
+      <p>ESTP Data Visualization · Module 1 teaching page</p>
+      <p>Statistical source: Statistics Norway (SSB), table 06913. Page language: English.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

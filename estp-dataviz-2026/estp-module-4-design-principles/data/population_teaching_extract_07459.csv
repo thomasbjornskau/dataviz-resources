@@ -1,0 +1,29 @@
+year,region,sex,age_group,population,derivation
+2021,The whole country,Women,20–24,163240,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,20–24,175181,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,25–29,178586,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,25–29,188300,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,30–34,186717,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,30–34,194118,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,35–39,174068,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,35–39,184221,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,40–44,168819,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,40–44,178970,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,45–49,181392,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,45–49,190410,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Women,50–54,182852,Sum of one-year ages from SSB saved query 10054226
+2021,The whole country,Men,50–54,191985,Sum of one-year ages from SSB saved query 10054226
+2023,The whole country,Women,20–24,162029,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,20–24,171937,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,25–29,179424,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,25–29,188774,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,30–34,193166,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,30–34,201179,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,35–39,181397,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,35–39,189576,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,40–44,174403,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,40–44,182857,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,45–49,175545,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,45–49,183024,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Women,50–54,186875,"SSB five-year age aggregation, saved query 10103858"
+2023,The whole country,Men,50–54,194532,"SSB five-year age aggregation, saved query 10103858"

@@ -1,0 +1,31 @@
+{
+  "table": "07459",
+  "title": "Population, by sex and one-year age groups (M) 1986 - 2026",
+  "source": "Statistics Norway",
+  "unit": "persons (number)",
+  "reference_time": "1 January",
+  "table_updated": "2026-02-25 08:00",
+  "extraction_checked": "2026-08-27",
+  "region": "The whole country (code 0)",
+  "dimensions": [
+    "year",
+    "region",
+    "age",
+    "sex",
+    "population"
+  ],
+  "main_question": "How did the population distribution among ages 20–54 change between 2021 and 2023, and where do women and men differ?",
+  "transformations": [
+    "2021: selected one-year ages 20–54 for women and men from SSB saved query 10054226, then summed consecutive ages into the same seven five-year groups used in 2023.",
+    "2023: selected seven five-year groups (20–24 through 50–54) for women and men using SSB built-in five-year age aggregation in saved query 10103858.",
+    "2026 overview: copied SSB selected figures for the ten published broad age groups; no further aggregation.",
+    "No interpolation, smoothing, weighting or modelled values."
+  ],
+  "comparability_note": "The main comparison fixes region to the whole country, so changing municipal boundaries do not affect the comparison shown on the page.",
+  "urls": {
+    "table": "https://www.ssb.no/en/statbank/table/07459",
+    "saved_2021": "https://www.ssb.no/en/statbank1/sq/10054226",
+    "saved_2023": "https://www.ssb.no/en/statbank1/table/07459/tableViewLayout1/?loadedQueryId=10103858&timeType=item",
+    "population_statistics": "https://www.ssb.no/en/befolkning/folketall/statistikk/befolkning"
+  }
+}

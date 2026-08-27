@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Module 3 of an ESTP course in Data Visualization: Storytelling with Visuals, using Statistics Norway fertility data.">
+  <title>Module 3 – Storytelling with Visuals</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="course-mark" aria-label="ESTP Data Visualization course">
+        <span class="course-kicker">ESTP · Data Visualization</span>
+        <span class="module-label">Module 3</span>
+      </div>
+      <nav class="course-thread" aria-label="Course progression">
+        <span>1 · Relationship</span><span>2 · Audience & purpose</span><strong>3 · Narrative</strong>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <p class="eyebrow">Module 3 · Storytelling with Visuals</p>
+      <h1 id="hero-title">Turn data into a visual story</h1>
+      <p class="hero-lead">A chart shows data. A visual story helps the reader understand what matters in it.</p>
+      <p class="hero-principle">Storytelling is the deliberate sequencing of attention.</p>
+      <div class="hero-question" aria-label="Module sequence">
+        <span>data</span><span aria-hidden="true">→</span><span>observation</span><span aria-hidden="true">→</span><span>focus</span><span aria-hidden="true">→</span><span>context</span><span aria-hidden="true">→</span><strong>narrative</strong>
+      </div>
+    </section>
+
+    <section class="main-demo section wrap" aria-labelledby="from-chart-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">From chart to story</p>
+        <h2 id="from-chart-title">The data stays the same. The storytelling layer changes.</h2>
+        <p>Start with the complete Norwegian fertility series. Move through the steps and watch what the designer adds — and what the designer deliberately leaves quiet.</p>
+      </div>
+
+      <div class="demo-shell">
+        <div class="stepper" role="group" aria-label="Storytelling steps">
+          <button type="button" data-step="1" aria-current="step"><span>1</span>Data</button>
+          <button type="button" data-step="2"><span>2</span>Pattern</button>
+          <button type="button" data-step="3"><span>3</span>Turning points</button>
+          <button type="button" data-step="4"><span>4</span>Comparison</button>
+          <button type="button" data-step="5"><span>5</span>Context</button>
+          <button type="button" data-step="6"><span>6</span>Story</button>
+        </div>
+
+        <div class="demo-heading">
+          <div>
+            <p id="step-kicker" class="small-label">Step 1 · Show the data</p>
+            <h3 id="step-title">What do you see?</h3>
+          </div>
+          <p id="step-message" class="step-message">The complete time series is visible, but the story is not yet explicit.</p>
+        </div>
+
+        <div class="story-tools" aria-label="Storytelling tools introduced">
+          <span class="tool active" data-tool="data">Data</span>
+          <span class="tool" data-tool="focus">Focus</span>
+          <span class="tool" data-tool="hierarchy">Hierarchy</span>
+          <span class="tool" data-tool="annotation">Annotation</span>
+          <span class="tool" data-tool="comparison">Comparison</span>
+          <span class="tool" data-tool="context">Context</span>
+          <span class="tool" data-tool="sequence">Sequence</span>
+        </div>
+
+        <figure class="chart-figure" aria-labelledby="fertility-chart-title fertility-chart-desc">
+          <figcaption>
+            <strong id="fertility-chart-title">Total fertility rate, women. Norway, 1968–2025</strong>
+            <span>Period total fertility rate</span>
+          </figcaption>
+          <svg id="main-chart" class="chart" viewBox="0 0 900 440" role="img" aria-labelledby="fertility-chart-title fertility-chart-desc"></svg>
+          <p id="fertility-chart-desc" class="sr-only">A line chart of Norway's total fertility rate from 1968 to 2025. The rate starts at 2.75 in 1968, falls sharply through the 1970s, partially recovers to 1.98 in 2009, declines to 1.40 in 2023, and rises to 1.48 in 2025.</p>
+        </figure>
+
+        <div id="comparison-panel" class="comparison-panel" aria-hidden="true">
+          <div><span>1968 → 1984</span><strong>−1.09</strong><small>steep decline</small></div>
+          <div><span>1984 → 2009</span><strong>+0.32</strong><small>partial recovery</small></div>
+          <div><span>2009 → 2023</span><strong>−0.58</strong><small>long decline</small></div>
+          <div><span>2023 → 2025</span><strong>+0.08</strong><small>modest rise</small></div>
+        </div>
+
+        <div id="context-panel" class="context-panel" aria-hidden="true">
+          <div class="context-copy">
+            <p class="small-label">Context, not a causal claim</p>
+            <h4>First births are happening later</h4>
+            <p>Mean age of mothers at first birth rose from <strong>23.3 years in 1968</strong> to <strong>30.4 in 2025</strong>. This provides useful context about the timing of parenthood.</p>
+            <p class="caution">The two developments occurred over the same broad period. This chart alone does not establish that one caused the other.</p>
+          </div>
+          <figure aria-labelledby="age-chart-title age-chart-desc">
+            <figcaption><strong id="age-chart-title">Mean age of mother at first birth, 1968–2025</strong></figcaption>
+            <svg id="context-chart" class="chart context-chart" viewBox="0 0 900 250" role="img" aria-labelledby="age-chart-title age-chart-desc"></svg>
+            <p id="age-chart-desc" class="sr-only">A line chart showing that mothers' mean age at first birth rose from 23.3 years in 1968 to 30.4 years in 2025.</p>
+          </figure>
+        </div>
+
+        <div id="story-conclusion" class="story-conclusion" aria-hidden="true">
+          <p class="small-label">The story, stated carefully</p>
+          <p>Norway’s fertility rate has moved through distinct phases: a steep fall in the 1970s, a partial recovery that culminated in 2009, then a long decline to a record low in 2023 followed by a modest rise in 2024–2025.</p>
+        </div>
+
+        <div class="step-actions">
+          <button id="prev-step" class="secondary-btn" type="button" disabled>← Previous</button>
+          <span id="step-status" class="sr-only" aria-live="polite">Step 1 of 6</span>
+          <button id="next-step" class="primary-btn" type="button">Next step →</button>
+        </div>
+      </div>
+
+      <aside class="definition-note" aria-label="Statistical definition">
+        <strong>Total fertility rate is an indicator, not a headcount.</strong>
+        <p>SSB defines it as the average number of live-born children a woman would have if the age-specific fertility rates observed in that year applied throughout ages 15–49, assuming no mortality. It is a period measure, not the completed number of children actually born to a cohort of women.</p>
+      </aside>
+    </section>
+
+    <section class="principle-break wrap" aria-label="Central principle">
+      <p><strong>Start with a real statistical insight.</strong> Then make it easier to see — without making the data say more than it actually does.</p>
+    </section>
+
+    <section class="section wrap" aria-labelledby="attention-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">2 · Guide attention deliberately</p>
+        <h2 id="attention-title">Hierarchy changes the reading experience, not the data</h2>
+        <p>A chart does not need to make every element equally prominent. The author can decide what should be read first while keeping the full statistical content available.</p>
+      </div>
+
+      <div class="attention-demo teaching-panel">
+        <div class="toggle-row" role="group" aria-label="Attention mode">
+          <button type="button" class="toggle-btn active" data-guide="unguided" aria-pressed="true">Unguided</button>
+          <button type="button" class="toggle-btn" data-guide="guided" aria-pressed="false">Guide my attention</button>
+        </div>
+        <div class="attention-copy">
+          <p id="guide-note"><strong>Everything competes.</strong> Gridlines, labels and points all ask for attention.</p>
+          <p class="prompt">Where did you look first?</p>
+        </div>
+        <figure aria-labelledby="guide-chart-title guide-chart-desc">
+          <figcaption><strong id="guide-chart-title">Same fertility data, different hierarchy</strong></figcaption>
+          <svg id="guide-chart" class="chart" viewBox="0 0 900 380" role="img" aria-labelledby="guide-chart-title guide-chart-desc"></svg>
+          <p id="guide-chart-desc" class="sr-only">The chart can be toggled between an unguided view with many equally prominent supporting elements and a guided view that emphasizes the post-2009 decline and labels the 2023 low.</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section wrap" aria-labelledby="annotation-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">Annotations should add meaning</p>
+        <h2 id="annotation-title">Label the relevance, not just the value</h2>
+      </div>
+      <div class="annotation-demo">
+        <article>
+          <p class="small-label">Weak annotation</p>
+          <div class="annotation-swatch weak"><span>2025</span><strong>Fertility rate, 2025: 1.48</strong></div>
+          <p>It repeats information the axis and point can already provide.</p>
+        </article>
+        <article>
+          <p class="small-label">Useful annotation</p>
+          <div class="annotation-swatch useful"><span>2025</span><strong>After the 2023 low of 1.40, TFR rose to 1.48 in 2025 — a change in direction, not a return to earlier levels.</strong></div>
+          <p>It tells the reader why the point matters to the argument.</p>
+        </article>
+      </div>
+      <p class="annotation-rule">Useful annotations can mark a turning point, unusual value, change in direction, sourced event or meaningful comparison. Keep them close to the data they explain.</p>
+    </section>
+
+    <section class="section wrap" aria-labelledby="editor-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">3 · Every chart should move the story forward</p>
+        <h2 id="editor-title">Does this chart move the story forward?</h2>
+        <p>Interesting data is not enough. Give every element a role in the narrative.</p>
+      </div>
+      <div id="editorial-exercise" class="editorial-grid">
+        <article class="editor-card" data-suggested="remove">
+          <div class="mini-viz repeat-viz" aria-hidden="true"></div>
+          <h3>The same fertility trend as an area chart</h3>
+          <p>Visually different, statistically the same point.</p>
+          <div class="choice-row"><button type="button" data-choice="keep">Keep</button><button type="button" data-choice="remove">Remove</button></div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="editor-card" data-suggested="remove">
+          <div class="mini-table" aria-hidden="true"><span>1968&nbsp; 2.75</span><span>1969&nbsp; 2.70</span><span>1970&nbsp; 2.50</span><span>…</span><span>2025&nbsp; 1.48</span></div>
+          <h3>A detailed table of every annual value</h3>
+          <p>Useful reference material, but does it advance this explanatory sequence?</p>
+          <div class="choice-row"><button type="button" data-choice="keep">Keep</button><button type="button" data-choice="remove">Remove</button></div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="editor-card" data-suggested="keep">
+          <div class="mini-viz age-viz" aria-hidden="true"></div>
+          <h3>Mean age at first birth</h3>
+          <p>A separate measure that adds context about the timing of parenthood.</p>
+          <div class="choice-row"><button type="button" data-choice="keep">Keep</button><button type="button" data-choice="remove">Remove</button></div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="editor-card" data-suggested="keep">
+          <div class="mini-comparison" aria-hidden="true"><span>2009<strong>1.98</strong></span><i>→</i><span>2025<strong>1.48</strong></span></div>
+          <h3>A direct 2009–2025 comparison</h3>
+          <p>It quantifies the scale of the post-2009 change in one glance.</p>
+          <div class="choice-row"><button type="button" data-choice="keep">Keep</button><button type="button" data-choice="remove">Remove</button></div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+      </div>
+      <p class="exercise-note">There is no universal answer. A table might belong in an appendix; a comparison might be redundant if the previous chart already makes it obvious. Edit for this narrative, not for data completeness.</p>
+    </section>
+
+    <section class="section integrity-section" aria-labelledby="overstory-title">
+      <div class="wrap">
+        <div class="section-intro narrow">
+          <p class="eyebrow">5 · Do not let storytelling override statistical integrity</p>
+          <h2 id="overstory-title">When the story becomes too strong</h2>
+          <p>A true dataset can support a distorted impression with surprisingly little manipulation: narrow the time window, highlight only one movement, or write a headline that claims more than the evidence.</p>
+        </div>
+
+        <div class="overstory-demo teaching-panel">
+          <div class="toggle-row" role="group" aria-label="Evidence versus overstory">
+            <button type="button" class="toggle-btn active" data-overstory="evidence" aria-pressed="true">Evidence</button>
+            <button type="button" class="toggle-btn" data-overstory="overstory" aria-pressed="false">Overstory</button>
+          </div>
+          <div class="headline-comparison">
+            <p class="small-label">Headline</p>
+            <h3 id="overstory-headline">Fertility rose in 2024 and 2025 after the 2023 low</h3>
+            <p id="overstory-subhead">The longer series still shows a much lower level than in 2009 or the late 1960s.</p>
+          </div>
+          <figure aria-labelledby="overstory-chart-title overstory-chart-desc">
+            <figcaption><strong id="overstory-chart-title">The same fertility series</strong></figcaption>
+            <svg id="overstory-chart" class="chart" viewBox="0 0 900 390" role="img" aria-labelledby="overstory-chart-title overstory-chart-desc"></svg>
+            <p id="overstory-chart-desc" class="sr-only">In evidence mode the chart shows the full 1968 to 2025 fertility series. In overstory mode it shows only 2023 to 2025 with an exaggerated headline, demonstrating selective framing.</p>
+          </figure>
+          <div class="what-changed" aria-label="Storytelling choices changed in overstory mode">
+            <span>Time window</span><span>Annotation</span><span>Headline</span>
+          </div>
+          <div class="causality-box">
+            <p class="small-label">Context versus causality</p>
+            <p id="causal-statement"><strong>Evidence:</strong> Mean age at first birth increased while fertility declined over much of the period after 2010. The two series alone do not establish why.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" aria-labelledby="mode-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">Story versus exploration</p>
+        <h2 id="mode-title">Who decides where to look?</h2>
+        <p>Module 2 established the purpose. That purpose now determines whether you should open the space for investigation or guide the reader towards a known insight.</p>
+      </div>
+      <div class="mode-comparison">
+        <article>
+          <div class="mode-visual exploration-visual" aria-hidden="true">
+            <div class="fake-controls"><span>Period ▾</span><span>Measure ▾</span><span>Compare ▾</span></div>
+            <div class="fake-lines"><i></i><i></i><i></i></div>
+          </div>
+          <h3>Exploratory visualization</h3>
+          <p>The user decides where to look. More controls, variables and alternative views may be useful because the questions are not fully known in advance.</p>
+        </article>
+        <article>
+          <div class="mode-visual explanatory-visual" aria-hidden="true">
+            <ol><li>Pattern</li><li>Turning point</li><li>Comparison</li><li>Context</li></ol>
+          </div>
+          <h3>Explanatory visualization</h3>
+          <p>The author has identified an important insight. Hierarchy, annotation and sequence reduce the work required to see it.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wrap final-transform" aria-labelledby="final-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">Final transformation</p>
+        <h2 id="final-title">Chart versus story</h2>
+        <p>Toggle directly between the opening statistical chart and the final explanatory view. Most of the underlying data is identical.</p>
+      </div>
+      <div class="teaching-panel">
+        <div class="toggle-row" role="group" aria-label="Chart versus story">
+          <button type="button" class="toggle-btn active" data-final="chart" aria-pressed="true">Chart</button>
+          <button type="button" class="toggle-btn" data-final="story" aria-pressed="false">Story</button>
+        </div>
+        <h3 id="final-headline">Total fertility rate, women. Norway, 1968–2025</h3>
+        <p id="final-copy">A complete, correct statistical time series. The reader still has to decide what matters.</p>
+        <svg id="final-chart" class="chart" viewBox="0 0 900 430" role="img" aria-label="Toggleable comparison between the neutral fertility chart and the final explanatory version"></svg>
+      </div>
+    </section>
+
+    <section class="final-takeaway">
+      <div class="wrap final-grid">
+        <div>
+          <p class="eyebrow">Final takeaway</p>
+          <h2>Good storytelling does not add drama to the data. It removes the work required to see what matters.</h2>
+        </div>
+        <ol class="takeaway-list">
+          <li><strong>Start with a message, not a pile of charts.</strong> The message should come from a genuine statistical observation.</li>
+          <li><strong>Guide attention deliberately.</strong> Use hierarchy, contrast, annotation and sequence.</li>
+          <li><strong>Make every chart earn its place.</strong> Each step should contribute something new.</li>
+          <li><strong>Use context and comparison to create meaning.</strong> A number becomes more useful when it has a relevant reference.</li>
+          <li><strong>Protect statistical integrity.</strong> Do not hide uncertainty, cherry-pick evidence or turn correlation into causation.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="sources wrap" aria-labelledby="sources-title">
+      <h2 id="sources-title">Sources and data notes</h2>
+      <p><strong>Source: Statistics Norway (SSB).</strong> Main series: StatBank table <a href="https://www.ssb.no/en/statbank1/table/04232" target="_blank" rel="noopener">04232 – Total fertility rate, women</a>. Context series: <a href="https://www.ssb.no/en/statbank1/table/07872" target="_blank" rel="noopener">07872 – Mean age of parent at first child's birth</a>.</p>
+      <p>Local extracts were assembled and checked on <strong>27 August 2026</strong>. Latest complete annual observation: <strong>2025</strong>. Both tables were updated by SSB on 12 March 2026. No smoothing, interpolation or modelled values are used on this page.</p>
+      <details>
+        <summary>Data handling and metadata</summary>
+        <p>Table 04232 is filtered to Norway total, content “Total fertility rate, women”, years 1968–2025. Table 07872 uses content “Mothers age at first birth”, years 1961–2025; the coordinated context chart displays 1968–2025 to align with the fertility series. Display labels may round TFR to two decimals; plotted values retain the precision available in the local extract.</p>
+        <p>SSB notes for table 07872 that figures for 1961–1985 were recalculated with new data in 2009. The page does not annotate external historical events and makes no causal claim from the two time series alone.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>Course progression</strong></p>
+      <p>Module 1: What relationship should the visualization reveal? → Module 2: Who needs to understand it, and why? → <strong>Module 3: How do we guide the reader through the insight?</strong></p>
+    </div>
+  </footer>
+
+  <script src="data/data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

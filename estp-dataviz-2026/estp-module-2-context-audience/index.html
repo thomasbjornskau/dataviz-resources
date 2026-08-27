@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ESTP Data Visualization Module 2: contextualization and audience, using real Statistics Norway consumer price data.">
+  <title>The chart is only part of the answer — ESTP Data Visualization</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="page-shell site-header__inner">
+      <div><p class="eyebrow">ESTP · Data Visualization</p><p class="site-header__module">Module 2 — Contextualization and Audience</p></div>
+      <a class="source-link source-link--header" href="https://www.ssb.no/en/statbank/table/14700" target="_blank" rel="noopener">SSB table 14700 ↗</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-shell" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="section-kicker">Module 1 chose the relationship. Module 2 chooses the frame.</p>
+        <h1 id="hero-title">The chart is only part of the answer</h1>
+        <p class="hero__lead">The same data can tell very different stories depending on who needs it, what they need to know and what context they already have.</p>
+        <div class="hero__chain" aria-label="Reasoning chain from data to visualization">
+          <span>data</span><span aria-hidden="true">→</span><span>audience</span><span aria-hidden="true">→</span><span>purpose</span><span aria-hidden="true">→</span><span>context</span><span aria-hidden="true">→</span><strong>visualization</strong>
+        </div>
+      </div>
+      <div class="hero__teaser" aria-label="A schematic showing one statistical value receiving audience and context before becoming a visualization">
+        <p class="teaser-label">Do not jump from data straight to chart.</p>
+        <div class="teaser-flow" aria-hidden="true"><span class="teaser-number">3.0%</span><span>+</span><span>who?</span><span>+</span><span>why?</span><span>+</span><span>compared with what?</span></div>
+        <p class="teaser-question">What does this audience need to understand?</p>
+      </div>
+    </section>
+
+    <section class="demo-section" aria-labelledby="audience-title">
+      <div class="page-shell">
+        <p class="section-kicker">Main interactive example</p>
+        <h2 id="audience-title">Same statistics. Different audience.</h2>
+        <p class="section-intro">The topic stays fixed: Norwegian consumer price inflation. Switch audience and watch what is added, removed or emphasised.</p>
+        <div class="source-ribbon"><strong>Same data source</strong><span>→</span><span>different audience</span><span>→</span><strong>different design choices</strong></div>
+        <div class="audience-tabs" role="tablist" aria-label="Choose audience">
+          <button type="button" role="tab" id="audience-general" aria-selected="true" aria-controls="audience-panel" data-audience="general"><span>General reader</span><small>“How much are prices rising?”</small></button>
+          <button type="button" role="tab" id="audience-journalist" aria-selected="false" aria-controls="audience-panel" data-audience="journalist"><span>Journalist / communication</span><small>“What changed, and what is notable?”</small></button>
+          <button type="button" role="tab" id="audience-analyst" aria-selected="false" aria-controls="audience-panel" data-audience="analyst"><span>Statistical analyst</span><small>“How should the latest figure be interpreted?”</small></button>
+        </div>
+        <div class="reasoning-chain audience-chain" aria-live="polite">
+          <div><span>Data</span><strong>SSB 14700 / 14706 · CPI</strong></div><div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Audience</span><strong id="chain-audience">General reader</strong></div><div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Purpose</span><strong id="chain-purpose">Explain current price growth</strong></div><div class="reasoning-chain__arrow" aria-hidden="true">→</div>
+          <div><span>Context</span><strong id="chain-context">Recent trend only</strong></div>
+        </div>
+        <div class="chart-layout" id="audience-panel" role="tabpanel" aria-labelledby="audience-general">
+          <div class="chart-card audience-chart-card">
+            <div class="chart-heading">
+              <div><p class="chart-eyebrow" id="audience-eyebrow">12-month change · per cent</p><h3 id="audience-chart-title">Consumer prices are 3.0% higher than a year ago</h3></div>
+              <div class="chart-controls" id="audience-controls"></div>
+            </div>
+            <div class="key-stat" id="key-stat"><strong>3.0%</strong><span>July 2025 → July 2026</span></div>
+            <div class="chart-wrap audience-chart-wrap"><svg id="audience-chart" role="img" aria-labelledby="audience-chart-title audience-chart-description"></svg></div>
+            <p class="chart-description" id="audience-chart-description">A short recent trend gives the latest number enough context without turning the chart into an analytical tool.</p>
+            <div class="chart-readout" id="audience-readout" aria-live="polite">July 2026: CPI +3.0% over 12 months.</div>
+            <div id="category-context" class="category-context" hidden></div>
+          </div>
+          <aside class="why-panel" aria-label="Audience design reasoning">
+            <div><p class="why-label">What does this audience need?</p><p id="audience-need">A fast answer to one question, in plain language.</p></div>
+            <div><p class="why-label">What changed in the visualization?</p><p id="audience-change">Only the latest rate and a short recent trend are shown. Specialist detail is withheld.</p></div>
+            <div class="integrity-note"><p class="why-label">Why this context?</p><p id="audience-why">The trend prevents 3.0% from becoming an isolated fact, while keeping the reading task simple.</p></div>
+          </aside>
+        </div>
+        <div class="change-strip" id="change-strip" aria-live="polite"><span>Kept</span> CPI 12-month rate <strong>·</strong> <span>Removed</span> extra series and controls</div>
+      </div>
+    </section>
+
+    <section class="principle-section page-shell" aria-labelledby="takeaway-one">
+      <div class="principle-number" aria-hidden="true">1</div><div><p class="section-kicker">Audience changes the frame</p><h2 id="takeaway-one">The same data can require different visualizations for different audiences</h2><p>A policy analyst, journalist and general reader may need different levels of detail, context and explanation. The statistics can remain identical while selection, framing, annotations and visual complexity change.</p></div>
+    </section>
+
+    <section class="context-section" aria-labelledby="context-title">
+      <div class="page-shell">
+        <p class="section-kicker">Takeaway 3 · conceptual centre</p><h2 id="context-title">Context gives meaning to numbers</h2>
+        <p class="section-intro">Start with one correct number. Then add context deliberately. The question is not “How much can we add?” but “Which comparison changes interpretation?”</p>
+        <div class="context-layout">
+          <div class="context-stage">
+            <div class="solo-number"><span>Consumer prices increased</span><strong>3.0%</strong><span>over the last 12 months</span></div>
+            <div id="context-visual" class="context-visual" aria-live="polite"></div>
+          </div>
+          <div class="context-controls" aria-label="Add or remove context">
+            <label><input type="checkbox" data-context="comparison"> <span><strong>Previous month & previous year</strong><small>Compare July 2026 with June 2026 and July 2025.</small></span></label>
+            <label><input type="checkbox" data-context="trend"> <span><strong>Five-year trend</strong><small>See whether the latest rate is unusual or part of a longer pattern.</small></span></label>
+            <label><input type="checkbox" data-context="groups"> <span><strong>Selected CPI main groups</strong><small>See contrasting 12-month price changes across consumption groups.</small></span></label>
+            <label><input type="checkbox" data-context="ate"> <span><strong>CPI-ATE</strong><small>Add a measure adjusted for tax changes and excluding energy products.</small></span></label>
+            <button type="button" class="text-button" id="clear-context">Remove all context</button>
+          </div>
+        </div>
+        <div class="context-question"><strong>Does the number mean the same thing now?</strong><p id="context-lesson">Alone, 3.0% answers “how much?” but gives little help with “is that high, low, rising or falling?”</p></div>
+      </div>
+    </section>
+
+    <section class="principle-section page-shell principle-section--central" aria-labelledby="takeaway-five">
+      <div class="principle-number" aria-hidden="true">5</div><div><p class="section-kicker">The question is the design brief</p><h2 id="takeaway-five">Design for the question the reader is likely to ask</h2><p>A strong visualization anticipates the audience’s main question and makes the answer easy to find. Do not begin with “What can we show from this dataset?” Begin with “What does this audience need to understand?”</p><div class="question-pair"><span class="question-pair__wrong">What can we show?</span><span aria-hidden="true">→</span><strong>What do they need to understand?</strong></div></div>
+    </section>
+
+    <section class="purpose-section page-shell" aria-labelledby="purpose-title">
+      <p class="section-kicker">Takeaway 2</p><h2 id="purpose-title">Purpose comes before design</h2>
+      <p class="section-intro">Audience and purpose are related, but not identical. The same analyst may need one view for monitoring and another for explaining a finding to management.</p>
+      <div class="purpose-tabs" role="tablist" aria-label="Choose visualization purpose">
+        <button type="button" role="tab" aria-selected="true" data-purpose="explain">Explain<small>one main finding</small></button>
+        <button type="button" role="tab" aria-selected="false" data-purpose="compare">Compare<small>make differences direct</small></button>
+        <button type="button" role="tab" aria-selected="false" data-purpose="explore">Explore<small>investigate the data</small></button>
+        <button type="button" role="tab" aria-selected="false" data-purpose="monitor">Monitor<small>current status + change</small></button>
+      </div>
+      <div class="purpose-demo" id="purpose-demo" aria-live="polite"></div>
+      <p class="decision-note"><strong>Why this design?</strong> <span id="purpose-why">Explain removes branches: one number, one comparison, one sentence.</span></p>
+    </section>
+
+    <section class="simplify-section" aria-labelledby="simplify-title">
+      <div class="page-shell">
+        <p class="section-kicker">Takeaway 4</p><h2 id="simplify-title">Less can communicate more</h2>
+        <p class="section-intro">Selection is an editorial and analytical act. Simplify the same July 2026 category data and watch the question become easier to answer.</p>
+        <div class="simplify-controls" role="group" aria-label="Choose level of detail">
+          <button type="button" aria-pressed="true" data-simplify="0">1 · Everything</button><button type="button" aria-pressed="false" data-simplify="1">2 · Remove clutter</button><button type="button" aria-pressed="false" data-simplify="2">3 · Keep what answers the question</button>
+        </div>
+        <div class="simplify-question"><span>Reader’s question</span><strong>Which selected main groups have 12-month price changes clearly above or below overall CPI?</strong></div>
+        <div class="simplify-layout"><div class="chart-card"><svg id="simplify-chart" role="img" aria-label="CPI main group 12-month price changes in July 2026"></svg></div><aside class="why-panel"><div><p class="why-label">What was removed?</p><p id="simplify-removed">Nothing yet: all 13 main groups, exact values, gridlines and a redundant legend compete for attention.</p></div><div><p class="why-label">What was preserved?</p><p id="simplify-preserved">The source values and the overall CPI reference at 3.0%.</p></div><div class="integrity-note"><p class="why-label">Statistical integrity</p><p>These are group-specific 12-month rates, not contributions to overall CPI.</p></div></aside></div>
+      </div>
+    </section>
+
+    <section class="takeaway-four page-shell" aria-labelledby="takeaway-four-title">
+      <p class="section-kicker">Selection is part of design</p><h2 id="takeaway-four-title">Reduce what the audience does not need</h2><p>More variables, categories and detail do not automatically create more insight. Removing information can improve understanding when that information is not relevant to the user’s question.</p>
+    </section>
+
+    <section class="source-section page-shell" aria-labelledby="source-title">
+      <p class="section-kicker">Statistical integrity</p><h2 id="source-title">Source, units and transformations</h2>
+      <div class="source-grid">
+        <div><h3>SSB table 14700</h3><p><strong>Consumer price index (CPI), by goods and services.</strong></p><p>Index: 2025=100 · monthly change: per cent · 12-month change: per cent · weights: per mille.</p><p>Current extract reference period: July 2026.</p><a class="source-link" href="https://www.ssb.no/en/statbank/table/14700" target="_blank" rel="noopener">Open StatBank table ↗</a></div>
+        <div><h3>SSB table 14706</h3><p><strong>Derived CPI series.</strong> This page uses CPI-ATE only where it adds analytical context.</p><p>CPI-ATE adjusts for tax changes and excludes energy products.</p><a class="source-link" href="https://www.ssb.no/en/statbank/table/14706" target="_blank" rel="noopener">Open StatBank table ↗</a></div>
+        <div><h3>Static teaching extract</h3><p>Source updated: 10 August 2026. Data and metadata checked: 27 August 2026.</p><p>The five-year CPI rate is derived in the browser from SSB index values: <code>(index / index 12 months earlier − 1) × 100</code>. Published rates are used for exact recent comparisons because rebased historical rates can differ slightly through rounding.</p></div>
+      </div>
+    </section>
+
+    <section class="final page-shell" aria-labelledby="final-title">
+      <p class="section-kicker">Module 2</p><h2 class="final-statement" id="final-title">Do not design for everyone. Design for someone who needs to understand something.</h2>
+      <div class="recap" aria-label="Five key takeaways">
+        <span><b>1</b>Same data may need different visualizations for different audiences.</span>
+        <span><b>2</b>Decide the purpose before choosing the design.</span>
+        <span><b>3</b>Context gives meaning to numbers.</span>
+        <span><b>4</b>Remove detail the audience does not need.</span>
+        <span><b>5</b>Design for the question the reader is likely to ask.</span>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="page-shell"><p>ESTP Data Visualization · Module 2</p><p>Statistics Norway data · static teaching extract checked 27 August 2026</p></div></footer>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+{
+  "metadata": {
+    "checked": "2026-08-27",
+    "sourceUpdated": "2026-08-10 08:00",
+    "referencePeriod": "July 2026",
+    "source": "Statistics Norway (SSB)",
+    "table14700": {
+      "title": "Consumer price index (CPI), by goods and services",
+      "period": "2000M01–2026M07",
+      "base": "2025=100",
+      "units": {
+        "index": "index",
+        "monthly": "per cent",
+        "annual": "per cent",
+        "weights": "per mille"
+      },
+      "url": "https://www.ssb.no/en/statbank/table/14700"
+    },
+    "table14706": {
+      "title": "Derived series from consumer price index (CPI-AT, CPI-ATE, CPI-AE, CPI-AEL and CPI-XADM)",
+      "period": "1995M01–2026M07",
+      "base": "2025=100",
+      "units": {
+        "index": "index",
+        "monthly": "per cent",
+        "annual": "per cent"
+      },
+      "url": "https://www.ssb.no/en/statbank/table/14706"
+    },
+    "notes": [
+      "Table 14700 replaced table 03013 when CPI was rebased to 2025=100 in 2026.",
+      "Rates calculated from rebased index values can differ slightly from SSB published rates before 2026 because of rounding. The page uses published rates where exact current comparisons are central.",
+      "CPI-ATE is CPI adjusted for tax changes and excluding energy products."
+    ]
+  },
+  "current": {
+    "date": "2026-07",
+    "cpi": {
+      "index": 103.8,
+      "monthly": 1.0,
+      "annual": 3.0
+    },
+    "cpiAte": {
+      "index": 103.8,
+      "monthly": 0.8,
+      "annual": 2.7
+    }
+  },
+  "categories": [
+    {
+      "name": "Food and non-alcoholic beverages",
+      "index": 105.7,
+      "monthly": 3.2,
+      "annual": 1.1
+    },
+    {
+      "name": "Alcoholic beverages, tobacco and narcotics",
+      "index": 103.1,
+      "monthly": 0.6,
+      "annual": 2.6
+    },
+    {
+      "name": "Clothing and footwear",
+      "index": 99.6,
+      "monthly": -3.0,
+      "annual": 2.9
+    },
+    {
+      "name": "Housing, water, electricity, gas and other fuels",
+      "index": 103.7,
+      "monthly": 1.0,
+      "annual": 4.6
+    },
+    {
+      "name": "Furnishings, household equipment and routine household maintenance",
+      "index": 101.4,
+      "monthly": 0.2,
+      "annual": 0.5
+    },
+    {
+      "name": "Health",
+      "index": 104.9,
+      "monthly": 0.6,
+      "annual": 4.4
+    },
+    {
+      "name": "Transport",
+      "index": 104.7,
+      "monthly": 2.0,
+      "annual": 2.6
+    },
+    {
+      "name": "Information and communication",
+      "index": 101.6,
+      "monthly": -0.5,
+      "annual": 1.4
+    },
+    {
+      "name": "Recreation, sport and culture",
+      "index": 104.3,
+      "monthly": 0.7,
+      "annual": 4.3
+    },
+    {
+      "name": "Education services",
+      "index": 101.6,
+      "monthly": 0.0,
+      "annual": 2.4
+    },
+    {
+      "name": "Restaurants and accommodation services",
+      "index": 106.4,
+      "monthly": 0.3,
+      "annual": 5.7
+    },
+    {
+      "name": "Insurance and financial services",
+      "index": 109.1,
+      "monthly": 1.2,
+      "annual": 7.9
+    },
+    {
+      "name": "Personal care, social protection and miscellaneous goods and services",
+      "index": 101.2,
+      "monthly": 1.1,
+      "annual": -2.1
+    }
+  ],
+  "cpiIndex": [
+    {
+      "date": "2020-01",
+      "value": 80.8
+    },
+    {
+      "date": "2020-02",
+      "value": 80.8
+    },
+    {
+      "date": "2020-03",
+      "value": 80.8
+    },
+    {
+      "date": "2020-04",
+      "value": 81.1
+    },
+    {
+      "date": "2020-05",
+      "value": 81.2
+    },
+    {
+      "date": "2020-06",
+      "value": 81.4
+    },
+    {
+      "date": "2020-07",
+      "value": 82.0
+    },
+    {
+      "date": "2020-08",
+      "value": 81.7
+    },
+    {
+      "date": "2020-09",
+      "value": 82.0
+    },
+    {
+      "date": "2020-10",
+      "value": 82.2
+    },
+    {
+      "date": "2020-11",
+      "value": 81.6
+    },
+    {
+      "date": "2020-12",
+      "value": 82.0
+    },
+    {
+      "date": "2021-01",
+      "value": 82.8
+    },
+    {
+      "date": "2021-02",
+      "value": 83.4
+    },
+    {
+      "date": "2021-03",
+      "value": 83.2
+    },
+    {
+      "date": "2021-04",
+      "value": 83.5
+    },
+    {
+      "date": "2021-05",
+      "value": 83.4
+    },
+    {
+      "date": "2021-06",
+      "value": 83.7
+    },
+    {
+      "date": "2021-07",
+      "value": 84.5
+    },
+    {
+      "date": "2021-08",
+      "value": 84.4
+    },
+    {
+      "date": "2021-09",
+      "value": 85.4
+    },
+    {
+      "date": "2021-10",
+      "value": 85.1
+    },
+    {
+      "date": "2021-11",
+      "value": 85.8
+    },
+    {
+      "date": "2021-12",
+      "value": 86.3
+    },
+    {
+      "date": "2022-01",
+      "value": 85.5
+    },
+    {
+      "date": "2022-02",
+      "value": 86.5
+    },
+    {
+      "date": "2022-03",
+      "value": 87.0
+    },
+    {
+      "date": "2022-04",
+      "value": 88.0
+    },
+    {
+      "date": "2022-05",
+      "value": 88.3
+    },
+    {
+      "date": "2022-06",
+      "value": 89.0
+    },
+    {
+      "date": "2022-07",
+      "value": 90.2
+    },
+    {
+      "date": "2022-08",
+      "value": 89.9
+    },
+    {
+      "date": "2022-09",
+      "value": 91.2
+    },
+    {
+      "date": "2022-10",
+      "value": 91.5
+    },
+    {
+      "date": "2022-11",
+      "value": 91.4
+    },
+    {
+      "date": "2022-12",
+      "value": 91.4
+    },
+    {
+      "date": "2023-01",
+      "value": 91.5
+    },
+    {
+      "date": "2023-02",
+      "value": 91.9
+    },
+    {
+      "date": "2023-03",
+      "value": 92.7
+    },
+    {
+      "date": "2023-04",
+      "value": 93.6
+    },
+    {
+      "date": "2023-05",
+      "value": 94.1
+    },
+    {
+      "date": "2023-06",
+      "value": 94.7
+    },
+    {
+      "date": "2023-07",
+      "value": 95.0
+    },
+    {
+      "date": "2023-08",
+      "value": 94.3
+    },
+    {
+      "date": "2023-09",
+      "value": 94.3
+    },
+    {
+      "date": "2023-10",
+      "value": 95.2
+    },
+    {
+      "date": "2023-11",
+      "value": 95.7
+    },
+    {
+      "date": "2023-12",
+      "value": 95.7
+    },
+    {
+      "date": "2024-01",
+      "value": 95.9
+    },
+    {
+      "date": "2024-02",
+      "value": 96.1
+    },
+    {
+      "date": "2024-03",
+      "value": 96.3
+    },
+    {
+      "date": "2024-04",
+      "value": 97.0
+    },
+    {
+      "date": "2024-05",
+      "value": 96.9
+    },
+    {
+      "date": "2024-06",
+      "value": 97.2
+    },
+    {
+      "date": "2024-07",
+      "value": 97.7
+    },
+    {
+      "date": "2024-08",
+      "value": 96.8
+    },
+    {
+      "date": "2024-09",
+      "value": 97.1
+    },
+    {
+      "date": "2024-10",
+      "value": 97.7
+    },
+    {
+      "date": "2024-11",
+      "value": 98.0
+    },
+    {
+      "date": "2024-12",
+      "value": 97.9
+    },
+    {
+      "date": "2025-01",
+      "value": 98.1
+    },
+    {
+      "date": "2025-02",
+      "value": 99.5
+    },
+    {
+      "date": "2025-03",
+      "value": 98.8
+    },
+    {
+      "date": "2025-04",
+      "value": 99.4
+    },
+    {
+      "date": "2025-05",
+      "value": 99.9
+    },
+    {
+      "date": "2025-06",
+      "value": 100.1
+    },
+    {
+      "date": "2025-07",
+      "value": 100.8
+    },
+    {
+      "date": "2025-08",
+      "value": 100.2
+    },
+    {
+      "date": "2025-09",
+      "value": 100.6
+    },
+    {
+      "date": "2025-10",
+      "value": 100.7
+    },
+    {
+      "date": "2025-11",
+      "value": 100.9
+    },
+    {
+      "date": "2025-12",
+      "value": 101.0
+    },
+    {
+      "date": "2026-01",
+      "value": 101.6
+    },
+    {
+      "date": "2026-02",
+      "value": 102.2
+    },
+    {
+      "date": "2026-03",
+      "value": 102.4
+    },
+    {
+      "date": "2026-04",
+      "value": 102.8
+    },
+    {
+      "date": "2026-05",
+      "value": 103.0
+    },
+    {
+      "date": "2026-06",
+      "value": 102.8
+    },
+    {
+      "date": "2026-07",
+      "value": 103.8
+    }
+  ],
+  "publishedRates": [
+    {
+      "date": "2025-05",
+      "cpiAnnual": 3.0,
+      "cpiAteAnnual": 2.8,
+      "cpiMonthly": 0.4,
+      "cpiAteMonthly": 0.2
+    },
+    {
+      "date": "2025-06",
+      "cpiAnnual": 3.0,
+      "cpiAteAnnual": 3.1,
+      "cpiMonthly": 0.2,
+      "cpiAteMonthly": 0.5
+    },
+    {
+      "date": "2025-07",
+      "cpiAnnual": 3.3,
+      "cpiAteAnnual": 3.1,
+      "cpiMonthly": 0.8,
+      "cpiAteMonthly": 0.8
+    },
+    {
+      "date": "2025-08",
+      "cpiAnnual": 3.5,
+      "cpiAteAnnual": 3.1,
+      "cpiMonthly": -0.6,
+      "cpiAteMonthly": -0.7
+    },
+    {
+      "date": "2025-09",
+      "cpiAnnual": 3.6,
+      "cpiAteAnnual": 3.0,
+      "cpiMonthly": 0.4,
+      "cpiAteMonthly": 0.2
+    },
+    {
+      "date": "2025-10",
+      "cpiAnnual": 3.1,
+      "cpiAteAnnual": 3.4,
+      "cpiMonthly": 0.1,
+      "cpiAteMonthly": 0.6
+    },
+    {
+      "date": "2025-11",
+      "cpiAnnual": 3.0,
+      "cpiAteAnnual": 3.0,
+      "cpiMonthly": 0.1,
+      "cpiAteMonthly": -0.3
+    },
+    {
+      "date": "2025-12",
+      "cpiAnnual": 3.2,
+      "cpiAteAnnual": 3.1,
+      "cpiMonthly": 0.1,
+      "cpiAteMonthly": 0.1
+    },
+    {
+      "date": "2026-01",
+      "cpiAnnual": 3.6,
+      "cpiAteAnnual": 3.4,
+      "cpiMonthly": 0.6,
+      "cpiAteMonthly": 0.3
+    },
+    {
+      "date": "2026-02",
+      "cpiAnnual": 2.7,
+      "cpiAteAnnual": 3.0,
+      "cpiMonthly": 0.6,
+      "cpiAteMonthly": 0.7
+    },
+    {
+      "date": "2026-03",
+      "cpiAnnual": 3.6,
+      "cpiAteAnnual": 3.0,
+      "cpiMonthly": 0.2,
+      "cpiAteMonthly": 0.1
+    },
+    {
+      "date": "2026-04",
+      "cpiAnnual": 3.4,
+      "cpiAteAnnual": 3.2,
+      "cpiMonthly": 0.4,
+      "cpiAteMonthly": 0.7
+    },
+    {
+      "date": "2026-05",
+      "cpiAnnual": 3.1,
+      "cpiAteAnnual": 3.4,
+      "cpiMonthly": 0.2,
+      "cpiAteMonthly": 0.4
+    },
+    {
+      "date": "2026-06",
+      "cpiAnnual": 2.7,
+      "cpiAteAnnual": 2.7,
+      "cpiMonthly": -0.2,
+      "cpiAteMonthly": -0.1
+    },
+    {
+      "date": "2026-07",
+      "cpiAnnual": 3.0,
+      "cpiAteAnnual": 2.7,
+      "cpiMonthly": 1.0,
+      "cpiAteMonthly": 0.8
+    }
+  ]
+}

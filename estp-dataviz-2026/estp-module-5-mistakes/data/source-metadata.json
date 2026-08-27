@@ -1,0 +1,30 @@
+{
+  "extractionChecked": "2026-08-27",
+  "sources": [
+    {
+      "table": "08518",
+      "url": "https://www.ssb.no/en/statbank/table/08518",
+      "title": "Unemployed persons, by age and sex",
+      "period": "1972Q1–2026Q2",
+      "updated": "2026-08-13 08:00",
+      "variables": "Both sexes; age 15–74 and selected age groups; unemployed persons (1,000) and unemployed as per cent of labour force",
+      "units": ["1 000 persons", "per cent"],
+      "transformations": "No statistical transformation in the local recent extract. Display formatting only. Long-context series is requested from the SSB PxWebApi v2 when available."
+    },
+    {
+      "table": "13760",
+      "url": "https://www.ssb.no/en/statbank/table/13760",
+      "title": "Labour force, employment, unemployment and man-weeks worked, break and seasonally adjusted figures",
+      "period": "monthly from 2006; current release through July 2026",
+      "variables": "Both sexes, age 15–74; unemployment count and unemployment rate; trend, seasonally adjusted, 3-month moving average and not seasonally adjusted",
+      "units": ["1 000 persons", "per cent"],
+      "transformations": "The table itself contains break-adjusted series. The page does not calculate seasonal adjustment."
+    }
+  ],
+  "breaks": [
+    "2006Q1: lower age limit changed from 16 to 15 years; SSB reports unemployment down by about 1,000 as a consequence of the production-system change.",
+    "2018: new estimation method introduced and StatBank series revised back to 2006.",
+    "2021Q1: major LFS redesign. SSB estimates a break of about 5,400 unemployed persons (not statistically significant) and 0.1 percentage points in the unemployment rate."
+  ],
+  "uncertainty": "The LFS is sample-based. No numeric confidence interval is fabricated in this teaching page. The uncertainty-band illustration is explicitly conceptual."
+}

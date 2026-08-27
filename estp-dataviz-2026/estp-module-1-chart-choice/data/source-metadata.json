@@ -1,0 +1,22 @@
+{
+  "table": "06913",
+  "title": "Population 1 January and population changes during the calendar year (M) 1951 - 2026",
+  "source": "Statistics Norway (SSB)",
+  "updated": "2026-04-15 08:00",
+  "metadataChecked": "2026-08-27",
+  "unit": "persons",
+  "referenceTime": {
+    "Population 1 January": "1 January",
+    "annualFlows": "calendar year / 31 December reference"
+  },
+  "statbankUrl": "https://www.ssb.no/en/statbank/table/06913",
+  "apiGuideUrl": "https://www.ssb.no/en/api/pxwebapiv2",
+  "apiUrl": "https://data.ssb.no/api/pxwebapi/v2/tables/06913/data?lang=en&valueCodes[Tid]=*&valueCodes[ContentsCode]=*&outputFormat=json-stat2",
+  "notes": [
+    "Population 1 January is a stock; births, deaths, immigration, emigration and population increase are annual flows.",
+    "SSB notes that population figures for 1951, 1956, 1961, 1962 and 1966-1970 do not match population figures in some other tables.",
+    "For the contribution view, deaths and emigration are plotted with a negative sign to place outflows on the opposite side of zero. The source values themselves are non-negative counts.",
+    "For the heatmap, colour and the small in-cell bar encode a within-series percentile. This is a visual transformation for pattern detection; exact counts remain available in the selected-cell readout.",
+    "Population increase may differ slightly from excess of births plus net migration because statistical adjustments can occur. Table 06913 does not expose the adjustment as a separate content variable."
+  ]
+}

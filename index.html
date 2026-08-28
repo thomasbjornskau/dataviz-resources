@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Begrepsmodell for statistikkproduksjon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaeae8;
+  --papir:#f4f3f0;
+  --blekk:#1e1e1c;
+  --dempet:#6a655d;
+  --svak:#95908a;
+  --hår:#d0cdc7;
+  --hår-sterk:#b8b3ab;
+  /* lag-farger */
+  --l-meta:#7a6b5c;
+  --l-mandat:#2f6b3f;
+  --l-objekt:#2f7580;
+  --l-beskrivelse:#3f5c8a;
+  --l-data:#1c3a5c;
+  --l-prosess:#a15c2b;
+  --l-produkt:#c94d3a;
+  --l-kvalitet:#b58824;
+  --l-metadata:#6d4a8a;
+  --l-roller:#b1416e;
+  --l-plattform:#46626e;
+  --l-fag:#7f6ba0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--blekk);
+  font-family:"Inter",system-ui,sans-serif;font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+
+.app{display:grid;grid-template-rows:auto 1fr;height:100vh;height:100dvh}
+
+header{
+  padding:16px 22px 14px;border-bottom:1px solid var(--hår);
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;background:var(--bg)}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:19px;margin:0;letter-spacing:-.01em}
+h1 .und{color:var(--dempet);font-weight:400;margin-left:10px;font-size:14px;font-family:"Inter",sans-serif;letter-spacing:0}
+.sok-boks{position:relative}
+#sok{font:inherit;font-size:13px;padding:7px 12px 7px 30px;border:1px solid var(--hår-sterk);
+  border-radius:2px;width:230px;background:var(--papir);color:var(--blekk)}
+#sok:focus{outline:none;border-color:var(--blekk)}
+#sok::placeholder{color:var(--svak)}
+.sok-boks::before{content:"⌕";position:absolute;left:9px;top:50%;transform:translateY(-52%);color:var(--svak);font-size:15px}
+
+main{display:grid;grid-template-columns:280px minmax(0,1fr) 340px;height:100%;min-height:0}
+
+/* SPALTE 1: begrepsliste */
+.liste{border-right:1px solid var(--hår);overflow-y:auto;background:var(--bg);padding:8px 0 60px}
+.lag-blokk{padding:12px 22px 4px}
+.lag-navn{font-family:"Fraunces",serif;font-weight:600;font-size:15px;margin:0 0 3px;display:flex;align-items:center;gap:9px;letter-spacing:-.005em}
+.lag-prikk{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+.lag-und{margin:0 0 6px;font-size:12px;color:var(--svak);font-style:italic}
+.lag-tall{margin-left:auto;font-size:11px;color:var(--svak);font-family:"Inter",sans-serif;font-weight:400}
+.term{font:inherit;font-size:13.5px;background:none;border:0;padding:2px 22px 2px 34px;
+  cursor:pointer;color:var(--blekk);display:block;width:100%;text-align:left;
+  line-height:1.4;position:relative}
+.term:hover{background:rgba(0,0,0,.04)}
+.term.utvidet{color:var(--dempet)}
+.term.valgt{color:#fff;font-weight:600}
+.term::before{content:"";position:absolute;left:22px;top:12px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.55}
+.term.valgt::before{opacity:1}
+
+/* SPALTE 2: scene */
+.scene{position:relative;background:var(--bg);overflow:hidden}
+canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+canvas.drar{cursor:grabbing}
+.overlegg{position:absolute;top:14px;left:14px;font-size:11px;color:var(--svak);
+  letter-spacing:.06em;text-transform:uppercase;pointer-events:none;font-weight:500}
+.tegnforklaring{position:absolute;bottom:14px;left:14px;background:rgba(234,234,232,.75);
+  backdrop-filter:blur(4px);border:1px solid var(--hår);padding:8px 11px;font-size:11px;
+  border-radius:2px;max-width:290px;color:var(--dempet);line-height:1.35}
+.tegnforklaring b{color:var(--blekk);font-weight:500}
+.kontroller{position:absolute;bottom:14px;right:14px;display:flex;gap:6px}
+.kontroller button{font:inherit;font-size:11px;padding:5px 9px;border:1px solid var(--hår-sterk);
+  background:var(--papir);color:var(--dempet);cursor:pointer;border-radius:2px;letter-spacing:.03em}
+.kontroller button:hover{color:var(--blekk);border-color:var(--blekk)}
+
+/* SPALTE 3: detalj */
+.detalj{border-left:1px solid var(--hår);overflow-y:auto;background:var(--bg);padding:22px 22px 60px}
+.detalj-tom{color:var(--svak);font-size:13px;font-style:italic;padding-top:24px}
+.d-lag{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:500;margin:0 0 6px;display:flex;align-items:center;gap:8px}
+.d-lag .lag-prikk{width:8px;height:8px}
+.d-term{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.15;margin:0 0 14px;letter-spacing:-.015em}
+.d-def{margin:0;font-size:14.5px;line-height:1.55;color:var(--blekk)}
+.d-meta{margin-top:18px;padding-top:14px;border-top:1px solid var(--hår);font-size:12px;color:var(--dempet)}
+.d-meta dt{font-weight:500;color:var(--blekk);text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;margin-top:11px}
+.d-meta dt:first-child{margin-top:0}
+.d-meta dd{margin:3px 0 0}
+.hopp{font:inherit;font-size:13px;background:none;border:0;padding:2px 0;color:var(--blekk);
+  cursor:pointer;display:block;text-align:left;border-bottom:1px solid transparent}
+.hopp:hover{border-bottom-color:currentColor}
+.hopp .pil{color:var(--svak);margin-right:5px}
+
+/* mobil */
+@media (max-width:960px){
+  main{grid-template-columns:1fr;grid-template-rows:1fr auto auto}
+  .scene{min-height:340px;height:44vh}
+  .liste{display:none}
+  .detalj{border-left:0;border-top:1px solid var(--hår);max-height:46vh}
+  header{grid-template-columns:1fr}
+  #sok{width:100%}
+}
+
+/* stemning-farger for lag i css-var-form */
+.l-meta{color:var(--l-meta)} .l-mandat{color:var(--l-mandat)} .l-objekt{color:var(--l-objekt)}
+.l-beskrivelse{color:var(--l-beskrivelse)} .l-data{color:var(--l-data)} .l-prosess{color:var(--l-prosess)}
+.l-produkt{color:var(--l-produkt)} .l-kvalitet{color:var(--l-kvalitet)} .l-metadata{color:var(--l-metadata)}
+.l-roller{color:var(--l-roller)} .l-plattform{color:var(--l-plattform)} .l-fag{color:var(--l-fag)}
+.term.l-meta.valgt{background:var(--l-meta)} .term.l-mandat.valgt{background:var(--l-mandat)}
+.term.l-objekt.valgt{background:var(--l-objekt)} .term.l-beskrivelse.valgt{background:var(--l-beskrivelse)}
+.term.l-data.valgt{background:var(--l-data)} .term.l-prosess.valgt{background:var(--l-prosess)}
+.term.l-produkt.valgt{background:var(--l-produkt)} .term.l-kvalitet.valgt{background:var(--l-kvalitet)}
+.term.l-metadata.valgt{background:var(--l-metadata)} .term.l-roller.valgt{background:var(--l-roller)}
+.term.l-plattform.valgt{background:var(--l-plattform)} .term.l-fag.valgt{background:var(--l-fag)}
+
+.lag-prikk.l-meta{background:var(--l-meta)} .lag-prikk.l-mandat{background:var(--l-mandat)}
+.lag-prikk.l-objekt{background:var(--l-objekt)} .lag-prikk.l-beskrivelse{background:var(--l-beskrivelse)}
+.lag-prikk.l-data{background:var(--l-data)} .lag-prikk.l-prosess{background:var(--l-prosess)}
+.lag-prikk.l-produkt{background:var(--l-produkt)} .lag-prikk.l-kvalitet{background:var(--l-kvalitet)}
+.lag-prikk.l-metadata{background:var(--l-metadata)} .lag-prikk.l-roller{background:var(--l-roller)}
+.lag-prikk.l-plattform{background:var(--l-plattform)} .lag-prikk.l-fag{background:var(--l-fag)}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>Begrepsmodell for statistikkproduksjon <span class="und">155 begreper i 12 lag</span></h1>
+  <div class="sok-boks"><input id="sok" type="search" placeholder="Søk"></div>
+</header>
+<main>
+  <aside class="liste" id="liste"></aside>
+  <div class="scene">
+    <canvas id="graf"></canvas>
+    <div class="overlegg">Dra for å rotere · rull for å zoome · klikk en node</div>
+    <div class="tegnforklaring" id="tegn"></div>
+    <div class="kontroller">
+      <button id="knapp-utv" aria-pressed="false">Vis utvidede</button>
+      <button id="knapp-nullstill">Nullstill</button>
+    </div>
+  </div>
+  <aside class="detalj" id="detalj"></aside>
+</main>
+</div>
+
+<script id="data" type="application/json">{"rows":[{"id":"begrep","t":"begrep","lag":"meta","gruppe":"Begrepets deler","k":1,"f":1,"d":"En avgrenset forestilling om noe i verden, uavhengig av hvilket ord vi bruker om den. Begrepet er tanken, termen er etiketten.","par":[],"hvor":""},{"id":"term","t":"term","lag":"meta","gruppe":"Begrepets deler","k":1,"f":1,"d":"Ordet vi bruker om et begrep. Samme begrep kan ha flere termer, og samme term kan dessverre dekke flere begreper.","par":[],"hvor":""},{"id":"definisjon","t":"definisjon","lag":"meta","gruppe":"Begrepets deler","k":1,"f":1,"d":"Setningen som avgrenser begrepet mot naboene sine. En god definisjon sier både hva noe er og hva det ikke er.","par":[],"hvor":""},{"id":"begrepsrelasjon","t":"begrepsrelasjon","lag":"meta","gruppe":"Struktur","k":0,"f":1,"d":"Måten begreper henger sammen på: over- og underordnet, del og helhet, eller løsere assosiasjon.","par":[],"hvor":""},{"id":"begrepsmodell","t":"begrepsmodell","lag":"meta","gruppe":"Struktur","k":0,"f":1,"d":"Et strukturert kart over begreper og relasjonene mellom dem. Kalles ontologi når den er laget for å leses av maskiner.","par":[],"hvor":""},{"id":"begrepskatalog","t":"begrepskatalog","lag":"meta","gruppe":"Struktur","k":0,"f":6,"d":"Felles, søkbar oversikt over definerte begreper, slik at samme ord betyr det samme på tvers av systemer.","par":[],"hvor":""},{"id":"offisiell-statistikk","t":"offisiell statistikk","lag":"mandat","gruppe":"Oppdraget","k":1,"f":1,"d":"Statistikk utpekt som offisiell i det nasjonale statistikkprogrammet, og som derfor må følge felles krav til metode, uavhengighet og formidling. Ikke all statistikk vi lager er offisiell.","par":[],"hvor":""},{"id":"statistikkloven","t":"statistikkloven","lag":"mandat","gruppe":"Oppdraget","k":1,"f":1,"d":"Loven som både gir rett til å hente inn opplysninger og plikt til å behandle dem fortrolig. Grunnlaget for oppgaveplikten og for uavhengigheten.","par":[],"hvor":""},{"id":"statistikkprogrammet","t":"statistikkprogrammet","lag":"mandat","gruppe":"Oppdraget","k":1,"f":1,"d":"Programmet som fastsetter hvilken statistikk som skal være offisiell i en gitt periode, og hvem som har ansvaret for den.","par":[],"hvor":""},{"id":"faglig-uavhengighet","t":"faglig uavhengighet","lag":"mandat","gruppe":"Oppdraget","k":1,"f":1,"d":"At byrået selv avgjør metode, innhold og publiseringstidspunkt, uten instruks fra departement eller andre brukere.","par":[],"hvor":""},{"id":"cop","t":"retningslinjer for europeisk statistikk","lag":"mandat","gruppe":"Oppdraget","k":0,"f":1,"d":"Det europeiske rammeverket med prinsipper for uavhengighet, metode, kvalitet og formidling, som norsk offisiell statistikk måles mot.","par":[],"hvor":""},{"id":"opplysningsplikt","t":"opplysningsplikt","lag":"mandat","gruppe":"Rett og plikt","k":1,"f":1,"d":"Plikten oppgavegivere har til å svare. Den hviler på loven, ikke på velvilje — og derfor må byrden forvaltes med omhu.","par":[],"hvor":""},{"id":"konfidensialitet","t":"statistisk konfidensialitet","lag":"mandat","gruppe":"Rett og plikt","k":1,"f":1,"d":"At opplysninger om en identifiserbar enhet aldri offentliggjøres, og aldri brukes til annet enn statistikk og forskning.","par":[],"hvor":""},{"id":"formaalsbegrensning","t":"formålsbegrensning","lag":"mandat","gruppe":"Rett og plikt","k":0,"f":1,"d":"At data samlet inn til statistikk bare kan brukes til statistikk og forskning, aldri til kontroll eller vedtak om enkeltpersoner.","par":[],"hvor":""},{"id":"byrde","t":"oppgavebyrde","lag":"mandat","gruppe":"Rett og plikt","k":0,"f":1,"d":"Den samlede belastningen oppgaveplikten legger på dem som må svare. Et hensyn som konkurrerer direkte med ønsket om flere variabler.","par":[],"hvor":""},{"id":"personopplysning","t":"personopplysning","lag":"mandat","gruppe":"Personvern","k":1,"f":1,"d":"Enhver opplysning som kan knyttes til en identifiserbar person, direkte eller indirekte. Kombinasjoner av harmløse felt kan til sammen identifisere.","par":[],"hvor":""},{"id":"behandlingsgrunnlag","t":"behandlingsgrunnlag","lag":"mandat","gruppe":"Personvern","k":0,"f":1,"d":"Hjemmelen som gjør det lovlig å behandle personopplysninger. For statistikkformål er det som regel loven, ikke samtykke.","par":[],"hvor":""},{"id":"enhet","t":"enhet","lag":"objekt","gruppe":"Enhet","k":1,"f":2,"d":"Det statistikken teller eller måler på. Alt annet i modellen henger til slutt på enheten.","par":[],"hvor":""},{"id":"enhetstype","t":"enhetstype","lag":"objekt","gruppe":"Enhet","k":1,"f":2,"d":"Hva slags ting enheten er: person, husholdning, foretak, virksomhet, eiendom, kjøretøy.","par":[],"hvor":""},{"id":"identifikator","t":"identifikator","lag":"objekt","gruppe":"Enhet","k":1,"f":2,"d":"Nøkkelen som gjør at samme enhet kan kjennes igjen over tid og på tvers av kilder. Fødselsnummer, organisasjonsnummer, matrikkelnummer.","par":[],"hvor":""},{"id":"foretak","t":"foretak","lag":"objekt","gruppe":"Enhet","k":0,"f":2,"d":"Den juridiske enheten, identifisert med organisasjonsnummer.","par":["virksomhet"],"hvor":""},{"id":"virksomhet","t":"virksomhet","lag":"objekt","gruppe":"Enhet","k":0,"f":2,"d":"Den lokalt avgrensede delen av et foretak — ett sted, én hovedaktivitet.","par":["foretak"],"hvor":""},{"id":"husholdning","t":"husholdning","lag":"objekt","gruppe":"Enhet","k":0,"f":2,"d":"Personer som deler bolig. Ikke det samme som familie, og ikke det samme som adresse.","par":[],"hvor":""},{"id":"enhetsrolle","t":"enhetsrolle","lag":"objekt","gruppe":"Enhetsroller","k":1,"f":2,"d":"Funksjonen en enhet har i en bestemt statistikk. Samme foretak kan ha ulik rolle i to produksjoner — derfor er rollen en egen ting fra typen.","par":[],"hvor":""},{"id":"observasjonsenhet","t":"observasjonsenhet","lag":"objekt","gruppe":"Enhetsroller","k":1,"f":2,"d":"Enheten opplysningene faktisk handler om.","par":["rapporteringsenhet"],"hvor":""},{"id":"rapporteringsenhet","t":"rapporteringsenhet","lag":"objekt","gruppe":"Enhetsroller","k":1,"f":2,"d":"Enheten som leverer opplysningene til oss. Ofte en annen enn den de handler om.","par":["observasjonsenhet"],"hvor":""},{"id":"analyseenhet","t":"analyseenhet","lag":"objekt","gruppe":"Enhetsroller","k":0,"f":2,"d":"Nivået tallene til slutt presenteres på. Kan være aggregert opp fra observasjonsenheten.","par":[],"hvor":""},{"id":"populasjon","t":"populasjon","lag":"objekt","gruppe":"Populasjon","k":1,"f":2,"d":"Mengden av alle enheter statistikken skal si noe om.","par":["utvalg"],"hvor":""},{"id":"maalpopulasjon","t":"målpopulasjon","lag":"objekt","gruppe":"Populasjon","k":1,"f":2,"d":"Populasjonen vi ønsker å beskrive. Den ideelle, ikke den oppnåelige.","par":["rammepopulasjon"],"hvor":""},{"id":"rammepopulasjon","t":"rammepopulasjon","lag":"objekt","gruppe":"Populasjon","k":1,"f":2,"d":"Populasjonen vi faktisk kan nå, gitt registeret eller listen vi har.","par":["maalpopulasjon"],"hvor":""},{"id":"utvalg","t":"utvalg","lag":"objekt","gruppe":"Populasjon","k":1,"f":2,"d":"Delmengden av rammepopulasjonen vi henter opplysninger fra, valgt slik at den kan representere resten.","par":["populasjon"],"hvor":""},{"id":"dekningsfeil","t":"dekningsfeil","lag":"objekt","gruppe":"Populasjon","k":1,"f":3,"d":"Avstanden mellom målpopulasjon og rammepopulasjon: enheter som mangler, er med feilaktig, eller er talt to ganger. Dette er enheter vi aldri hadde.","par":["frafall"],"hvor":""},{"id":"referansetidspunkt","t":"referansetidspunkt","lag":"objekt","gruppe":"Avgrensning i tid og rom","k":1,"f":2,"d":"Tidspunktet eller perioden opplysningene gjelder for.","par":[],"hvor":""},{"id":"statistikkaar","t":"statistikkår","lag":"objekt","gruppe":"Avgrensning i tid og rom","k":1,"f":2,"d":"Året statistikken beskriver. Ikke året den publiseres — en av de vanligste misforståelsene utad.","par":[],"hvor":""},{"id":"periode","t":"periode","lag":"objekt","gruppe":"Avgrensning i tid og rom","k":0,"f":2,"d":"Tidsrommet en måling gjelder for, i motsetning til et enkelt tidspunkt.","par":[],"hvor":""},{"id":"kommune","t":"kommune","lag":"objekt","gruppe":"Avgrensning i tid og rom","k":0,"f":2,"d":"Den administrative geografiske enheten mest statistikk publiseres på. Endres ved sammenslåing, og skaper da brudd.","par":[],"hvor":""},{"id":"grunnkrets","t":"grunnkrets","lag":"objekt","gruppe":"Avgrensning i tid og rom","k":0,"f":2,"d":"Den minste faste geografiske enheten vi publiserer på, og byggeklossen for større inndelinger.","par":[],"hvor":""},{"id":"variabel","t":"variabel","lag":"beskrivelse","gruppe":"Variabel","k":1,"f":2,"d":"En egenskap ved enheten som vi måler, med et definert sett mulige verdier.","par":["variabeldefinisjon"],"hvor":""},{"id":"variabeldefinisjon","t":"variabeldefinisjon","lag":"beskrivelse","gruppe":"Variabel","k":1,"f":2,"d":"Den forvaltede beskrivelsen av hva en variabel betyr, uavhengig av hvilket datasett eller hvilken tabell den brukes i.","par":["variabel"],"hvor":"Forvaltes i VarDef"},{"id":"verdi","t":"verdi","lag":"beskrivelse","gruppe":"Variabel","k":1,"f":2,"d":"Den konkrete observasjonen for én variabel på én enhet.","par":[],"hvor":""},{"id":"manglende-verdi","t":"manglende verdi","lag":"beskrivelse","gruppe":"Variabel","k":1,"f":4,"d":"At observasjonen ikke finnes. Skal vises som manglende, ikke fylles stille — brukeren har krav på å vite forskjellen på målt og beregnet.","par":[],"hvor":""},{"id":"maalenhet","t":"målenhet","lag":"beskrivelse","gruppe":"Variabel","k":0,"f":2,"d":"Enheten verdien uttrykkes i: kroner, personer, tonn, prosent, årsverk.","par":[],"hvor":""},{"id":"avledet-variabel","t":"avledet variabel","lag":"beskrivelse","gruppe":"Variabel","k":0,"f":4,"d":"Variabel beregnet ut fra andre variabler, ikke observert direkte. Arver usikkerheten fra alle den er bygget på.","par":[],"hvor":""},{"id":"klassifikasjon","t":"klassifikasjon","lag":"beskrivelse","gruppe":"Klassifikasjon","k":1,"f":2,"d":"Et fullstendig og gjensidig utelukkende sett kategorier som enheter eller verdier plasseres i.","par":["kodeliste"],"hvor":"Forvaltes i KLASS"},{"id":"kodeliste","t":"kodeliste","lag":"beskrivelse","gruppe":"Klassifikasjon","k":1,"f":2,"d":"Den konkrete listen av koder og tilhørende tekst i én bestemt versjon av en klassifikasjon.","par":["klassifikasjon"],"hvor":"Forvaltes i KLASS"},{"id":"klass-versjon","t":"versjon av klassifikasjon","lag":"beskrivelse","gruppe":"Klassifikasjon","k":0,"f":6,"d":"Datert utgave av en klassifikasjon. To versjoner kan ikke uten videre sammenlignes.","par":[],"hvor":""},{"id":"korrespondanse","t":"korrespondansetabell","lag":"beskrivelse","gruppe":"Klassifikasjon","k":0,"f":6,"d":"Kobling mellom to klassifikasjoner, eller mellom to versjoner av samme.","par":[],"hvor":""},{"id":"standard","t":"standard","lag":"beskrivelse","gruppe":"Klassifikasjon","k":0,"f":2,"d":"Klassifikasjon eller definisjon vedtatt for felles bruk på tvers, slik at tall kan sammenlignes.","par":[],"hvor":""},{"id":"aggregat","t":"aggregat","lag":"beskrivelse","gruppe":"Sammenstilte størrelser","k":1,"f":4,"d":"En sum, andel eller et gjennomsnitt beregnet over flere enheter.","par":[],"hvor":""},{"id":"indikator","t":"indikator","lag":"beskrivelse","gruppe":"Sammenstilte størrelser","k":1,"f":4,"d":"Et tall valgt fordi det skal si noe om en større tilstand vi ikke kan måle direkte. Valget er alltid en tolkning.","par":[],"hvor":""},{"id":"indeks","t":"indeks","lag":"beskrivelse","gruppe":"Sammenstilte størrelser","k":1,"f":4,"d":"Serie der nivået er satt til 100 i et valgt basisår, slik at endring blir lesbar uten at nivået forstyrrer.","par":[],"hvor":""},{"id":"nokkeltall","t":"nøkkeltall","lag":"beskrivelse","gruppe":"Sammenstilte størrelser","k":0,"f":5,"d":"Et lite utvalg tall valgt for å gi rask oversikt. Utvalget er en redaksjonell beslutning, ikke en statistisk.","par":[],"hvor":""},{"id":"datakilde","t":"datakilde","lag":"data","gruppe":"Kilder","k":1,"f":3,"d":"Stedet opplysningene kommer fra, med de egenskapene og skjevhetene det stedet har.","par":[],"hvor":""},{"id":"administrative-data","t":"administrative data","lag":"data","gruppe":"Kilder","k":1,"f":3,"d":"Data samlet inn av andre til forvaltningsformål, gjenbrukt til statistikk. Billige å hente, men definert av noen andres behov.","par":[],"hvor":""},{"id":"sporreundersokelse","t":"spørreundersøkelse","lag":"data","gruppe":"Kilder","k":1,"f":3,"d":"Datakilde der vi spør enhetene selv. Gir presis dekning av det vi vil vite, men koster byrde og gir frafall.","par":[],"hvor":""},{"id":"register","t":"register","lag":"data","gruppe":"Kilder","k":0,"f":3,"d":"Løpende oppdatert oversikt over alle enheter av en bestemt type. Grunnlaget for rammepopulasjoner.","par":[],"hvor":""},{"id":"kobling","t":"kobling","lag":"data","gruppe":"Kilder","k":0,"f":4,"d":"Å sette sammen opplysninger om samme enhet fra flere kilder ved hjelp av en identifikator.","par":[],"hvor":""},{"id":"mikrodata","t":"mikrodata","lag":"data","gruppe":"Granularitet","k":1,"f":3,"d":"Data på enhetsnivå — én rad per enhet.","par":["makrodata"],"hvor":""},{"id":"makrodata","t":"makrodata","lag":"data","gruppe":"Granularitet","k":1,"f":4,"d":"Aggregerte data — én rad per gruppe, område eller periode.","par":["mikrodata"],"hvor":""},{"id":"syntetiske-data","t":"syntetiske data","lag":"data","gruppe":"Granularitet","k":0,"f":6,"d":"Kunstige data med samme struktur som ekte data, laget for test, utvikling og opplæring.","par":[],"hvor":""},{"id":"raadata","t":"rådata","lag":"data","gruppe":"Datatilstander","k":1,"f":3,"d":"Dagligtale for data som ikke er bearbeidet. Upresist, og verdt å slutte med: si kildedata når du mener data slik de kom fra kilden.","par":["kildedata"],"hvor":""},{"id":"kildedata","t":"kildedata","lag":"data","gruppe":"Datatilstander","k":1,"f":3,"d":"Data slik de kom fra kilden, uendret. Beholdes urørt slik at alt senere kan spores tilbake.","par":["raadata"],"hvor":"Datatilstand i Dapla"},{"id":"inndata","t":"inndata","lag":"data","gruppe":"Datatilstander","k":1,"f":3,"d":"Kildedata gjort maskinlesbare og strukturelt standardiserte, men ennå ikke kvalitetsvurdert.","par":["klargjorte-data"],"hvor":"Datatilstand i Dapla"},{"id":"klargjorte-data","t":"klargjorte data","lag":"data","gruppe":"Datatilstander","k":1,"f":4,"d":"Data som er editert, kodet og kvalitetssikret, og som er klare til beregning.","par":["inndata"],"hvor":"Datatilstand i Dapla"},{"id":"statistikkdata","t":"statistikkdata","lag":"data","gruppe":"Datatilstander","k":1,"f":4,"d":"Ferdig beregnede tall, før de er tilrettelagt for et bestemt publiseringsformat.","par":[],"hvor":"Datatilstand i Dapla"},{"id":"utdata","t":"utdata","lag":"data","gruppe":"Datatilstander","k":0,"f":5,"d":"Data tilrettelagt for publisering eller videre bruk utenfor produksjonsløypa.","par":[],"hvor":"Datatilstand i Dapla"},{"id":"datasett","t":"datasett","lag":"data","gruppe":"Struktur og livsløp","k":1,"f":6,"d":"En avgrenset samling data med felles struktur, avgrensning og versjon.","par":[],"hvor":""},{"id":"tidsserie","t":"tidsserie","lag":"data","gruppe":"Struktur og livsløp","k":1,"f":6,"d":"Samme måling gjentatt over tid, med den forutsetningen at målingen faktisk er den samme.","par":[],"hvor":""},{"id":"arkivering","t":"arkivering","lag":"data","gruppe":"Struktur og livsløp","k":0,"f":6,"d":"Å ta vare på data og dokumentasjon slik at et publisert tall kan gjenskapes lenge etter at produksjonen er lagt ned.","par":[],"hvor":""},{"id":"behov","t":"behov","lag":"prosess","gruppe":"Faser","k":1,"f":2,"d":"Å avklare hva statistikken skal svare på, og for hvem. Fasen som oftest hoppes over.","par":[],"hvor":""},{"id":"utforming","t":"utforming","lag":"prosess","gruppe":"Faser","k":1,"f":2,"d":"Å bestemme populasjon, variabler, kilder, klassifikasjoner og metode.","par":[],"hvor":""},{"id":"bygging","t":"bygging","lag":"prosess","gruppe":"Faser","k":1,"f":2,"d":"Å lage og teste selve produksjonsløypa, inkludert kode, kontroller og dokumentasjon.","par":[],"hvor":""},{"id":"innsamling","t":"innsamling","lag":"prosess","gruppe":"Faser","k":1,"f":3,"d":"Å hente inn data fra registre, kilder eller oppgavegivere.","par":[],"hvor":""},{"id":"bearbeiding","t":"bearbeiding","lag":"prosess","gruppe":"Faser","k":1,"f":4,"d":"Å gjøre innsamlede data om til klargjorte data: editering, koding, imputering, vekting.","par":[],"hvor":""},{"id":"analyse","t":"analyse","lag":"prosess","gruppe":"Faser","k":1,"f":4,"d":"Å tolke tallene, vurdere rimelighet, forklare avvik og bestemme hva som kan publiseres.","par":[],"hvor":""},{"id":"formidling","t":"formidling","lag":"prosess","gruppe":"Faser","k":1,"f":5,"d":"Å publisere tallene og gjøre dem forståelige for dem som skal bruke dem.","par":[],"hvor":""},{"id":"evaluering","t":"evaluering","lag":"prosess","gruppe":"Faser","k":1,"f":6,"d":"Å vurdere hva som gikk galt og hva som bør endres neste runde. Lukker sløyfa tilbake til behov.","par":[],"hvor":""},{"id":"editering","t":"editering","lag":"prosess","gruppe":"Bearbeidingssteg","k":1,"f":4,"d":"Å finne og rette feil og urimeligheter i innsamlede data, maskinelt eller manuelt.","par":[],"hvor":""},{"id":"imputering","t":"imputering","lag":"prosess","gruppe":"Bearbeidingssteg","k":1,"f":4,"d":"Å beregne en verdi der observasjonen mangler. Skal alltid merkes, slik at brukeren vet hva som er målt og hva som er utfylt.","par":[],"hvor":""},{"id":"koding","t":"koding","lag":"prosess","gruppe":"Bearbeidingssteg","k":0,"f":4,"d":"Å plassere en observasjon i riktig kategori i en klassifikasjon.","par":[],"hvor":""},{"id":"vekting","t":"vekting","lag":"prosess","gruppe":"Bearbeidingssteg","k":0,"f":4,"d":"Å la hver utvalgsenhet representere et bestemt antall enheter i populasjonen.","par":[],"hvor":""},{"id":"estimering","t":"estimering","lag":"prosess","gruppe":"Bearbeidingssteg","k":0,"f":4,"d":"Å beregne tall for hele populasjonen ut fra et utvalg, med tilhørende usikkerhet.","par":[],"hvor":""},{"id":"sesongjustering","t":"sesongjustering","lag":"prosess","gruppe":"Justering av serier","k":1,"f":4,"d":"Å fjerne det systematiske sesongmønsteret fra en serie, slik at underliggende utvikling blir synlig. Justerte tall er beregnede tall, ikke observerte.","par":[],"hvor":""},{"id":"kalenderjustering","t":"kalenderjustering","lag":"prosess","gruppe":"Justering av serier","k":0,"f":4,"d":"Å korrigere for at perioder har ulikt antall virkedager, helligdager og skuddår.","par":[],"hvor":""},{"id":"produksjonsloype","t":"produksjonsløype","lag":"prosess","gruppe":"Produksjonsapparatet","k":1,"f":6,"d":"Den samlede kjeden av steg, kode og kontroller som gjør kildedata om til publiserte tall. Det folk faktisk står i til daglig.","par":[],"hvor":""},{"id":"kjoreplan","t":"kjøreplan","lag":"prosess","gruppe":"Produksjonsapparatet","k":0,"f":6,"d":"Den fastlagte rekkefølgen og tidsplanen for stegene i en produksjonsløype.","par":[],"hvor":""},{"id":"gsbpm","t":"GSBPM","lag":"prosess","gruppe":"Produksjonsapparatet","k":0,"f":6,"d":"Den internasjonale referansemodellen for fasene i statistikkproduksjon. Felles språk på tvers av byråer.","par":[],"hvor":""},{"id":"gamso","t":"GAMSO","lag":"prosess","gruppe":"Produksjonsapparatet","k":0,"f":6,"d":"Referansemodell for aktivitetene rundt selve produksjonen: styring, ressurser, utvikling.","par":[],"hvor":""},{"id":"statistikk","t":"statistikk","lag":"produkt","gruppe":"Statistikkproduktet","k":1,"f":5,"d":"Bearbeidede tall som beskriver en gruppe. Aldri en enkeltenhet — det er selve skillet mot data.","par":["tabell"],"hvor":""},{"id":"om-statistikken","t":"om statistikken","lag":"produkt","gruppe":"Statistikkproduktet","k":1,"f":5,"d":"Dokumentasjonen som følger hvert produkt: definisjoner, kilder, metode, usikkerhet og brudd.","par":[],"hvor":""},{"id":"statistikkomraade","t":"statistikkområde","lag":"produkt","gruppe":"Statistikkproduktet","k":0,"f":5,"d":"Den tematiske inndelingen statistikken sorteres under, og som brukerne navigerer etter.","par":[],"hvor":""},{"id":"tabell","t":"tabell","lag":"produkt","gruppe":"Framstilling","k":1,"f":5,"d":"Én bestemt utlegging av statistikken, med valgte variabler, nivåer og perioder.","par":["statistikk"],"hvor":""},{"id":"figur","t":"figur","lag":"produkt","gruppe":"Framstilling","k":1,"f":5,"d":"Grafisk framstilling av statistikk. Et redaksjonelt valg om hva som skal være lett å se — og dermed hva som ikke blir det.","par":[],"hvor":""},{"id":"statistikkbanken","t":"statistikkbanken","lag":"produkt","gruppe":"Framstilling","k":1,"f":5,"d":"Databasen der tabellene ligger, og der brukeren selv setter sammen det uttrekket hun trenger.","par":[],"hvor":""},{"id":"artikkel","t":"artikkel","lag":"produkt","gruppe":"Framstilling","k":0,"f":5,"d":"Redaksjonell tekst som setter tallene i sammenheng og sier hva de betyr.","par":[],"hvor":""},{"id":"temaside","t":"temaside","lag":"produkt","gruppe":"Framstilling","k":0,"f":5,"d":"Samleside som binder sammen statistikk, artikler og figurer om ett område.","par":[],"hvor":""},{"id":"api","t":"API","lag":"produkt","gruppe":"Framstilling","k":0,"f":5,"d":"Maskinelt grensesnitt til tabellene, slik at andre kan hente tall uten å gå via nettsidene.","par":[],"hvor":""},{"id":"publisering","t":"publisering","lag":"produkt","gruppe":"Publisering","k":1,"f":5,"d":"Å gjøre statistikken tilgjengelig for alle samtidig, på et tidspunkt som var varslet på forhånd.","par":[],"hvor":""},{"id":"statistikkalender","t":"statistikkalender","lag":"produkt","gruppe":"Publisering","k":1,"f":5,"d":"Den forhåndskunngjorte oversikten over hva som publiseres når. Et løfte, ikke en plan.","par":[],"hvor":""},{"id":"likebehandling","t":"likebehandling ved publisering","lag":"produkt","gruppe":"Publisering","k":0,"f":5,"d":"At alle brukere får tilgang til nye tall på samme tidspunkt. Ingen får se dem først.","par":[],"hvor":""},{"id":"embargo","t":"embargo","lag":"produkt","gruppe":"Publisering","k":0,"f":5,"d":"Avtalt sperrefrist der utvalgte mottakere får tallene før publisering, men ikke kan omtale dem.","par":[],"hvor":""},{"id":"forelopige-tall","t":"foreløpige tall","lag":"produkt","gruppe":"Når tall endrer seg","k":1,"f":5,"d":"Tall publisert før grunnlaget er komplett, med den uttrykte forventningen at de vil endre seg.","par":["endelige-tall"],"hvor":""},{"id":"endelige-tall","t":"endelige tall","lag":"produkt","gruppe":"Når tall endrer seg","k":1,"f":5,"d":"Tall der grunnlaget er komplett og ordinær revisjon er avsluttet.","par":["forelopige-tall"],"hvor":""},{"id":"revisjon","t":"revisjon","lag":"produkt","gruppe":"Når tall endrer seg","k":1,"f":5,"d":"Planlagt oppdatering av tidligere publiserte tall fordi grunnlaget er blitt bedre. Tallene var ikke feil da de kom.","par":["rettelse","brudd"],"hvor":""},{"id":"rettelse","t":"rettelse","lag":"produkt","gruppe":"Når tall endrer seg","k":1,"f":5,"d":"Korrigering av noe som var galt ved publisering.","par":["revisjon"],"hvor":""},{"id":"brudd","t":"brudd i tidsserie","lag":"produkt","gruppe":"Når tall endrer seg","k":1,"f":5,"d":"Punkt der tall før og etter ikke lenger er sammenlignbare, fordi definisjon, kilde eller metode er endret.","par":["revisjon"],"hvor":""},{"id":"mikrodatatilgang","t":"mikrodatatilgang","lag":"produkt","gruppe":"Tilgang","k":0,"f":6,"d":"Ordning der forskere kan analysere data på enhetsnivå uten selv å se enkeltopplysninger.","par":[],"hvor":""},{"id":"kvalitet","t":"kvalitet","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"Hvor godt statistikken tjener brukerens formål. Består av flere dimensjoner som ofte trekker i hver sin retning.","par":["noyaktighet"],"hvor":""},{"id":"relevans","t":"relevans","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"I hvilken grad statistikken svarer på det brukerne faktisk lurer på.","par":[],"hvor":""},{"id":"noyaktighet","t":"nøyaktighet","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"Hvor nær tallet ligger den sanne verdien. Bare én av dimensjonene.","par":["kvalitet"],"hvor":""},{"id":"aktualitet","t":"aktualitet","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"Hvor kort tid det går fra perioden er over til tallene foreligger.","par":["punktlighet"],"hvor":""},{"id":"sammenlignbarhet","t":"sammenlignbarhet","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"Om tall kan holdes opp mot hverandre over tid, mellom grupper og mellom land.","par":[],"hvor":""},{"id":"koherens","t":"koherens","lag":"kvalitet","gruppe":"Dimensjoner","k":1,"f":6,"d":"Om tall fra ulike statistikker henger sammen der de logisk burde gjøre det.","par":[],"hvor":""},{"id":"punktlighet","t":"punktlighet","lag":"kvalitet","gruppe":"Dimensjoner","k":0,"f":6,"d":"Om publiseringen faktisk skjedde til det tidspunktet som var varslet.","par":["aktualitet"],"hvor":""},{"id":"tilgjengelighet","t":"tilgjengelighet","lag":"kvalitet","gruppe":"Dimensjoner","k":0,"f":6,"d":"Hvor lett det er å finne, forstå og bruke statistikken — også for dem som ikke er fagfolk.","par":[],"hvor":""},{"id":"usikkerhet","t":"usikkerhet","lag":"kvalitet","gruppe":"Feilkilder","k":1,"f":4,"d":"Det samlede spennet vi ikke kan utelukke rundt et publisert tall.","par":[],"hvor":""},{"id":"maalefeil","t":"målefeil","lag":"kvalitet","gruppe":"Feilkilder","k":1,"f":3,"d":"Avvik som oppstår fordi spørsmålet, kilden eller registreringen ikke traff det vi ville måle.","par":[],"hvor":""},{"id":"frafall","t":"frafall","lag":"kvalitet","gruppe":"Feilkilder","k":1,"f":3,"d":"At enheter i utvalget ikke svarer. Skjevt frafall er farligere enn mye frafall.","par":["dekningsfeil"],"hvor":""},{"id":"utvalgsusikkerhet","t":"utvalgsusikkerhet","lag":"kvalitet","gruppe":"Feilkilder","k":0,"f":4,"d":"Den delen av usikkerheten som følger av at vi har målt et utvalg og ikke alle.","par":[],"hvor":""},{"id":"bearbeidingsfeil","t":"bearbeidingsfeil","lag":"kvalitet","gruppe":"Feilkilder","k":0,"f":4,"d":"Feil som oppstår i vår egen behandling: koding, editering, beregning. Den eneste feilkilden vi har full kontroll over.","par":[],"hvor":""},{"id":"prikking","t":"prikking","lag":"kvalitet","gruppe":"Beskyttelse av enkeltenheter","k":1,"f":5,"d":"Å skjule celler som ellers ville avslørt opplysninger om en enkelt enhet.","par":[],"hvor":""},{"id":"avrunding","t":"avrunding","lag":"kvalitet","gruppe":"Beskyttelse av enkeltenheter","k":0,"f":5,"d":"Å publisere mindre presist enn beregnet, som beskyttelse eller som forenkling.","par":[],"hvor":""},{"id":"dominans","t":"dominanskriterium","lag":"kvalitet","gruppe":"Beskyttelse av enkeltenheter","k":0,"f":5,"d":"Regel som skjuler en celle når få enheter står for mesteparten av verdien i den.","par":[],"hvor":""},{"id":"metadata","t":"metadata","lag":"metadata","gruppe":"Typer","k":1,"f":6,"d":"Opplysninger om dataene: hva de betyr, hvor de kom fra, hvordan de er behandlet.","par":[],"hvor":""},{"id":"strukturelle-metadata","t":"strukturelle metadata","lag":"metadata","gruppe":"Typer","k":1,"f":6,"d":"Hva som ligger hvor: variabler, datatyper, nøkler, format, struktur.","par":[],"hvor":""},{"id":"referansemetadata","t":"referansemetadata","lag":"metadata","gruppe":"Typer","k":1,"f":6,"d":"Hva tallene betyr og under hvilke forutsetninger de gjelder. Det som havner i «Om statistikken».","par":[],"hvor":""},{"id":"prosessmetadata","t":"prosessmetadata","lag":"metadata","gruppe":"Typer","k":0,"f":6,"d":"Spor av hva som faktisk skjedde i produksjonen: når, av hvem, med hvilken kode og hvilke parametere.","par":[],"hvor":""},{"id":"kvalitetsmetadata","t":"kvalitetsmetadata","lag":"metadata","gruppe":"Typer","k":0,"f":6,"d":"Tallfestede opplysninger om usikkerhet, frafall, imputeringsandel og revisjonsstørrelse.","par":[],"hvor":""},{"id":"sporbarhet","t":"sporbarhet","lag":"metadata","gruppe":"Forvaltning","k":1,"f":6,"d":"Muligheten til å følge et publisert tall bakover gjennom hvert steg til kilden det kom fra.","par":[],"hvor":""},{"id":"versjonering","t":"versjonering","lag":"metadata","gruppe":"Forvaltning","k":1,"f":6,"d":"Å holde orden på hvilken utgave av data, kode eller definisjon som lå til grunn for et bestemt tall.","par":[],"hvor":""},{"id":"datakatalog","t":"datakatalog","lag":"metadata","gruppe":"Forvaltning","k":0,"f":6,"d":"Søkbar oversikt over hvilke datasett som finnes, hva de inneholder og hvem som forvalter dem.","par":[],"hvor":""},{"id":"gsim","t":"GSIM","lag":"metadata","gruppe":"Standarder","k":0,"f":6,"d":"Internasjonal referansemodell for informasjonsobjektene i statistikkproduksjon — variabel, populasjon, datasett og relasjonene mellom dem.","par":[],"hvor":""},{"id":"sdmx","t":"SDMX","lag":"metadata","gruppe":"Standarder","k":0,"f":6,"d":"Internasjonal standard for utveksling av statistikk og tilhørende metadata.","par":[],"hvor":""},{"id":"ddi","t":"DDI","lag":"metadata","gruppe":"Standarder","k":0,"f":6,"d":"Internasjonal standard for å dokumentere data på enhetsnivå, mye brukt for forskningsdata.","par":[],"hvor":""},{"id":"statistikkansvarlig","t":"statistikkansvarlig","lag":"roller","gruppe":"I produksjonen","k":1,"f":1,"d":"Den som svarer for innhold, metode og publisering i et statistikkprodukt.","par":[],"hvor":""},{"id":"dataeier","t":"dataeier","lag":"roller","gruppe":"I produksjonen","k":1,"f":1,"d":"Den som har ansvar for et datasett gjennom hele livsløpet, inkludert tilgang og sletting.","par":[],"hvor":""},{"id":"prosesseier","t":"prosesseier","lag":"roller","gruppe":"I produksjonen","k":0,"f":6,"d":"Den som har ansvar for at en produksjonsløype fungerer, på tvers av enkeltprodukter.","par":[],"hvor":""},{"id":"metodeansvarlig","t":"metodeansvarlig","lag":"roller","gruppe":"I produksjonen","k":0,"f":2,"d":"Den som svarer for at metodevalgene i en produksjon er faglig forsvarlige.","par":[],"hvor":""},{"id":"oppgavegiver","t":"oppgavegiver","lag":"roller","gruppe":"Rundt produksjonen","k":1,"f":3,"d":"Den som leverer opplysninger til oss. Personen eller foretaket som bærer byrden.","par":[],"hvor":""},{"id":"bruker","t":"bruker","lag":"roller","gruppe":"Rundt produksjonen","k":1,"f":1,"d":"Den som leser og bruker statistikken. Journalist, forsker, saksbehandler, kommuneplanlegger, nabo.","par":[],"hvor":""},{"id":"databehandler","t":"databehandler","lag":"roller","gruppe":"Rundt produksjonen","k":0,"f":1,"d":"Den som behandler personopplysninger på vegne av en annen, etter avtale og instruks.","par":[],"hvor":""},{"id":"personvernombud","t":"personvernombud","lag":"roller","gruppe":"Rundt produksjonen","k":0,"f":1,"d":"Den som følger med på at behandlingen av personopplysninger er lovlig og forholdsmessig.","par":[],"hvor":""},{"id":"dapla","t":"Dapla","lag":"plattform","gruppe":"Systemer","k":1,"f":6,"d":"Plattformen der data lagres og bearbeides gjennom produksjonen, med datatilstandene som styrende struktur.","par":[],"hvor":""},{"id":"klass","t":"KLASS","lag":"plattform","gruppe":"Systemer","k":1,"f":6,"d":"Systemet som forvalter klassifikasjoner og kodelister, med versjoner og korrespondanser.","par":[],"hvor":""},{"id":"vardef","t":"VarDef","lag":"plattform","gruppe":"Systemer","k":1,"f":6,"d":"Registeret over variabeldefinisjoner — der betydningen av en variabel forvaltes uavhengig av datasettene.","par":[],"hvor":""},{"id":"microdata","t":"microdata.no","lag":"plattform","gruppe":"Systemer","k":0,"f":6,"d":"Tjenesten der forskere kan kjøre analyser på mikrodata uten at data utleveres.","par":[],"hvor":""},{"id":"sysselsatt","t":"sysselsatt","lag":"fag","gruppe":"Arbeid","k":1,"f":0,"d":"Person som utførte inntektsgivende arbeid i referanseuka, eller var midlertidig fraværende fra slikt arbeid. Terskelen er lav — derfor er tallet høyere enn folk forventer.","par":[],"hvor":""},{"id":"arbeidsledig","t":"arbeidsledig","lag":"fag","gruppe":"Arbeid","k":1,"f":0,"d":"Person uten arbeid som har søkt arbeid og kan begynne raskt. Definisjonen følger en internasjonal standard, ikke registreringen hos Nav.","par":["registrert-ledig"],"hvor":""},{"id":"registrert-ledig","t":"registrert arbeidsledig","lag":"fag","gruppe":"Arbeid","k":0,"f":0,"d":"Person registrert som arbeidssøker hos Nav. Et administrativt begrep, ikke et statistisk — og derfor et annet tall.","par":["arbeidsledig"],"hvor":""},{"id":"lonn","t":"lønn","lag":"fag","gruppe":"Inntekt","k":1,"f":0,"d":"Betaling for utført arbeid, før skatt.","par":["inntekt"],"hvor":""},{"id":"inntekt","t":"inntekt","lag":"fag","gruppe":"Inntekt","k":1,"f":0,"d":"Alt en person eller husholdning mottar: lønn, næringsinntekt, kapitalinntekt og overføringer.","par":["lonn"],"hvor":""},{"id":"disponibel-inntekt","t":"disponibel inntekt","lag":"fag","gruppe":"Inntekt","k":0,"f":0,"d":"Inntekt etter skatt og negative overføringer — det husholdningen faktisk kan bruke.","par":[],"hvor":""},{"id":"kpi","t":"konsumprisindeksen","lag":"fag","gruppe":"Samlestørrelser","k":1,"f":0,"d":"Måler prisutviklingen på det husholdningene faktisk kjøper, med nivået satt til 100 i et basisår. Et lærebokeksempel både på indeks og på definisjonsmakt: sammensetningen av kurven avgjør tallet.","par":[],"hvor":""},{"id":"bnp","t":"bruttonasjonalprodukt","lag":"fag","gruppe":"Samlestørrelser","k":0,"f":0,"d":"Samlet verdiskaping i et land i en periode: verdien av alt som produseres, minus det som brukes opp underveis.","par":[],"hvor":""},{"id":"tettsted","t":"tettsted","lag":"fag","gruppe":"Geografi","k":1,"f":0,"d":"Hussamling med minst 200 innbyggere der avstanden mellom husene normalt ikke overstiger 50 meter. En ren statistisk konstruksjon — ingen kommune vedtar sine tettsteder.","par":[],"hvor":""}],"edges":[{"a":"foretak","b":"virksomhet","type":"par","w":2.5},{"a":"observasjonsenhet","b":"rapporteringsenhet","type":"par","w":2.5},{"a":"populasjon","b":"utvalg","type":"par","w":2.5},{"a":"maalpopulasjon","b":"rammepopulasjon","type":"par","w":2.5},{"a":"dekningsfeil","b":"frafall","type":"par","w":2.5},{"a":"variabel","b":"variabeldefinisjon","type":"par","w":2.5},{"a":"klassifikasjon","b":"kodeliste","type":"par","w":2.5},{"a":"mikrodata","b":"makrodata","type":"par","w":2.5},{"a":"raadata","b":"kildedata","type":"par","w":2.5},{"a":"inndata","b":"klargjorte-data","type":"par","w":2.5},{"a":"statistikk","b":"tabell","type":"par","w":2.5},{"a":"forelopige-tall","b":"endelige-tall","type":"par","w":2.5},{"a":"revisjon","b":"rettelse","type":"par","w":2.5},{"a":"revisjon","b":"brudd","type":"par","w":2.5},{"a":"kvalitet","b":"noyaktighet","type":"par","w":2.5},{"a":"aktualitet","b":"punktlighet","type":"par","w":2.5},{"a":"arbeidsledig","b":"registrert-ledig","type":"par","w":2.5},{"a":"lonn","b":"inntekt","type":"par","w":2.5},{"a":"offisiell-statistikk","b":"statistikkprogrammet","type":"ref","w":0.6},{"a":"offisiell-statistikk","b":"formidling","type":"ref","w":0.6},{"a":"offisiell-statistikk","b":"statistikk","type":"ref","w":0.6},{"a":"statistikkprogrammet","b":"statistikk","type":"ref","w":0.6},{"a":"cop","b":"offisiell-statistikk","type":"ref","w":0.6},{"a":"cop","b":"formidling","type":"ref","w":0.6},{"a":"cop","b":"kvalitet","type":"ref","w":0.6},{"a":"opplysningsplikt","b":"oppgavegiver","type":"ref","w":0.6},{"a":"konfidensialitet","b":"statistikk","type":"ref","w":0.6},{"a":"formaalsbegrensning","b":"statistikk","type":"ref","w":0.6},{"a":"behandlingsgrunnlag","b":"personopplysning","type":"ref","w":0.6},{"a":"enhet","b":"statistikk","type":"ref","w":0.6},{"a":"enhetstype","b":"husholdning","type":"ref","w":0.6},{"a":"enhetstype","b":"virksomhet","type":"ref","w":0.6},{"a":"enhetstype","b":"foretak","type":"ref","w":0.6},{"a":"enhetsrolle","b":"statistikk","type":"ref","w":0.6},{"a":"enhetsrolle","b":"foretak","type":"ref","w":0.6},{"a":"analyseenhet","b":"observasjonsenhet","type":"ref","w":0.6},{"a":"populasjon","b":"statistikk","type":"ref","w":0.6},{"a":"maalpopulasjon","b":"populasjon","type":"ref","w":0.6},{"a":"rammepopulasjon","b":"populasjon","type":"ref","w":0.6},{"a":"rammepopulasjon","b":"register","type":"ref","w":0.6},{"a":"utvalg","b":"rammepopulasjon","type":"ref","w":0.6},{"a":"dekningsfeil","b":"rammepopulasjon","type":"ref","w":0.6},{"a":"dekningsfeil","b":"maalpopulasjon","type":"ref","w":0.6},{"a":"statistikkaar","b":"statistikk","type":"ref","w":0.6},{"a":"kommune","b":"statistikk","type":"ref","w":0.6},{"a":"variabeldefinisjon","b":"datasett","type":"ref","w":0.6},{"a":"variabeldefinisjon","b":"tabell","type":"ref","w":0.6},{"a":"verdi","b":"variabel","type":"ref","w":0.6},{"a":"avledet-variabel","b":"usikkerhet","type":"ref","w":0.6},{"a":"avledet-variabel","b":"variabel","type":"ref","w":0.6},{"a":"klass-versjon","b":"klassifikasjon","type":"ref","w":0.6},{"a":"korrespondanse","b":"klassifikasjon","type":"ref","w":0.6},{"a":"standard","b":"klassifikasjon","type":"ref","w":0.6},{"a":"nokkeltall","b":"utvalg","type":"ref","w":0.6},{"a":"administrative-data","b":"statistikk","type":"ref","w":0.6},{"a":"sporreundersokelse","b":"datakilde","type":"ref","w":0.6},{"a":"sporreundersokelse","b":"frafall","type":"ref","w":0.6},{"a":"kobling","b":"identifikator","type":"ref","w":0.6},{"a":"inndata","b":"kildedata","type":"ref","w":0.6},{"a":"utdata","b":"publisering","type":"ref","w":0.6},{"a":"behov","b":"statistikk","type":"ref","w":0.6},{"a":"utforming","b":"klassifikasjon","type":"ref","w":0.6},{"a":"utforming","b":"populasjon","type":"ref","w":0.6},{"a":"innsamling","b":"oppgavegiver","type":"ref","w":0.6},{"a":"bearbeiding","b":"klargjorte-data","type":"ref","w":0.6},{"a":"bearbeiding","b":"imputering","type":"ref","w":0.6},{"a":"bearbeiding","b":"editering","type":"ref","w":0.6},{"a":"bearbeiding","b":"vekting","type":"ref","w":0.6},{"a":"koding","b":"klassifikasjon","type":"ref","w":0.6},{"a":"vekting","b":"populasjon","type":"ref","w":0.6},{"a":"estimering","b":"populasjon","type":"ref","w":0.6},{"a":"estimering","b":"usikkerhet","type":"ref","w":0.6},{"a":"estimering","b":"utvalg","type":"ref","w":0.6},{"a":"produksjonsloype","b":"kildedata","type":"ref","w":0.6},{"a":"kjoreplan","b":"produksjonsloype","type":"ref","w":0.6},{"a":"om-statistikken","b":"usikkerhet","type":"ref","w":0.6},{"a":"statistikkomraade","b":"statistikk","type":"ref","w":0.6},{"a":"figur","b":"statistikk","type":"ref","w":0.6},{"a":"statistikkbanken","b":"tabell","type":"ref","w":0.6},{"a":"temaside","b":"statistikk","type":"ref","w":0.6},{"a":"api","b":"tabell","type":"ref","w":0.6},{"a":"publisering","b":"statistikk","type":"ref","w":0.6},{"a":"embargo","b":"publisering","type":"ref","w":0.6},{"a":"endelige-tall","b":"revisjon","type":"ref","w":0.6},{"a":"rettelse","b":"publisering","type":"ref","w":0.6},{"a":"kvalitet","b":"statistikk","type":"ref","w":0.6},{"a":"relevans","b":"statistikk","type":"ref","w":0.6},{"a":"koherens","b":"statistikk","type":"ref","w":0.6},{"a":"punktlighet","b":"publisering","type":"ref","w":0.6},{"a":"tilgjengelighet","b":"statistikk","type":"ref","w":0.6},{"a":"frafall","b":"utvalg","type":"ref","w":0.6},{"a":"utvalgsusikkerhet","b":"usikkerhet","type":"ref","w":0.6},{"a":"utvalgsusikkerhet","b":"utvalg","type":"ref","w":0.6},{"a":"bearbeidingsfeil","b":"editering","type":"ref","w":0.6},{"a":"referansemetadata","b":"om-statistikken","type":"ref","w":0.6},{"a":"kvalitetsmetadata","b":"usikkerhet","type":"ref","w":0.6},{"a":"kvalitetsmetadata","b":"frafall","type":"ref","w":0.6},{"a":"datakatalog","b":"datasett","type":"ref","w":0.6},{"a":"gsim","b":"populasjon","type":"ref","w":0.6},{"a":"gsim","b":"variabel","type":"ref","w":0.6},{"a":"gsim","b":"datasett","type":"ref","w":0.6},{"a":"sdmx","b":"statistikk","type":"ref","w":0.6},{"a":"sdmx","b":"metadata","type":"ref","w":0.6},{"a":"statistikkansvarlig","b":"publisering","type":"ref","w":0.6},{"a":"dataeier","b":"datasett","type":"ref","w":0.6},{"a":"prosesseier","b":"produksjonsloype","type":"ref","w":0.6},{"a":"oppgavegiver","b":"foretak","type":"ref","w":0.6},{"a":"bruker","b":"statistikk","type":"ref","w":0.6},{"a":"databehandler","b":"personopplysning","type":"ref","w":0.6},{"a":"personvernombud","b":"personopplysning","type":"ref","w":0.6},{"a":"klass","b":"klassifikasjon","type":"ref","w":0.6},{"a":"vardef","b":"variabeldefinisjon","type":"ref","w":0.6},{"a":"vardef","b":"variabel","type":"ref","w":0.6},{"a":"vardef","b":"register","type":"ref","w":0.6},{"a":"vardef","b":"datasett","type":"ref","w":0.6},{"a":"microdata","b":"mikrodata","type":"ref","w":0.6},{"a":"inntekt","b":"husholdning","type":"ref","w":0.6},{"a":"disponibel-inntekt","b":"husholdning","type":"ref","w":0.6},{"a":"disponibel-inntekt","b":"inntekt","type":"ref","w":0.6},{"a":"kpi","b":"husholdning","type":"ref","w":0.6},{"a":"kpi","b":"indeks","type":"ref","w":0.6},{"a":"tettsted","b":"kommune","type":"ref","w":0.6},{"a":"begrep","b":"term","type":"gruppe","w":0.35},{"a":"term","b":"definisjon","type":"gruppe","w":0.35},{"a":"begrepsrelasjon","b":"begrepsmodell","type":"gruppe","w":0.35},{"a":"begrepsmodell","b":"begrepskatalog","type":"gruppe","w":0.35},{"a":"offisiell-statistikk","b":"statistikkloven","type":"gruppe","w":0.35},{"a":"statistikkloven","b":"statistikkprogrammet","type":"gruppe","w":0.35},{"a":"statistikkprogrammet","b":"faglig-uavhengighet","type":"gruppe","w":0.35},{"a":"faglig-uavhengighet","b":"cop","type":"gruppe","w":0.35},{"a":"opplysningsplikt","b":"konfidensialitet","type":"gruppe","w":0.35},{"a":"konfidensialitet","b":"formaalsbegrensning","type":"gruppe","w":0.35},{"a":"formaalsbegrensning","b":"byrde","type":"gruppe","w":0.35},{"a":"enhet","b":"enhetstype","type":"gruppe","w":0.35},{"a":"enhetstype","b":"identifikator","type":"gruppe","w":0.35},{"a":"identifikator","b":"foretak","type":"gruppe","w":0.35},{"a":"virksomhet","b":"husholdning","type":"gruppe","w":0.35},{"a":"enhetsrolle","b":"observasjonsenhet","type":"gruppe","w":0.35},{"a":"rapporteringsenhet","b":"analyseenhet","type":"gruppe","w":0.35},{"a":"utvalg","b":"dekningsfeil","type":"gruppe","w":0.35},{"a":"referansetidspunkt","b":"statistikkaar","type":"gruppe","w":0.35},{"a":"statistikkaar","b":"periode","type":"gruppe","w":0.35},{"a":"periode","b":"kommune","type":"gruppe","w":0.35},{"a":"kommune","b":"grunnkrets","type":"gruppe","w":0.35},{"a":"variabeldefinisjon","b":"verdi","type":"gruppe","w":0.35},{"a":"verdi","b":"manglende-verdi","type":"gruppe","w":0.35},{"a":"manglende-verdi","b":"maalenhet","type":"gruppe","w":0.35},{"a":"maalenhet","b":"avledet-variabel","type":"gruppe","w":0.35},{"a":"kodeliste","b":"klass-versjon","type":"gruppe","w":0.35},{"a":"klass-versjon","b":"korrespondanse","type":"gruppe","w":0.35},{"a":"korrespondanse","b":"standard","type":"gruppe","w":0.35},{"a":"aggregat","b":"indikator","type":"gruppe","w":0.35},{"a":"indikator","b":"indeks","type":"gruppe","w":0.35},{"a":"indeks","b":"nokkeltall","type":"gruppe","w":0.35},{"a":"datakilde","b":"administrative-data","type":"gruppe","w":0.35},{"a":"administrative-data","b":"sporreundersokelse","type":"gruppe","w":0.35},{"a":"sporreundersokelse","b":"register","type":"gruppe","w":0.35},{"a":"register","b":"kobling","type":"gruppe","w":0.35},{"a":"makrodata","b":"syntetiske-data","type":"gruppe","w":0.35},{"a":"klargjorte-data","b":"statistikkdata","type":"gruppe","w":0.35},{"a":"statistikkdata","b":"utdata","type":"gruppe","w":0.35},{"a":"datasett","b":"tidsserie","type":"gruppe","w":0.35},{"a":"tidsserie","b":"arkivering","type":"gruppe","w":0.35},{"a":"behov","b":"utforming","type":"gruppe","w":0.35},{"a":"utforming","b":"bygging","type":"gruppe","w":0.35},{"a":"bygging","b":"innsamling","type":"gruppe","w":0.35},{"a":"innsamling","b":"bearbeiding","type":"gruppe","w":0.35},{"a":"bearbeiding","b":"analyse","type":"gruppe","w":0.35},{"a":"analyse","b":"formidling","type":"gruppe","w":0.35},{"a":"formidling","b":"evaluering","type":"gruppe","w":0.35},{"a":"editering","b":"imputering","type":"gruppe","w":0.35},{"a":"imputering","b":"koding","type":"gruppe","w":0.35},{"a":"koding","b":"vekting","type":"gruppe","w":0.35},{"a":"vekting","b":"estimering","type":"gruppe","w":0.35},{"a":"sesongjustering","b":"kalenderjustering","type":"gruppe","w":0.35},{"a":"kjoreplan","b":"gsbpm","type":"gruppe","w":0.35},{"a":"gsbpm","b":"gamso","type":"gruppe","w":0.35},{"a":"statistikk","b":"om-statistikken","type":"gruppe","w":0.35},{"a":"om-statistikken","b":"statistikkomraade","type":"gruppe","w":0.35},{"a":"tabell","b":"figur","type":"gruppe","w":0.35},{"a":"figur","b":"statistikkbanken","type":"gruppe","w":0.35},{"a":"statistikkbanken","b":"artikkel","type":"gruppe","w":0.35},{"a":"artikkel","b":"temaside","type":"gruppe","w":0.35},{"a":"temaside","b":"api","type":"gruppe","w":0.35},{"a":"publisering","b":"statistikkalender","type":"gruppe","w":0.35},{"a":"statistikkalender","b":"likebehandling","type":"gruppe","w":0.35},{"a":"likebehandling","b":"embargo","type":"gruppe","w":0.35},{"a":"rettelse","b":"brudd","type":"gruppe","w":0.35},{"a":"kvalitet","b":"relevans","type":"gruppe","w":0.35},{"a":"relevans","b":"noyaktighet","type":"gruppe","w":0.35},{"a":"noyaktighet","b":"aktualitet","type":"gruppe","w":0.35},{"a":"aktualitet","b":"sammenlignbarhet","type":"gruppe","w":0.35},{"a":"sammenlignbarhet","b":"koherens","type":"gruppe","w":0.35},{"a":"koherens","b":"punktlighet","type":"gruppe","w":0.35},{"a":"punktlighet","b":"tilgjengelighet","type":"gruppe","w":0.35},{"a":"usikkerhet","b":"maalefeil","type":"gruppe","w":0.35},{"a":"maalefeil","b":"frafall","type":"gruppe","w":0.35},{"a":"frafall","b":"utvalgsusikkerhet","type":"gruppe","w":0.35},{"a":"utvalgsusikkerhet","b":"bearbeidingsfeil","type":"gruppe","w":0.35},{"a":"prikking","b":"avrunding","type":"gruppe","w":0.35},{"a":"avrunding","b":"dominans","type":"gruppe","w":0.35},{"a":"metadata","b":"strukturelle-metadata","type":"gruppe","w":0.35},{"a":"strukturelle-metadata","b":"referansemetadata","type":"gruppe","w":0.35},{"a":"referansemetadata","b":"prosessmetadata","type":"gruppe","w":0.35},{"a":"prosessmetadata","b":"kvalitetsmetadata","type":"gruppe","w":0.35},{"a":"sporbarhet","b":"versjonering","type":"gruppe","w":0.35},{"a":"versjonering","b":"datakatalog","type":"gruppe","w":0.35},{"a":"gsim","b":"sdmx","type":"gruppe","w":0.35},{"a":"sdmx","b":"ddi","type":"gruppe","w":0.35},{"a":"statistikkansvarlig","b":"dataeier","type":"gruppe","w":0.35},{"a":"dataeier","b":"prosesseier","type":"gruppe","w":0.35},{"a":"prosesseier","b":"metodeansvarlig","type":"gruppe","w":0.35},{"a":"oppgavegiver","b":"bruker","type":"gruppe","w":0.35},{"a":"bruker","b":"databehandler","type":"gruppe","w":0.35},{"a":"databehandler","b":"personvernombud","type":"gruppe","w":0.35},{"a":"dapla","b":"klass","type":"gruppe","w":0.35},{"a":"klass","b":"vardef","type":"gruppe","w":0.35},{"a":"vardef","b":"microdata","type":"gruppe","w":0.35},{"a":"sysselsatt","b":"arbeidsledig","type":"gruppe","w":0.35},{"a":"kpi","b":"bnp","type":"gruppe","w":0.35}],"lag":[{"id":"meta","navn":"Begrepslaget","und":"grammatikken for resten","fag":0},{"id":"mandat","navn":"Mandat","und":"hvorfor vi teller","fag":0},{"id":"objekt","navn":"Objekt","und":"hva statistikken handler om","fag":0},{"id":"beskrivelse","navn":"Beskrivelse","und":"hvordan vi måler","fag":0},{"id":"data","navn":"Data","und":"hva vi håndterer","fag":0},{"id":"prosess","navn":"Prosess","und":"hvordan det lages","fag":0},{"id":"produkt","navn":"Produkt","und":"hva vi leverer","fag":0},{"id":"kvalitet","navn":"Kvalitet","und":"tverrgående","fag":0},{"id":"metadata","navn":"Metadata","und":"tverrgående","fag":0},{"id":"roller","navn":"Roller","und":"tverrgående","fag":0},{"id":"plattform","navn":"Plattform","und":"tverrgående","fag":0},{"id":"fag","navn":"Fagbegreper","und":"eksempler på apparatet i bruk","fag":1}],"faser":[{"n":1,"navn":"Rammer og oppdrag","und":"hvorfor vi i det hele tatt teller"},{"n":2,"navn":"Utforming","und":"hva vi skal måle, og på hvem"},{"n":3,"navn":"Innsamling","und":"å skaffe data"},{"n":4,"navn":"Bearbeiding","und":"fra kildedata til tall"},{"n":5,"navn":"Publisering","und":"ut i verden"},{"n":6,"navn":"Forvaltning","und":"det som må bestå etterpå"}]}</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const ROWS = DATA.rows, EDGES = DATA.edges, LAG = DATA.lag, FASER = DATA.faser;
+const KART = {}; ROWS.forEach(r => KART[r.id] = r);
+const LAGKART = {}; LAG.forEach(l => LAGKART[l.id] = l);
+
+const state = {valgt:null, sok:"", utvidet:false, over:null};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- 3D graf ---------- */
+
+const canvas = $("graf");
+const ctx = canvas.getContext("2d");
+let DPR = Math.min(window.devicePixelRatio || 1, 2);
+let W = 0, H = 0;
+
+// noder i 3D
+const NODER = ROWS.map((r, i) => {
+  // start posisjoner i en kule
+  const phi = Math.acos(1 - 2 * (i + 0.5) / ROWS.length);
+  const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+  const R = 260;
+  return {
+    id: r.id, r: r, lag: r.lag, k: r.k,
+    x: R * Math.sin(phi) * Math.cos(theta),
+    y: R * Math.sin(phi) * Math.sin(theta),
+    z: R * Math.cos(phi),
+    vx:0, vy:0, vz:0,
+    px:0, py:0, pz:0, pr:0  // screen projection
+  };
+});
+const NIX = {}; NODER.forEach(n => NIX[n.id] = n);
+
+// kanter refererer noder etter indeks (rask)
+const KANTER = EDGES.map(e => ({a:NIX[e.a], b:NIX[e.b], type:e.type, w:e.w})).filter(e => e.a && e.b);
+
+// rotasjon
+let angY = 0.3, angX = -0.15;
+let mål_angY = angY, mål_angX = angX;
+let autoRot = true;
+let zoom = 1;
+
+// simulering
+let alpha = 1;
+
+function simuler(){
+  // frastøt (O(n^2), 155 noder → 12k par per steg — greit)
+  const N = NODER.length;
+  for(let i = 0; i < N; i++){
+    const a = NODER[i];
+    for(let j = i + 1; j < N; j++){
+      const b = NODER[j];
+      let dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z;
+      let d2 = dx*dx + dy*dy + dz*dz;
+      if(d2 < 0.01) d2 = 0.01;
+      const d = Math.sqrt(d2);
+      const f = 900 / d2;
+      dx /= d; dy /= d; dz /= d;
+      a.vx -= dx * f; a.vy -= dy * f; a.vz -= dz * f;
+      b.vx += dx * f; b.vy += dy * f; b.vz += dz * f;
+      // hard kollisjon
+      const min = 14;
+      if(d < min){
+        const push = (min - d) * 0.5;
+        a.vx -= dx * push; a.vy -= dy * push; a.vz -= dz * push;
+        b.vx += dx * push; b.vy += dy * push; b.vz += dz * push;
+      }
+    }
+  }
+  // fjærer langs kanter
+  KANTER.forEach(k => {
+    let dx = k.b.x - k.a.x, dy = k.b.y - k.a.y, dz = k.b.z - k.a.z;
+    const d = Math.sqrt(dx*dx + dy*dy + dz*dz) || 0.01;
+    const mål = k.type === "par" ? 44 : k.type === "ref" ? 78 : 55;
+    const f = (d - mål) * 0.015 * k.w;
+    dx /= d; dy /= d; dz /= d;
+    k.a.vx += dx * f; k.a.vy += dy * f; k.a.vz += dz * f;
+    k.b.vx -= dx * f; k.b.vy -= dy * f; k.b.vz -= dz * f;
+  });
+  // svak sentrering + demping + integrer
+  NODER.forEach(n => {
+    n.vx += -n.x * 0.002; n.vy += -n.y * 0.002; n.vz += -n.z * 0.002;
+    n.vx *= 0.78; n.vy *= 0.78; n.vz *= 0.78;
+    n.x += n.vx * alpha; n.y += n.vy * alpha; n.z += n.vz * alpha;
+  });
+  alpha = Math.max(0.05, alpha * 0.99);
+}
+
+// varm opp
+for(let i = 0; i < 220; i++) simuler();
+alpha = 0.25;
+
+/* ---------- projeksjon og tegning ---------- */
+
+function projiser(){
+  const cy = Math.cos(angY), sy = Math.sin(angY);
+  const cx = Math.cos(angX), sx = Math.sin(angX);
+  const persp = 700;
+  const cx0 = W / 2, cy0 = H / 2;
+  const zoomEff = zoom * Math.min(W, H) / 700;
+  for(const n of NODER){
+    // rotate Y
+    let x = n.x * cy + n.z * sy;
+    let z = -n.x * sy + n.z * cy;
+    // rotate X
+    let y = n.y * cx - z * sx;
+    z = n.y * sx + z * cx;
+    // perspektiv
+    const s = persp / (persp + z);
+    n.px = cx0 + x * s * zoomEff;
+    n.py = cy0 + y * s * zoomEff;
+    n.pz = z;
+    n.pr = (3.4 + (n.k ? 1.6 : 0)) * s * zoomEff;
+  }
+}
+
+function fargeAv(id){
+  const cs = getComputedStyle(document.documentElement);
+  return cs.getPropertyValue("--l-" + id).trim() || "#666";
+}
+const LAGFARGE = {}; LAG.forEach(l => LAGFARGE[l.id] = fargeAv(l.id));
+
+function tegn(){
+  if(!ctx || !W) return;
+  ctx.clearRect(0, 0, W, H);
+  projiser();
+
+  const fokus = state.valgt || state.over;
+  const naboer = new Set();
+  if(fokus){
+    naboer.add(fokus);
+    KANTER.forEach(k => {
+      if(k.a.id === fokus) naboer.add(k.b.id);
+      if(k.b.id === fokus) naboer.add(k.a.id);
+    });
+  }
+
+  // kanter — sortert etter dybde bakerst-først
+  const sortKanter = [...KANTER].sort((a,b) => (a.a.pz + a.b.pz) - (b.a.pz + b.b.pz));
+  sortKanter.forEach(k => {
+    if(!state.utvidet && (!k.a.k || !k.b.k) && k.type !== "par") return;
+    const zSnitt = (k.a.pz + k.b.pz) / 2;
+    let alpha = Math.max(0.06, 0.35 - zSnitt * 0.0009);
+    const relatert = fokus && (naboer.has(k.a.id) && naboer.has(k.b.id));
+    if(fokus && !relatert) alpha *= 0.12;
+    if(relatert) alpha = 0.9;
+    let farge = k.type === "par" ? "#8a4b21" : "#89857e";
+    if(relatert && k.type === "par") farge = "#c96a2e";
+    ctx.strokeStyle = farge;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = k.type === "par" ? 1.4 : k.type === "ref" ? 0.7 : 0.5;
+    ctx.beginPath();
+    ctx.moveTo(k.a.px, k.a.py);
+    ctx.lineTo(k.b.px, k.b.py);
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+
+  // noder — bakerst først
+  const sortNoder = [...NODER].sort((a,b) => b.pz - a.pz);
+  sortNoder.forEach(n => {
+    if(!state.utvidet && !n.k) return;
+    if(state.sok && !passer(n.r)) return;
+    const farge = LAGFARGE[n.lag];
+    const erValgt = n.id === state.valgt;
+    const erOver = n.id === state.over;
+    let alpha = Math.max(0.35, 1 - n.pz * 0.0018);
+    if(fokus && !naboer.has(n.id)) alpha *= 0.28;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = farge;
+    ctx.beginPath();
+    ctx.arc(n.px, n.py, n.pr, 0, Math.PI * 2);
+    ctx.fill();
+    if(erValgt || erOver){
+      ctx.strokeStyle = "#1e1e1c";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  });
+
+  // etiketter — bare valgt, over, og naboer
+  ctx.font = '500 12px "Inter",sans-serif';
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  NODER.forEach(n => {
+    if(!state.utvidet && !n.k) return;
+    const vis = n.id === state.valgt || n.id === state.over || (fokus && naboer.has(n.id));
+    if(!vis) return;
+    const tekst = n.r.t;
+    const x = n.px + n.pr + 6, y = n.py;
+    // hvit ramme rundt
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "rgba(234,234,232,.9)";
+    ctx.strokeText(tekst, x, y);
+    ctx.fillStyle = n.id === state.valgt ? LAGFARGE[n.lag] : "#1e1e1c";
+    ctx.fillText(tekst, x, y);
+  });
+}
+
+/* ---------- animasjonsløkke ---------- */
+
+let løper = false;
+function løkke(){
+  løper = true;
+  // rotasjon-glidning
+  angY += (mål_angY - angY) * 0.12;
+  angX += (mål_angX - angX) * 0.12;
+  if(autoRot && !state.over && !state.valgt) mål_angY += 0.0018;
+  simuler();
+  tegn();
+  const aktiv = alpha > 0.06 || Math.abs(mål_angY - angY) > 0.001 || Math.abs(mål_angX - angX) > 0.001 || (autoRot && !state.over && !state.valgt);
+  if(aktiv) requestAnimationFrame(løkke);
+  else løper = false;
+}
+function vekk(){ if(!løper) requestAnimationFrame(løkke); }
+
+/* ---------- interaksjon ---------- */
+
+let drar = false, dragX = 0, dragY = 0, harFlyttet = false;
+
+canvas.addEventListener("pointerdown", e => {
+  drar = true; harFlyttet = false;
+  dragX = e.clientX; dragY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+  canvas.classList.add("drar");
+  autoRot = false;
+});
+canvas.addEventListener("pointermove", e => {
+  if(drar){
+    const dx = e.clientX - dragX, dy = e.clientY - dragY;
+    if(Math.abs(dx) + Math.abs(dy) > 3) harFlyttet = true;
+    mål_angY += dx * 0.007;
+    mål_angX = Math.max(-1.2, Math.min(1.2, mål_angX + dy * 0.007));
+    dragX = e.clientX; dragY = e.clientY;
+    alpha = Math.max(alpha, 0.1);
+    vekk();
+  } else {
+    const n = plukk(e);
+    const nyOver = n ? n.id : null;
+    if(nyOver !== state.over){ state.over = nyOver; canvas.style.cursor = n ? "pointer" : "grab"; vekk(); }
+  }
+});
+canvas.addEventListener("pointerup", e => {
+  canvas.classList.remove("drar");
+  if(drar && !harFlyttet){
+    const n = plukk(e);
+    velg(n ? n.id : null);
+  }
+  drar = false;
+});
+canvas.addEventListener("pointerleave", () => { drar = false; canvas.classList.remove("drar"); });
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom = Math.max(0.4, Math.min(3, zoom * (e.deltaY < 0 ? 1.1 : 0.9)));
+  alpha = Math.max(alpha, 0.08);
+  vekk();
+}, {passive:false});
+
+function plukk(e){
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  let treff = null, avstand = 12;
+  for(const n of NODER){
+    if(!state.utvidet && !n.k) continue;
+    const dx = n.px - x, dy = n.py - y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if(d < Math.max(n.pr + 4, avstand) && (!treff || n.pz < treff.pz)){ treff = n; avstand = d; }
+  }
+  return treff;
+}
+
+/* ---------- liste og detalj ---------- */
+
+function passer(r){
+  const q = state.sok.trim().toLowerCase();
+  if(!q) return true;
+  return (r.t + " " + r.d).toLowerCase().includes(q);
+}
+
+function tegnListe(){
+  let h = "";
+  LAG.forEach(l => {
+    const rader = ROWS.filter(r => r.lag === l.id && (state.utvidet || r.k) && passer(r));
+    if(!rader.length) return;
+    h += '<div class="lag-blokk" id="lag-' + l.id + '">';
+    h += '<h2 class="lag-navn"><span class="lag-prikk l-' + l.id + '"></span>' + esc(l.navn);
+    h += '<span class="lag-tall">' + rader.length + '</span></h2>';
+    h += '<p class="lag-und">' + esc(l.und) + '</p>';
+    rader.forEach(r => {
+      h += '<button class="term l-' + l.id + (r.k ? "" : " utvidet") + (r.id === state.valgt ? " valgt" : "") +
+        '" data-id="' + r.id + '">' + esc(r.t) + '</button>';
+    });
+    h += '</div>';
+  });
+  $("liste").innerHTML = h || '<div class="lag-blokk"><p class="lag-und" style="font-style:normal">Ingen begreper passer søket.</p></div>';
+}
+
+function tegnDetalj(){
+  const d = $("detalj");
+  if(!state.valgt){
+    d.innerHTML = '<p class="detalj-tom">Velg et begrep — fra listen, eller ved å klikke en node i grafen.</p>';
+    return;
+  }
+  const r = KART[state.valgt];
+  const l = LAGKART[r.lag];
+  let h = '<p class="d-lag"><span class="lag-prikk l-' + l.id + '"></span><span class="l-' + l.id + '">' + esc(l.navn) + '</span>';
+  h += ' <span style="color:var(--svak);font-weight:400"> &rsaquo; ' + esc(r.gruppe) + (r.k ? "" : " &middot; utvidet") + '</span></p>';
+  h += '<h2 class="d-term">' + esc(r.t) + '</h2>';
+  h += '<p class="d-def">' + esc(r.d) + '</p>';
+  const rel = EDGES.filter(e => (e.a === r.id || e.b === r.id));
+  const par = rel.filter(e => e.type === "par").map(e => e.a === r.id ? e.b : e.a);
+  const ref = rel.filter(e => e.type === "ref");
+  if(par.length || r.f || r.hvor || ref.length){
+    h += '<dl class="d-meta">';
+    if(par.length){
+      h += '<dt>Ikke det samme som</dt><dd>';
+      par.forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '"><span class="pil">→</span>' + esc(KART[p].t) + '</button>'; });
+      h += '</dd>';
+    }
+    if(r.f){ const fa = FASER.find(x => x.n === r.f);
+      h += '<dt>Møter deg i</dt><dd>' + fa.n + '. ' + esc(fa.navn) + '</dd>'; }
+    if(r.hvor) h += '<dt>Forvaltes</dt><dd>' + esc(r.hvor) + '</dd>';
+    if(ref.length){
+      const inn = ref.filter(e => e.b === r.id).map(e => e.a);
+      const ut = ref.filter(e => e.a === r.id).map(e => e.b);
+      if(ut.length){
+        h += '<dt>Låner fra</dt><dd>';
+        ut.slice(0,8).forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '"><span class="pil">→</span>' + esc(KART[p].t) + '</button>'; });
+        h += '</dd>';
+      }
+      if(inn.length){
+        h += '<dt>Nevnes i</dt><dd>';
+        inn.slice(0,8).forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '"><span class="pil">←</span>' + esc(KART[p].t) + '</button>'; });
+        h += '</dd>';
+      }
+    }
+    h += '</dl>';
+  }
+  d.innerHTML = h;
+}
+
+function tegnTegn(){
+  const antKjerne = ROWS.filter(r => r.k).length;
+  $("tegn").innerHTML =
+    '<b>' + (state.utvidet ? ROWS.length : antKjerne) + ' begreper</b> · farge = lag<br>' +
+    '<span style="color:#8a4b21">━</span> forvirringspar &nbsp; ' +
+    '<span style="color:#89857e">━</span> tekstreferanse';
+}
+
+/* ---------- valg og navigasjon ---------- */
+
+function velg(id){
+  if(id && !state.utvidet && !KART[id].k){
+    state.utvidet = true; $("knapp-utv").setAttribute("aria-pressed", "true"); $("knapp-utv").textContent = "Skjul utvidede";
+  }
+  state.valgt = id;
+  tegnListe(); tegnDetalj(); vekk();
+  if(id){
+    // rull til rad i listen
+    const el = $("liste").querySelector('.term[data-id="' + id + '"]');
+    if(el && el.scrollIntoView) el.scrollIntoView({block:"nearest", behavior:"smooth"});
+    // sett hash for deling
+    history.replaceState(null, "", "#" + id);
+  } else {
+    history.replaceState(null, "", "#");
+  }
+}
+
+$("liste").addEventListener("click", e => {
+  const b = e.target.closest(".term");
+  if(b) velg(b.dataset.id);
+});
+$("detalj").addEventListener("click", e => {
+  const h = e.target.closest(".hopp");
+  if(h) velg(h.dataset.id);
+});
+$("sok").addEventListener("input", e => {
+  state.sok = e.target.value;
+  tegnListe(); vekk();
+});
+$("knapp-utv").addEventListener("click", () => {
+  state.utvidet = !state.utvidet;
+  $("knapp-utv").setAttribute("aria-pressed", state.utvidet);
+  $("knapp-utv").textContent = state.utvidet ? "Skjul utvidede" : "Vis utvidede";
+  tegnListe(); tegnTegn(); vekk();
+});
+$("knapp-nullstill").addEventListener("click", () => {
+  state.valgt = null; state.sok = ""; $("sok").value = "";
+  zoom = 1; mål_angY = 0.3; mål_angX = -0.15; autoRot = true;
+  tegnListe(); tegnDetalj(); vekk();
+});
+
+// åpning fra hash
+window.addEventListener("hashchange", () => {
+  const id = location.hash.slice(1);
+  if(KART[id] && id !== state.valgt) velg(id);
+});
+
+function resize(){
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width; H = rect.height;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  if(ctx && ctx.setTransform) ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  vekk();
+}
+window.addEventListener("resize", resize);
+
+tegnListe();
+tegnDetalj();
+tegnTegn();
+resize();
+if(location.hash){
+  const id = location.hash.slice(1);
+  if(KART[id]) velg(id);
+}
+vekk();
+</script>
+</body>
+</html>

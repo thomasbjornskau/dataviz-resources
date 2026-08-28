@@ -6,6 +6,7 @@
   <meta name="description" content="Module 5 of an ESTP course in Data Visualization: Common Mistakes and Pitfalls, using Statistics Norway Labour Force Survey data.">
   <title>Module 5 – Common Mistakes and Pitfalls in Data Visualization</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:,">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -23,362 +24,270 @@
   <main id="main">
     <section class="hero page-shell" aria-labelledby="hero-title">
       <div class="hero__copy">
-        <p class="section-kicker">A stress test of chart choice, context and storytelling</p>
+        <p class="section-kicker">Module 4 gave information structure. Module 5 stress-tests the choices.</p>
         <h1 id="hero-title">Correct data can still mislead</h1>
-        <p class="hero__lead">A chart does not need false numbers to create the wrong impression. Scale, selection, context and visual emphasis all shape what the reader sees.</p>
-        <div class="hero__chain" aria-label="Reasoning chain for critical chart reading">
-          <span>correct data</span><span aria-hidden="true">→</span><span>design choices</span><span aria-hidden="true">→</span><strong>interpretation</strong>
+        <p class="hero__lead">A chart does not need false numbers to create the wrong impression. Scale, context, clutter, emphasis and uncertainty all influence what the reader sees.</p>
+        <div class="hero__chain" aria-label="Diagnostic chain">
+          <span>correct numbers</span><span aria-hidden="true">→</span><span>visual framing</span><span aria-hidden="true">→</span><strong>interpretation</strong>
         </div>
       </div>
       <div class="hero__teaser hero-pitfall" aria-labelledby="hero-mini-title">
-        <p class="teaser-label">Teaching example · correct SSB values</p>
-        <strong id="hero-mini-title" class="mini-chart-title">Norwegian unemployment rate, 2025Q1–2026Q2</strong>
-        <svg id="hero-chart" class="mini-chart" viewBox="0 0 500 245" role="img" aria-label="A deliberately narrow-axis line chart of the Norwegian unemployment rate from first quarter 2025 to second quarter 2026."></svg>
-        <p class="teaser-question">Can you spot the problem?</p>
-        <a class="text-button" href="#axis-demo">Inspect the chart ↓</a>
+        <span class="course-example">Course example · correct SSB values</span>
+        <strong id="hero-mini-title" class="mini-chart-title">Norwegian unemployment rate · 2025Q1–2026Q2</strong>
+        <svg id="hero-chart" class="chart" viewBox="0 0 520 270" role="img" aria-label="Quarterly unemployment rate shown with a deliberately narrow vertical scale."></svg>
+        <p class="teaser-question">What impression does this design create?</p>
       </div>
     </section>
 
-    <div class="course-progression page-shell" aria-label="Progression from earlier modules to Module 5">
-      <span><strong>Module 1</strong> What relationship should the visualization reveal?</span>
-      <span><strong>Module 2</strong> Who needs to understand it, for what purpose and context?</span>
-      <span><strong>Module 3</strong> How do we guide the reader through the insight?</span>
-      <span><strong>Module 5</strong> What can go wrong with those choices?</span>
-    </div>
+    <section class="section page-shell course-progression" aria-labelledby="progression-title">
+      <div class="section-intro narrow">
+        <p class="eyebrow">Course progression</p>
+        <h2 id="progression-title">Module 5 is the stress test</h2>
+      </div>
+      <div class="progression-grid">
+        <span><b>1</b><strong>What relationship should the visualization reveal?</strong></span>
+        <span><b>2</b><strong>Who needs to understand it, for what purpose and with what context?</strong></span>
+        <span><b>3</b><strong>How do we guide the reader through the insight?</strong></span>
+        <span><b>4</b><strong>How do we give the information a clear visual structure?</strong></span>
+        <span class="current"><b>5</b><strong>What can go wrong with those choices?</strong></span>
+      </div>
+    </section>
 
-    <section id="axis-demo" class="main-demo demo-section" aria-labelledby="axis-title">
+    <section id="scale" class="demo-section" aria-labelledby="scale-title">
       <div class="page-shell">
         <div class="section-intro narrow">
           <p class="eyebrow">What is wrong with this chart?</p>
-          <h2 id="axis-title">The data is correct. The impression is not neutral.</h2>
-          <p>Start with a plausible chart of quarterly unemployment. The points come directly from Statistics Norway. Only the framing is deliberately problematic.</p>
+          <h2 id="scale-title">The values did not change. The visual impression did.</h2>
+          <p>A technically correct scale can still make variation look larger than the evidence warrants. The question is not whether the axis starts at zero. It is whether the framing supports a proportionate reading.</p>
         </div>
-
-        <div class="demo-shell pitfall-demo">
-          <div class="demo-heading">
+        <div class="pitfall-panel" id="scale-panel">
+          <div class="pitfall-panel__head">
             <div>
-              <p class="small-label">Teaching example · SSB table 08518</p>
-              <h3 id="axis-chart-title">Unemployment has moved sharply</h3>
+              <span class="course-example">Course example · SSB table 08518</span>
+              <h3 id="scale-chart-title">Unemployment rate appears to swing dramatically</h3>
+              <p>Both sexes · age 15–74 · quarterly · per cent of the labour force</p>
             </div>
-            <p id="axis-state-label" class="step-message">A narrow vertical scale makes ordinary variation occupy most of the plotting area.</p>
+            <p id="scale-state-message" class="state-message" aria-live="polite">Inspect the chart before revealing the design problem.</p>
           </div>
-
-          <figure class="chart-figure" aria-labelledby="axis-chart-title axis-chart-desc">
-            <figcaption><span>Unemployed persons, both sexes, age 15–74</span><span>Per cent of the labour force · quarterly</span></figcaption>
-            <svg id="axis-chart" class="chart" viewBox="0 0 900 430" role="img" aria-describedby="axis-chart-desc"></svg>
-            <p id="axis-chart-desc" class="sr-only">Quarterly unemployment rates from 2025 first quarter through 2026 second quarter. Controls reveal how a narrow scale exaggerates the visual magnitude of change.</p>
+          <figure class="chart-figure" aria-labelledby="scale-chart-title scale-desc">
+            <figcaption><span>Norway · 2025Q1–2026Q2</span><span>Same six observations in every state</span></figcaption>
+            <div class="pitfall-chart-wrap"><svg id="scale-chart" class="chart" viewBox="0 0 820 400" role="img" aria-describedby="scale-desc"></svg></div>
+            <p id="scale-desc" class="sr-only">Line chart of the Norwegian unemployment rate from first quarter 2025 to second quarter 2026. Controls reveal the narrow scale and then show a more proportionate scale.</p>
           </figure>
-
-          <div class="action-row" role="group" aria-label="Reveal and fix the chart">
-            <button id="reveal-axis" class="secondary-btn" type="button">Reveal the problem</button>
-            <button id="fix-axis" class="primary-btn" type="button" disabled>Fix the chart</button>
+          <div class="action-row" role="group" aria-label="Scale demonstration controls">
+            <button id="reveal-scale" class="primary-btn" type="button" aria-pressed="false">Reveal the problem</button>
+            <button id="fix-scale" class="secondary-btn" type="button" aria-pressed="false">Fix the chart</button>
+            <p class="action-note">The data never changes.</p>
           </div>
-
-          <div id="axis-explanation" class="teaching-grid" hidden>
-            <div class="teaching-panel"><p class="small-label">The problem</p><p>A narrow y-axis gives a small number of percentage points a large visual height.</p></div>
-            <div class="teaching-panel"><p class="small-label">Why it matters</p><p>The reader may interpret the movement as more consequential than the values justify.</p></div>
-            <div class="teaching-panel"><p class="small-label">The fix</p><p>Use a scale that preserves visible variation without making the magnitude look larger than it is.</p></div>
+          <div id="scale-reveal" class="problem-reveal" hidden>
+            <strong>The plotting range is only one percentage point wide.</strong>
+            <p>The 4.1–5.0% range therefore occupies almost the full height of the chart. In the fixed version the axis still does not start at zero; it simply gives the variation more visual context.</p>
           </div>
-          <p class="judgement-note"><strong>Not a rigid rule:</strong> line charts do not always need to start at zero. Zero is especially important when length carries magnitude, as in bars. For lines, choose a scale that fits the analytical task and makes the magnitude interpretable.</p>
         </div>
-
         <div class="principle-callout">
-          <p class="eyebrow">Takeaway 1</p>
+          <p class="eyebrow">Takeaway 1 · Scale</p>
           <h3>A chart can be technically correct and still be misleading.</h3>
-          <p>Scale choices, aggregation and visual emphasis can strongly affect interpretation even when every plotted value is correct.</p>
+          <p>The scale must support a proportionate interpretation. The numbers may be right while the visual impression is exaggerated.</p>
         </div>
       </div>
     </section>
 
-    <section class="section page-shell" aria-labelledby="context-title">
+    <section class="principle-break page-shell" aria-label="Central lesson">
+      <p><strong>Correct numbers are not enough.</strong> The visual framing must also support a correct interpretation.</p>
+    </section>
+
+    <section id="clutter" class="pitfall-section page-shell" aria-labelledby="clutter-title">
       <div class="section-intro narrow">
-        <p class="eyebrow">Context changes the conclusion</p>
-        <h2 id="context-title">The frame is part of the evidence.</h2>
-        <p>Two choices that often look like formatting decisions — time horizon and denominator — can change what a reasonable reader concludes.</p>
+        <p class="eyebrow">Five common pitfalls · 2</p>
+        <h2 id="clutter-title">More information can make the relevant pattern harder to see.</h2>
+        <p>The question here is simple: how did overall unemployment move? Adding every available age series and every value is accurate, but it gives the reader several competing tasks.</p>
       </div>
-
-      <div class="interactive-block">
-        <div class="control-line">
-          <div class="segmented" role="group" aria-label="Time context">
-            <button type="button" class="segment active" data-context="recent" aria-pressed="true">Recent period</button>
-            <button type="button" class="segment" data-context="long" aria-pressed="false">Long-term context</button>
-          </div>
-          <div class="segmented" role="group" aria-label="Measure">
-            <button type="button" class="segment active" data-measure="rate" aria-pressed="true">Unemployment rate</button>
-            <button type="button" class="segment" data-measure="count" aria-pressed="false">Number unemployed</button>
-          </div>
+      <div class="pitfall-panel">
+        <div class="toggle-row" role="group" aria-label="Clutter comparison">
+          <button class="toggle-btn active" type="button" data-clutter="problem" aria-pressed="true">Problem</button>
+          <button class="toggle-btn" type="button" data-clutter="fix" aria-pressed="false">Fix</button>
         </div>
-        <figure class="chart-figure" aria-labelledby="context-chart-title context-chart-desc">
-          <figcaption><strong id="context-chart-title">Norwegian unemployment</strong><span id="context-chart-unit">Per cent of the labour force</span></figcaption>
-          <svg id="context-chart" class="chart" viewBox="0 0 900 430" role="img" aria-describedby="context-chart-desc"></svg>
-          <p id="context-chart-desc" class="sr-only">An interactive chart comparing a recent unemployment period with longer historical context, and unemployment rates with counts.</p>
+        <div class="pitfall-panel__head">
+          <div><span class="course-example">Course example · SSB table 08518</span><h3>Unemployment by age · 2025Q1–2026Q2</h3></div>
+          <p id="clutter-message" class="state-message" aria-live="polite">Four legitimate series, equal emphasis and 24 value labels compete for attention.</p>
+        </div>
+        <figure class="chart-figure">
+          <div class="pitfall-chart-wrap"><svg id="clutter-chart" class="chart" viewBox="0 0 820 430" role="img" aria-label="Unemployment rates shown first with four equally prominent series and then simplified to the total series."></svg></div>
         </figure>
-        <div id="context-status" class="data-status" aria-live="polite">Loading long-term SSB context…</div>
-        <div class="question-strip"><strong>Did the data change, or did the context change?</strong><span>And when you switch measure: <strong>What is the denominator?</strong></span></div>
-        <div class="teaching-grid two">
-          <div class="teaching-panel"><p class="small-label">Why it matters</p><p>A short interval can make a movement look exceptional. A longer interval may show that comparable movements have happened before.</p></div>
-          <div class="teaching-panel"><p class="small-label">The fix</p><p>Choose the time horizon and measure that match the claim. Longer is not automatically better, and a rate is not universally better than a count.</p></div>
-        </div>
-      </div>
-
-      <div class="principle-callout">
-        <p class="eyebrow">Takeaway 3</p>
-        <h3>Context is part of accuracy.</h3>
-        <p>Baselines, denominators, time frames and comparison groups are not decorative additions. They can determine whether a correct number is interpreted correctly.</p>
-      </div>
-    </section>
-
-    <section class="demo-section" aria-labelledby="adjust-title">
-      <div class="page-shell">
-        <div class="section-intro narrow">
-          <p class="eyebrow">Raw, adjusted or trend?</p>
-          <h2 id="adjust-title">Are these values actually comparable?</h2>
-          <p>Monthly labour-market observations contain seasonal patterns and sampling variation. SSB table 13760 publishes unadjusted, seasonally adjusted, three-month moving-average and trend series.</p>
-        </div>
-        <div class="interactive-block">
-          <div class="segmented wrap-segments" role="group" aria-label="Adjustment status">
-            <button class="segment active" type="button" data-adjustment="T" aria-pressed="true">Trend</button>
-            <button class="segment" type="button" data-adjustment="3MGG" aria-pressed="false">3-month average</button>
-            <button class="segment" type="button" data-adjustment="S" aria-pressed="false">Seasonally adjusted</button>
-            <button class="segment" type="button" data-adjustment="IS" aria-pressed="false">Not seasonally adjusted</button>
-          </div>
-          <figure class="chart-figure" aria-labelledby="adjust-chart-title adjust-desc">
-            <figcaption><strong id="adjust-chart-title">Unemployment rate, monthly</strong><span id="adjust-label">Trend · per cent of labour force</span></figcaption>
-            <svg id="adjust-chart" class="chart" viewBox="0 0 900 430" role="img" aria-describedby="adjust-desc"></svg>
-            <p id="adjust-desc" class="sr-only">Interactive monthly unemployment chart comparing different adjustment statuses from Statistics Norway table 13760.</p>
-          </figure>
-          <div id="adjust-status" class="data-status" aria-live="polite">Loading monthly adjustment series from SSB…</div>
-          <p class="judgement-note">Never switch adjustment status silently. SSB notes that seasonally adjusted and unadjusted monthly LFS figures are volatile and recommends trend and/or the three-month moving average for many uses.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section page-shell" aria-labelledby="clutter-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">More information is not always more accurate</p>
-        <h2 id="clutter-title">Showing everything can hide the structure.</h2>
-        <p>The overloaded version below uses real 2025–2026 LFS values. Nothing is fabricated; the problem is that too many equally prominent details compete for attention.</p>
-      </div>
-      <div class="interactive-block">
-        <div class="demo-heading">
-          <div><p class="small-label">Teaching example · SSB table 08518</p><h3>Unemployment by age, 2025Q1–2026Q2</h3></div>
-          <p id="clutter-step-label" class="step-message">Everything is shown: three age groups, every value label, dense gridlines and equal emphasis.</p>
-        </div>
-        <figure class="chart-figure" aria-labelledby="clutter-title clutter-desc">
-          <svg id="clutter-chart" class="chart" viewBox="0 0 900 470" role="img" aria-describedby="clutter-desc"></svg>
-          <p id="clutter-desc" class="sr-only">A chart progressively simplified to focus on the age-group comparison relevant to the question.</p>
-        </figure>
-        <div class="action-row">
-          <button id="simplify-btn" class="primary-btn" type="button">Simplify</button>
-          <button id="reset-clutter" class="secondary-btn" type="button">Reset</button>
-          <span id="removed-note" class="removed-note" aria-live="polite">No information removed yet.</span>
-        </div>
+        <p id="clutter-note" class="definition-note"><strong>Nothing false is shown.</strong> The problem is that the chart makes the reader solve several questions that are not needed for the stated task.</p>
       </div>
       <div class="principle-callout">
-        <p class="eyebrow">Takeaway 2</p>
+        <p class="eyebrow">Takeaway 2 · Clutter</p>
         <h3>Too much information is also a form of distortion.</h3>
-        <p>Clutter, excessive categories and competing messages make the relevant pattern harder to see. Showing everything is not necessarily more neutral.</p>
+        <p>Showing everything is not automatically more neutral. Remove only what does not help answer the question.</p>
       </div>
     </section>
 
-    <section class="demo-section" aria-labelledby="colour-title">
+    <section id="context" class="pitfall-section pitfall-section--tint" aria-labelledby="context-title">
       <div class="page-shell">
         <div class="section-intro narrow">
-          <p class="eyebrow">Visual emphasis is an argument</p>
-          <h2 id="colour-title">Colour creates meaning, whether you intend it or not.</h2>
-          <p>These bars use the same 2026Q2 unemployment rates. Only the emphasis changes.</p>
+          <p class="eyebrow">Five common pitfalls · 3</p>
+          <h2 id="context-title">Context is part of accuracy.</h2>
+          <p>A short window can turn a local movement into the whole story. A longer window is not automatically better; it is better when the claim requires it.</p>
         </div>
-        <div class="interactive-block colour-demo">
-          <div class="segmented" role="group" aria-label="Colour emphasis">
-            <button class="segment active" type="button" data-emphasis="arbitrary" aria-pressed="true">Arbitrary emphasis</button>
-            <button class="segment" type="button" data-emphasis="analytical" aria-pressed="false">Analytical emphasis</button>
+        <div class="pitfall-panel">
+          <div class="toggle-row" role="group" aria-label="Context comparison">
+            <button class="toggle-btn active" type="button" data-context="short" aria-pressed="true">Without context</button>
+            <button class="toggle-btn" type="button" data-context="long" aria-pressed="false">With context</button>
           </div>
-          <figure class="chart-figure" aria-labelledby="colour-chart-title colour-desc">
-            <figcaption><strong id="colour-chart-title">Unemployment rate by age, 2026Q2</strong><span>Per cent of each age group's labour force</span></figcaption>
-            <svg id="colour-chart" class="chart" viewBox="0 0 900 370" role="img" aria-describedby="colour-desc"></svg>
-            <p id="colour-desc" class="sr-only">Bars for three age groups. A toggle changes which category receives accent colour, demonstrating arbitrary versus analytical emphasis.</p>
+          <div class="pitfall-panel__head">
+            <div><span class="course-example">Course example · same total rate</span><h3 id="context-headline">Unemployment is higher than in late 2025</h3></div>
+            <p id="context-message" class="state-message" aria-live="polite">Only the last three quarters are visible.</p>
+          </div>
+          <figure class="chart-figure">
+            <div class="pitfall-chart-wrap"><svg id="context-chart" class="chart" viewBox="0 0 820 390" role="img" aria-label="The same unemployment rate shown with a short and a longer time window."></svg></div>
           </figure>
-          <p id="colour-explain" class="question-strip"><strong>The accent currently makes 55–74 years look like the story.</strong><span>But the question is: which age group has the highest unemployment rate?</span></p>
+          <p class="context-question">Does the latest change still look exceptional?</p>
+          <div class="denominator-note" aria-label="Count and rate for second quarter 2026">
+            <div><span>Number unemployed · 2026Q2</span><strong>147,000</strong><small>Count, reported in thousands in table 08518.</small></div>
+            <div><span>Unemployment rate · 2026Q2</span><strong>4.8%</strong><small>Denominator: the labour force, not the whole population.</small></div>
+          </div>
         </div>
         <div class="principle-callout">
-          <p class="eyebrow">Takeaway 4</p>
-          <h3>Colour and visual encoding can create false importance.</h3>
-          <p>Strong colour, area and contrast should correspond to analytical importance, not merely to what the software selected first.</p>
+          <p class="eyebrow">Takeaway 3 · Context</p>
+          <h3>The time window should match the claim being made.</h3>
+          <p>Baselines, denominators, time frames and comparison groups can determine whether a correct number is interpreted correctly.</p>
         </div>
       </div>
     </section>
 
-    <section class="section page-shell" aria-labelledby="uncertainty-title">
+    <section id="emphasis" class="pitfall-section page-shell" aria-labelledby="emphasis-title">
       <div class="section-intro narrow">
-        <p class="eyebrow">How certain is this number?</p>
-        <h2 id="uncertainty-title">A precise-looking point is still an estimate.</h2>
-        <p>The Labour Force Survey is sample-based. Absolute figures and rates estimate the population; they are not exact counts of every person in Norway.</p>
+        <p class="eyebrow">Five common pitfalls · 4</p>
+        <h2 id="emphasis-title">Colour directs attention, whether you intend it to or not.</h2>
+        <p>The three bars below use the same 2026Q2 unemployment rates. Only the reason for visual emphasis changes.</p>
       </div>
-      <div class="uncertainty-grid">
-        <div class="comparison-panel">
-          <p class="small-label">False precision</p>
-          <h3>July 2026 trend estimate</h3>
-          <div class="precision-number"><strong>4.5%</strong><span>unemployment rate</span></div>
-          <p>A single clean number can look exact even when it comes from a sample and may later be revised.</p>
+      <div class="pitfall-panel">
+        <div class="toggle-row" role="group" aria-label="Visual emphasis comparison">
+          <button class="toggle-btn active" type="button" data-emphasis="arbitrary" aria-pressed="true">Arbitrary emphasis</button>
+          <button class="toggle-btn" type="button" data-emphasis="meaningful" aria-pressed="false">Meaningful emphasis</button>
         </div>
-        <div class="comparison-panel conceptual-panel">
-          <p class="small-label">Uncertainty visible · conceptual</p>
-          <h3>Point estimate + plausible uncertainty</h3>
-          <svg class="uncertainty-schematic" viewBox="0 0 460 130" role="img" aria-label="Conceptual uncertainty interval around a point estimate, with no numerical confidence limits.">
-            <line x1="55" x2="405" y1="67" y2="67" class="uncertainty-axis"/>
-            <line x1="145" x2="315" y1="67" y2="67" class="uncertainty-range"/>
-            <line x1="145" x2="145" y1="52" y2="82" class="uncertainty-cap"/>
-            <line x1="315" x2="315" y1="52" y2="82" class="uncertainty-cap"/>
-            <circle cx="230" cy="67" r="8" class="uncertainty-point"/>
-            <text x="230" y="104" text-anchor="middle" class="chart-label">estimate</text>
-            <text x="230" y="31" text-anchor="middle" class="chart-label">uncertainty around an estimate</text>
-          </svg>
-          <p><strong>No numerical interval is claimed here.</strong> This schematic is deliberately separate from the 4.5% SSB value because the selected table extract does not provide an exact confidence interval to plot.</p>
+        <div class="pitfall-panel__head">
+          <div><span class="course-example">Course example · 2026Q2</span><h3>Which age group has the highest unemployment rate?</h3></div>
+          <p id="emphasis-message" class="state-message" aria-live="polite">Purple emphasis makes the smallest rate look like the intended focus.</p>
         </div>
+        <figure class="chart-figure">
+          <div class="pitfall-chart-wrap"><svg id="emphasis-chart" class="chart" viewBox="0 0 820 330" role="img" aria-label="Bar chart of unemployment rates for three age groups with arbitrary and meaningful visual emphasis."></svg></div>
+        </figure>
+        <div class="emphasis-key" aria-label="Emphasis key"><span><i></i>Analytical focus in the improved view</span><span class="key-purple"><i></i>Arbitrary focus in the problem view</span></div>
       </div>
-      <p class="judgement-note"><strong>Uncertainty does not make statistics useless.</strong> It tells us how precisely they should be interpreted. The August 2026 LFS release also gives a concrete revision example: SSB revised the June 2026 trend unemployment rate from 4.7% to 4.5% when the July information was incorporated.</p>
       <div class="principle-callout">
-        <p class="eyebrow">Takeaway 5</p>
-        <h3>Uncertainty should not disappear in the visualization.</h3>
-        <p>Sampling variation, revisions, breaks in series and methodological limitations matter whenever they can change the interpretation.</p>
+        <p class="eyebrow">Takeaway 4 · Emphasis</p>
+        <h3>Visual prominence should correspond to analytical importance.</h3>
+        <p>Strong colour, area and contrast are arguments about what matters. Use them only when the evidence and question support that argument.</p>
       </div>
     </section>
 
-    <section class="demo-section" aria-labelledby="break-title">
+    <section id="uncertainty" class="pitfall-section pitfall-section--tint" aria-labelledby="uncertainty-title">
       <div class="page-shell">
         <div class="section-intro narrow">
-          <p class="eyebrow">Breaks in time series</p>
-          <h2 id="break-title">A connected line can imply comparability that metadata does not support.</h2>
-          <p>The Norwegian LFS was substantially redesigned in 2021. SSB estimates a break of about 5,400 unemployed persons; that particular break estimate is not statistically significant.</p>
+          <p class="eyebrow">Five common pitfalls · 5</p>
+          <h2 id="uncertainty-title">A precise-looking chart should not imply more certainty than the statistics provide.</h2>
+          <p>The Labour Force Survey is sample-based. Table 08518 does not provide a confidence interval in this teaching extract, so the page does not invent one.</p>
         </div>
-        <div class="interactive-block">
-          <div class="segmented" role="group" aria-label="Break documentation">
-            <button type="button" class="segment active" data-break="hidden" aria-pressed="true">Without break information</button>
-            <button type="button" class="segment" data-break="shown" aria-pressed="false">With break documented</button>
+        <div class="pitfall-panel">
+          <div class="toggle-row" role="group" aria-label="Uncertainty comparison">
+            <button class="toggle-btn active" type="button" data-uncertainty="plain" aria-pressed="true">Point estimates only</button>
+            <button class="toggle-btn" type="button" data-uncertainty="context" aria-pressed="false">With statistical context</button>
           </div>
-          <figure class="chart-figure" aria-labelledby="break-chart-title break-desc">
-            <figcaption><strong id="break-chart-title">Quarterly unemployment rate around the 2021 LFS redesign</strong><span>SSB table 08518 when live context is available</span></figcaption>
-            <svg id="break-chart" class="chart" viewBox="0 0 900 410" role="img" aria-describedby="break-desc"></svg>
-            <p id="break-desc" class="sr-only">Quarterly unemployment with an optional marker documenting the 2021 Labour Force Survey redesign.</p>
+          <div class="pitfall-panel__head">
+            <div><span class="course-example">SSB Labour Force Survey</span><h3>Quarterly unemployment rate · 2025Q1–2026Q2</h3></div>
+            <p id="uncertainty-message" class="state-message" aria-live="polite">The chart looks exact because only point estimates are visible.</p>
+          </div>
+          <figure class="chart-figure">
+            <div class="pitfall-chart-wrap"><svg id="uncertainty-chart" class="chart" viewBox="0 0 820 390" role="img" aria-label="Quarterly unemployment point estimates with optional statistical context about sampling uncertainty."></svg></div>
           </figure>
-          <div id="break-status" class="data-status" aria-live="polite">Loading historical SSB values…</div>
-          <div class="teaching-grid two">
-            <div class="teaching-panel"><p class="small-label">Why it matters</p><p>A line joins observations visually. Readers may assume that the measurement process was unchanged unless told otherwise.</p></div>
-            <div class="teaching-panel"><p class="small-label">The fix</p><p>Keep the chart readable, but mark relevant breaks and put the methodological note close enough to affect interpretation.</p></div>
+          <div id="uncertainty-context" class="uncertainty-context" hidden>
+            <div class="uncertainty-grid">
+              <article><h4>Sample-based estimate</h4><p>Sampling error exists because the LFS surveys a sample rather than the entire population.</p></article>
+              <article><h4>Quarterly estimates vary more</h4><p>SSB states that standard errors are substantially lower for annual averages than for quarterly averages.</p></article>
+              <article><h4>Do not over-read adjacent points</h4><p>SSB advises caution when assessing changes over time from one survey to another.</p></article>
+            </div>
+            <div class="break-timeline" aria-label="Documented 2021 break in the Labour Force Survey">
+              <span class="break-timeline__line" aria-hidden="true"></span>
+              <div class="break-timeline__marker"><i aria-hidden="true"></i><strong>2021Q1 · major LFS redesign</strong><small>SSB estimates a break of about 5,400 unemployed persons. That break estimate was not statistically significant; the new unemployment rate was estimated 0.1 percentage points higher than the old LFS.</small></div>
+              <span class="break-timeline__line" aria-hidden="true"></span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section page-shell" aria-labelledby="true-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Technically true ≠ well communicated</p>
-        <h2 id="true-title">The annotation can distort without changing the chart.</h2>
-        <p>Both statements below are teaching examples created for this course. Neither is an SSB quotation.</p>
-      </div>
-      <div class="headline-demo">
-        <figure class="chart-figure compact" aria-labelledby="headline-chart-title headline-desc">
-          <figcaption><strong id="headline-chart-title">Unemployment, June–July 2026</strong><span>Trend · SSB table 13760</span></figcaption>
-          <svg id="headline-chart" class="chart" viewBox="0 0 720 310" role="img" aria-describedby="headline-desc"></svg>
-          <p id="headline-desc" class="sr-only">Two monthly trend observations show 139,000 unemployed in June inferred from SSB's reported minus 1,000 change, and 138,000 in July; the unemployment rate is 4.5 per cent in July and unchanged from June.</p>
-        </figure>
-        <div class="headline-options">
-          <button class="headline-choice" type="button" data-headline="drama" aria-pressed="false">
-            <span class="small-label">Teaching annotation A</span>
-            <strong>“Unemployment falls again”</strong>
-            <span>Technically defensible from the count, but it overstates a 1,000-person movement while the rate is unchanged at 4.5%.</span>
-          </button>
-          <button class="headline-choice" type="button" data-headline="proportionate" aria-pressed="false">
-            <span class="small-label">Teaching annotation B</span>
-            <strong>“Trend estimate broadly unchanged at 4.5%”</strong>
-            <span>The number unemployed fell by 1,000 to 138,000; the unemployment rate did not change from June to July.</span>
-          </button>
+        <div class="principle-callout">
+          <p class="eyebrow">Takeaway 5 · Uncertainty</p>
+          <h3>Uncertainty should not disappear in the visualization.</h3>
+          <p>Estimates, revisions and methodological breaks belong in the interpretation when they can change what the reader concludes.</p>
         </div>
-        <p id="headline-feedback" class="question-strip" aria-live="polite"><strong>Which statement is better supported by the visual evidence?</strong></p>
       </div>
     </section>
 
-    <section class="demo-section" aria-labelledby="spot-title">
+    <section class="section final-transform" aria-labelledby="final-compare-title">
       <div class="page-shell">
         <div class="section-intro narrow">
-          <p class="eyebrow">Spot the problem</p>
-          <h2 id="spot-title">Diagnose the design decision, not the designer.</h2>
-          <p>Each small chart uses real SSB data and contains one main problem. Choose the issue that matters most, then reveal the reasoning.</p>
+          <p class="eyebrow">Final comparison</p>
+          <h2 id="final-compare-title">Same evidence. Different framing.</h2>
+          <p>Return to the six quarterly unemployment rates. The final toggle combines the lessons without changing a single observation.</p>
         </div>
-        <div id="spot-grid" class="spot-grid"></div>
-      </div>
-    </section>
-
-    <section class="section page-shell" aria-labelledby="final-fix-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Fix the chart</p>
-        <h2 id="final-fix-title">See the cumulative difference.</h2>
-        <p>Return to the unemployment example. The underlying values remain the same; the defensible view changes scale, context, emphasis and metadata.</p>
-      </div>
-      <div class="interactive-block final-compare">
-        <div class="segmented" role="group" aria-label="Final chart comparison">
-          <button type="button" class="segment active" data-final="misleading" aria-pressed="true">Misleading</button>
-          <button type="button" class="segment" data-final="defensible" aria-pressed="false">Defensible</button>
-        </div>
-        <figure class="chart-figure" aria-labelledby="final-chart-title final-chart-desc">
-          <figcaption><strong id="final-chart-title">Norwegian unemployment rate</strong><span id="final-chart-meta">Teaching example · narrow scale · recent period</span></figcaption>
-          <svg id="final-chart" class="chart" viewBox="0 0 900 430" role="img" aria-describedby="final-chart-desc"></svg>
-          <p id="final-chart-desc" class="sr-only">Toggle between a misleading and a more defensible presentation of the same unemployment data.</p>
-        </figure>
-        <div id="final-changes" class="change-list" aria-live="polite">
-          <span>Narrow y-axis</span><span>Recent period only</span><span>Strong endpoint emphasis</span><span>Minimal metadata</span>
+        <div class="pitfall-panel">
+          <div class="toggle-row" role="group" aria-label="Final framing comparison">
+            <button class="toggle-btn active" type="button" data-final="misleading" aria-pressed="true">Misleading framing</button>
+            <button class="toggle-btn" type="button" data-final="defensible" aria-pressed="false">Defensible framing</button>
+          </div>
+          <div class="pitfall-panel__head">
+            <div><p class="chart-eyebrow" id="final-eyebrow">Course example · narrow scale · every point labelled</p><h3 id="final-headline">Unemployment swings sharply</h3></div>
+            <p id="final-message" class="state-message" aria-live="polite">The chart encourages a stronger interpretation than the six values alone justify.</p>
+          </div>
+          <figure class="chart-figure">
+            <div class="pitfall-chart-wrap"><svg id="final-chart-m5" class="chart" viewBox="0 0 820 410" role="img" aria-label="The same six unemployment observations shown with misleading and defensible framing."></svg></div>
+          </figure>
+          <div id="final-integrity" class="final-integrity" aria-label="What changes in the defensible version"></div>
         </div>
       </div>
     </section>
 
-    <section class="final-takeaway" aria-labelledby="takeaway-title">
-      <div class="page-shell">
-        <p class="eyebrow">Final takeaway</p>
-        <h2 id="takeaway-title">A trustworthy visualization does more than show correct numbers. It helps the reader form a proportionate interpretation of them.</h2>
-        <p class="final-rule">A design decision becomes a problem when it makes the intended comparison harder or encourages an interpretation that the evidence does not support.</p>
-        <div class="recap-grid">
-          <div><strong>1</strong><p>A technically correct chart can still mislead through scale, aggregation or visual emphasis.</p></div>
-          <div><strong>2</strong><p>Too much information can conceal the structure that matters.</p></div>
-          <div><strong>3</strong><p>Context — including denominator, baseline and time frame — is part of accuracy.</p></div>
-          <div><strong>4</strong><p>Colour and other encodings can create false importance.</p></div>
-          <div><strong>5</strong><p>Relevant uncertainty, revisions and breaks should remain visible.</p></div>
-        </div>
-        <p class="central-idea"><strong>Correct numbers are not enough. The visual framing must also support a correct interpretation.</strong></p>
-        <p class="accessibility-note">Accessibility is part of correctness: a pattern that some readers cannot perceive or operate is a communication failure, even when the underlying chart is statistically sound.</p>
+    <section class="final page-shell" aria-labelledby="final-takeaway-title">
+      <p class="section-kicker">Module 5</p>
+      <h2 class="final-statement" id="final-takeaway-title">A trustworthy visualization does more than show correct numbers. It helps the reader form a proportionate interpretation of them.</h2>
+      <div class="recap" aria-label="Five key takeaways">
+        <span><b>1</b>Correct numbers can still be framed misleadingly.</span>
+        <span><b>2</b>Too much information can hide what matters.</span>
+        <span><b>3</b>Context is part of accuracy.</span>
+        <span><b>4</b>Visual prominence should follow analytical importance.</span>
+        <span><b>5</b>Uncertainty should remain visible when it matters.</span>
       </div>
     </section>
 
-    <section class="sources page-shell" aria-labelledby="sources-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Sources and statistical notes</p>
-        <h2 id="sources-title">Metadata is part of the evidence.</h2>
-      </div>
+    <section class="source-section page-shell" aria-labelledby="sources-title">
+      <p class="section-kicker">Statistical integrity</p>
+      <h2 id="sources-title">Sources and data notes</h2>
       <div class="source-grid">
         <div>
           <h3>SSB table 08518</h3>
-          <p><strong>Unemployed persons, by age and sex.</strong> Quarterly data; local teaching snapshot uses both sexes, age 15–74 and selected age groups.</p>
-          <p>Units: 1,000 persons and per cent of the labour force. Table updated 13 August 2026.</p>
+          <p><strong>Unemployed persons, by age and sex.</strong></p>
+          <p>Units: 1,000 persons and per cent of the labour force. Reference time: continuous survey. Table updated 13 August 2026.</p>
           <a class="source-link" href="https://www.ssb.no/en/statbank/table/08518" target="_blank" rel="noopener">Open StatBank table ↗</a>
         </div>
         <div>
-          <h3>SSB table 13760</h3>
-          <p><strong>Break and seasonally adjusted LFS figures.</strong> Monthly series from 2006; adjustment states include trend, 3-month moving average, seasonally adjusted and unadjusted.</p>
-          <p>The table is break-adjusted across the 2020/2021 redesign. Current LFS release checked through July 2026.</p>
-          <a class="source-link" href="https://www.ssb.no/en/statbank/table/13760" target="_blank" rel="noopener">Open StatBank table ↗</a>
+          <h3>Teaching extract</h3>
+          <p>Both sexes. Total age 15–74 and age groups 15–24, 25–54 and 55–74. Quarters: <strong>2025Q1–2026Q2</strong>.</p>
+          <p>No smoothing, seasonal adjustment, interpolation or modelled values. Problem/fix states change only the visual framing or visible context.</p>
         </div>
         <div>
-          <h3>Static teaching extract</h3>
-          <p>Data and metadata checked: <strong>27 August 2026</strong>. No values were invented. Recent quarterly values are stored locally; longer and adjustment-specific series are requested from SSB's public PxWebApi when available.</p>
-          <p>The uncertainty graphic is conceptual and carries no fabricated interval. The 2021 break note follows SSB metadata.</p>
-          <a class="source-link" href="https://www.ssb.no/en/arbeid-og-lonn/sysselsetting/statistikk/arbeidskraftundersokelsen" target="_blank" rel="noopener">LFS statistics and metadata ↗</a>
+          <h3>Verification and uncertainty</h3>
+          <p>Local extract created and verified: <strong>28 August 2026</strong>. Recent values cross-checked against the SSB LFS release updated 25 August 2026.</p>
+          <p>Sampling uncertainty and the documented 2021 redesign are described from SSB's LFS metadata. No confidence interval is fabricated.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="page-shell"><p>ESTP Data Visualization · Module 5</p><p>Statistics Norway data · teaching extract checked 27 August 2026</p></div></footer>
+  <footer class="site-footer">
+    <div class="page-shell"><p>ESTP Data Visualization · Module 5</p><p>Statistics Norway data · static teaching extract checked 28 August 2026</p></div>
+  </footer>
 
-  <script src="data/unemployment_snapshot.js"></script>
+  <script src="data/data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

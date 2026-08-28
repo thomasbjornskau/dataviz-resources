@@ -2,108 +2,106 @@
 
 Standalone static teaching page for an ESTP course aimed at employees of European National Statistical Institutes.
 
-## Run
+The central diagnostic question is:
+
+> **What impression does this design create, and is that impression justified by the data?**
+
+The page demonstrates five pitfalls using real Statistics Norway Labour Force Survey data: **scale → clutter → context → emphasis → uncertainty**. In every problem/fix comparison, the underlying observations remain unchanged unless the page explicitly says that the visible time window or series selection is changing.
+
+## Run and publish
 
 The project contains only ordinary front-end files and can be published directly with GitHub Pages:
 
-- `index.html`
-- `styles.css`
-- `script.js`
-- `data/unemployment_snapshot.js` — browser-ready verified recent teaching snapshot
-- `data/unemployment_recent_08518.csv` — auditable total unemployment extract
-- `data/unemployment_age_08518.csv` — auditable age-group extract
-- `data/latest_trend_13760.csv` — latest verified monthly trend observation
-- `data/source-metadata.json` — source and transformation notes
+```text
+index.html
+styles.css
+script.js
+data/
+  data.js
+  unemployment_08518.csv
+  source-metadata.json
+README.md
+```
 
-No build step, API key, server-side component or JavaScript framework is required.
-
-The core recent examples work from the bundled local snapshot. Longer quarterly context and the four monthly adjustment states are requested from Statistics Norway's public PxWebApi v2 when available and cached in `localStorage`. If those requests fail, the page reports the limitation and does not invent replacement values.
+No build step, server-side component, authentication, API key, framework or proprietary service is required. `data/data.js` contains the same local teaching extract as the CSV in browser-ready form, so the page works when `index.html` is opened directly from disk.
 
 ## Design system
 
-Module 5 deliberately reuses the existing ESTP Modules 1–3 visual system. Its `styles.css` starts from the Module 3 stylesheet foundation and retains the same:
+Module 5 reuses the complete stylesheet foundation from the latest ESTP Module 4 package and appends only Module 5-specific rules. It preserves the established:
 
-- CSS variables and SSB-inspired palette
-- Arial/Helvetica typography and heading hierarchy
-- 1180 px page shell
-- 8 px SSB-green top stripe and header treatment
-- rectangular controls with minimal rounding/shadow
-- chart gridlines, axes and annotation style
-- source area and dark footer
-- breakpoints, focus states and reduced-motion behaviour
+- CSS variables and SSB-inspired palette;
+- Arial/Helvetica typography and heading hierarchy;
+- 1180 px page shell;
+- 8 px SSB-green top stripe and header treatment;
+- generous section spacing;
+- rectangular controls and surfaces;
+- segmented/toggle control treatment;
+- chart gridline, axis, annotation and focus conventions;
+- source area and dark footer;
+- responsive breakpoints at 900 px and 620 px;
+- visible focus states and `prefers-reduced-motion` behaviour.
 
-Module 5-specific rules are appended after the shared stylesheet. No red warning theme is used.
+No new framework, shadow system, gradient, typography or colour family has been introduced.
 
-## Statistical sources
+## Statistical source
 
-### SSB StatBank table 08518
+**Statistics Norway, StatBank table 08518 — Unemployed persons, by age and sex**
 
-**Unemployed persons, by age and sex, 1972Q1–2026Q2**  
-https://www.ssb.no/en/statbank/table/08518
+- Source: Statistics Norway
+- Table updated: 13 August 2026, 08:00
+- Local extract created and verified: 28 August 2026
+- Reference time: continuous survey
+- Sex: both sexes
+- Quarters: 2025Q1–2026Q2
+- Ages: 15–74 total, 15–24, 25–54, 55–74
+- Measures: unemployed persons (1,000) and unemployed as per cent of the labour force
+- Transformations: none beyond display formatting
+- Seasonal adjustment: none applied on this page
+- StatBank: https://www.ssb.no/en/statbank/table/08518
 
-Metadata checked 27 August 2026. Table updated 13 August 2026 08:00.
+The recent quarterly values were cross-checked against the Statistics Norway Labour Force Survey release updated 25 August 2026, Table 4.
 
-Local extract variables:
+### Teaching extract: both sexes
 
-- sex: both sexes
-- age: 15–74 total and selected groups 15–24, 25–54, 55–74
-- recent period: 2025Q1–2026Q2
-- measures: unemployed persons (1,000) and unemployed as per cent of the labour force
-- adjustment: quarterly observed / not seasonally adjusted
-- transformations: none beyond display formatting
+| Quarter | Total count (1,000) | Total rate | 15–24 rate | 25–54 rate | 55–74 rate |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2025Q1 | 124 | 4.1% | 12.8% | 3.0% | 1.5% |
+| 2025Q2 | 153 | 5.0% | 15.4% | 3.2% | 2.8% |
+| 2025Q3 | 141 | 4.6% | 14.5% | 3.4% | 1.3% |
+| 2025Q4 | 127 | 4.2% | 13.3% | 3.2% | 1.2% |
+| 2026Q1 | 146 | 4.8% | 14.7% | 3.5% | 2.1% |
+| 2026Q2 | 147 | 4.8% | 14.3% | 3.5% | 2.0% |
 
-The current LFS release was used as an additional cross-check for the recent quarterly values.
+The unemployment rate denominator is the **labour force**, not the total population.
 
-### SSB StatBank table 13760
+## Uncertainty and comparability
 
-**Labour force, employment, unemployment and man-weeks worked, break and seasonally adjusted figures**  
-https://www.ssb.no/en/statbank/table/13760
+The LFS is sample-based. Statistics Norway explains that sampling errors arise because results come from a sample rather than the full population, and that standard errors are substantially lower for annual averages than for quarterly averages. SSB advises caution when assessing changes from one survey to another.
 
-Metadata and current release checked 27 August 2026. The LFS release dated 25 August 2026 reports for July 2026:
+No confidence interval is fabricated for this page because the selected table extract does not provide one.
 
-- unemployed persons, trend: 138,000
-- change from June to July: -1,000
-- unemployment rate, trend: 4.5%
-- change in rate from June to July: 0.0 percentage points
-
-The “technically true” teaching chart therefore derives June's count as 139,000 from the published July level and the published month-to-month change. This arithmetic derivation is disclosed; it is not a separate StatBank extraction.
-
-Table 13760 provides trend, seasonally adjusted 3-month moving average, seasonally adjusted, and not seasonally adjusted monthly series. The page does not calculate seasonal adjustment itself.
-
-## Time-series breaks and revisions
-
-SSB metadata documents several LFS changes relevant to interpretation. The page surfaces, in particular:
-
-- 2006Q1: lower age limit changed from 16 to 15; SSB reports unemployment down by about 1,000 as a consequence of the production-system change.
-- 2018: new estimation method introduced; StatBank series were revised back to 2006.
-- 2021Q1: major redesign under the new EU LFS regulation. SSB estimates a break of about 5,400 unemployed persons; that break estimate is not statistically significant. SSB reports the unemployment rate in the new LFS as 0.1 percentage points higher than in the old LFS.
-
-Table 13760 is break-adjusted across the 2020/2021 break. Table 08518 carries the break note, so the break demonstration uses that quarterly series when the API is available.
-
-## Uncertainty
-
-The LFS is sample-based. This project does **not** fabricate confidence intervals. The uncertainty section pairs the real July 2026 point estimate with a separate schematic illustration explicitly labelled conceptual and without numerical endpoints.
+SSB documents a major LFS redesign from 2021Q1. The estimated break in the number of unemployed persons is about **5,400**, and SSB states that this break estimate was **not statistically significant**. SSB also reports the unemployment rate in the new LFS as **0.1 percentage points higher** than in the old LFS.
 
 ## Accessibility
 
-- semantic headings and landmarks
+- semantic HTML and visible heading hierarchy
 - native keyboard-operable buttons
-- visible focus states inherited from Modules 1–3
+- visible focus states inherited from the shared design system
 - touch-friendly controls
-- textual equivalents for important chart messages
-- no essential information available only on hover
-- responsive SVG charts
-- colour reinforced by labels and position
-- `prefers-reduced-motion` respected
+- important information available without hover
+- textual explanations alongside every chart
+- SVG charts with `viewBox` and mobile overflow behaviour consistent with earlier modules
+- colour reinforced by direct labels, position and explicit focus text
+- `prefers-reduced-motion` respected by the shared stylesheet
 
 ## Statistical integrity choices
 
-- correct units are shown next to charts
-- counts and rates remain distinct
-- the unemployment-rate denominator is stated explicitly
-- quarterly and monthly series are not silently mixed
-- adjustment status is always visible in the monthly comparison
-- no significance claim is made from ordinary point-to-point movement
-- the 2021 break is documented from SSB metadata
-- no invented uncertainty interval is shown
-- intentionally misleading versions are labelled as teaching examples and are never attributed to SSB
+- counts and rates remain distinct;
+- percentages and percentage-point statements are kept distinct;
+- the rate denominator is explicit;
+- quarterly figures are not presented as seasonally adjusted;
+- no statistical significance claim is made from ordinary point-to-point movements;
+- no uncertainty interval is invented;
+- the documented 2021 break is surfaced;
+- intentionally misleading states are clearly labelled as course examples, not SSB publications;
+- problem/fix states do not alter the underlying observations.

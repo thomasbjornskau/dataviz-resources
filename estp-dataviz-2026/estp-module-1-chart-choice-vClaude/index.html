@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choosing the right chart — ESTP Data Visualisation, Module 1</title>
+<meta name="description" content="ESTP course in Data Visualisation, Module 1: an in-depth review of chart types, taught through visual encodings and real Statistics Norway population data (StatBank table 06913).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <p class="course-mark"><span>ESTP</span> Data Visualisation</p>
+    <p class="module-mark">Module 1 — In-depth review of different chart types</p>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================================================ HERO -->
+<section class="hero">
+  <div class="wrap">
+    <h1>Choosing the right chart</h1>
+    <p class="lede">
+      There is no universally best chart. The useful question is which visual structure makes the
+      statistical relationship easiest to see.
+    </p>
+    <p class="hero-note">
+      Everything on this page is drawn from one table: Statistics Norway,
+      <a href="https://www.ssb.no/en/statbank/table/06913">StatBank table 06913</a>,
+      population 1 January and population changes during the calendar year, 1951–2026.
+      One table, six questions, six different visual structures.
+    </p>
+
+    <figure class="teaser" id="teaser">
+      <div class="teaser-grid">
+        <div class="teaser-cell">
+          <p class="teaser-q">“How has the population changed?”</p>
+          <div class="chart-host" id="teaser-line"></div>
+        </div>
+        <div class="teaser-cell">
+          <p class="teaser-q">“How large was the change each year?”</p>
+          <div class="chart-host" id="teaser-bars"></div>
+        </div>
+      </div>
+      <figcaption>
+        Identical numbers, two questions, two structures. The left chart is about a level and its path.
+        The right chart is about the size and sign of one year against another. Neither is a better chart
+        in the abstract; they answer different questions.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ====================================================== TAKEAWAYS -->
+<section class="band" id="takeaways">
+  <div class="wrap">
+    <p class="eyebrow">What this module is for</p>
+    <h2>Five things worth taking away</h2>
+    <p class="section-lede">
+      This is not a tour of a chart catalogue. It is a way of reasoning that still works when you meet
+      a chart type you have never seen, or when you need one that does not have a name yet.
+    </p>
+
+    <ol class="takeaways">
+
+      <li class="takeaway">
+        <p class="takeaway-index">Takeaway one</p>
+        <h3>Start with the analytical task, not the chart type</h3>
+        <p>
+          Before a chart can be chosen, the job has to be named. Comparing values, showing change over time,
+          describing a distribution, testing a relationship, breaking a total into parts and tracing a flow
+          are six different jobs, and they do not have the same answer.
+          Most weak charts in official statistics are not badly drawn. They are drawn well, and they answer
+          a question the reader did not ask.
+        </p>
+        <div class="task-grid" aria-hidden="false">
+          <div class="task"><span class="task-name">Compare</span><span class="task-ask">Which is larger?</span></div>
+          <div class="task"><span class="task-name">Change</span><span class="task-ask">Where is this going?</span></div>
+          <div class="task"><span class="task-name">Distribution</span><span class="task-ask">What is typical, what is extreme?</span></div>
+          <div class="task"><span class="task-name">Relationship</span><span class="task-ask">Do these move together?</span></div>
+          <div class="task"><span class="task-name">Composition</span><span class="task-ask">What is this total made of?</span></div>
+          <div class="task"><span class="task-name">Flow</span><span class="task-ask">What went in, what came out?</span></div>
+        </div>
+      </li>
+
+      <li class="takeaway takeaway-core">
+        <p class="takeaway-index">Takeaway two — the centre of this module</p>
+        <h3>Chart types are combinations of visual encodings</h3>
+        <p>
+          A bar chart is not a primitive. It is position along a common scale, plus length from a shared
+          baseline. A line chart is position plus connection. A heatmap is position twice over, plus colour.
+          Position, length, area, colour, connection and direction are the building blocks, and every named
+          chart is an arrangement of a few of them.
+        </p>
+        <p>
+          This matters practically. If you memorise chart types you can only choose from the ones you
+          remember. If you can read the encodings, you can reason about a chart you have never met, explain
+          to a colleague exactly why one option is harder to read than another, and design something new
+          when the standard forms do not fit.
+        </p>
+        <p class="pointer">
+          The interactive encoding lens further down highlights each encoding wherever it appears on this page.
+        </p>
+      </li>
+
+      <li class="takeaway">
+        <p class="takeaway-index">Takeaway three</p>
+        <h3>Use the simplest chart that preserves the insight</h3>
+        <p>
+          Bars and lines are powerful because nobody has to learn them. The reader spends their attention on
+          the statistics rather than on the graphic. That is a real budget, and specialised charts spend it.
+        </p>
+        <p>
+          So a more elaborate chart has to earn its complexity: it should show something the simple form
+          genuinely cannot. If a treemap and a sorted bar chart tell the reader the same thing, the bar chart
+          wins.
+        </p>
+      </li>
+
+      <li class="takeaway">
+        <p class="takeaway-index">Takeaway four</p>
+        <h3>Specialised charts reveal structures classic charts cannot</h3>
+        <p>
+          Sometimes the structure in the data is not a list of values. Treemaps show hierarchy and
+          part-of-whole at the same time. Sankey diagrams show flow, direction and conservation — what came
+          in, what went out, what remained. Heatmaps show patterns across two dimensions at once. Dot plots
+          compress many comparisons into little space.
+        </p>
+        <p>
+          The test is structural, not aesthetic. A Sankey is right when the data really is a flow that
+          balances. On a table with no hierarchy, a treemap is decoration.
+        </p>
+      </li>
+
+      <li class="takeaway">
+        <p class="takeaway-index">Takeaway five</p>
+        <h3>The best chart is the one that makes the relevant comparison easy</h3>
+        <p>
+          A technically correct chart can still be a poor choice. If the reader has to hold two numbers in
+          their head, follow a line across a legend, or judge two areas against each other, the comparison
+          that matters has been made expensive.
+        </p>
+        <p>
+          Put the comparison you care about closest to the encoding people read most accurately, which is
+          position along a common scale. Everything else in chart choice is downstream of that.
+        </p>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+<!-- ======================================================= EXPLORER -->
+<section class="band band-alt" id="explorer">
+  <div class="wrap">
+    <p class="eyebrow">The main exercise</p>
+    <h2>Same data. Different question. Different chart.</h2>
+    <p class="section-lede">
+      Every view below uses the same StatBank table. Change the question and watch which visual structure
+      the question demands. The point is not the buttons — it is the reasoning printed under each chart.
+    </p>
+
+    <div class="explorer">
+      <div class="question-picker">
+        <p class="picker-label" id="picker-label">Choose an analytical question</p>
+        <div class="question-list" role="tablist" aria-labelledby="picker-label" id="question-list"></div>
+      </div>
+
+      <div class="explorer-main">
+        <div class="view-switch" id="view-switch" role="group" aria-label="Chart alternatives for this question"></div>
+
+        <figure class="chart-figure">
+          <figcaption class="chart-title" id="chart-title"></figcaption>
+          <p class="chart-subtitle" id="chart-subtitle"></p>
+          <div class="chart-legend" id="chart-legend"></div>
+          <div class="chart-host" id="main-chart" aria-live="polite"></div>
+          <p class="chart-source">
+            Source: Statistics Norway, StatBank table 06913. <span id="chart-units"></span>
+          </p>
+        </figure>
+
+        <div class="readout" id="readout" aria-live="polite"></div>
+
+        <div class="rationale" id="rationale"></div>
+
+        <div class="chain" id="chain">
+          <p class="chain-label">Why this chart</p>
+          <ol class="chain-steps">
+            <li><span class="chain-step">Data</span><span class="chain-value" id="chain-data"></span></li>
+            <li><span class="chain-step">Analytical question</span><span class="chain-value" id="chain-question"></span></li>
+            <li><span class="chain-step">Visual encoding</span><span class="chain-value" id="chain-encoding"></span></li>
+            <li><span class="chain-step">Chart form</span><span class="chain-value" id="chain-chart"></span></li>
+          </ol>
+        </div>
+
+        <details class="data-table-details">
+          <summary>Show the numbers behind this view</summary>
+          <div class="table-scroll" id="data-table"></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== ENCODINGS -->
+<section class="band" id="encodings">
+  <div class="wrap">
+    <p class="eyebrow">The conceptual centre</p>
+    <h2>The encoding lens</h2>
+    <p class="section-lede">
+      Select an encoding. Every mark on this page that uses it — in the charts above and in the small
+      examples below — is highlighted, and everything else steps back. Selecting a second one adds it to
+      the lens.
+    </p>
+
+    <div class="encoding-controls">
+      <div class="encoding-grid" id="encoding-grid" role="group" aria-label="Visual encodings"></div>
+      <button type="button" class="btn-clear" id="encoding-clear" disabled>Clear the lens</button>
+    </div>
+
+    <p class="lens-status" id="lens-status" role="status">No encoding selected. All marks shown normally.</p>
+
+    <div class="mini-charts">
+      <figure class="mini">
+        <figcaption>Bar chart</figcaption>
+        <div class="chart-host" id="mini-bar"></div>
+        <p class="mini-recipe"><span data-enc="position">position</span> + <span data-enc="length">length</span></p>
+      </figure>
+      <figure class="mini">
+        <figcaption>Line chart</figcaption>
+        <div class="chart-host" id="mini-line"></div>
+        <p class="mini-recipe"><span data-enc="position">position</span> + <span data-enc="connection">connection</span></p>
+      </figure>
+      <figure class="mini">
+        <figcaption>Heatmap</figcaption>
+        <div class="chart-host" id="mini-heat"></div>
+        <p class="mini-recipe"><span data-enc="position">position</span> × <span data-enc="position">position</span> + <span data-enc="colour">colour</span></p>
+      </figure>
+    </div>
+    <p class="mini-note">
+      The three small charts show Norwegian population growth for the ten years 2016–2025, so the same
+      numbers appear in three different structures.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================= ENCODING TO CHART -->
+<section class="band band-alt" id="recipes">
+  <div class="wrap">
+    <p class="eyebrow">Reading the catalogue backwards</p>
+    <h2>From encoding to chart</h2>
+    <p class="section-lede">
+      Written as recipes rather than definitions. The value of this list is not the seven rows; it is that
+      you can extend it yourself, and that you can look at an unfamiliar chart and work out what it is made of.
+    </p>
+
+    <table class="recipe-table">
+      <caption class="visually-hidden">Common chart forms and the visual encodings they are built from</caption>
+      <thead>
+        <tr><th scope="col">Chart form</th><th scope="col">Built from</th><th scope="col">Good when</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Bar chart</th>
+          <td><span data-enc="position">position</span> + <span data-enc="length">length</span></td>
+          <td>Comparing magnitudes that share a zero baseline.</td>
+        </tr>
+        <tr>
+          <th scope="row">Line chart</th>
+          <td><span data-enc="position">position</span> + <span data-enc="connection">connection</span></td>
+          <td>Change along an ordered variable, usually time.</td>
+        </tr>
+        <tr>
+          <th scope="row">Dot plot</th>
+          <td><span data-enc="position">position</span> (+ <span data-enc="colour">colour</span> for series)</td>
+          <td>Many comparisons in little space; no zero baseline required.</td>
+        </tr>
+        <tr>
+          <th scope="row">Scatter plot</th>
+          <td><span data-enc="position">position</span> × <span data-enc="position">position</span></td>
+          <td>Relationship between two quantities measured on the same units.</td>
+        </tr>
+        <tr>
+          <th scope="row">Heatmap</th>
+          <td><span data-enc="position">position</span> × <span data-enc="position">position</span> + <span data-enc="colour">colour</span></td>
+          <td>Pattern across two dimensions where exact values matter less than shape.</td>
+        </tr>
+        <tr>
+          <th scope="row">Treemap</th>
+          <td><span data-enc="area">area</span> + containment (<span data-enc="area">hierarchy</span>)</td>
+          <td>Part-of-whole with nesting, and too many categories for bars.</td>
+        </tr>
+        <tr>
+          <th scope="row">Sankey diagram</th>
+          <td><span data-enc="connection">connection</span> + <span data-enc="length">width</span> + <span data-enc="direction">direction</span></td>
+          <td>Flows that balance: everything that enters has to leave or remain.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <h3>Why there is no treemap on this page</h3>
+      <p>
+        Table 06913 is a flat annual time series for one region. It has no hierarchy, so a treemap would
+        encode the components of population change as areas without adding a single thing a sorted bar chart
+        does not already say — and it would make negative values impossible to draw. The flow view further up
+        earns its complexity because the demographic accounting really does balance. A treemap here would not.
+      </p>
+      <p>
+        If you want a legitimate treemap from Statistics Norway, use a table with genuine nesting, such as
+        population by county and municipality (StatBank table 07459), where the containment is real.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= CLOSING -->
+<section class="band closing" id="closing">
+  <div class="wrap">
+    <p class="closing-statement">
+      Do not ask <em>“Which chart should I use?”</em> until you have asked
+      <em>“What comparison should the reader be able to make?”</em>
+    </p>
+
+    <ol class="recap">
+      <li><span class="recap-n">1</span> Start with the analytical task, not the chart type.</li>
+      <li><span class="recap-n">2</span> Chart types are combinations of visual encodings.</li>
+      <li><span class="recap-n">3</span> Use the simplest chart that preserves the insight.</li>
+      <li><span class="recap-n">4</span> Specialised charts reveal structures classic charts cannot.</li>
+      <li><span class="recap-n">5</span> The best chart is the one that makes the relevant comparison easy.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================ DATA -->
+<section class="band band-alt" id="sources">
+  <div class="wrap">
+    <p class="eyebrow">Provenance</p>
+    <h2>Data, definitions and transformations</h2>
+
+    <div class="source-cols">
+      <div>
+        <h3>Source</h3>
+        <p>
+          Statistics Norway, StatBank table 06913: <em>Population 1 January and population changes during the
+          calendar year</em>, whole country (region code 0), 1951–2026.
+          <a href="https://www.ssb.no/en/statbank/table/06913">Table 06913 in StatBank</a>.
+        </p>
+        <p class="api-line">
+          Retrieved with a single HTTP GET from the PxWebApi v2 endpoint:
+        </p>
+        <p class="api-url" id="api-url"></p>
+        <p class="fetch-status" id="fetch-status"></p>
+      </div>
+
+      <div>
+        <h3>Units and definitions</h3>
+        <ul class="def-list">
+          <li><strong>Population</strong> — persons registered as resident in Norway on 1 January. A stock, measured at an instant.</li>
+          <li><strong>Births, deaths, immigration, emigration</strong> — persons, counted over the calendar year. Flows, measured over a period.</li>
+          <li><strong>Excess of births</strong> — births minus deaths. Negative means more deaths than births.</li>
+          <li><strong>Net migration</strong> — immigration minus emigration. Negative means net outward migration.</li>
+          <li><strong>Population growth</strong> — from 2005 onwards, the population on 1 January of the following year minus the population on 1 January of the current year.</li>
+          <li><strong>Statistical adjustments</strong> — the gap between population growth measured that way and the sum of excess of births and net migration. Statistics Norway publishes it as a separate item because delayed reports, annulments and revisions mean the two calculations never agree exactly.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Transformations made for these visualisations</h3>
+    <ul class="def-list">
+      <li>
+        <strong>Stocks are never mixed with flows on one scale.</strong> Population is around 5.6 million;
+        the annual components are in the tens of thousands. They appear in separate views, and the flow
+        diagram deliberately excludes the stock.
+      </li>
+      <li>
+        <strong>The heatmap is scaled row by row.</strong> Each row is normalised to its own minimum and
+        maximum, because the four series differ by nearly an order of magnitude. Colour therefore shows a
+        year's position within that series, and colours are not comparable between rows. This is stated
+        again on the chart.
+      </li>
+      <li>
+        <strong>Statistical adjustments are derived, not read.</strong> They are computed as population growth
+        minus (excess of births + net migration), which is Statistics Norway's own definition of the item.
+      </li>
+      <li>
+        <strong>No axis is truncated.</strong> Bar charts and level lines begin at zero. Where a scale does
+        not begin at zero — the scatter plot — no length is being encoded, so nothing is exaggerated.
+      </li>
+      <li>
+        <strong>Missing values are gaps.</strong> The flow components for 2026 are not yet published, so 2026
+        appears in the stock series and not in the flow series. Nothing is interpolated or carried forward.
+      </li>
+    </ul>
+
+    <details class="series-details">
+      <summary>Series returned by the API for this table</summary>
+      <div id="series-list"></div>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      Teaching material for the ESTP course in Data Visualisation, Module 1.
+      Figures are the property of Statistics Norway and are reproduced under their
+      <a href="https://www.ssb.no/en/diverse/lisens">terms of use</a>. This page is not a Statistics Norway publication.
+    </p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

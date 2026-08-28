@@ -2,11 +2,11 @@
 
 Standalone static teaching page for an ESTP course aimed at employees of European National Statistical Institutes.
 
-The central teaching idea is:
+The conceptual centre is:
 
-> **Good design creates order before it creates emphasis.**
+> **Design creates order in complex information.**
 
-The page uses real population data from Statistics Norway to show how hierarchy, comparison, selective emphasis, progressive disclosure and purposeful interaction can reduce the cognitive work required to understand the same statistical information.
+The page uses the same statistical information throughout one five-step transformation: **Hierarchy → Emphasis → Comparison → Interaction → Structure**.
 
 ## Run and publish
 
@@ -20,72 +20,54 @@ styles.css
 script.js
 data/
   data.js
-  population_teaching_extract_07459.csv
+  population_07459.csv
   population_2021_one_year_07459.csv
   source-metadata.json
 README.md
 ```
 
-You can open `index.html` directly. The project can also be published directly with GitHub Pages.
+Open `index.html` directly, or publish the folder through GitHub Pages. `data/data.js` contains the browser-ready teaching extract, so the page does not depend on a live API call.
 
-`data/data.js` contains the same teaching extract as the CSV files in browser-ready form so the page works reliably from both `file://` and GitHub Pages without a live API dependency.
+## Existing ESTP design system
 
-## Design system
-
-Module 4 deliberately reuses the established ESTP Module 1–3 design system rather than creating a new visual identity.
-
-`styles.css` begins with the complete Module 3 stylesheet foundation and preserves the existing:
+`styles.css` starts with the established Module 1–3 stylesheet foundation and retains its:
 
 - CSS variables and SSB-inspired palette;
 - Arial/Helvetica typography and heading hierarchy;
-- `1180px` page shell;
-- 8px SSB-green top stripe and header treatment;
-- generous section spacing;
-- rectangular surfaces and controls;
-- segmented/toggle control treatment;
-- chart gridline, axis, annotation and tooltip conventions;
+- 1180 px page shell;
+- 8 px SSB-green top stripe and header treatment;
+- section rhythm and generous white space;
+- rectangular controls with minimal rounding and no shadow system;
+- stepper, toggle, explanatory-note and chart conventions;
+- restrained gridlines and chart labels;
 - source area and dark footer;
-- responsive breakpoints at 900px and 620px;
+- responsive breakpoints at 900 px and 620 px;
 - visible focus states and `prefers-reduced-motion` behaviour.
 
-Module 4-specific rules are appended after that shared stylesheet. No framework, shadow system, gradient, new typography or new colour family has been introduced.
+Module 4-specific rules are appended after the shared stylesheet. No framework, new typography, gradient or new colour family is introduced.
 
 ## Statistical source
 
-**Statistics Norway, StatBank table 07459**  
-**Population, by sex and one-year age groups (M), 1986–2026**
+**Statistics Norway, StatBank table 07459 — Population, by sex and one-year age groups (M), 1986–2026**
 
 - Source: Statistics Norway
 - Unit: persons (number)
 - Reference time: 1 January
 - Table updated: 25 February 2026, 08:00
-- Data and metadata checked for this page: 27 August 2026
-- Region in the teaching extract: The whole country (code `0`)
-- StatBank: https://www.ssb.no/en/statbank/table/07459
+- Data and metadata checked for this page: 28 August 2026
+- Region: The whole country (code `0`)
+- Main years: 2021 and 2023
+- Sex: females and males
+- Ages: 20–54
+- Table: https://www.ssb.no/en/statbank/table/07459
 
-The table contains the dimensions year, region, age and sex, with population as the measured value.
+### 2021 source slice
 
-The main analytical question on the page is:
+Saved query `10054226` contains one-year ages and both sexes for the whole country in 2021:
 
-> **How did the population distribution among ages 20–54 change between 2021 and 2023, and where do women and men differ?**
+https://www.ssb.no/en/statbank1/sq/10054226
 
-The region is deliberately held constant at the whole country. This avoids municipal-boundary comparability issues and demonstrates an important design choice: a data dimension does not automatically need to become a user control.
-
-## Local teaching extract and transformations
-
-### 2021 — one-year ages aggregated locally
-
-The file `population_2021_one_year_07459.csv` preserves the 70 source observations used for 2021: ages 20–54 for women and men.
-
-Source selection corresponds to SSB saved query `10054226`:
-
-- Region: The whole country
-- Sex: Females, Males
-- Age: one-year ages 20–54 (the saved query also displays ages 18–19, which are not used here)
-- Year: 2021
-- Measure: Persons
-
-For the teaching visualization, consecutive one-year ages are summed into seven five-year groups:
+For the teaching visualization, one-year ages are summed into seven five-year groups:
 
 - 20–24
 - 25–29
@@ -95,66 +77,39 @@ For the teaching visualization, consecutive one-year ages are summed into seven 
 - 45–49
 - 50–54
 
-For example, the 2021 value for women aged 20–24 is the sum of the five published counts for ages 20, 21, 22, 23 and 24. No weighting or interpolation is used.
+No weighting or interpolation is used. `data/population_2021_one_year_07459.csv` preserves the source observations used in the aggregation.
 
-### 2023 — SSB five-year aggregation
+### 2023 source slice
 
-The 2023 values come directly from SSB saved query `10103858`, which uses StatBank's five-year age aggregation:
+Saved query `10103858` contains SSB's published five-year groups for females and males in the whole country in 2023:
 
-- Region: The whole country
-- Sex: Females, Males
-- Age groups: 20–24 through 50–54
-- Year: 2023
-- Measure: Persons
+https://www.ssb.no/en/statbank1/table/07459/tableViewLayout1/?loadedQueryId=10103858&timeType=item
 
-The 15–19 group available in that query is not used because the comparable 2021 extract begins at age 20.
+The teaching page uses the seven groups from 20–24 through 50–54 directly.
 
-### 2026 — broad age overview
+## Main verified teaching values
 
-The hero uses SSB's published 2026 broad age groups from the Population statistics page, sourced from table 07459:
+| Age group | 2021 women | 2021 men | 2023 women | 2023 men | Combined change 2021→2023 |
+|---|---:|---:|---:|---:|---:|
+| 20–24 | 163,240 | 175,181 | 162,029 | 171,937 | -1.3% |
+| 25–29 | 178,586 | 188,300 | 179,424 | 188,774 | +0.4% |
+| 30–34 | 186,717 | 194,118 | 193,166 | 201,179 | +3.5% |
+| 35–39 | 174,068 | 184,221 | 181,397 | 189,576 | +3.5% |
+| 40–44 | 168,819 | 178,970 | 174,403 | 182,857 | +2.7% |
+| 45–49 | 181,392 | 190,410 | 175,545 | 183,024 | -3.6% |
+| 50–54 | 182,852 | 191,985 | 186,875 | 194,532 | +1.8% |
 
-| Age group | Persons |
-| --- | ---: |
-| 0 | 55,578 |
-| 1–5 | 276,475 |
-| 6–12 | 429,001 |
-| 13–15 | 200,930 |
-| 16–19 | 276,650 |
-| 20–44 | 1,865,473 |
-| 45–66 | 1,563,660 |
-| 67–79 | 674,694 |
-| 80–89 | 239,357 |
-| 90+ | 45,582 |
+No smoothing, interpolation, modelling or synthetic observations are used.
 
-These sum to the published total population of **5,627,400** on 1 January 2026.
+## Interaction and accessibility
 
-No smoothing, interpolation, modelling or synthetic observations are used anywhere on the page.
-
-## Teaching structure
-
-The central interaction moves through:
-
-1. **Structure** — grouping, spacing, ordering and common scales before strong colour;
-2. **Hierarchy** — a clear reading order for message, chart, controls, metadata and source;
-3. **Emphasis** — one analytically relevant age group is highlighted while context remains visible;
-4. **Comparison** — aligned years, common scales and identical age ordering reduce mental calculation;
-5. **Interaction** — exact values, sex selection and age highlighting are added only after the static information structure works.
-
-Additional demonstrations cover visual hierarchy, typography, gridlines, data labels, annotations, categorical versus highlight colour, progressive disclosure, multidimensional data and accessibility.
-
-## Accessibility
-
-The page includes:
-
-- semantic headings and landmarks;
-- keyboard-operable buttons, segmented controls and selectors;
-- keyboard-selectable chart rows in the main interactive view;
+- semantic landmarks and headings;
+- native buttons for controls;
+- step navigation supports left/right arrow keys plus Home/End;
 - visible focus states;
-- minimum 44px control targets in the shared control system;
-- chart descriptions and non-hover detail readouts;
-- direct labels and position cues in addition to colour;
-- responsive layouts at the same breakpoints as the previous modules;
-- horizontal chart access on narrow screens where necessary;
-- `prefers-reduced-motion` support inherited from the shared design system.
-
-Important statistical information is never available only on hover.
+- minimum 44 px shared control targets;
+- chart rows can be selected with mouse, touch, Enter or Space in the interactive steps;
+- exact values are presented in a persistent readout, not hover-only;
+- colour is reinforced by position, labels and muting;
+- responsive SVG with horizontal access on narrow screens where needed;
+- shared `prefers-reduced-motion` handling.

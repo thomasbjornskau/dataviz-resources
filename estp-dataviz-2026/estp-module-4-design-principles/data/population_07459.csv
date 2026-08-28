@@ -1,0 +1,29 @@
+year,region,sex,age_group,population,unit,reference_time,transformation
+2021,The whole country,Women,20–24,163240,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,20–24,175181,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,25–29,178586,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,25–29,188300,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,30–34,186717,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,30–34,194118,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,35–39,174068,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,35–39,184221,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,40–44,168819,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,40–44,178970,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,45–49,181392,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,45–49,190410,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Women,50–54,182852,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2021,The whole country,Men,50–54,191985,persons,1 January,2021: sum of five one-year ages; 2023: published five-year group
+2023,The whole country,Women,20–24,162029,persons,1 January,Published five-year group
+2023,The whole country,Men,20–24,171937,persons,1 January,Published five-year group
+2023,The whole country,Women,25–29,179424,persons,1 January,Published five-year group
+2023,The whole country,Men,25–29,188774,persons,1 January,Published five-year group
+2023,The whole country,Women,30–34,193166,persons,1 January,Published five-year group
+2023,The whole country,Men,30–34,201179,persons,1 January,Published five-year group
+2023,The whole country,Women,35–39,181397,persons,1 January,Published five-year group
+2023,The whole country,Men,35–39,189576,persons,1 January,Published five-year group
+2023,The whole country,Women,40–44,174403,persons,1 January,Published five-year group
+2023,The whole country,Men,40–44,182857,persons,1 January,Published five-year group
+2023,The whole country,Women,45–49,175545,persons,1 January,Published five-year group
+2023,The whole country,Men,45–49,183024,persons,1 January,Published five-year group
+2023,The whole country,Women,50–54,186875,persons,1 January,Published five-year group
+2023,The whole country,Men,50–54,194532,persons,1 January,Published five-year group

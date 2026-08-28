@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Module 4 of an ESTP course in Data Visualization: Design Principles, using Statistics Norway population data.">
+  <meta name="description" content="Module 4 of an ESTP course in Data Visualization: Design Principles, using verified Statistics Norway population data.">
   <title>Module 4 – Design Principles</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -23,17 +23,20 @@
   <main id="main">
     <section class="hero page-shell" aria-labelledby="hero-title">
       <div class="hero__copy">
-        <p class="section-kicker">Module 3 guided attention. Module 4 gives the information structure.</p>
+        <p class="section-kicker">Module 3 guided attention. Module 4 gives information a visual structure.</p>
         <h1 id="hero-title">Design creates order</h1>
-        <p class="hero__lead">Complex data does not become clear by adding more visual elements. It becomes clear when information is given structure, hierarchy and purpose.</p>
-        <div class="hero__chain" aria-label="Design sequence">
-          <span>structure</span><span aria-hidden="true">→</span><span>hierarchy</span><span aria-hidden="true">→</span><span>emphasis</span><span aria-hidden="true">→</span><span>comparison</span><span aria-hidden="true">→</span><strong>interaction</strong>
+        <p class="hero__lead">Good design helps readers see what matters, compare what belongs together and access detail without becoming overwhelmed.</p>
+        <div class="hero__chain" aria-label="Five design principles">
+          <span>hierarchy</span><span aria-hidden="true">→</span><span>emphasis</span><span aria-hidden="true">→</span><span>comparison</span><span aria-hidden="true">→</span><span>interaction</span><span aria-hidden="true">→</span><strong>structure</strong>
         </div>
       </div>
-      <div class="hero__teaser" aria-label="Preview of the 2026 population structure of Norway">
-        <p class="teaser-label">Population by broad age group · Norway · 1 January 2026</p>
-        <svg id="hero-chart" class="chart" viewBox="0 0 520 280" role="img" aria-label="Compact bar chart of Norway's population by broad age group in 2026"></svg>
-        <p class="teaser-question">The data already has structure. The design should make it visible.</p>
+      <div class="hero__teaser" aria-label="Population structure preview">
+        <p class="teaser-label">Population aged 20–54 · Norway · 2021 and 2023</p>
+        <svg id="hero-chart" class="chart" viewBox="0 0 520 290" role="img" aria-labelledby="hero-chart-title hero-chart-desc">
+          <title id="hero-chart-title">Population by five-year age group</title>
+          <desc id="hero-chart-desc">A compact comparison of the combined female and male population aged 20 to 54 in Norway in 2021 and 2023.</desc>
+        </svg>
+        <p class="teaser-question">The statistics are already complex. Design decides how much of that complexity the reader has to decode at once.</p>
       </div>
     </section>
 
@@ -41,73 +44,62 @@
       <div class="page-shell">
         <div class="section-intro narrow">
           <p class="eyebrow">From complexity to clarity</p>
-          <h2 id="clarity-title">The statistics stay the same. The information structure changes.</h2>
-          <p>The demonstration uses the same national population counts for women and men aged 20–54 in 2021 and 2023. Move through five design decisions and notice which kinds of cognitive work disappear.</p>
+          <h2 id="clarity-title">The data stays the same. The reading task gets easier.</h2>
+          <p>The example contains two years, two sexes and seven age groups. Move through five design decisions. Each step changes the presentation, not the evidence.</p>
         </div>
 
         <div class="demo-shell">
           <div class="stepper stepper--five" role="group" aria-label="Design steps">
-            <button type="button" data-design-step="1" aria-current="step"><span>1</span>Structure</button>
-            <button type="button" data-design-step="2"><span>2</span>Hierarchy</button>
-            <button type="button" data-design-step="3"><span>3</span>Emphasis</button>
-            <button type="button" data-design-step="4"><span>4</span>Comparison</button>
-            <button type="button" data-design-step="5"><span>5</span>Interaction</button>
+            <button type="button" data-step="1" aria-current="step"><span>1</span>Hierarchy</button>
+            <button type="button" data-step="2"><span>2</span>Emphasis</button>
+            <button type="button" data-step="3"><span>3</span>Comparison</button>
+            <button type="button" data-step="4"><span>4</span>Interaction</button>
+            <button type="button" data-step="5"><span>5</span>Structure</button>
           </div>
 
           <div class="demo-heading">
             <div>
-              <p id="design-step-kicker" class="small-label">Step 1 · Structure the information</p>
-              <h3 id="design-step-title">Where do you look first?</h3>
+              <p id="step-kicker" class="small-label">Step 1 · Create hierarchy</p>
+              <h3 id="step-title">Where should the reader start?</h3>
             </div>
-            <p id="design-step-message" class="step-message">All four series are legitimate, but their relationships are not yet organised for reading.</p>
+            <p id="step-message" class="step-message">The title, chart, controls and source should not compete for equal attention.</p>
           </div>
 
-          <div class="structure-tools" aria-label="Design decisions introduced">
-            <span class="tool active" data-design-tool="grouping">Grouping</span>
-            <span class="tool active" data-design-tool="spacing">Spacing</span>
-            <span class="tool" data-design-tool="hierarchy">Hierarchy</span>
-            <span class="tool" data-design-tool="emphasis">Emphasis</span>
-            <span class="tool" data-design-tool="comparison">Comparison</span>
-            <span class="tool" data-design-tool="interaction">Interaction</span>
-          </div>
+          <div id="step-controls" class="step-controls" aria-live="polite"></div>
 
-          <div id="main-demo-card" class="design-demo-card design-state-1">
-            <div id="structure-choice" class="toggle-row structure-choice" role="group" aria-label="Structure demonstration">
-              <button type="button" class="toggle-btn active" data-structure-view="dense" aria-pressed="true">Dense presentation</button>
-              <button type="button" class="toggle-btn" data-structure-view="structured" aria-pressed="false">Structure it</button>
-            </div>
+          <div id="design-card" class="design-demo-card hierarchy-flat">
             <div class="demo-content-header">
               <div>
-                <p id="demo-eyebrow" class="chart-eyebrow">Population structure</p>
-                <h3 id="demo-headline">Women and men aged 20–54, Norway, 2021 and 2023</h3>
-                <p id="demo-subhead">Population on 1 January. Seven five-year age groups.</p>
+                <p class="chart-eyebrow">Population structure</p>
+                <h3 id="demo-headline">Population aged 20–54, Norway, 2021 and 2023</h3>
+                <p id="demo-subhead">Women and men. Population on 1 January. Seven five-year age groups.</p>
               </div>
-              <div id="main-controls" class="main-controls" aria-label="Population controls" hidden>
-                <div class="control-cluster" role="group" aria-label="Sex">
+              <div id="sex-controls" class="main-controls" hidden>
+                <div class="control-cluster" role="group" aria-label="Select sex">
                   <span>Sex</span>
-                  <button type="button" data-sex="All" aria-pressed="true">All</button>
+                  <button type="button" data-sex="All" aria-pressed="true">Women + men</button>
                   <button type="button" data-sex="Women" aria-pressed="false">Women</button>
                   <button type="button" data-sex="Men" aria-pressed="false">Men</button>
                 </div>
-                <label class="select-control">Highlight age
-                  <select id="age-highlight">
-                    <option value="35–39">35–39</option>
-                    <option value="20–24">20–24</option><option value="25–29">25–29</option>
-                    <option value="30–34">30–34</option><option value="40–44">40–44</option>
-                    <option value="45–49">45–49</option><option value="50–54">50–54</option>
-                  </select>
-                </label>
-                <span class="fixed-control">Region <strong>Norway</strong></span>
               </div>
             </div>
+
             <figure class="main-population-figure" aria-labelledby="demo-headline demo-chart-desc">
-              <svg id="design-chart" class="chart" viewBox="0 0 960 500" role="img" aria-labelledby="demo-headline demo-chart-desc"></svg>
-              <p id="demo-chart-desc" class="sr-only">Interactive comparison of population counts for women and men aged 20 to 54 in Norway in 2021 and 2023. The design changes in five steps while the statistical values remain unchanged.</p>
+              <svg id="design-chart" class="chart" viewBox="0 0 960 510" role="img" aria-labelledby="demo-headline demo-chart-desc"></svg>
+              <figcaption id="demo-chart-desc" class="chart-description">The same verified population values are used in every step.</figcaption>
             </figure>
-            <div id="detail-panel" class="detail-panel" aria-live="polite">
-              <p class="small-label">Detail when needed</p>
-              <p id="detail-copy">Select an age group in step 5 for exact values. Until then, the chart carries the overview.</p>
+
+            <div id="chart-readout" class="chart-readout" aria-live="polite">Exact values are introduced only when they solve a reading problem.</div>
+
+            <div id="dimension-map" class="dimension-map" hidden aria-label="How the dimensions are structured">
+              <div><span>Show</span><strong>Age</strong><small>visible rows</small></div>
+              <div><span>Encode</span><strong>Population</strong><small>bar length</small></div>
+              <div><span>Compare</span><strong>Year</strong><small>aligned panels</small></div>
+              <div><span>Select</span><strong>Sex</strong><small>one control</small></div>
+              <div><span>Fix</span><strong>Region</strong><small>Norway</small></div>
+              <div><span>Reveal</span><strong>Exact values</strong><small>on selection</small></div>
             </div>
+
             <div class="demo-meta">
               <p><strong>Unit:</strong> persons</p>
               <p><strong>Reference:</strong> 1 January</p>
@@ -117,239 +109,96 @@
           </div>
 
           <div id="step-learning" class="definition-note">
-            <strong>Structure comes before emphasis.</strong>
-            <p>Grouping, alignment and white space tell the reader what belongs together before colour tells them what matters most. White space is relational information, not unused space.</p>
+            <strong>Create hierarchy before adding decoration.</strong>
+            <p>Position, spacing, typography and visual weight create a reading order even when colour is restrained.</p>
           </div>
 
           <div class="step-actions">
-            <button id="prev-design-step" class="secondary-btn" type="button" disabled>← Previous</button>
-            <span id="design-step-status" class="sr-only" aria-live="polite">Step 1 of 5</span>
-            <button id="next-design-step" class="primary-btn" type="button">Next step →</button>
+            <button id="prev-step" class="secondary-btn" type="button" disabled>← Previous</button>
+            <span id="step-status" class="sr-only" aria-live="polite">Step 1 of 5</span>
+            <button id="next-step" class="primary-btn" type="button">Next step →</button>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="principle-break page-shell" aria-label="Central design principle">
-      <p><strong>Good design creates order before it creates emphasis.</strong> Decoration cannot repair a weak information structure.</p>
+    <section class="principle-break page-shell" aria-label="Central lesson">
+      <p><strong>Design creates order in complex information.</strong> A useful design decision removes a decoding task from the reader.</p>
     </section>
 
-    <section class="section page-shell" aria-labelledby="hierarchy-title">
+    <section class="section page-shell" aria-labelledby="five-title">
       <div class="section-intro narrow">
-        <p class="eyebrow">What do you see first?</p>
-        <h2 id="hierarchy-title">Hierarchy creates a reading order</h2>
-        <p>Nothing in the statistical content changes below. Only position, spacing, type size, weight and borders change.</p>
+        <p class="eyebrow">Five key takeaways</p>
+        <h2 id="five-title">Five different jobs, one design system</h2>
+        <p>The steps above are not separate style rules. They work together to decide what the reader sees now, what stays quiet and what can wait.</p>
       </div>
-      <div class="teaching-panel hierarchy-demo">
-        <div class="toggle-row" role="group" aria-label="Hierarchy version">
-          <button type="button" class="toggle-btn active" data-hierarchy="flat" aria-pressed="true">Flat hierarchy</button>
-          <button type="button" class="toggle-btn" data-hierarchy="clear" aria-pressed="false">Clear hierarchy</button>
-        </div>
-        <p class="prompt">What did you notice first?</p>
-        <div id="hierarchy-composition" class="stat-composition flat">
-          <div class="composition-controls"><span>2021</span><span>2023</span><span>Women + men</span></div>
-          <div class="composition-copy">
-            <p class="composition-kicker">Norway · population · 1 January</p>
-            <h3>Population aged 30–39 increased between 2021 and 2023</h3>
-            <p>Among the seven five-year groups shown, the 30–34 and 35–39 groups both increased by about 3.5 per cent.</p>
-          </div>
-          <svg id="hierarchy-chart" class="chart" viewBox="0 0 900 280" role="img" aria-label="Population counts by age group in 2023"></svg>
-          <p class="composition-annotation"><strong>Annotation:</strong> 30–34 had 394,345 people in 2023.</p>
-          <p class="composition-source">Source: Statistics Norway, StatBank table 07459. Unit: persons. Reference date: 1 January.</p>
-        </div>
+      <div class="principle-index">
+        <article><b>1</b><div><h3>Hierarchy</h3><p>Create a clear reading order before adding decoration.</p></div></article>
+        <article><b>2</b><div><h3>Emphasis</h3><p>Make only the analytically important elements prominent.</p></div></article>
+        <article><b>3</b><div><h3>Comparison</h3><p>Use alignment, ordering and common scales to reduce mental work.</p></div></article>
+        <article><b>4</b><div><h3>Interaction</h3><p>Reveal detail or subsets only when they answer a question.</p></div></article>
+        <article><b>5</b><div><h3>Structure</h3><p>Show some dimensions, select some and reveal others progressively.</p></div></article>
       </div>
     </section>
 
-    <section class="section comparison-section" aria-labelledby="comparison-title">
+    <section class="section support-section" aria-labelledby="support-title">
       <div class="page-shell">
         <div class="section-intro narrow">
-          <p class="eyebrow">Design should support comparison</p>
-          <h2 id="comparison-title">Make the important comparison visually cheap</h2>
-          <p>The reader should not have to remember one distribution while decoding another. Common scales, identical ordering and aligned baselines turn comparison into perception rather than mental arithmetic.</p>
+          <p class="eyebrow">One small design comparison</p>
+          <h2 id="support-title">Supporting elements should stay supporting</h2>
+          <p>Typography, gridlines, labels and colour all participate in hierarchy. The useful question is how much attention each element deserves.</p>
         </div>
-        <div class="teaching-panel">
-          <div class="toggle-row" role="group" aria-label="Comparison layout">
-            <button type="button" class="toggle-btn active" data-compare-layout="separate" aria-pressed="true">Harder to compare</button>
-            <button type="button" class="toggle-btn" data-compare-layout="aligned" aria-pressed="false">Aligned comparison</button>
+        <div class="teaching-panel support-comparison">
+          <div class="toggle-row" role="group" aria-label="Supporting elements comparison">
+            <button class="toggle-btn active" type="button" data-support="competition" aria-pressed="true">Too much visual competition</button>
+            <button class="toggle-btn" type="button" data-support="supporting" aria-pressed="false">Supporting elements stay supporting</button>
           </div>
-          <p class="prompt">Which differences can you see without calculating them mentally?</p>
-          <div id="comparison-stage" class="comparison-stage separate">
-            <figure><figcaption><strong>2021</strong><span>Women + men</span></figcaption><svg id="compare-2021" class="chart" viewBox="0 0 520 330" role="img" aria-label="2021 population by age group"></svg></figure>
-            <figure><figcaption><strong>2023</strong><span>Women + men</span></figcaption><svg id="compare-2023" class="chart" viewBox="0 0 520 330" role="img" aria-label="2023 population by age group"></svg></figure>
+          <div class="support-layout">
+            <div>
+              <p id="support-eyebrow" class="chart-eyebrow">EVERY ELEMENT IS LOUD</p>
+              <h3 id="support-headline">Population by age group, 2023</h3>
+              <p id="support-copy">Heavy gridlines, repeated labels and equal typographic weight make the reader process the furniture before the pattern.</p>
+            </div>
+            <div class="support-chart-wrap"><svg id="support-chart" class="chart" viewBox="0 0 720 360" role="img" aria-label="Before and after comparison of supporting chart elements"></svg></div>
           </div>
-          <p id="comparison-note" class="definition-note"><strong>Same values, harder comparison.</strong> Separate scale ranges and reversed ordering force the reader to reconstruct the relationship.</p>
+          <p id="support-note" class="definition-note"><strong>Nothing statistical changes.</strong> The improved version simply asks supporting elements to claim less attention.</p>
         </div>
       </div>
     </section>
-
-    <section class="section page-shell" aria-labelledby="support-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Supporting elements should stay supporting</p>
-        <h2 id="support-title">Typography, gridlines and labels are part of the same hierarchy</h2>
-        <p>These are not isolated style choices. Each one decides how much attention a supporting element claims.</p>
-      </div>
-
-      <div class="support-grid">
-        <article class="support-demo teaching-panel">
-          <h3>Typography as structure</h3>
-          <div class="toggle-row" role="group" aria-label="Typography version">
-            <button class="toggle-btn active" type="button" data-type-mode="many" aria-pressed="true">Too many signals</button>
-            <button class="toggle-btn" type="button" data-type-mode="clear" aria-pressed="false">One clear hierarchy</button>
-          </div>
-          <div id="type-sample" class="type-sample many">
-            <p class="type-a">Population by age</p><p class="type-b">Norway 2023</p><p class="type-c">35–39 years: 370,973</p><p class="type-d">Source: SSB 07459</p>
-          </div>
-          <p>Use few type sizes, selective weight, deliberate alignment and readable line lengths. Type should signal information roles, not offer more things to decode.</p>
-        </article>
-
-        <article class="support-demo teaching-panel">
-          <h3>Gridlines: too much versus enough</h3>
-          <div class="toggle-row" role="group" aria-label="Gridline version">
-            <button class="toggle-btn active" type="button" data-grid-mode="heavy" aria-pressed="true">Too much</button>
-            <button class="toggle-btn" type="button" data-grid-mode="enough" aria-pressed="false">Enough</button>
-          </div>
-          <svg id="grid-demo-chart" class="chart" viewBox="0 0 520 300" role="img" aria-label="Same bar chart with adjustable supporting gridlines"></svg>
-          <p><strong>Supporting elements should support comparison, not compete with the data.</strong></p>
-        </article>
-
-        <article class="support-demo teaching-panel label-demo-card">
-          <h3>Data labels should have a role</h3>
-          <div class="segmented three" role="group" aria-label="Label strategy">
-            <button type="button" data-label-mode="all" aria-pressed="true">Label everything</button>
-            <button type="button" data-label-mode="none" aria-pressed="false">Label nothing</button>
-            <button type="button" data-label-mode="strategic" aria-pressed="false">Label strategically</button>
-          </div>
-          <svg id="label-demo-chart" class="chart" viewBox="0 0 520 300" role="img" aria-label="Population bars demonstrating three data-label strategies"></svg>
-          <p id="label-note">Every value is available, but every value also competes for attention.</p>
-        </article>
-      </div>
-
-      <div class="annotation-design teaching-panel">
-        <div>
-          <p class="small-label">Annotations in Module 4</p>
-          <h3>Integrate explanation into the visual hierarchy</h3>
-          <p>Place an annotation close to the relevant data, keep it quieter than the main message and use one consistent annotation style. A detached text box creates another object the reader must connect mentally.</p>
-        </div>
-        <div class="annotation-layout" aria-label="Integrated versus detached annotation example">
-          <div class="annotation-integrated"><span class="mini-bar"></span><p><strong>35–39</strong><br>+3.5% from 2021 to 2023</p></div>
-          <div class="annotation-detached"><span class="mini-bar"></span><p>Note: There was an increase for this group. See the chart.</p></div>
-        </div>
-      </div>
-
-      <div class="colour-system teaching-panel">
-        <div>
-          <p class="small-label">Colour as a design system</p>
-          <h3>Categorical colour and highlight colour do different jobs</h3>
-          <p>Categorical colour separates categories that need to remain equally visible. Highlight colour creates hierarchy. Do not assign a different strong colour to every age group when the analytical task is to focus on one.</p>
-        </div>
-        <div class="colour-examples">
-          <div><p><strong>Categorical colour</strong></p><div class="colour-row categorical"><span>Women</span><span>Men</span></div><small>Two categories that must remain distinguishable.</small></div>
-          <div><p><strong>Highlight colour</strong></p><div class="colour-row highlight"><span>35–39 selected</span><span>Other ages</span></div><small>One accent creates focus; neutral marks preserve context.</small></div>
-        </div>
-        <p class="colour-rule"><strong>Colour is one of the strongest hierarchy controls available. Use it sparingly.</strong> Labels and position reinforce the distinction, so colour is not the sole identifier.</p>
-      </div>
-    </section>
-
-    <section class="section interaction-section" aria-labelledby="interaction-title">
-      <div class="page-shell">
-        <div class="section-intro narrow">
-          <p class="eyebrow">Interaction should earn its place</p>
-          <h2 id="interaction-title">Every interaction adds a small cognitive cost</h2>
-          <p>Use interaction when the informational benefit is larger. The default view should already communicate something useful.</p>
-        </div>
-        <div class="interaction-grid">
-          <article><span class="interaction-mark">Exact</span><h3>Tooltip / detail</h3><p><strong>Problem solved:</strong> exact counts are available without permanently labelling every mark.</p></article>
-          <article><span class="interaction-mark">Trace</span><h3>Highlight</h3><p><strong>Problem solved:</strong> one age group can be followed while the rest remains as context.</p></article>
-          <article><span class="interaction-mark">Subset</span><h3>Filter</h3><p><strong>Problem solved:</strong> women and men can answer genuinely different comparison questions.</p></article>
-          <article class="unnecessary"><span class="interaction-mark">↻</span><h3>Switch bar colour</h3><p><strong>Interaction without an information purpose.</strong> It changes appearance but does not answer a statistical question.</p><button id="decorative-control" class="secondary-btn" type="button">Change decorative colour</button></article>
-        </div>
-        <div class="progressive-panel teaching-panel">
-          <div>
-            <p class="small-label">Progressive disclosure</p>
-            <h3>Overview first → detail when needed</h3>
-            <p>Progressive disclosure does not remove information. It controls when information enters the reader's attention.</p>
-          </div>
-          <div class="disclosure-sequence" aria-label="Progressive disclosure sequence"><span>Overall pattern</span><b>→</b><span>Selected age</span><b>→</b><span>Exact values</span><b>→</b><span>Source detail</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section page-shell" aria-labelledby="complexity-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Complexity needs structure</p>
-        <h2 id="complexity-title">Not every dimension has to become a visual encoding</h2>
-        <p>The source table contains age × sex × region × year × population. A sophisticated design decides which dimensions should be shown, compared, selected or revealed.</p>
-      </div>
-      <div class="dimension-grid">
-        <div class="dimension-box">
-          <p class="small-label">Data dimensions</p>
-          <span>Age</span><span>Sex</span><span>Region</span><span>Year</span>
-        </div>
-        <div class="dimension-arrow" aria-hidden="true">↓</div>
-        <div class="dimension-box decisions">
-          <p class="small-label">Design decisions</p>
-          <span><strong>Show</strong> age</span><span><strong>Compare</strong> year</span><span><strong>Select</strong> sex</span><span><strong>Reveal</strong> exact values</span>
-        </div>
-      </div>
-      <div class="dimension-demo teaching-panel">
-        <div class="toggle-row" role="group" aria-label="Dimension design">
-          <button class="toggle-btn active" type="button" data-dimension-mode="all" aria-pressed="true">All dimensions visible simultaneously</button>
-          <button class="toggle-btn" type="button" data-dimension-mode="structured" aria-pressed="false">Show · compare · select · reveal</button>
-        </div>
-        <div id="dimension-stage" class="dimension-stage all">
-          <div class="dimension-noise" aria-hidden="true"><span>Age → x</span><span>Sex → colour</span><span>Year → shape</span><span>Region → size</span><span>Value → length</span><span>More legends → more decoding</span></div>
-          <div class="dimension-structured"><strong>Age is the visual structure.</strong><span>Year becomes an aligned comparison.</span><span>Sex becomes a selection.</span><span>Region is fixed to Norway.</span><span>Exact values are revealed on demand.</span></div>
-        </div>
-        <p id="dimension-note"><strong>More encoding is not the same as more information.</strong> Simultaneous dimensions create decoding tasks before the reader can reach the statistical pattern.</p>
-      </div>
-    </section>
-
-    <section class="section accessibility-section" aria-labelledby="access-title">
-      <div class="page-shell">
-        <div class="section-intro narrow">
-          <p class="eyebrow">Accessibility is design</p>
-          <h2 id="access-title">A clear hierarchy should survive without colour, hover or a large screen</h2>
-          <p>Accessibility and information structure often reinforce each other: direct labels reduce legend lookup, larger targets reduce interaction errors, semantic controls clarify purpose, and restrained hierarchy reduces noise.</p>
-        </div>
-        <div class="access-grid">
-          <article class="access-example colour-only"><h3>Colour only</h3><div><span></span><span></span></div><p>Two marks differ only through colour.</p></article>
-          <article class="access-example labelled"><h3>Colour + label + position</h3><div><span>Women</span><span>Men</span></div><p>The same distinction remains available if colour perception changes.</p></article>
-        </div>
-        <div class="access-checks" aria-label="Accessibility built into this module">
-          <span>Keyboard controls</span><span>Visible focus</span><span>Touch targets</span><span>Semantic HTML</span><span>Direct text alternatives</span><span>Responsive layout</span><span>No hover-only facts</span><span>Reduced motion</span>
-        </div>
-      </div>
-    </section>
-
 
     <section class="section page-shell course-progression" aria-labelledby="progression-title">
       <div class="section-intro narrow">
         <p class="eyebrow">Course progression</p>
-        <h2 id="progression-title">Module 4 answers a different question</h2>
+        <h2 id="progression-title">Module 4 answers the structure question</h2>
       </div>
       <div class="progression-grid">
-        <span><b>1</b><strong>What relationship should the visualization reveal?</strong><small>Chart choice and visual encodings.</small></span>
-        <span><b>2</b><strong>Who needs to understand it, for what purpose and with what context?</strong><small>Audience and contextualisation.</small></span>
-        <span><b>3</b><strong>How do we guide the reader through the insight?</strong><small>Storytelling and attention.</small></span>
-        <span class="current"><b>4</b><strong>How do we give the information a clear visual structure?</strong><small>Hierarchy, comparison, interaction and complexity.</small></span>
-        <span><b>5</b><strong>What can go wrong with these choices?</strong><small>Misleading or ineffective visualization.</small></span>
+        <span><b>1</b><strong>What relationship should the visualization reveal?</strong></span>
+        <span><b>2</b><strong>Who needs to understand it, for what purpose and with what context?</strong></span>
+        <span><b>3</b><strong>How do we guide the reader through the insight?</strong></span>
+        <span class="current"><b>4</b><strong>How do we give the information a clear visual structure?</strong></span>
+        <span><b>5</b><strong>What can go wrong with these choices?</strong></span>
       </div>
     </section>
 
-    <section class="section page-shell final-transform" aria-labelledby="final-transform-title">
-      <div class="section-intro narrow">
-        <p class="eyebrow">Final transformation</p>
-        <h2 id="final-transform-title">Unstructured versus designed</h2>
-        <p>The statistical content is recognisably the same. The designed version changes the work the reader has to do.</p>
-      </div>
-      <div class="teaching-panel">
-        <div class="toggle-row" role="group" aria-label="Final design comparison">
-          <button type="button" class="toggle-btn active" data-final-mode="unstructured" aria-pressed="true">Unstructured</button>
-          <button type="button" class="toggle-btn" data-final-mode="designed" aria-pressed="false">Designed</button>
+    <section class="section final-transform" aria-labelledby="final-compare-title">
+      <div class="page-shell">
+        <div class="section-intro narrow">
+          <p class="eyebrow">Final comparison</p>
+          <h2 id="final-compare-title">Before and after</h2>
+          <p>Both views contain the same population evidence. Only the information structure changes.</p>
         </div>
-        <h3 id="final-design-headline">Population aged 20–54 by sex and year</h3>
-        <p id="final-design-copy">Four equally weighted series and many labels expose the data, but not the intended comparison.</p>
-        <svg id="final-design-chart" class="chart" viewBox="0 0 960 500" role="img" aria-label="Toggle between an unstructured and designed presentation of the same population data"></svg>
+        <div class="teaching-panel">
+          <div class="toggle-row" role="group" aria-label="Final design comparison">
+            <button type="button" class="toggle-btn active" data-final="before" aria-pressed="true">Before</button>
+            <button type="button" class="toggle-btn" data-final="after" aria-pressed="false">After</button>
+          </div>
+          <div class="final-copy">
+            <p class="chart-eyebrow" id="final-eyebrow">Four series · equal weight</p>
+            <h3 id="final-headline">Population aged 20–54 by sex and year</h3>
+            <p id="final-copy">The reader can decode the data, but the intended comparison has not been organised for them.</p>
+          </div>
+          <div class="final-chart-wrap"><svg id="final-chart" class="chart" viewBox="0 0 960 510" role="img" aria-label="Before and after presentation of the same population data"></svg></div>
+        </div>
       </div>
     </section>
 
@@ -357,11 +206,11 @@
       <p class="section-kicker">Module 4</p>
       <h2 class="final-statement" id="final-takeaway-title">Good design does not make statistics look simpler. It makes their structure easier to understand.</h2>
       <div class="recap" aria-label="Five key takeaways">
-        <span><b>1</b>Create hierarchy before adding decoration. Reading order comes from position, spacing, alignment, type and weight.</span>
-        <span><b>2</b>Use visual emphasis selectively. Prominence should correspond to analytical importance.</span>
-        <span><b>3</b>Design for comparison with alignment, common scales, meaningful ordering and consistent spacing.</span>
-        <span><b>4</b>Interaction should reveal structure or detail. It should solve an information problem, not advertise technology.</span>
-        <span><b>5</b>Complexity needs structure. Show some dimensions, compare some, select some and reveal others progressively.</span>
+        <span><b>1</b>Create hierarchy before adding decoration.</span>
+        <span><b>2</b>Use visual emphasis selectively.</span>
+        <span><b>3</b>Design should support comparison.</span>
+        <span><b>4</b>Interaction should reveal, not distract.</span>
+        <span><b>5</b>Complexity needs structure.</span>
       </div>
     </section>
 
@@ -372,24 +221,26 @@
         <div>
           <h3>SSB table 07459</h3>
           <p><strong>Population, by sex and one-year age groups (M), 1986–2026.</strong></p>
-          <p>Unit: persons (number). Reference time: 1 January. The table was updated 25 February 2026.</p>
+          <p>Unit: persons (number). Reference time: 1 January. Table updated 25 February 2026.</p>
           <a class="source-link" href="https://www.ssb.no/en/statbank/table/07459" target="_blank" rel="noopener">Open StatBank table ↗</a>
         </div>
         <div>
-          <h3>Main teaching extract</h3>
-          <p>Region is fixed to <strong>The whole country</strong>. The main comparison uses women and men aged 20–54 in 2021 and 2023.</p>
-          <p>2021 one-year counts were summed into seven five-year groups. 2023 uses SSB's five-year age aggregation directly. No smoothing, interpolation or modelled values are used.</p>
+          <h3>Teaching extract</h3>
+          <p>Region: <strong>The whole country</strong>. Years: <strong>2021 and 2023</strong>. Sex: women and men. Ages: <strong>20–54</strong>.</p>
+          <p>2021 one-year counts are summed into seven five-year groups. 2023 uses SSB's published five-year groups directly.</p>
         </div>
         <div>
           <h3>Verification</h3>
-          <p>Data and metadata checked: <strong>27 August 2026</strong>. The 2026 overview uses SSB's ten published broad age groups.</p>
-          <p>Keeping the comparison at national level avoids municipality-boundary changes. The local CSV files and <code>source-metadata.json</code> document every extraction slice and transformation.</p>
+          <p>Data and metadata checked: <strong>28 August 2026</strong>.</p>
+          <p>No weighting, smoothing, interpolation or modelled values. The local CSV and metadata files document the extract and transformation.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="page-shell"><p>ESTP Data Visualization · Module 4</p><p>Statistics Norway data · static teaching extract checked 27 August 2026</p></div></footer>
+  <footer class="site-footer">
+    <div class="page-shell"><p>ESTP Data Visualization · Module 4</p><p>Statistics Norway data · static teaching extract checked 28 August 2026</p></div>
+  </footer>
 
   <script src="data/data.js"></script>
   <script src="script.js"></script>

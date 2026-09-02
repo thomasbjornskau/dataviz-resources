@@ -1,0 +1,41 @@
+{
+  "verified": "2026-09-02",
+  "annual": {
+    "dataset": "lfsi_emp_a",
+    "updated": "2026-06-11T21:00:00+02:00",
+    "coverage": "2003–2025",
+    "mainFilters": {
+      "freq": "A",
+      "indic_em": "EMP_LFS",
+      "sex": "T",
+      "age": "Y20-64",
+      "unit": "PC_POP"
+    }
+  },
+  "quarterly": {
+    "dataset": "lfsi_emp_q",
+    "mainFilters": {
+      "freq": "Q",
+      "indic_em": "EMP_LFS",
+      "sex": "T",
+      "age": "Y20-64",
+      "unit": "PC_POP",
+      "s_adj": "SA"
+    }
+  },
+  "flows": {
+    "dataset": "lfsi_long_q",
+    "population": "15–74",
+    "mainFilters": {
+      "freq": "Q",
+      "sex": "T",
+      "unit": "THS_PER",
+      "s_adj": "SA"
+    }
+  },
+  "notes": [
+    "No interpolation or synthetic fallback observations are used.",
+    "The composition view derives unemployment as a share of population from labour-force share minus employment share; outside labour force is 100 minus labour-force share.",
+    "The relationship view was intentionally omitted because job-vacancy coverage and seasonal-adjustment conventions are not sufficiently uniform across the intended EU/EFTA country set for this short introduction."
+  ]
+}

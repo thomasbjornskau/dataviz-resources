@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ESTP Data Visualization Module 0: one labour-market indicator viewed through different visual forms using Eurostat data.">
+  <title>Module 0 – One indicator, many views</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="page-shell site-header__inner">
+      <div>
+        <p class="eyebrow">ESTP · Data Visualization</p>
+        <p class="site-header__module">Module 0 — Introduction</p>
+      </div>
+      <a class="source-link source-link--header" href="https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_a/default/table" target="_blank" rel="noopener">Eurostat data ↗</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-shell" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="section-kicker">One indicator. Different questions. Different views.</p>
+        <h1 id="hero-title">What share of the population has a job?</h1>
+        <p class="hero__lead">Begin with one number. Then change the question — not the topic.</p>
+      </div>
+
+      <div class="hero__answer" aria-live="polite">
+        <p class="hero__metric-label">Employment rate</p>
+        <p class="hero__metric" id="hero-value">—</p>
+        <p class="hero__period" id="hero-period">Population aged 20–64</p>
+        <p class="hero__change" id="hero-change">Loading Eurostat data…</p>
+      </div>
+    </section>
+
+    <section class="transition page-shell" aria-labelledby="transition-title">
+      <h2 id="transition-title">But a single number answers only one question.</h2>
+      <p>Choose a country, then move through different views of the same labour-market topic.</p>
+    </section>
+
+    <section class="explorer-section" aria-labelledby="explorer-title">
+      <div class="page-shell">
+        <div class="explorer-heading">
+          <div>
+            <p class="section-kicker">Visual vocabulary</p>
+            <h2 id="explorer-title">One indicator. Many views.</h2>
+          </div>
+          <label class="country-control" for="country-select">
+            <span>Explore employment in:</span>
+            <select id="country-select" aria-describedby="country-help"></select>
+            <span class="sr-only" id="country-help">Changing country updates all available views on this page.</span>
+          </label>
+        </div>
+
+        <div class="view-navigation" aria-label="Choose a visual view">
+          <div class="view-group">
+            <span class="view-group__label">Snapshot</span>
+            <div class="segmented" role="group" aria-label="Snapshot views">
+              <button type="button" data-view="number" aria-pressed="true">Number</button>
+              <button type="button" data-view="composition" aria-pressed="false">Composition</button>
+            </div>
+          </div>
+          <div class="view-group">
+            <span class="view-group__label">Compare</span>
+            <div class="segmented" role="group" aria-label="Comparison views">
+              <button type="button" data-view="age" aria-pressed="false">Age</button>
+              <button type="button" data-view="rank" aria-pressed="false">Rank</button>
+              <button type="button" data-view="deviation" aria-pressed="false">EU difference</button>
+            </div>
+          </div>
+          <div class="view-group">
+            <span class="view-group__label">Change</span>
+            <div class="segmented" role="group" aria-label="Change over time views">
+              <button type="button" data-view="annual" aria-pressed="false">Annual</button>
+              <button type="button" data-view="quarterly" aria-pressed="false">Quarterly</button>
+            </div>
+          </div>
+          <div class="view-group">
+            <span class="view-group__label">Explore</span>
+            <div class="segmented" role="group" aria-label="Exploratory views">
+              <button type="button" data-view="map" aria-pressed="false">Map</button>
+              <button type="button" data-view="flow" aria-pressed="false">Flow</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-view-select">
+          <label for="view-select">View</label>
+          <select id="view-select">
+            <option value="number">Number</option>
+            <option value="composition">Composition</option>
+            <option value="age">Age</option>
+            <option value="rank">Rank</option>
+            <option value="deviation">EU difference</option>
+            <option value="annual">Annual</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="map">Map</option>
+            <option value="flow">Flow</option>
+          </select>
+        </div>
+
+        <article class="visual-stage" aria-labelledby="chart-title">
+          <div class="chart-heading">
+            <div>
+              <p class="chart-eyebrow" id="chart-purpose">MAGNITUDE</p>
+              <h3 id="chart-title">Employment rate</h3>
+              <p class="chart-subtitle" id="chart-subtitle"></p>
+            </div>
+            <label class="year-control" id="year-control" for="year-select" hidden>
+              <span>Year</span>
+              <select id="year-select"></select>
+            </label>
+          </div>
+
+          <div class="chart-area" id="chart-area" aria-live="polite"></div>
+          <p class="availability-message" id="availability-message" role="status" hidden></p>
+          <p class="useful-for"><strong>Useful for:</strong> <span id="useful-for">Showing one important current value quickly.</span></p>
+          <p class="chart-summary" id="chart-summary"></p>
+        </article>
+
+        <p class="contrast-note" id="contrast-note" hidden><strong>The map shows where.</strong> The ranking shows how much.</p>
+      </div>
+    </section>
+
+    <section class="source-section page-shell" aria-labelledby="source-title">
+      <p class="section-kicker">Source</p>
+      <h2 id="source-title">Eurostat · EU Labour Force Survey</h2>
+      <div class="source-grid">
+        <div>
+          <h3>Annual employment</h3>
+          <p><code>lfsi_emp_a</code> · employment and labour force by sex and age.</p>
+          <p>Main indicator: employment rate, ages 20–64, percentage of total population.</p>
+          <a class="source-link" href="https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_a/default/table" target="_blank" rel="noopener">Open dataset ↗</a>
+        </div>
+        <div>
+          <h3>Quarterly employment</h3>
+          <p><code>lfsi_emp_q</code> · quarterly employment, ages 20–64.</p>
+          <p>The page requests seasonally adjusted observations. If unavailable, the view is shown as unavailable.</p>
+          <a class="source-link" href="https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table" target="_blank" rel="noopener">Open dataset ↗</a>
+        </div>
+        <div>
+          <h3>Labour-market flows</h3>
+          <p><code>lfsi_long_q</code> · transitions between employment, unemployment and outside the labour force.</p>
+          <p>Flows refer to ages 15–74 and use a different methodology from the main 20–64 indicator.</p>
+          <a class="source-link" href="https://ec.europa.eu/eurostat/databrowser/view/lfsi_long_q/default/table" target="_blank" rel="noopener">Open dataset ↗</a>
+        </div>
+      </div>
+      <p class="source-meta" id="source-meta">Data are requested directly from Eurostat. Metadata verified 2 September 2026.</p>
+    </section>
+
+    <section class="final page-shell" aria-labelledby="final-title">
+      <p class="section-kicker">Module 0</p>
+      <h2 class="final-statement" id="final-title">Chart types are different ways of looking at statistical information — and the useful view depends on what you want to see.</h2>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="page-shell">
+      <p>ESTP Data Visualization · Module 0</p>
+      <p>Eurostat data · metadata verified 2 September 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

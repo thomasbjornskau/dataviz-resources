@@ -1,0 +1,11 @@
+[
+  {"id":"system","navn":"System og standarder","und":"hva NR er, hvilke regler som gjelder"},
+  {"id":"delregnskap","navn":"Delregnskaper","und":"hvordan NR er strukturert"},
+  {"id":"struktur","navn":"Institusjonell struktur","und":"hvem og hva vi teller"},
+  {"id":"produksjon","navn":"Produksjonssiden","und":"hva vi produserer"},
+  {"id":"inntekt","navn":"Inntektssiden","und":"hvordan verdier fordeles"},
+  {"id":"anvendelse","navn":"Anvendelsessiden","und":"hvor verdiene går"},
+  {"id":"kapital","navn":"Kapital, formue og utland","und":"beholdninger og grensesnittet utad"},
+  {"id":"aggregater","navn":"Aggregater, priser og tid","und":"de store målene og hvordan vi måler dem"},
+  {"id":"prosess","navn":"Produksjonsprosess","und":"hvordan tallene lages"}
+]

@@ -1,0 +1,8 @@
+[
+  {"n":1,"navn":"Rammer","und":"lover, standarder, definisjoner"},
+  {"n":2,"navn":"Kilder","und":"data som kommer inn"},
+  {"n":3,"navn":"Forsystem","und":"bearbeiding før hovedregnskap"},
+  {"n":4,"navn":"Hovedsystem","und":"beregning, avstemming, balansering"},
+  {"n":5,"navn":"Publisering","und":"tall ut i verden"},
+  {"n":6,"navn":"Etter publisering","und":"revisjon og rapportering"}
+]

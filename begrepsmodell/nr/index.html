@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Begrepsmodell for makrostatistikker</title>
+<style>
+:root{
+  --gronn:#00824D;
+  --morkgronn:#274247;
+  --lyseblaa:#F0F8F9;
+  --mellomtone:#C3DCDC;
+  --lilla:#7E5EE8;
+  --tekst:#1B2E32;
+  --dempet:#5a6a6d;
+  --svak:#8a9497;
+  --haar:#d4dfe0;
+  --haar-sterk:#a9b6b8;
+  --papir:#ffffff;
+
+  /* lag-farger — Okabe-Ito for de 8 substansielle lagene, nøytral grå for system */
+  --l-system:#7A7A7A;         /* nøytral grå — rammer og standarder */
+  --l-delregnskap:#0072B2;    /* Okabe-Ito blå — formell struktur */
+  --l-struktur:#009E73;       /* Okabe-Ito grønn-blå — institusjonelle enheter */
+  --l-produksjon:#56B4E9;     /* Okabe-Ito himmelblå — vareproduksjon */
+  --l-inntekt:#E69F00;        /* Okabe-Ito oransje — verdiene fordeles */
+  --l-anvendelse:#D55E00;     /* Okabe-Ito vermilion — der verdiene ender */
+  --l-kapital:#CC79A7;        /* Okabe-Ito rødlilla — beholdninger, utland */
+  --l-aggregater:#000000;     /* Okabe-Ito svart — hovedstørrelsene */
+  --l-prosess:#F0E442;        /* Okabe-Ito gul — produksjonsapparatet (kant nødvendig) */
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--lyseblaa);color:var(--tekst);
+  font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+
+/* ---------- topp ---------- */
+.stripe-topp{height:8px;background:var(--gronn)}
+.ssb-header{background:var(--papir);border-bottom:1px solid var(--haar)}
+.ssb-header-inner{max-width:1180px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:52px}
+.modul{font-weight:700;font-size:15px;color:var(--morkgronn);letter-spacing:.01em}
+.kilde-lenke{font-size:13px;color:var(--morkgronn);text-decoration:none;border-bottom:1px solid var(--haar-sterk);padding-bottom:1px}
+.kilde-lenke:hover{border-bottom-color:var(--morkgronn)}
+.kilde-lenke:focus-visible{outline:2px solid var(--gronn);outline-offset:3px}
+
+/* ---------- ingress ---------- */
+main{max-width:1180px;margin:0 auto;padding:40px 24px 0}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--gronn);margin:0 0 12px}
+h1{font-size:32px;font-weight:700;color:var(--morkgronn);margin:0 0 12px;line-height:1.15;letter-spacing:-.005em}
+.lede{margin:0 0 28px;font-size:16px;color:var(--dempet);max-width:64ch}
+
+/* ---------- kontroller ---------- */
+.kontroll-rad{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  padding:14px 0;border-top:1px solid var(--haar);border-bottom:1px solid var(--haar);margin-bottom:22px}
+.sok{flex:1 1 240px;max-width:340px;position:relative}
+#sok{font:inherit;font-size:14px;width:100%;padding:9px 12px 9px 34px;
+  border:1px solid var(--haar-sterk);background:var(--papir);color:var(--tekst);
+  border-radius:0;min-height:40px}
+#sok:focus{outline:2px solid var(--gronn);outline-offset:1px;border-color:var(--morkgronn)}
+#sok::placeholder{color:var(--svak)}
+.sok::before{content:"⌕";position:absolute;left:10px;top:50%;transform:translateY(-52%);color:var(--svak);font-size:16px;pointer-events:none}
+.segmentert{display:inline-flex;border:1px solid var(--haar-sterk)}
+.segmentert button{font:inherit;font-size:13px;padding:8px 14px;background:var(--papir);
+  color:var(--morkgronn);border:0;border-right:1px solid var(--haar-sterk);cursor:pointer;min-height:40px;min-width:44px}
+.segmentert button:last-child{border-right:0}
+.segmentert button[aria-pressed="true"]{background:var(--morkgronn);color:#fff;font-weight:700}
+.segmentert button:focus-visible{outline:2px solid var(--gronn);outline-offset:1px;position:relative;z-index:1}
+.teller{color:var(--dempet);font-size:13px;margin-left:auto}
+
+/* ---------- modul-flate ---------- */
+.modul-flate{background:var(--papir);border:1px solid var(--haar);
+  display:grid;grid-template-columns:240px minmax(0,1fr) 300px;min-height:600px}
+
+/* liste */
+.liste{border-right:1px solid var(--haar);overflow-y:auto;max-height:74vh;padding:8px 0 40px}
+.lag-blokk{padding:14px 18px 6px}
+.lag-navn{font-size:14px;font-weight:700;color:var(--morkgronn);margin:0 0 3px;
+  display:flex;align-items:center;gap:8px;letter-spacing:.005em}
+.lag-prikk{width:9px;height:9px;flex:0 0 9px;border-radius:50%;border:1px solid rgba(0,0,0,.18);box-sizing:border-box}
+.lag-und{margin:0 0 6px;font-size:12px;color:var(--svak)}
+.lag-tall{margin-left:auto;font-size:11px;color:var(--svak);font-weight:400}
+.term{font:inherit;font-size:13.5px;background:none;border:0;border-left:3px solid transparent;
+  padding:6px 18px 6px 27px;cursor:pointer;color:var(--tekst);display:block;width:100%;text-align:left;line-height:1.35;min-height:32px}
+.term:hover{background:var(--lyseblaa)}
+.term:focus-visible{outline:2px solid var(--gronn);outline-offset:-2px;position:relative;z-index:1}
+.term.utvidet{color:var(--dempet)}
+.term.valgt{background:var(--morkgronn);color:#fff;font-weight:700;border-left-color:var(--gronn)}
+
+/* scene */
+.scene{position:relative;background:var(--papir);overflow:hidden;min-height:520px}
+canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none;background:var(--papir)}
+canvas.drar{cursor:grabbing}
+.overlegg-topp{position:absolute;top:14px;left:16px;font-size:11px;color:var(--dempet);
+  letter-spacing:.09em;text-transform:uppercase;pointer-events:none;font-weight:700}
+.tegnforklaring{position:absolute;bottom:14px;left:14px;background:rgba(255,255,255,.95);
+  border:1px solid var(--haar);padding:8px 12px;font-size:12px;color:var(--dempet);line-height:1.4;max-width:280px}
+.tegnforklaring b{color:var(--tekst);font-weight:700}
+.kontroller-graf{position:absolute;bottom:14px;right:14px;display:flex;gap:6px}
+.kontroller-graf button{font:inherit;font-size:12px;padding:7px 10px;border:1px solid var(--haar-sterk);
+  background:var(--papir);color:var(--morkgronn);cursor:pointer;min-height:32px;min-width:44px}
+.kontroller-graf button:hover{border-color:var(--morkgronn)}
+.kontroller-graf button:focus-visible{outline:2px solid var(--gronn);outline-offset:1px}
+
+/* detalj */
+.detalj{border-left:1px solid var(--haar);overflow-y:auto;max-height:74vh;padding:22px 20px 40px}
+.detalj-tom{color:var(--svak);font-size:13.5px;padding-top:10px}
+.d-lag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:0 0 8px;
+  display:flex;align-items:center;gap:8px;color:var(--morkgronn)}
+.d-lag .lag-prikk{width:9px;height:9px}
+.d-lag .gruppe{color:var(--dempet);font-weight:400;letter-spacing:.02em;text-transform:none;font-size:12px}
+.d-term{font-size:22px;font-weight:700;color:var(--morkgronn);line-height:1.2;margin:0 0 12px;letter-spacing:-.005em}
+.d-def{margin:0;font-size:14.5px;color:var(--tekst)}
+.d-boks{background:var(--lyseblaa);border-left:3px solid var(--gronn);
+  padding:12px 14px;margin:16px 0 0;font-size:13.5px}
+.d-boks.lilla{border-left-color:var(--lilla)}
+.d-boks h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  color:var(--morkgronn);margin:0 0 6px}
+.d-boks .hopp{font:inherit;font-size:13.5px;background:none;border:0;padding:2px 0;
+  color:var(--morkgronn);cursor:pointer;display:block;text-align:left;font-weight:400;min-height:28px}
+.d-boks .hopp:hover{text-decoration:underline}
+.d-boks .hopp:focus-visible{outline:2px solid var(--gronn);outline-offset:2px}
+.d-boks .pil{color:var(--svak);margin-right:6px}
+.d-meta{margin:16px 0 0;font-size:13px;color:var(--dempet)}
+.d-meta dt{font-weight:700;color:var(--morkgronn);text-transform:uppercase;letter-spacing:.09em;font-size:10.5px;margin-top:12px}
+.d-meta dt:first-child{margin-top:0}
+.d-meta dd{margin:3px 0 0}
+
+/* ---------- kilder ---------- */
+.kilder{margin-top:32px;padding:28px 0 40px;border-top:1px solid var(--haar)}
+.kilder .eyebrow{color:var(--dempet)}
+.kilder h2{font-size:20px;font-weight:700;color:var(--morkgronn);margin:0 0 18px}
+.kilder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px 32px}
+.kilder-grid dt{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--dempet);margin:0 0 4px}
+.kilder-grid dd{margin:0;font-size:14px;color:var(--tekst)}
+.kilder p{margin:20px 0 0;font-size:13.5px;color:var(--dempet);max-width:72ch}
+
+/* ---------- footer ---------- */
+footer{background:var(--morkgronn);color:#c9d4d6;margin-top:0;padding:32px 24px}
+.footer-inner{max-width:1180px;margin:0 auto;font-size:13px;line-height:1.6}
+.footer-inner strong{color:#fff;font-weight:700}
+
+/* ---------- responsivt ---------- */
+@media (max-width:900px){
+  .modul-flate{grid-template-columns:1fr;min-height:auto}
+  .liste,.detalj{max-height:none;border-left:0;border-right:0;border-top:1px solid var(--haar)}
+  .liste{max-height:340px}
+  .scene{min-height:420px;border-top:1px solid var(--haar)}
+}
+@media (max-width:620px){
+  main{padding:24px 16px 0}
+  h1{font-size:24px}
+  .ssb-header-inner{padding:12px 16px}
+  .kontroll-rad{gap:10px}
+  .teller{width:100%;margin-left:0}
+  .scene{min-height:360px}
+  footer{padding:22px 16px}
+}
+
+/* ---------- redusert bevegelse ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+
+/* ---------- lag-farger på klasser ---------- */
+.lag-prikk.l-system{background:var(--l-system)} .lag-prikk.l-delregnskap{background:var(--l-delregnskap)}
+.lag-prikk.l-struktur{background:var(--l-struktur)} .lag-prikk.l-produksjon{background:var(--l-produksjon)}
+.lag-prikk.l-inntekt{background:var(--l-inntekt)} .lag-prikk.l-anvendelse{background:var(--l-anvendelse)}
+.lag-prikk.l-kapital{background:var(--l-kapital)} .lag-prikk.l-aggregater{background:var(--l-aggregater)}
+.lag-prikk.l-prosess{background:var(--l-prosess)}
+.d-lag.l-system{color:var(--l-system)} .d-lag.l-delregnskap{color:var(--l-delregnskap)}
+.d-lag.l-struktur{color:var(--l-struktur)} .d-lag.l-produksjon{color:var(--l-produksjon)}
+.d-lag.l-inntekt{color:var(--l-inntekt)} .d-lag.l-anvendelse{color:var(--l-anvendelse)}
+.d-lag.l-kapital{color:var(--l-kapital)} .d-lag.l-aggregater{color:var(--l-aggregater)}
+.d-lag.l-prosess{color:var(--l-prosess)}
+</style>
+</head>
+<body>
+<div class="stripe-topp"></div>
+<header class="ssb-header"><div class="ssb-header-inner">
+  <div class="modul" data-meta="modul">Begrepsmodell for makrostatistikker</div>
+  <a class="kilde-lenke" href="#kilder" data-meta="kildeLenkeTekst">Om og metode</a>
+</div></header>
+
+<main>
+  <p class="eyebrow" data-meta="eyebrow">Nasjonalregnskapet · Arbeidsutkast</p>
+  <h1 data-meta="tittel">Begrepsmodell for makrostatistikker</h1>
+  <p class="lede" data-meta="lede">Språket vi bruker i nasjonalregnskapet og de tilstøtende makrostatistikkene — fra ESA-standardene og de institusjonelle sektorene til det praktiske produksjonsapparatet med forsystemer, hovedsystemer og publiseringssystemer.</p>
+
+  <div class="kontroll-rad">
+    <div class="sok"><input id="sok" type="search" placeholder="Søk i begreper" aria-label="Søk i begreper"></div>
+    <div class="segmentert" role="group" aria-label="Utvalg">
+      <button id="knapp-kjerne" aria-pressed="true">Kjerne</button>
+      <button id="knapp-alle" aria-pressed="false">Alle begreper</button>
+    </div>
+    <span class="teller" id="teller" aria-live="polite"></span>
+  </div>
+
+  <div class="modul-flate">
+    <aside class="liste" id="liste" aria-label="Begrepsliste"></aside>
+    <div class="scene">
+      <canvas id="graf" aria-label="Interaktiv graf over begrepene"></canvas>
+      <div class="overlegg-topp">Dra for å rotere · klikk en node</div>
+      <div class="tegnforklaring" id="tegn"></div>
+      <div class="kontroller-graf">
+        <button id="knapp-nullstill" aria-label="Nullstill visning">Nullstill</button>
+      </div>
+    </div>
+    <aside class="detalj" id="detalj" aria-label="Detaljer for valgt begrep" aria-live="polite"></aside>
+  </div>
+
+  <section class="kilder" id="kilder">
+    <p class="eyebrow">Om og metode</p>
+    <h2>Kilder og forutsetninger</h2>
+    <dl class="kilder-grid">
+      <div><dt>Formål</dt><dd data-meta="formaal">Onboarding og felles språk for NR-miljøet</dd></div>
+      <div><dt>Omfang</dt><dd data-meta="omfang">117 begreper i 9 lag</dd></div>
+      <div><dt>Versjon</dt><dd data-meta="versjon">0.1 · arbeidsutkast</dd></div>
+      <div><dt>Sist oppdatert</dt><dd data-meta="oppdatert">4. september 2026</dd></div>
+      <div><dt>Kilder</dt><dd data-meta="kilder">SSB «Begreper i nasjonalregnskapet» (2014), «Om statistikken», ESA 2010, 2008 SNA, intern NR-ordliste</dd></div>
+      <div><dt>Autoritative definisjoner</dt><dd data-meta="autoritative">ESA 2010 (Eurostat) · SSBs kontoplan · KLASS</dd></div>
+    </dl>
+    <p data-meta="omMetodeTekst">Definisjonene er skrevet for å skape felles forståelse raskt, ikke for å være juridisk eller metodisk uttømmende. Der modellen berører autoritative definisjoner — ESA-standardene, klassifikasjoner, kvalitetsdimensjoner — er det de forvaltede kildene som gjelder. Deler av produksjonsprosess-vokabularet er hentet fra intern ordliste og er ikke autoritativ SSB-terminologi.</p>
+  </section>
+</main>
+
+<footer><div class="footer-inner">
+  <strong>Statistisk sentralbyrå</strong><br>
+  <span data-meta="footerTekst">Internt arbeidsutkast. Ta kontakt med Seksjon for nasjonalregnskap for spørsmål om definisjoner eller for å foreslå endringer.</span></div></footer>
+
+<script id="data" type="application/json">{"rows":[{"id":"nasjonalregnskap","t":"nasjonalregnskap","lag":"system","gruppe":"Systemet","k":1,"f":1,"d":"Et helhetlig, avstemt regnskap over norsk økonomi. Ikke bare summen av tall, men systemet som får dem til å henge sammen som ett konsistent bilde.","par":[],"hvor":""},{"id":"esa2010","t":"ESA 2010","lag":"system","gruppe":"Systemet","k":1,"f":1,"d":"Det europeiske nasjonalregnskapssystemet, versjon 2010. Rammeverket Norge er forpliktet til å følge gjennom EØS. Bygger på 2008 SNA, tilpasset europeiske forhold.","par":["sna2008"],"hvor":"Fastsatt av Eurostat"},{"id":"sna2008","t":"2008 SNA","lag":"system","gruppe":"Systemet","k":1,"f":1,"d":"System of National Accounts — det globale rammeverket for nasjonalregnskap, utarbeidet av FN, OECD, IMF, Verdensbanken og Eurostat i fellesskap. ESA 2010 er den europeiske tilpasningen.","par":[],"hvor":""},{"id":"kontoplan","t":"kontoplan","lag":"system","gruppe":"Systemet","k":1,"f":1,"d":"Den komplette oversikten over alle konti i NR — produksjonskonti, inntektskonti, kapitalkonti. Selve rammen for hvordan tallene organiseres.","par":[],"hvor":"Bygger på ESA 2010 og 2008 SNA"},{"id":"hovedrevisjon","t":"hovedrevisjon","lag":"system","gruppe":"Revisjon og hjemmel","k":1,"f":6,"d":"Periodisk revisjon om lag hvert 5. år, der også «endelige» tall og tidsserier bakover revideres. Innfører nye definisjoner, klassifikasjoner og metoder. Siste var november 2025, tilbake til 1970.","par":["tallrevisjon"],"hvor":""},{"id":"tallrevisjon","t":"tallrevisjon","lag":"system","gruppe":"Revisjon og hjemmel","k":0,"f":6,"d":"Periodisk revisjon som hovedsakelig innarbeider ny statistikk, uten større konseptuelle endringer. Mindre gjennomgripende enn en hovedrevisjon.","par":["hovedrevisjon"],"hvor":""},{"id":"statistikkloven","t":"statistikkloven","lag":"system","gruppe":"Revisjon og hjemmel","k":0,"f":1,"d":"Loven som både gir SSB rett til å hente inn opplysninger og plikt til å behandle dem fortrolig. Hjemmelen for hele statistikkproduksjonen.","par":[],"hvor":""},{"id":"realregnskap","t":"realregnskap","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Den delen av NR som beskriver produksjon, import og anvendelse av varer og tjenester. Næringen er den sentrale enheten. Grunnlaget for BNP.","par":["sektorregnskap"],"hvor":""},{"id":"sektorregnskap","t":"institusjonelt sektorregnskap","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Den delen av NR som beskriver transaksjoner og beholdninger for institusjonelle sektorer — husholdninger, foretak, offentlig forvaltning, utlandet. Fokus på økonomiske enheter, ikke på næringsvirksomhet.","par":["realregnskap"],"hvor":""},{"id":"innt-kap-regnskap","t":"inntekts- og kapitalregnskap","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Del av sektorregnskapet. Viser sektorenes inntekts- og utgiftstransaksjoner frem til sparing og nettofinansinvestering, samt beholdninger av realkapital, tomter og grunn.","par":[],"hvor":""},{"id":"finansielt-sektor","t":"finansielt sektorregnskap","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Del av sektorregnskapet. Viser beholdning og endring i finansielle fordringer og gjeld, fordelt på finanstransaksjoner, omvurderinger og andre endringer.","par":[],"hvor":""},{"id":"utenriksregnskap","t":"utenriksregnskap","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Norges økonomiske transaksjoner med utlandet. Består av driftsregnskap, kapitalregnskap og finansregnskap. Følger IMFs Balance of Payments Manual.","par":[],"hvor":""},{"id":"offentlige-finanser","t":"offentlige finanser","lag":"delregnskap","gruppe":"Kjerneregnskaper","k":1,"f":1,"d":"Systematisk statistikk over inntekter, utgifter, gjeld og fordringer for offentlig forvaltning. Del av rapporteringen til Eurostat.","par":[],"hvor":""},{"id":"aarlig-nr","t":"årlig NR","lag":"delregnskap","gruppe":"Periodesystemer","k":1,"f":1,"d":"Det detaljerte fundamentet med bredere datagrunnlag. Endelige årstall for år t-2 publiseres i november år t. Alt annet i NR-systemet bygger til slutt på dette.","par":["kvartalsvis-nr"],"hvor":""},{"id":"kvartalsvis-nr","t":"kvartalsvis NR","lag":"delregnskap","gruppe":"Periodesystemer","k":1,"f":1,"d":"System for kvartalstall og foreløpige årstall. Bruker det siste endelige årsregnskapet som basisår, framskrevet med korttidsindikatorer. Mer aggregert og modellbasert enn årsregnskapet.","par":["aarlig-nr"],"hvor":""},{"id":"maanedlig-nr","t":"månedlig NR","lag":"delregnskap","gruppe":"Periodesystemer","k":0,"f":1,"d":"Månedlige tall for nasjonalregnskapet. Månedlige oppdateringer er innstilt fra 2026; publiseres nå hver tredje måned sammen med kvartalstallene.","par":[],"hvor":""},{"id":"arbeidskraftregnskap","t":"arbeidskraftregnskap","lag":"delregnskap","gruppe":"Spesialregnskaper","k":0,"f":1,"d":"Integrert delsystem i NR for sysselsatte personer, årsverk, utførte timeverk, jobber, lønnskostnader og årslønnsvekst.","par":[],"hvor":""},{"id":"fylkesfordelt-nr","t":"fylkesfordelt NR","lag":"delregnskap","gruppe":"Spesialregnskaper","k":0,"f":1,"d":"Hovedstørrelser fra endelig årlig NR fordelt på fylker og landsdeler. Fylker svarer til NUTS III, landsdeler til NUTS II. Publiseres for år t-2 i desember.","par":[],"hvor":""},{"id":"satellittregnskap","t":"satellittregnskap","lag":"delregnskap","gruppe":"Spesialregnskaper","k":0,"f":1,"d":"Regnskap som bygger på NR-begreper men gjør spesielle tilpasninger for et bestemt fenomen — turisme, helseutgifter, miljø, ideelle organisasjoner. Kan bruke andre klassifikasjoner eller definisjoner.","par":[],"hvor":""},{"id":"inst-sektor","t":"institusjonell sektor","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Statistisk gruppering av økonomien i enheter med samme økonomiske funksjon — produksjon, kredittformidling, konsum, offentlig oppgaveløsing. Grunnlaget for det institusjonelle sektorregnskapet.","par":[],"hvor":""},{"id":"ikke-fin-foretak","t":"ikke-finansielle foretak","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Institusjonelle enheter som er markedsprodusenter av varer og ikke-finansielle tjenester. Aksjeselskaper, ANS, kvasi-foretak.","par":["fin-foretak"],"hvor":""},{"id":"fin-foretak","t":"finansielle foretak","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Institusjonelle enheter som produserer finansielle tjenester — banker, forsikringsselskaper, pensjonskasser, verdipapirfond. Inkluderer Norges Bank.","par":["ikke-fin-foretak"],"hvor":""},{"id":"off-forvaltning","t":"offentlig forvaltning","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Institusjonelle enheter som er ikke-markedsprodusenter, hovedsakelig finansiert av obligatoriske betalinger. Ikke det samme som offentlig sektor, som også omfatter offentlig eide foretak.","par":[],"hvor":""},{"id":"husholdninger","t":"husholdninger","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Institusjonelle enheter som tilbyr arbeidskraft, konsumerer varer og tjenester, og driver næringsvirksomhet. «Konsumentene i økonomien». Inkluderer borettslag og boligsameier.","par":[],"hvor":""},{"id":"ideelle-org","t":"ideelle organisasjoner","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Institusjonelle enheter som tilbyr tjenester til husholdningene, hovedsakelig ikke-markedsrettet. Religiøse organisasjoner, idrettslag, politiske partier, arbeidstakerorganisasjoner.","par":[],"hvor":""},{"id":"utlandet","t":"utlandet","lag":"struktur","gruppe":"Sektorer","k":1,"f":2,"d":"Egen institusjonell sektor for utenlandske enheter som transakterer med innenlandske. Ikke en sektor «i Norge», men speilbildet vi trenger for å avstemme regnskapet.","par":[],"hvor":""},{"id":"statsforvaltning","t":"statsforvaltning","lag":"struktur","gruppe":"Undersektorer","k":0,"f":2,"d":"Delsektor av offentlig forvaltning: ikke-markedsrettet virksomhet direkte styrt av sentrale politisk-administrative myndigheter. Statens pensjonsfond inngår her.","par":["kommuneforvaltning"],"hvor":""},{"id":"kommuneforvaltning","t":"kommuneforvaltning","lag":"struktur","gruppe":"Undersektorer","k":0,"f":2,"d":"Delsektor av offentlig forvaltning: kommuner, fylkeskommuner, kirkelige fellesråd, samt kommunale foretak som driver ikke-markedsrettet.","par":["statsforvaltning"],"hvor":""},{"id":"naering","t":"næring","lag":"struktur","gruppe":"Enheter og områder","k":1,"f":2,"d":"Gruppering av alle virksomheter som utøver samme eller lignende aktivitet. Årsregnskapet utarbeides på om lag 130 næringer, kvartalsvis på 60.","par":[],"hvor":"SN2007, basert på NACE Rev.2"},{"id":"virksomhet","t":"virksomhet","lag":"struktur","gruppe":"Enheter og områder","k":0,"f":2,"d":"Produksjonsenhet inndelt etter økonomisk aktivitet. Også kalt lokal bransjeenhet. Et foretak kan bestå av flere virksomheter, én per lokalitet og hovedaktivitet.","par":[],"hvor":""},{"id":"fastlands-norge","t":"Fastlands-Norge","lag":"struktur","gruppe":"Enheter og områder","k":1,"f":2,"d":"Norge minus næringene utvinning av råolje og naturgass, rørtransport og utenriks sjøfart.","par":["petroleum"],"hvor":"Definisjon endret ved hovedrevisjon 2014"},{"id":"petroleum","t":"petroleumsvirksomhet og utenriks sjøfart","lag":"struktur","gruppe":"Enheter og områder","k":0,"f":2,"d":"Samlebetegnelsen for det som ligger utenfor Fastlands-Norge. Egen post i publiseringene fordi disse næringene svinger mye og ellers skjuler underliggende utvikling.","par":["fastlands-norge"],"hvor":""},{"id":"produksjon","t":"produksjon","lag":"produksjon","gruppe":"Kjernebegreper","k":1,"f":4,"d":"Verdien av varer og tjenester fra innenlandsk produksjonsaktivitet. Publiseres i basisverdi. Ikke det samme som salg.","par":["bruttoprodukt"],"hvor":""},{"id":"produktinnsats","t":"produktinnsats","lag":"produksjon","gruppe":"Kjernebegreper","k":1,"f":4,"d":"Verdien av innsatsvarer og -tjenester som brukes opp i produksjonsprosessen. Måles i kjøperverdi. Ikke kapitalslit — det gjelder bruk av fast realkapital.","par":[],"hvor":""},{"id":"bruttoprodukt","t":"bruttoprodukt","lag":"produksjon","gruppe":"Kjernebegreper","k":1,"f":4,"d":"Produksjon minus produktinnsats — den økonomiske merverdien i en næring eller sektor. Publiseres i basisverdi. Summen over alle næringer, pluss produktavgifter minus subsidier, gir BNP.","par":["produksjon"],"hvor":""},{"id":"produkter","t":"produkter","lag":"produksjon","gruppe":"Kjernebegreper","k":1,"f":4,"d":"Varer og tjenester slik de er avgrenset i NR. Grupperes etter CPA. Årsregnskapet skiller om lag 700 produkter.","par":[],"hvor":""},{"id":"tilgang-anvendelse","t":"tilgang og anvendelse","lag":"produksjon","gruppe":"Tilgang og anvendelse","k":1,"f":4,"d":"Den sentrale regnskapsstrukturen som kobler hva som finnes av varer og tjenester med hvordan de brukes. Rektangulære kryssløpstabeller. Kjernen i realregnskapet, både i løpende og faste priser.","par":[],"hvor":""},{"id":"tilgangsside","t":"tilgangsside","lag":"produksjon","gruppe":"Tilgang og anvendelse","k":1,"f":4,"d":"Hva som kommer inn i økonomien: produksjon pluss import. Egen hovedtabell i realregnskapet.","par":["anvendelsesside"],"hvor":""},{"id":"anvendelsesside","t":"anvendelsesside","lag":"produksjon","gruppe":"Tilgang og anvendelse","k":1,"f":4,"d":"Hva som brukes i økonomien: produktinnsats, konsum, investering, lagerendring, eksport. Egen hovedtabell i realregnskapet.","par":["tilgangsside"],"hvor":""},{"id":"markedsrettet","t":"markedsrettet/ikke-markedsrettet produksjon","lag":"produksjon","gruppe":"Særlige produksjonsformer","k":0,"f":4,"d":"Markedsrettet: salg til økonomisk signifikante priser. Ikke-markedsrettet: offentlig forvaltning, ideelle organisasjoner, produksjon for eget bruk. Målemåten skiller seg fundamentalt mellom de to.","par":[],"hvor":""},{"id":"eget-bruk","t":"produksjon for eget bruk","lag":"produksjon","gruppe":"Særlige produksjonsformer","k":0,"f":4,"d":"Varer og tjenester en enhet produserer og bruker selv, uten å gå via markedet. Boligtjenester fra egen bolig er den største komponenten.","par":[],"hvor":""},{"id":"boligtjenester","t":"boligtjenester","lag":"produksjon","gruppe":"Særlige produksjonsformer","k":0,"f":4,"d":"Selveiere «produserer» boligtjenester de selv konsumerer. Verdien beregnes ut fra leiemarkedet for tilsvarende boliger. Inngår i næringen boligtjenester, egen bolig.","par":[],"hvor":""},{"id":"fisim","t":"FISIM","lag":"produksjon","gruppe":"Særlige produksjonsformer","k":0,"f":4,"d":"Financial Intermediation Services Indirectly Measured. Bank- og finanstjenester som ikke betales direkte, men gjennom rentemarginer. Beregnes som produksjon selv om det ikke faktureres.","par":[],"hvor":""},{"id":"lonn","t":"lønn","lag":"inntekt","gruppe":"Arbeidsinntekt","k":1,"f":4,"d":"Godtgjørelse til arbeidstakere. Kontantlønn (inkludert overtid, feriepenger, sykepenger i arbeidsgiverperioden) og naturallønn (fri mobil, gratisreiser, rentefordel).","par":["lonnskostnader"],"hvor":""},{"id":"lonnskostnader","t":"lønnskostnader","lag":"inntekt","gruppe":"Arbeidsinntekt","k":1,"f":4,"d":"Lønn pluss arbeidsgivers trygde- og pensjonspremier. Det arbeidsgiveren totalt betaler for arbeidsinnsatsen — ikke det arbeidstakeren mottar.","par":["lonn"],"hvor":""},{"id":"driftsresultat","t":"driftsresultat","lag":"inntekt","gruppe":"Kapitalinntekt","k":1,"f":4,"d":"Bruttoprodukt minus lønnskostnader og netto næringsskatter, minus kapitalslit. Det som blir igjen etter avlønning av arbeid og kapitalslit.","par":[],"hvor":""},{"id":"blandet-inntekt","t":"blandet inntekt","lag":"inntekt","gruppe":"Kapitalinntekt","k":1,"f":4,"d":"Næringsinntekt til personlig næringsdrivende i husholdningssektoren. Skiller seg fra driftsresultat ved implisitt å inkludere avlønning av eierens eller familiens arbeid.","par":[],"hvor":""},{"id":"kapitalslit","t":"kapitalslit","lag":"inntekt","gruppe":"Kapitalinntekt","k":1,"f":4,"d":"Reduksjon i verdien av fast realkapital på grunn av normal slitasje, skade og foreldelse. Trekkes fra bruttoprodukt for å få nettoprodukt.","par":[],"hvor":""},{"id":"prod-skatter","t":"produksjonsskatter","lag":"inntekt","gruppe":"Skatter og subsidier","k":1,"f":4,"d":"Skatter og avgifter knyttet til produksjon. Sum av produktskatter (varierer med produksjonsvolum) og næringsskatter (gjør det ikke).","par":[],"hvor":""},{"id":"prod-subsidier","t":"produksjonssubsidier","lag":"inntekt","gruppe":"Skatter og subsidier","k":1,"f":4,"d":"Støtteutbetalinger til produsenter. Sum av produktsubsidier og næringssubsidier.","par":[],"hvor":""},{"id":"primaere-inntekter","t":"primære inntekter","lag":"inntekt","gruppe":"Kapitalinntekt","k":0,"f":4,"d":"Inntekter fra deltakelse i produksjon eller eierskap til produksjonskapital. Rene produksjonsinntekter pluss renter og aksjeutbytte. Summen over sektorer gir BNI.","par":[],"hvor":""},{"id":"formuesinntekter","t":"formuesinntekter","lag":"inntekt","gruppe":"Kapitalinntekt","k":0,"f":4,"d":"Inntekter til eiere av finanskapital eller faste ikke-produserte eiendeler stilt til rådighet for andre — renter, aksjeutbytte, leieinntekter.","par":[],"hvor":""},{"id":"formuesutgifter","t":"formuesutgifter","lag":"inntekt","gruppe":"Kapitalinntekt","k":0,"f":4,"d":"Motstykket til formuesinntekter. Det de som disponerer finanskapital eller eiendeler er forpliktet til å betale til eierne.","par":[],"hvor":""},{"id":"produktskatter","t":"produktskatter","lag":"inntekt","gruppe":"Skatter og subsidier","k":0,"f":4,"d":"Skatter som varierer med produksjonsvolum eller er knyttet til produkter — merverdiavgift, bilavgift, bensinavgift, alkoholavgift. Del av produksjonsskattene.","par":["naeringsskatter"],"hvor":""},{"id":"naeringsskatter","t":"næringsskatter","lag":"inntekt","gruppe":"Skatter og subsidier","k":0,"f":4,"d":"Skatter knyttet til produksjonsvirksomheten, men uten sammenheng med produksjonsvolum. Viktigst: skatter knyttet til utvinning av råolje og naturgass.","par":["produktskatter"],"hvor":""},{"id":"konsum","t":"konsum","lag":"anvendelse","gruppe":"Konsum","k":1,"f":4,"d":"Bruk av varer og tjenester for å tilfredsstille behov. Konsum i alt = konsum i husholdninger + ideelle organisasjoner + statsforvaltning + kommuneforvaltning. Kan også summeres som personlig + kollektivt.","par":[],"hvor":""},{"id":"kons-hush","t":"konsum i husholdninger","lag":"anvendelse","gruppe":"Konsum","k":1,"f":4,"d":"Husholdningenes egne utgifter til varer og tjenester. Boliganskaffelser regnes som investering, ikke konsum — men boligtjenester over levetiden inngår.","par":[],"hvor":""},{"id":"kons-off","t":"konsum i offentlig forvaltning","lag":"anvendelse","gruppe":"Konsum","k":1,"f":4,"d":"Statsforvaltningens og kommuneforvaltningens konsumutgifter. Måles ved totale produksjonskostnader minus salg. Inkluderer produktkjøp til husholdninger (f.eks. tilskudd til private barnehager).","par":[],"hvor":""},{"id":"kons-ideelle","t":"konsum i ideelle organisasjoner","lag":"anvendelse","gruppe":"Konsum","k":0,"f":4,"d":"Ideelle organisasjoners konsumutgifter, målt ved produksjonskostnader minus salg. Forbrukes i sin helhet av husholdningene.","par":[],"hvor":""},{"id":"pers-koll-kons","t":"personlig/kollektivt konsum","lag":"anvendelse","gruppe":"Konsum","k":0,"f":4,"d":"Personlig konsum = konsum tilordnet husholdninger uansett hvem som betaler (inkl. individuelt konsum i offentlig forvaltning). Kollektivt konsum = offentlige tjenester som ikke kan knyttes til enkeltpersoner (forsvar, politi).","par":[],"hvor":""},{"id":"varekonsum","t":"varekonsum","lag":"anvendelse","gruppe":"Konsum","k":0,"f":4,"d":"Husholdningenes utgifter til varer — varige (biler, hvitevarer), halv-varige (klær, sportsutstyr) og ikke-varige (mat, drivstoff).","par":[],"hvor":""},{"id":"tjenestekonsum","t":"tjenestekonsum","lag":"anvendelse","gruppe":"Konsum","k":0,"f":4,"d":"Husholdningenes utgifter til tjenester finansiert av husholdningene selv. Skiller seg fra personlig konsum av tjenester, som også inkluderer det offentlig finansierer.","par":[],"hvor":""},{"id":"brutto-inv","t":"bruttoinvestering i fast realkapital","lag":"anvendelse","gruppe":"Investering","k":1,"f":4,"d":"Anskaffelser av ny fast realkapital pluss kjøp minus salg av eksisterende. Bygninger, anlegg, transportmidler, maskiner, EDB-programvare, FoU.","par":[],"hvor":""},{"id":"lagerendring","t":"lagerendring","lag":"anvendelse","gruppe":"Investering","k":1,"f":4,"d":"Anskaffelser til lager minus fjerninger fra lager. Inkluderer produkter under arbeid. Plattformmoduler og rigger regnes som investering etter hvert som prosjektet skrider fram, ikke som lagerendring.","par":[],"hvor":""},{"id":"eksport","t":"eksport","lag":"anvendelse","gruppe":"Utenriks","k":1,"f":4,"d":"Verdien av varer og tjenester levert til utlandet. Verdsettes fob — uten forsikring og transport til importlandets grense.","par":[],"hvor":""},{"id":"import","t":"import","lag":"anvendelse","gruppe":"Utenriks","k":1,"f":4,"d":"Verdien av varer og tjenester mottatt fra utlandet. Verdsettes cif — inkludert forsikring og transport til norsk grense. For internasjonal rapportering også fob.","par":[],"hvor":""},{"id":"ettersporsel-fln","t":"etterspørsel fra Fastlands-Norge","lag":"anvendelse","gruppe":"Utenriks","k":0,"f":4,"d":"Sentralt konjunkturaggregat: samlet etterspørsel fra Fastlands-Norge, vanligvis eksklusive lagerendring. Måler underliggende innenlandsk etterspørsel.","par":[],"hvor":""},{"id":"fast-real","t":"fast realkapital","lag":"kapital","gruppe":"Kapitaltyper","k":1,"f":5,"d":"Produsert kapital brukt gjentatte ganger i produksjonen over minst ett år. Bygninger, anlegg, transportmidler, maskiner. Også immateriell realkapital — FoU, programvare, kunst.","par":[],"hvor":""},{"id":"ikke-fin-kap","t":"ikke-finansiell kapital","lag":"kapital","gruppe":"Kapitaltyper","k":1,"f":5,"d":"Kapitalobjekter som gir eierne økonomiske fordeler. Produsert (fast realkapital, lagerkapital, verdigjenstander) og ikke-produsert (naturkapital, immateriell ikke-produsert kapital).","par":[],"hvor":""},{"id":"finanskap","t":"finanskapital","lag":"kapital","gruppe":"Kapitaltyper","k":1,"f":5,"d":"Alle finansielle fordrings- og gjeldsobjekter — sedler, bankinnskudd, lån, aksjer, obligasjoner, derivater.","par":[],"hvor":""},{"id":"naturkap","t":"naturkapital","lag":"kapital","gruppe":"Kapitaltyper","k":0,"f":5,"d":"Ikke-produsert kapital fra naturen som det knytter seg eiendomsrett til. Grunn, olje- og gassforekomster, ikke-dyrkede biologiske ressurser, vannressurser. Ikke luft eller åpent hav.","par":[],"hvor":""},{"id":"kap-overf","t":"kapitaloverføringer","lag":"kapital","gruppe":"Overføringer","k":1,"f":4,"d":"Omfordeling av oppsparte midler eller formue mellom sektorer. Krever anskaffelse eller avhendelse av eiendeler for minst én part. Kapitalskatter og investeringstilskudd er viktigst.","par":[],"hvor":""},{"id":"vare-tj-bal","t":"vare- og tjenestebalansen","lag":"kapital","gruppe":"Utenriksbalanser","k":1,"f":4,"d":"Eksport av varer og tjenester minus import. Sentralt utenriks-aggregat, del av driftsbalansen overfor utlandet.","par":[],"hvor":""},{"id":"driftsbal-utl","t":"driftsbalansen overfor utlandet","lag":"kapital","gruppe":"Utenriksbalanser","k":1,"f":4,"d":"Vare- og tjenestebalansen pluss rente- og stønadsbalansen. Total: hva Norge tjener eller taper på løpende samhandel med utlandet.","par":[],"hvor":""},{"id":"nettofin-inv","t":"nettofinansinvestering","lag":"kapital","gruppe":"Utenriksbalanser","k":1,"f":5,"d":"Netto beløp som et land eller en sektor har tilgjengelig for å finansiere andre. Saldoposten mellom sparing, netto kapitaloverføringer og netto anskaffelse av ikke-finansiell kapital.","par":[],"hvor":""},{"id":"rente-stonad-bal","t":"rente- og stønadsbalansen","lag":"kapital","gruppe":"Utenriksbalanser","k":0,"f":4,"d":"Netto lønn, formuesinntekter, aksjeutbytte og løpende overføringer overfor utlandet. Sammen med vare- og tjenestebalansen utgjør den driftsbalansen.","par":[],"hvor":""},{"id":"dir-inv","t":"direkte investering","lag":"kapital","gruppe":"Utenlandske investeringer","k":1,"f":5,"d":"Investering over landegrensene med intensjon om varig økonomisk forbindelse. Minst 10 % (i praksis 20 % i Norge) av eierkapitalen. Etablering av datterselskap i utlandet.","par":["portefolje-inv"],"hvor":""},{"id":"portefolje-inv","t":"porteføljeinvesteringer","lag":"kapital","gruppe":"Utenlandske investeringer","k":0,"f":5,"d":"Kjøp og salg av verdipapirer, fondsandeler, derivater som ikke klassifiseres som direkte investering eller internasjonale reserver. Statens pensjonsfond utlands plasseringer i utenlandske verdipapirer.","par":["dir-inv"],"hvor":""},{"id":"fob-cif","t":"fob/cif","lag":"kapital","gruppe":"Utenlandske investeringer","k":0,"f":4,"d":"Fob: fri om bord — verdi ved passering av eksportørens grense. Cif: kostnad, forsikring, frakt — inkludert transport til importørens grense. Import føres cif, eksport fob.","par":[],"hvor":""},{"id":"bnp","t":"BNP","lag":"aggregater","gruppe":"Hovedaggregater","k":1,"f":4,"d":"Bruttonasjonalprodukt. Samlet økonomisk aktivitet innenfor økonomisk territorium, målt i markedsverdi. Kan defineres via produksjons-, utgifts- eller inntektsmetoden — de tre skal gi samme tall.","par":["bni"],"hvor":""},{"id":"bni","t":"BNI","lag":"aggregater","gruppe":"Hovedaggregater","k":1,"f":4,"d":"Bruttonasjonalinntekt. Inntekt som tilfaller innlendinger fra innenlandsk produksjon og formuesplasseringer i utlandet, minus utlendingers inntekter i Norge. = BNP + formuesinntekt og lønn fra utlandet – til utlandet.","par":["bnp"],"hvor":""},{"id":"bnp-fln","t":"BNP Fastlands-Norge","lag":"aggregater","gruppe":"Hovedaggregater","k":1,"f":4,"d":"BNP minus bruttoproduktet fra utvinning av råolje og naturgass, rørtransport og utenriks sjøfart. Det viktigste konjunkturmålet i norsk offentlighet.","par":[],"hvor":""},{"id":"disp-inn-norge","t":"disponibel inntekt for Norge","lag":"aggregater","gruppe":"Hovedaggregater","k":1,"f":4,"d":"BNI minus kapitalslit og netto stønader og løpende overføringer til utlandet. Det Norge har tilgjengelig til konsum eller sparing.","par":[],"hvor":""},{"id":"sparing-norge","t":"sparing for Norge","lag":"aggregater","gruppe":"Hovedaggregater","k":1,"f":5,"d":"Disponibel inntekt for Norge minus konsum i alt. Det som blir igjen for investering i realkapital eller finansiell formueoppbygging.","par":[],"hvor":""},{"id":"nasjonalinntekt","t":"nasjonalinntekt","lag":"aggregater","gruppe":"Hovedaggregater","k":0,"f":4,"d":"BNI minus kapitalslit — netto nasjonalinntekt. Renere mål på inntekten enn BNI, men mindre brukt i offentlig debatt.","par":[],"hvor":""},{"id":"disp-inn-hush","t":"disponibel inntekt for husholdningene","lag":"aggregater","gruppe":"Hovedaggregater","k":0,"f":4,"d":"Differansen mellom husholdningenes inntekter (lønn, blandet inntekt, formuesinntekter, stønader) og skatter, formuesutgifter og andre utgifter. Grunnlaget for spareratten.","par":[],"hvor":""},{"id":"basisverdi","t":"basisverdi","lag":"aggregater","gruppe":"Verdibegreper","k":1,"f":4,"d":"Det produsenten sitter igjen med per produkt: etter mva og andre produktskatter er betalt, etter subsidier er mottatt. Produksjon og bruttoprodukt publiseres i basisverdi.","par":["kjoperverdi"],"hvor":""},{"id":"kjoperverdi","t":"kjøperverdi","lag":"aggregater","gruppe":"Verdibegreper","k":0,"f":4,"d":"Det kjøperen faktisk betaler: inkludert produktskatter minus subsidier, inkludert transportkostnader. Produktinnsats og anvendelser måles i kjøperverdi.","par":["basisverdi"],"hvor":""},{"id":"produsentverdi","t":"produsentverdi","lag":"aggregater","gruppe":"Verdibegreper","k":0,"f":4,"d":"Basisverdi pluss produktskatter minus produktsubsidier. Mindre brukt begrep, men fremkommer i noen definisjoner av BNP.","par":[],"hvor":""},{"id":"markedsverdi","t":"markedsverdi","lag":"aggregater","gruppe":"Verdibegreper","k":0,"f":4,"d":"BNP måles i markedsverdi — summen av bruttoprodukt i basisverdi over alle næringer, pluss alle produktskatter minus alle produktsubsidier.","par":[],"hvor":""},{"id":"lopende-priser","t":"løpende priser","lag":"aggregater","gruppe":"Pris og volum","k":1,"f":4,"d":"Verditall målt i prisene som gjelder i samme periode som transaksjonene. Viser verdiutvikling slik den observeres der og da.","par":["faste-priser"],"hvor":""},{"id":"faste-priser","t":"faste priser","lag":"aggregater","gruppe":"Pris og volum","k":1,"f":4,"d":"Verditall omregnet til et felles prisgrunnlag (referanseår) for å gjøre volumutvikling sammenlignbar over tid. Beregnes ved kjeding av årlige volumendringer.","par":["lopende-priser"],"hvor":"Nåværende referanseår: 2023"},{"id":"volumendring","t":"volumendring","lag":"aggregater","gruppe":"Pris og volum","k":0,"f":4,"d":"Endring i fastprisverdien fra én periode til en annen. Skiller mengdeutviklingen fra prisutviklingen. Bruttoprodukt i faste priser fremkommer ved dobbeltdeflatering av produksjon og produktinnsats hver for seg.","par":[],"hvor":""},{"id":"sesongjustering","t":"sesongjustering","lag":"aggregater","gruppe":"Pris og volum","k":0,"f":4,"d":"Fjerning av regelmessige sesongmønstre, bevegelige helligdager og kalenderforhold fra en serie. Justerte tall er beregnede tall — de er ikke observerte.","par":[],"hvor":""},{"id":"kildedata","t":"kildedata","lag":"prosess","gruppe":"Kilder og grunnlag","k":1,"f":2,"d":"Data slik de kommer fra kilden — ofte allerede aggregerte tall fra andre SSB-statistikker eller administrative registre. I NR er kildedata sjelden mikrodata.","par":[],"hvor":""},{"id":"grunnlagsstat","t":"grunnlagsstatistikk","lag":"prosess","gruppe":"Kilder og grunnlag","k":1,"f":2,"d":"Statistikk fra andre kilder som brukes i NR — inntekts- og formuesstatistikk, næringsstatistikker, prisindekser. NR-tall stemmer ikke alltid med grunnlagsstatistikkens tall, fordi definisjoner og bearbeiding kan avvike.","par":[],"hvor":""},{"id":"forsystem","t":"forsystem","lag":"prosess","gruppe":"Systemer i produksjonen","k":1,"f":3,"d":"Beregningstrinn der kildedata hentes inn og bearbeides før de går inn i hovedregnskapet. Omkoding, aggregering, oppsplitting, justering for definisjonsforskjeller og dekningsgrad.","par":["hovedsystem"],"hvor":""},{"id":"hovedsystem","t":"hovedsystem","lag":"prosess","gruppe":"Systemer i produksjonen","k":1,"f":4,"d":"Beregningstrinnet der inputdata sammenstilles i faste regnskapstabeller, kontrolleres og bringes til å henge sammen. Her ligger kjernen i regnskapsproduksjonen.","par":["forsystem","publiseringssystem"],"hvor":""},{"id":"publiseringssystem","t":"publiseringssystem","lag":"prosess","gruppe":"Systemer i produksjonen","k":1,"f":5,"d":"Trinnet der ferdige tall tas ut av hovedsystemet og gjøres tilgjengelige som databaser, tidsserier og tabeller på ulike nivåer. Ikke bare formidling, men en ny bearbeiding til brukbare uttak.","par":[],"hvor":""},{"id":"dataflyt","t":"dataflyt","lag":"prosess","gruppe":"Systemer i produksjonen","k":1,"f":3,"d":"Hvordan tall og beregnede størrelser går fra kilder, via bearbeiding og avstemming, til ferdige datasett og publisering. Koblingene mellom applikasjonene må forstås for å sikre konsistens.","par":["konsistens"],"hvor":""},{"id":"avstemming","t":"avstemming","lag":"prosess","gruppe":"Bearbeiding","k":1,"f":4,"d":"Kontroll og justering for at tall fra ulike kilder eller deler av regnskapet stemmer overens. Skjer både automatisk og manuelt, innen sektorregnskaper og på tvers.","par":["balansering"],"hvor":""},{"id":"balansering","t":"balansering","lag":"prosess","gruppe":"Bearbeiding","k":1,"f":4,"d":"Den operative prosessen der data justeres når definisjonssammenhenger ikke er oppfylt eller resultatene ikke virker rimelige. Avstemming er målet — balansering er inngrepet.","par":["avstemming"],"hvor":""},{"id":"forelopige-tall","t":"foreløpige tall","lag":"prosess","gruppe":"Prinsipper og status","k":1,"f":5,"d":"Tall publisert før grunnlaget er komplett, med den uttrykte forventningen at de vil endre seg. Kvartalsvise tall og de siste årsregnskapene er foreløpige.","par":["endelige-tall"],"hvor":""},{"id":"endelige-tall","t":"endelige tall","lag":"prosess","gruppe":"Prinsipper og status","k":1,"f":6,"d":"Tall der grunnlaget er komplett og ordinær revisjon er avsluttet. Endelig årstall for år t-2 publiseres i november år t.","par":["forelopige-tall"],"hvor":""},{"id":"revisjon","t":"revisjon","lag":"prosess","gruppe":"Prinsipper og status","k":1,"f":6,"d":"Planlagt oppdatering av tidligere publiserte tall fordi grunnlaget er blitt bedre. Tallene var ikke feil da de kom — å kalle det feil undergraver tilliten til NR-systemet.","par":[],"hvor":""},{"id":"publisering","t":"publisering","lag":"prosess","gruppe":"Publisering og rapportering","k":1,"f":5,"d":"Å gjøre tallene tilgjengelige for alle samtidig. 1.-3. kvartal publiseres med månedlig NR i mai/august/november, 4. kvartal i februar året etter.","par":[],"hvor":""},{"id":"paalopt","t":"påløptprinsippet","lag":"prosess","gruppe":"Prinsipper og status","k":0,"f":4,"d":"Prinsipp for registrering: transaksjoner registreres når de finner sted, ikke når de betales. Renter og skatter registreres i perioden de påløper, uansett om de er betalt.","par":[],"hvor":""},{"id":"omkoding","t":"omkoding","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":3,"d":"Oversetting fra én klassifikasjon eller struktur til en annen, slik at data kan brukes i NRs kontoplaner. Grunnoperasjon i mange forsystemer og ved hovedrevisjoner.","par":[],"hvor":""},{"id":"aggregering","t":"aggregering","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":3,"d":"Sammenstilling av detaljerte tall til høyere nivåer for analyse, publisering eller videre modellbruk. Skjer i forsystemer, i modellene og etter sesongjustering.","par":["oppsplitting"],"hvor":""},{"id":"oppsplitting","t":"oppsplitting","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":3,"d":"Fordeling av et samlet tall på flere deler ved hjelp av fordelingsnøkler eller annen informasjon. Motsetningen til aggregering — helt sentral i NR-arbeidet.","par":["aggregering"],"hvor":""},{"id":"just-def","t":"justering for definisjonsforskjeller","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":3,"d":"Tilpasning av tall fra andre statistikker eller kilder til NRs definisjoner. Nødvendig fordi grunnlagsstatistikkenes definisjoner sjelden er identiske med NRs.","par":[],"hvor":""},{"id":"konsistens","t":"konsistens","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":4,"d":"At tall, delregnskaper og tidsserier henger sammen på tvers av kilder, perioder og publiseringer. Hovedgrunnen til at NR-systemet må forstås som helhet, ikke som separate tabeller.","par":["dataflyt"],"hvor":""},{"id":"kryssloepsmodell","t":"kryssløpsmodell","lag":"prosess","gruppe":"Kilder og grunnlag","k":0,"f":4,"d":"Modell som bruker sammenhengene mellom næringer, produkter og anvendelser til å produsere et avstemt kvartalsregnskap. Kjernen i KNR-hovedsystemet.","par":[],"hvor":""},{"id":"korttidsind","t":"korttidsindikator","lag":"prosess","gruppe":"Kilder og grunnlag","k":0,"f":3,"d":"Kortsiktig statistikk som brukes til å framføre nivåer fra siste årsregnskap til inneværende kvartal eller måned. Produksjonsindekser, omsetning, sysselsetting.","par":[],"hvor":""},{"id":"framskriving","t":"framskriving","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":4,"d":"Beregning av tall for perioder uten fullstendig grunnlag, med utgangspunkt i basisår og korttidsindikatorer. Nøkkelmekanismen i kvartalsvis NR.","par":[],"hvor":""},{"id":"kalenderjust","t":"kalenderjustering","lag":"prosess","gruppe":"Bearbeiding","k":0,"f":4,"d":"Korrigering for at perioder har ulikt antall virkedager, helligdager og skuddår. Mindre teknisk variant av sesongjustering.","par":[],"hvor":""},{"id":"eurostat","t":"Eurostat-rapportering","lag":"prosess","gruppe":"Publisering og rapportering","k":0,"f":6,"d":"Norge er forpliktet gjennom EØS-avtalen til å rapportere NR-tall til Eurostat etter ESA 2010. Definerer store deler av leveringsrytmen og strukturen på det som produseres.","par":[],"hvor":""}],"edges":[{"a":"esa2010","b":"sna2008","type":"par","w":2.5},{"a":"hovedrevisjon","b":"tallrevisjon","type":"par","w":2.5},{"a":"realregnskap","b":"sektorregnskap","type":"par","w":2.5},{"a":"aarlig-nr","b":"kvartalsvis-nr","type":"par","w":2.5},{"a":"ikke-fin-foretak","b":"fin-foretak","type":"par","w":2.5},{"a":"statsforvaltning","b":"kommuneforvaltning","type":"par","w":2.5},{"a":"fastlands-norge","b":"petroleum","type":"par","w":2.5},{"a":"produksjon","b":"bruttoprodukt","type":"par","w":2.5},{"a":"tilgangsside","b":"anvendelsesside","type":"par","w":2.5},{"a":"lonn","b":"lonnskostnader","type":"par","w":2.5},{"a":"produktskatter","b":"naeringsskatter","type":"par","w":2.5},{"a":"dir-inv","b":"portefolje-inv","type":"par","w":2.5},{"a":"bnp","b":"bni","type":"par","w":2.5},{"a":"basisverdi","b":"kjoperverdi","type":"par","w":2.5},{"a":"lopende-priser","b":"faste-priser","type":"par","w":2.5},{"a":"forsystem","b":"hovedsystem","type":"par","w":2.5},{"a":"hovedsystem","b":"publiseringssystem","type":"par","w":2.5},{"a":"dataflyt","b":"konsistens","type":"par","w":2.5},{"a":"avstemming","b":"balansering","type":"par","w":2.5},{"a":"forelopige-tall","b":"endelige-tall","type":"par","w":2.5},{"a":"aggregering","b":"oppsplitting","type":"par","w":2.5},{"a":"esa2010","b":"nasjonalregnskap","type":"ref","w":0.6},{"a":"sna2008","b":"nasjonalregnskap","type":"ref","w":0.6},{"a":"kontoplan","b":"produksjon","type":"ref","w":0.6},{"a":"hovedrevisjon","b":"revisjon","type":"ref","w":0.6},{"a":"tallrevisjon","b":"revisjon","type":"ref","w":0.6},{"a":"realregnskap","b":"naering","type":"ref","w":0.6},{"a":"realregnskap","b":"produksjon","type":"ref","w":0.6},{"a":"realregnskap","b":"import","type":"ref","w":0.6},{"a":"realregnskap","b":"bnp","type":"ref","w":0.6},{"a":"sektorregnskap","b":"off-forvaltning","type":"ref","w":0.6},{"a":"sektorregnskap","b":"husholdninger","type":"ref","w":0.6},{"a":"sektorregnskap","b":"utlandet","type":"ref","w":0.6},{"a":"sektorregnskap","b":"naering","type":"ref","w":0.6},{"a":"innt-kap-regnskap","b":"nettofin-inv","type":"ref","w":0.6},{"a":"utenriksregnskap","b":"utlandet","type":"ref","w":0.6},{"a":"offentlige-finanser","b":"off-forvaltning","type":"ref","w":0.6},{"a":"kvartalsvis-nr","b":"korttidsind","type":"ref","w":0.6},{"a":"maanedlig-nr","b":"nasjonalregnskap","type":"ref","w":0.6},{"a":"arbeidskraftregnskap","b":"lonn","type":"ref","w":0.6},{"a":"arbeidskraftregnskap","b":"lonnskostnader","type":"ref","w":0.6},{"a":"satellittregnskap","b":"ideelle-org","type":"ref","w":0.6},{"a":"inst-sektor","b":"produksjon","type":"ref","w":0.6},{"a":"inst-sektor","b":"konsum","type":"ref","w":0.6},{"a":"husholdninger","b":"naering","type":"ref","w":0.6},{"a":"husholdninger","b":"konsum","type":"ref","w":0.6},{"a":"utlandet","b":"inst-sektor","type":"ref","w":0.6},{"a":"statsforvaltning","b":"off-forvaltning","type":"ref","w":0.6},{"a":"statsforvaltning","b":"virksomhet","type":"ref","w":0.6},{"a":"kommuneforvaltning","b":"off-forvaltning","type":"ref","w":0.6},{"a":"naering","b":"virksomhet","type":"ref","w":0.6},{"a":"virksomhet","b":"produksjon","type":"ref","w":0.6},{"a":"fastlands-norge","b":"naering","type":"ref","w":0.6},{"a":"petroleum","b":"naering","type":"ref","w":0.6},{"a":"petroleum","b":"publisering","type":"ref","w":0.6},{"a":"produksjon","b":"basisverdi","type":"ref","w":0.6},{"a":"produktinnsats","b":"produksjon","type":"ref","w":0.6},{"a":"produktinnsats","b":"kapitalslit","type":"ref","w":0.6},{"a":"produktinnsats","b":"fast-real","type":"ref","w":0.6},{"a":"produktinnsats","b":"kjoperverdi","type":"ref","w":0.6},{"a":"bruttoprodukt","b":"naering","type":"ref","w":0.6},{"a":"bruttoprodukt","b":"produktinnsats","type":"ref","w":0.6},{"a":"bruttoprodukt","b":"bnp","type":"ref","w":0.6},{"a":"bruttoprodukt","b":"basisverdi","type":"ref","w":0.6},{"a":"tilgang-anvendelse","b":"realregnskap","type":"ref","w":0.6},{"a":"tilgang-anvendelse","b":"faste-priser","type":"ref","w":0.6},{"a":"tilgangsside","b":"realregnskap","type":"ref","w":0.6},{"a":"tilgangsside","b":"produksjon","type":"ref","w":0.6},{"a":"tilgangsside","b":"import","type":"ref","w":0.6},{"a":"anvendelsesside","b":"realregnskap","type":"ref","w":0.6},{"a":"anvendelsesside","b":"produktinnsats","type":"ref","w":0.6},{"a":"anvendelsesside","b":"konsum","type":"ref","w":0.6},{"a":"anvendelsesside","b":"lagerendring","type":"ref","w":0.6},{"a":"anvendelsesside","b":"eksport","type":"ref","w":0.6},{"a":"markedsrettet","b":"off-forvaltning","type":"ref","w":0.6},{"a":"markedsrettet","b":"ideelle-org","type":"ref","w":0.6},{"a":"markedsrettet","b":"produksjon","type":"ref","w":0.6},{"a":"markedsrettet","b":"eget-bruk","type":"ref","w":0.6},{"a":"eget-bruk","b":"boligtjenester","type":"ref","w":0.6},{"a":"boligtjenester","b":"naering","type":"ref","w":0.6},{"a":"boligtjenester","b":"konsum","type":"ref","w":0.6},{"a":"fisim","b":"produksjon","type":"ref","w":0.6},{"a":"driftsresultat","b":"naering","type":"ref","w":0.6},{"a":"driftsresultat","b":"bruttoprodukt","type":"ref","w":0.6},{"a":"driftsresultat","b":"lonn","type":"ref","w":0.6},{"a":"driftsresultat","b":"lonnskostnader","type":"ref","w":0.6},{"a":"driftsresultat","b":"kapitalslit","type":"ref","w":0.6},{"a":"driftsresultat","b":"naeringsskatter","type":"ref","w":0.6},{"a":"blandet-inntekt","b":"naering","type":"ref","w":0.6},{"a":"blandet-inntekt","b":"driftsresultat","type":"ref","w":0.6},{"a":"kapitalslit","b":"bruttoprodukt","type":"ref","w":0.6},{"a":"kapitalslit","b":"fast-real","type":"ref","w":0.6},{"a":"prod-skatter","b":"naering","type":"ref","w":0.6},{"a":"prod-skatter","b":"produksjon","type":"ref","w":0.6},{"a":"prod-skatter","b":"produktskatter","type":"ref","w":0.6},{"a":"prod-skatter","b":"naeringsskatter","type":"ref","w":0.6},{"a":"prod-subsidier","b":"naering","type":"ref","w":0.6},{"a":"primaere-inntekter","b":"produksjon","type":"ref","w":0.6},{"a":"primaere-inntekter","b":"bni","type":"ref","w":0.6},{"a":"formuesinntekter","b":"finanskap","type":"ref","w":0.6},{"a":"formuesutgifter","b":"formuesinntekter","type":"ref","w":0.6},{"a":"formuesutgifter","b":"finanskap","type":"ref","w":0.6},{"a":"produktskatter","b":"produksjon","type":"ref","w":0.6},{"a":"produktskatter","b":"produkter","type":"ref","w":0.6},{"a":"naeringsskatter","b":"produksjon","type":"ref","w":0.6},{"a":"konsum","b":"ideelle-org","type":"ref","w":0.6},{"a":"konsum","b":"statsforvaltning","type":"ref","w":0.6},{"a":"konsum","b":"kommuneforvaltning","type":"ref","w":0.6},{"a":"konsum","b":"kons-hush","type":"ref","w":0.6},{"a":"kons-hush","b":"boligtjenester","type":"ref","w":0.6},{"a":"kons-off","b":"husholdninger","type":"ref","w":0.6},{"a":"kons-off","b":"statsforvaltning","type":"ref","w":0.6},{"a":"kons-off","b":"kommuneforvaltning","type":"ref","w":0.6},{"a":"kons-off","b":"produksjon","type":"ref","w":0.6},{"a":"kons-off","b":"konsum","type":"ref","w":0.6},{"a":"kons-ideelle","b":"ideelle-org","type":"ref","w":0.6},{"a":"kons-ideelle","b":"produksjon","type":"ref","w":0.6},{"a":"kons-ideelle","b":"konsum","type":"ref","w":0.6},{"a":"pers-koll-kons","b":"off-forvaltning","type":"ref","w":0.6},{"a":"pers-koll-kons","b":"husholdninger","type":"ref","w":0.6},{"a":"pers-koll-kons","b":"konsum","type":"ref","w":0.6},{"a":"pers-koll-kons","b":"kons-off","type":"ref","w":0.6},{"a":"tjenestekonsum","b":"konsum","type":"ref","w":0.6},{"a":"brutto-inv","b":"fast-real","type":"ref","w":0.6},{"a":"lagerendring","b":"produkter","type":"ref","w":0.6},{"a":"eksport","b":"utlandet","type":"ref","w":0.6},{"a":"eksport","b":"import","type":"ref","w":0.6},{"a":"import","b":"utlandet","type":"ref","w":0.6},{"a":"ettersporsel-fln","b":"fastlands-norge","type":"ref","w":0.6},{"a":"ettersporsel-fln","b":"lagerendring","type":"ref","w":0.6},{"a":"fast-real","b":"produksjon","type":"ref","w":0.6},{"a":"ikke-fin-kap","b":"fast-real","type":"ref","w":0.6},{"a":"ikke-fin-kap","b":"naturkap","type":"ref","w":0.6},{"a":"vare-tj-bal","b":"utlandet","type":"ref","w":0.6},{"a":"vare-tj-bal","b":"eksport","type":"ref","w":0.6},{"a":"vare-tj-bal","b":"import","type":"ref","w":0.6},{"a":"vare-tj-bal","b":"driftsbal-utl","type":"ref","w":0.6},{"a":"driftsbal-utl","b":"utlandet","type":"ref","w":0.6},{"a":"driftsbal-utl","b":"rente-stonad-bal","type":"ref","w":0.6},{"a":"nettofin-inv","b":"ikke-fin-kap","type":"ref","w":0.6},{"a":"nettofin-inv","b":"kap-overf","type":"ref","w":0.6},{"a":"rente-stonad-bal","b":"utlandet","type":"ref","w":0.6},{"a":"rente-stonad-bal","b":"lonn","type":"ref","w":0.6},{"a":"rente-stonad-bal","b":"formuesinntekter","type":"ref","w":0.6},{"a":"rente-stonad-bal","b":"vare-tj-bal","type":"ref","w":0.6},{"a":"dir-inv","b":"utlandet","type":"ref","w":0.6},{"a":"fob-cif","b":"eksport","type":"ref","w":0.6},{"a":"fob-cif","b":"import","type":"ref","w":0.6},{"a":"bnp","b":"produksjon","type":"ref","w":0.6},{"a":"bnp","b":"markedsverdi","type":"ref","w":0.6},{"a":"bni","b":"utlandet","type":"ref","w":0.6},{"a":"bni","b":"produksjon","type":"ref","w":0.6},{"a":"bni","b":"lonn","type":"ref","w":0.6},{"a":"bnp-fln","b":"bruttoprodukt","type":"ref","w":0.6},{"a":"bnp-fln","b":"bnp","type":"ref","w":0.6},{"a":"disp-inn-norge","b":"utlandet","type":"ref","w":0.6},{"a":"disp-inn-norge","b":"kapitalslit","type":"ref","w":0.6},{"a":"disp-inn-norge","b":"konsum","type":"ref","w":0.6},{"a":"disp-inn-norge","b":"bni","type":"ref","w":0.6},{"a":"sparing-norge","b":"konsum","type":"ref","w":0.6},{"a":"sparing-norge","b":"disp-inn-norge","type":"ref","w":0.6},{"a":"nasjonalinntekt","b":"kapitalslit","type":"ref","w":0.6},{"a":"nasjonalinntekt","b":"bni","type":"ref","w":0.6},{"a":"disp-inn-hush","b":"lonn","type":"ref","w":0.6},{"a":"disp-inn-hush","b":"blandet-inntekt","type":"ref","w":0.6},{"a":"disp-inn-hush","b":"formuesinntekter","type":"ref","w":0.6},{"a":"disp-inn-hush","b":"formuesutgifter","type":"ref","w":0.6},{"a":"basisverdi","b":"produktskatter","type":"ref","w":0.6},{"a":"kjoperverdi","b":"produktskatter","type":"ref","w":0.6},{"a":"produsentverdi","b":"produktskatter","type":"ref","w":0.6},{"a":"produsentverdi","b":"bnp","type":"ref","w":0.6},{"a":"produsentverdi","b":"basisverdi","type":"ref","w":0.6},{"a":"markedsverdi","b":"naering","type":"ref","w":0.6},{"a":"markedsverdi","b":"bruttoprodukt","type":"ref","w":0.6},{"a":"markedsverdi","b":"produktskatter","type":"ref","w":0.6},{"a":"markedsverdi","b":"basisverdi","type":"ref","w":0.6},{"a":"faste-priser","b":"volumendring","type":"ref","w":0.6},{"a":"volumendring","b":"produksjon","type":"ref","w":0.6},{"a":"volumendring","b":"produktinnsats","type":"ref","w":0.6},{"a":"volumendring","b":"bruttoprodukt","type":"ref","w":0.6},{"a":"grunnlagsstat","b":"naering","type":"ref","w":0.6},{"a":"forsystem","b":"kildedata","type":"ref","w":0.6},{"a":"forsystem","b":"omkoding","type":"ref","w":0.6},{"a":"forsystem","b":"aggregering","type":"ref","w":0.6},{"a":"forsystem","b":"oppsplitting","type":"ref","w":0.6},{"a":"forsystem","b":"just-def","type":"ref","w":0.6},{"a":"dataflyt","b":"avstemming","type":"ref","w":0.6},{"a":"dataflyt","b":"publisering","type":"ref","w":0.6},{"a":"endelige-tall","b":"revisjon","type":"ref","w":0.6},{"a":"publisering","b":"maanedlig-nr","type":"ref","w":0.6},{"a":"omkoding","b":"kontoplan","type":"ref","w":0.6},{"a":"omkoding","b":"hovedrevisjon","type":"ref","w":0.6},{"a":"aggregering","b":"sesongjustering","type":"ref","w":0.6},{"a":"aggregering","b":"publisering","type":"ref","w":0.6},{"a":"just-def","b":"grunnlagsstat","type":"ref","w":0.6},{"a":"konsistens","b":"publisering","type":"ref","w":0.6},{"a":"kryssloepsmodell","b":"naering","type":"ref","w":0.6},{"a":"kryssloepsmodell","b":"produkter","type":"ref","w":0.6},{"a":"kryssloepsmodell","b":"hovedsystem","type":"ref","w":0.6},{"a":"korttidsind","b":"produksjon","type":"ref","w":0.6},{"a":"framskriving","b":"kvartalsvis-nr","type":"ref","w":0.6},{"a":"framskriving","b":"korttidsind","type":"ref","w":0.6},{"a":"kalenderjust","b":"sesongjustering","type":"ref","w":0.6},{"a":"eurostat","b":"esa2010","type":"ref","w":0.6},{"a":"sna2008","b":"kontoplan","type":"gruppe","w":0.35},{"a":"tallrevisjon","b":"statistikkloven","type":"gruppe","w":0.35},{"a":"sektorregnskap","b":"innt-kap-regnskap","type":"gruppe","w":0.35},{"a":"innt-kap-regnskap","b":"finansielt-sektor","type":"gruppe","w":0.35},{"a":"finansielt-sektor","b":"utenriksregnskap","type":"gruppe","w":0.35},{"a":"utenriksregnskap","b":"offentlige-finanser","type":"gruppe","w":0.35},{"a":"kvartalsvis-nr","b":"maanedlig-nr","type":"gruppe","w":0.35},{"a":"arbeidskraftregnskap","b":"fylkesfordelt-nr","type":"gruppe","w":0.35},{"a":"fylkesfordelt-nr","b":"satellittregnskap","type":"gruppe","w":0.35},{"a":"inst-sektor","b":"ikke-fin-foretak","type":"gruppe","w":0.35},{"a":"fin-foretak","b":"off-forvaltning","type":"gruppe","w":0.35},{"a":"off-forvaltning","b":"husholdninger","type":"gruppe","w":0.35},{"a":"husholdninger","b":"ideelle-org","type":"gruppe","w":0.35},{"a":"ideelle-org","b":"utlandet","type":"gruppe","w":0.35},{"a":"virksomhet","b":"fastlands-norge","type":"gruppe","w":0.35},{"a":"bruttoprodukt","b":"produkter","type":"gruppe","w":0.35},{"a":"tilgang-anvendelse","b":"tilgangsside","type":"gruppe","w":0.35},{"a":"boligtjenester","b":"fisim","type":"gruppe","w":0.35},{"a":"blandet-inntekt","b":"kapitalslit","type":"gruppe","w":0.35},{"a":"kapitalslit","b":"primaere-inntekter","type":"gruppe","w":0.35},{"a":"primaere-inntekter","b":"formuesinntekter","type":"gruppe","w":0.35},{"a":"prod-skatter","b":"prod-subsidier","type":"gruppe","w":0.35},{"a":"prod-subsidier","b":"produktskatter","type":"gruppe","w":0.35},{"a":"kons-hush","b":"kons-off","type":"gruppe","w":0.35},{"a":"kons-off","b":"kons-ideelle","type":"gruppe","w":0.35},{"a":"kons-ideelle","b":"pers-koll-kons","type":"gruppe","w":0.35},{"a":"pers-koll-kons","b":"varekonsum","type":"gruppe","w":0.35},{"a":"varekonsum","b":"tjenestekonsum","type":"gruppe","w":0.35},{"a":"brutto-inv","b":"lagerendring","type":"gruppe","w":0.35},{"a":"import","b":"ettersporsel-fln","type":"gruppe","w":0.35},{"a":"ikke-fin-kap","b":"finanskap","type":"gruppe","w":0.35},{"a":"finanskap","b":"naturkap","type":"gruppe","w":0.35},{"a":"driftsbal-utl","b":"nettofin-inv","type":"gruppe","w":0.35},{"a":"nettofin-inv","b":"rente-stonad-bal","type":"gruppe","w":0.35},{"a":"portefolje-inv","b":"fob-cif","type":"gruppe","w":0.35},{"a":"bni","b":"bnp-fln","type":"gruppe","w":0.35},{"a":"bnp-fln","b":"disp-inn-norge","type":"gruppe","w":0.35},{"a":"sparing-norge","b":"nasjonalinntekt","type":"gruppe","w":0.35},{"a":"nasjonalinntekt","b":"disp-inn-hush","type":"gruppe","w":0.35},{"a":"kjoperverdi","b":"produsentverdi","type":"gruppe","w":0.35},{"a":"produsentverdi","b":"markedsverdi","type":"gruppe","w":0.35},{"a":"volumendring","b":"sesongjustering","type":"gruppe","w":0.35},{"a":"kildedata","b":"grunnlagsstat","type":"gruppe","w":0.35},{"a":"grunnlagsstat","b":"kryssloepsmodell","type":"gruppe","w":0.35},{"a":"kryssloepsmodell","b":"korttidsind","type":"gruppe","w":0.35},{"a":"publiseringssystem","b":"dataflyt","type":"gruppe","w":0.35},{"a":"balansering","b":"omkoding","type":"gruppe","w":0.35},{"a":"omkoding","b":"aggregering","type":"gruppe","w":0.35},{"a":"oppsplitting","b":"just-def","type":"gruppe","w":0.35},{"a":"just-def","b":"konsistens","type":"gruppe","w":0.35},{"a":"konsistens","b":"framskriving","type":"gruppe","w":0.35},{"a":"framskriving","b":"kalenderjust","type":"gruppe","w":0.35},{"a":"revisjon","b":"paalopt","type":"gruppe","w":0.35},{"a":"publisering","b":"eurostat","type":"gruppe","w":0.35}],"lag":[{"id":"system","navn":"System og standarder","und":"hva NR er, hvilke regler som gjelder"},{"id":"delregnskap","navn":"Delregnskaper","und":"hvordan NR er strukturert"},{"id":"struktur","navn":"Institusjonell struktur","und":"hvem og hva vi teller"},{"id":"produksjon","navn":"Produksjonssiden","und":"hva vi produserer"},{"id":"inntekt","navn":"Inntektssiden","und":"hvordan verdier fordeles"},{"id":"anvendelse","navn":"Anvendelsessiden","und":"hvor verdiene går"},{"id":"kapital","navn":"Kapital, formue og utland","und":"beholdninger og grensesnittet utad"},{"id":"aggregater","navn":"Aggregater, priser og tid","und":"de store målene og hvordan vi måler dem"},{"id":"prosess","navn":"Produksjonsprosess","und":"hvordan tallene lages"}],"faser":[{"n":1,"navn":"Rammer","und":"lover, standarder, definisjoner"},{"n":2,"navn":"Kilder","und":"data som kommer inn"},{"n":3,"navn":"Forsystem","und":"bearbeiding før hovedregnskap"},{"n":4,"navn":"Hovedsystem","und":"beregning, avstemming, balansering"},{"n":5,"navn":"Publisering","und":"tall ut i verden"},{"n":6,"navn":"Etter publisering","und":"revisjon og rapportering"}]}</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const ROWS = DATA.rows, EDGES = DATA.edges, LAG = DATA.lag, FASER = DATA.faser;
+const KART = {}; ROWS.forEach(r => KART[r.id] = r);
+const LAGKART = {}; LAG.forEach(l => LAGKART[l.id] = l);
+const REDUSERT_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const state = {valgt:null, sok:"", utvidet:false, over:null};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- 3D graf ---------- */
+
+const canvas = $("graf");
+const ctx = canvas.getContext("2d");
+let DPR = Math.min(window.devicePixelRatio || 1, 2);
+let W = 0, H = 0;
+
+const NODER = ROWS.map((r, i) => {
+  const phi = Math.acos(1 - 2 * (i + 0.5) / ROWS.length);
+  const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+  const R = 260;
+  return {
+    id: r.id, r: r, lag: r.lag, k: r.k,
+    x: R * Math.sin(phi) * Math.cos(theta),
+    y: R * Math.sin(phi) * Math.sin(theta),
+    z: R * Math.cos(phi),
+    vx:0, vy:0, vz:0, px:0, py:0, pz:0, pr:0
+  };
+});
+const NIX = {}; NODER.forEach(n => NIX[n.id] = n);
+const KANTER = EDGES.map(e => ({a:NIX[e.a], b:NIX[e.b], type:e.type, w:e.w})).filter(e => e.a && e.b);
+
+let angY = 0.3, angX = -0.15;
+let mål_angY = angY, mål_angX = angX;
+let zoom = 1;
+let alpha = 1;
+let autoRot = !REDUSERT_MOTION;
+
+function simuler(){
+  const N = NODER.length;
+  for(let i = 0; i < N; i++){
+    const a = NODER[i];
+    for(let j = i + 1; j < N; j++){
+      const b = NODER[j];
+      let dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z;
+      let d2 = dx*dx + dy*dy + dz*dz;
+      if(d2 < 0.01) d2 = 0.01;
+      const d = Math.sqrt(d2);
+      const f = 900 / d2;
+      dx /= d; dy /= d; dz /= d;
+      a.vx -= dx * f; a.vy -= dy * f; a.vz -= dz * f;
+      b.vx += dx * f; b.vy += dy * f; b.vz += dz * f;
+      const min = 14;
+      if(d < min){
+        const push = (min - d) * 0.5;
+        a.vx -= dx * push; a.vy -= dy * push; a.vz -= dz * push;
+        b.vx += dx * push; b.vy += dy * push; b.vz += dz * push;
+      }
+    }
+  }
+  KANTER.forEach(k => {
+    let dx = k.b.x - k.a.x, dy = k.b.y - k.a.y, dz = k.b.z - k.a.z;
+    const d = Math.sqrt(dx*dx + dy*dy + dz*dz) || 0.01;
+    const mål = k.type === "par" ? 44 : k.type === "ref" ? 78 : 55;
+    const f = (d - mål) * 0.015 * k.w;
+    dx /= d; dy /= d; dz /= d;
+    k.a.vx += dx * f; k.a.vy += dy * f; k.a.vz += dz * f;
+    k.b.vx -= dx * f; k.b.vy -= dy * f; k.b.vz -= dz * f;
+  });
+  NODER.forEach(n => {
+    n.vx += -n.x * 0.002; n.vy += -n.y * 0.002; n.vz += -n.z * 0.002;
+    n.vx *= 0.78; n.vy *= 0.78; n.vz *= 0.78;
+    n.x += n.vx * alpha; n.y += n.vy * alpha; n.z += n.vz * alpha;
+  });
+  alpha = Math.max(0.05, alpha * 0.99);
+}
+for(let i = 0; i < 220; i++) simuler();
+alpha = 0.25;
+
+function projiser(){
+  const cy = Math.cos(angY), sy = Math.sin(angY);
+  const cx = Math.cos(angX), sx = Math.sin(angX);
+  const persp = 700;
+  const cx0 = W / 2, cy0 = H / 2;
+  const zoomEff = zoom * Math.min(W, H) / 700;
+  for(const n of NODER){
+    let x = n.x * cy + n.z * sy;
+    let z = -n.x * sy + n.z * cy;
+    let y = n.y * cx - z * sx;
+    z = n.y * sx + z * cx;
+    const s = persp / (persp + z);
+    n.px = cx0 + x * s * zoomEff;
+    n.py = cy0 + y * s * zoomEff;
+    n.pz = z;
+    n.pr = (3.4 + (n.k ? 1.6 : 0)) * s * zoomEff;
+  }
+}
+
+function fargeAv(id){
+  const cs = getComputedStyle(document.documentElement);
+  return cs.getPropertyValue("--l-" + id).trim() || "#666";
+}
+const LAGFARGE = {}; LAG.forEach(l => LAGFARGE[l.id] = fargeAv(l.id));
+
+function tegn(){
+  if(!ctx || !W) return;
+  ctx.clearRect(0, 0, W, H);
+  projiser();
+
+  const fokus = state.valgt || state.over;
+  const naboer = new Set();
+  if(fokus){
+    naboer.add(fokus);
+    KANTER.forEach(k => {
+      if(k.a.id === fokus) naboer.add(k.b.id);
+      if(k.b.id === fokus) naboer.add(k.a.id);
+    });
+  }
+
+  const sortKanter = [...KANTER].sort((a,b) => (a.a.pz + a.b.pz) - (b.a.pz + b.b.pz));
+  sortKanter.forEach(k => {
+    if(!state.utvidet && (!k.a.k || !k.b.k) && k.type !== "par") return;
+    const zSnitt = (k.a.pz + k.b.pz) / 2;
+    let a = Math.max(0.05, 0.25 - zSnitt * 0.0008);
+    const relatert = fokus && (naboer.has(k.a.id) && naboer.has(k.b.id));
+    if(fokus && !relatert) a *= 0.15;
+    if(relatert) a = 0.95;
+    let farge = "#a9b6b8";
+    if(k.type === "par") farge = "#7E5EE8";
+    if(relatert && k.type === "par") farge = "#7E5EE8";
+    if(relatert && k.type !== "par") farge = "#274247";
+    ctx.strokeStyle = farge;
+    ctx.globalAlpha = a;
+    ctx.lineWidth = k.type === "par" ? 1.3 : k.type === "ref" ? 0.7 : 0.5;
+    ctx.beginPath();
+    ctx.moveTo(k.a.px, k.a.py);
+    ctx.lineTo(k.b.px, k.b.py);
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+
+  const sortNoder = [...NODER].sort((a,b) => b.pz - a.pz);
+  sortNoder.forEach(n => {
+    if(!state.utvidet && !n.k) return;
+    if(state.sok && !passer(n.r)) return;
+    const farge = LAGFARGE[n.lag];
+    const erValgt = n.id === state.valgt;
+    const erOver = n.id === state.over;
+    let a = Math.max(0.35, 1 - n.pz * 0.0018);
+    if(fokus && !naboer.has(n.id)) a *= 0.28;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = farge;
+    ctx.beginPath();
+    ctx.arc(n.px, n.py, n.pr, 0, Math.PI * 2);
+    ctx.fill();
+    // subtil kant på alle noder — hjelper gul mot hvit bakgrunn og gir generell lesbarhet
+    ctx.strokeStyle = "rgba(27,46,50,.4)";
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    if(erValgt || erOver){
+      ctx.strokeStyle = "#1B2E32";
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  });
+
+  // etiketter — valgt, dets naboer, og de nærmeste kjerne-nodene når ingen er valgt
+  ctx.font = '600 12px Arial, Helvetica, sans-serif';
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  let etiketter = [];
+  if(fokus){
+    NODER.forEach(n => { if(naboer.has(n.id) || n.id === fokus) etiketter.push(n); });
+  } else {
+    // vis de N nærmeste kjerne-nodene som permanente etiketter (ikke hover-avhengig)
+    etiketter = NODER.filter(n => n.k && (state.utvidet || n.k)).sort((a,b) => a.pz - b.pz).slice(0, 8);
+  }
+  etiketter.forEach(n => {
+    const tekst = n.r.t;
+    const x = n.px + n.pr + 6, y = n.py;
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = "rgba(255,255,255,.92)";
+    ctx.strokeText(tekst, x, y);
+    ctx.fillStyle = n.id === state.valgt ? LAGFARGE[n.lag] : "#1B2E32";
+    ctx.fillText(tekst, x, y);
+  });
+}
+
+let løper = false;
+function løkke(){
+  løper = true;
+  angY += (mål_angY - angY) * (REDUSERT_MOTION ? 1 : 0.14);
+  angX += (mål_angX - angX) * (REDUSERT_MOTION ? 1 : 0.14);
+  if(autoRot && !state.over && !state.valgt && !drar) mål_angY += 0.0018;
+  simuler();
+  tegn();
+  const aktiv = alpha > 0.06 || Math.abs(mål_angY - angY) > 0.001 || Math.abs(mål_angX - angX) > 0.001
+    || (autoRot && !state.over && !state.valgt && !drar);
+  if(aktiv) requestAnimationFrame(løkke);
+  else løper = false;
+}
+function vekk(){ if(!løper) requestAnimationFrame(løkke); }
+
+/* ---------- interaksjon ---------- */
+
+let drar = false, dragX = 0, dragY = 0, harFlyttet = false;
+
+canvas.addEventListener("pointerdown", e => {
+  drar = true; harFlyttet = false;
+  dragX = e.clientX; dragY = e.clientY;
+  if(canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+  canvas.classList.add("drar");
+  autoRot = false;
+});
+canvas.addEventListener("pointermove", e => {
+  if(drar){
+    const dx = e.clientX - dragX, dy = e.clientY - dragY;
+    if(Math.abs(dx) + Math.abs(dy) > 3) harFlyttet = true;
+    mål_angY += dx * 0.007;
+    mål_angX = Math.max(-1.2, Math.min(1.2, mål_angX + dy * 0.007));
+    dragX = e.clientX; dragY = e.clientY;
+    alpha = Math.max(alpha, 0.1);
+    vekk();
+  } else {
+    const n = plukk(e);
+    const nyOver = n ? n.id : null;
+    if(nyOver !== state.over){ state.over = nyOver; canvas.style.cursor = n ? "pointer" : "grab"; vekk(); }
+  }
+});
+canvas.addEventListener("pointerup", e => {
+  canvas.classList.remove("drar");
+  if(drar && !harFlyttet){
+    const n = plukk(e);
+    velg(n ? n.id : null);
+  }
+  drar = false;
+});
+canvas.addEventListener("pointerleave", () => { drar = false; canvas.classList.remove("drar"); state.over = null; vekk(); });
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom = Math.max(0.4, Math.min(3, zoom * (e.deltaY < 0 ? 1.1 : 0.9)));
+  alpha = Math.max(alpha, 0.08);
+  vekk();
+}, {passive:false});
+
+// tastatur: piltast roterer, +/- zoomer, Enter velger første synlig
+canvas.tabIndex = 0;
+canvas.addEventListener("keydown", e => {
+  const s = 0.12;
+  if(e.key === "ArrowLeft"){ mål_angY -= s; vekk(); e.preventDefault(); }
+  else if(e.key === "ArrowRight"){ mål_angY += s; vekk(); e.preventDefault(); }
+  else if(e.key === "ArrowUp"){ mål_angX = Math.max(-1.2, mål_angX - s); vekk(); e.preventDefault(); }
+  else if(e.key === "ArrowDown"){ mål_angX = Math.min(1.2, mål_angX + s); vekk(); e.preventDefault(); }
+  else if(e.key === "+" || e.key === "="){ zoom = Math.min(3, zoom * 1.15); vekk(); e.preventDefault(); }
+  else if(e.key === "-"){ zoom = Math.max(0.4, zoom * 0.87); vekk(); e.preventDefault(); }
+});
+
+function plukk(e){
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  let treff = null, avstand = 12;
+  for(const n of NODER){
+    if(!state.utvidet && !n.k) continue;
+    const dx = n.px - x, dy = n.py - y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if(d < Math.max(n.pr + 4, avstand) && (!treff || n.pz < treff.pz)){ treff = n; avstand = d; }
+  }
+  return treff;
+}
+
+/* ---------- liste og detalj ---------- */
+
+function passer(r){
+  const q = state.sok.trim().toLowerCase();
+  if(!q) return true;
+  return (r.t + " " + r.d).toLowerCase().includes(q);
+}
+
+function tegnListe(){
+  let h = "";
+  LAG.forEach(l => {
+    const rader = ROWS.filter(r => r.lag === l.id && (state.utvidet || r.k) && passer(r));
+    if(!rader.length) return;
+    h += '<div class="lag-blokk" id="lag-' + l.id + '">';
+    h += '<h2 class="lag-navn"><span class="lag-prikk l-' + l.id + '"></span>' + esc(l.navn);
+    h += '<span class="lag-tall">' + rader.length + '</span></h2>';
+    h += '<p class="lag-und">' + esc(l.und) + '</p>';
+    rader.forEach(r => {
+      h += '<button class="term' + (r.k ? "" : " utvidet") + (r.id === state.valgt ? " valgt" : "") +
+        '" data-id="' + r.id + '">' + esc(r.t) + '</button>';
+    });
+    h += '</div>';
+  });
+  $("liste").innerHTML = h || '<div class="lag-blokk"><p class="lag-und" style="font-style:normal">Ingen begreper passer søket.</p></div>';
+}
+
+function tegnDetalj(){
+  const d = $("detalj");
+  if(!state.valgt){
+    d.innerHTML = '<p class="detalj-tom">Velg et begrep — fra listen, eller ved å klikke en node i grafen.</p>';
+    return;
+  }
+  const r = KART[state.valgt];
+  const l = LAGKART[r.lag];
+  let h = '<p class="d-lag l-' + l.id + '"><span class="lag-prikk l-' + l.id + '"></span>' + esc(l.navn);
+  h += ' <span class="gruppe">&rsaquo; ' + esc(r.gruppe) + (r.k ? "" : " · utvidet") + '</span></p>';
+  h += '<h2 class="d-term">' + esc(r.t) + '</h2>';
+  h += '<p class="d-def">' + esc(r.d) + '</p>';
+
+  const rel = EDGES.filter(e => (e.a === r.id || e.b === r.id));
+  const par = rel.filter(e => e.type === "par").map(e => e.a === r.id ? e.b : e.a);
+
+  if(par.length){
+    h += '<div class="d-boks lilla"><h3>Ikke det samme som</h3>';
+    par.forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '"><span class="pil">→</span>' + esc(KART[p].t) + '</button>'; });
+    h += '</div>';
+  }
+
+  h += '<dl class="d-meta">';
+  if(r.f){ const fa = FASER.find(x => x.n === r.f);
+    h += '<dt>Møter deg i</dt><dd>' + fa.n + '. ' + esc(fa.navn) + '</dd>'; }
+  if(r.hvor) h += '<dt>Forvaltes</dt><dd>' + esc(r.hvor) + '</dd>';
+
+  const inn = rel.filter(e => e.type === "ref" && e.b === r.id).map(e => e.a);
+  const ut = rel.filter(e => e.type === "ref" && e.a === r.id).map(e => e.b);
+  if(ut.length){
+    h += '<dt>Låner fra</dt><dd>';
+    ut.slice(0,6).forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '" style="color:var(--morkgronn);font-size:13px;padding:1px 0"><span class="pil">→</span>' + esc(KART[p].t) + '</button>'; });
+    h += '</dd>';
+  }
+  if(inn.length){
+    h += '<dt>Nevnes i</dt><dd>';
+    inn.slice(0,6).forEach(p => { if(KART[p]) h += '<button class="hopp" data-id="' + p + '" style="color:var(--morkgronn);font-size:13px;padding:1px 0"><span class="pil">←</span>' + esc(KART[p].t) + '</button>'; });
+    h += '</dd>';
+  }
+  h += '</dl>';
+  d.innerHTML = h;
+}
+
+function tegnTegn(){
+  const antKjerne = ROWS.filter(r => r.k).length;
+  $("tegn").innerHTML =
+    '<b>' + (state.utvidet ? ROWS.length : antKjerne) + ' begreper</b> · fargen viser lag<br>' +
+    '<span style="color:var(--lilla)">━</span> forvirringspar &nbsp; ' +
+    '<span style="color:var(--haar-sterk)">━</span> tekstreferanse';
+}
+
+function tegnTeller(){
+  const k = ROWS.filter(r => r.k).length;
+  $("teller").textContent = state.utvidet
+    ? "Viser " + ROWS.length + " begreper"
+    : "Viser " + k + " kjernebegreper · " + (ROWS.length - k) + " utvidede skjult";
+}
+
+/* ---------- valg og navigasjon ---------- */
+
+function velg(id){
+  if(id && !state.utvidet && !KART[id].k) settUtvidet(true);
+  state.valgt = id;
+  tegnListe(); tegnDetalj(); vekk();
+  if(id){
+    const el = $("liste").querySelector('.term[data-id="' + id + '"]');
+    if(el && el.scrollIntoView) el.scrollIntoView({block:"nearest", behavior:REDUSERT_MOTION ? "auto" : "smooth"});
+    history.replaceState(null, "", "#" + id);
+  } else {
+    history.replaceState(null, "", "#");
+  }
+}
+function settUtvidet(v){
+  state.utvidet = v;
+  $("knapp-kjerne").setAttribute("aria-pressed", !v);
+  $("knapp-alle").setAttribute("aria-pressed", v);
+  tegnTeller(); tegnTegn();
+}
+
+$("liste").addEventListener("click", e => {
+  const b = e.target.closest(".term");
+  if(b) velg(b.dataset.id);
+});
+$("detalj").addEventListener("click", e => {
+  const h = e.target.closest(".hopp");
+  if(h) velg(h.dataset.id);
+});
+$("sok").addEventListener("input", e => {
+  state.sok = e.target.value;
+  tegnListe(); vekk();
+});
+$("knapp-kjerne").addEventListener("click", () => { settUtvidet(false); tegnListe(); vekk(); });
+$("knapp-alle").addEventListener("click", () => { settUtvidet(true); tegnListe(); vekk(); });
+$("knapp-nullstill").addEventListener("click", () => {
+  state.valgt = null; state.sok = ""; $("sok").value = "";
+  zoom = 1; mål_angY = 0.3; mål_angX = -0.15;
+  autoRot = !REDUSERT_MOTION;
+  tegnListe(); tegnDetalj(); vekk();
+  history.replaceState(null, "", "#");
+});
+
+window.addEventListener("hashchange", () => {
+  const id = location.hash.slice(1);
+  if(KART[id] && id !== state.valgt) velg(id);
+});
+
+function resize(){
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width; H = rect.height;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  if(ctx && ctx.setTransform) ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  vekk();
+}
+window.addEventListener("resize", resize);
+
+tegnListe();
+tegnDetalj();
+tegnTegn();
+tegnTeller();
+resize();
+if(location.hash){
+  const id = location.hash.slice(1);
+  if(KART[id]) velg(id);
+}
+vekk();
+</script>
+</body>
+</html>

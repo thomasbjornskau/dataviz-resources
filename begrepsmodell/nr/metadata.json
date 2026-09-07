@@ -1,0 +1,14 @@
+{
+  "modul": "Begrepsmodell for makrostatistikker",
+  "tittel": "Begrepsmodell for makrostatistikker",
+  "eyebrow": "Nasjonalregnskapet · Arbeidsutkast",
+  "lede": "Språket vi bruker i nasjonalregnskapet og de tilstøtende makrostatistikkene — fra ESA-standardene og de institusjonelle sektorene til det praktiske produksjonsapparatet med forsystemer, hovedsystemer og publiseringssystemer.",
+  "formaal": "Onboarding og felles språk for NR-miljøet",
+  "versjon": "0.1 · arbeidsutkast",
+  "oppdatert": "4. september 2026",
+  "kilder": "SSB «Begreper i nasjonalregnskapet» (2014), «Om statistikken», ESA 2010, 2008 SNA, intern NR-ordliste",
+  "autoritative": "ESA 2010 (Eurostat) · SSBs kontoplan · KLASS",
+  "kildeLenkeTekst": "Om og metode",
+  "omMetodeTekst": "Definisjonene er skrevet for å skape felles forståelse raskt, ikke for å være juridisk eller metodisk uttømmende. Der modellen berører autoritative definisjoner — ESA-standardene, klassifikasjoner, kvalitetsdimensjoner — er det de forvaltede kildene som gjelder. Deler av produksjonsprosess-vokabularet er hentet fra intern ordliste og er ikke autoritativ SSB-terminologi.",
+  "footerTekst": "Internt arbeidsutkast. Ta kontakt med Seksjon for nasjonalregnskap for spørsmål om definisjoner eller for å foreslå endringer."
+}

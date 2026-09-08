@@ -236,12 +236,16 @@
       <div class="controls">
         <h3>Controls</h3>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-subtotal" checked><span class="track"></span><span class="switch-text">Show subtotal per region</span></label>
+          <label class="switch"><input type="checkbox" id="sw-subtotal" checked><span class="track"></span><span class="switch-text">Subtotal per region</span></label>
         </div>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-grand" checked><span class="track"></span><span class="switch-text">Show grand total at top</span></label>
+          <label class="switch"><input type="checkbox" id="sw-sextotal"><span class="track"></span><span class="switch-text">Total for sex across regions</span></label>
         </div>
-        <div class="ctrl"><p class="ctrl-hint">The subtotal is the sum of the group right below it. The grand total is all the groups added together.</p></div>
+        <div class="ctrl">
+          <label class="switch"><input type="checkbox" id="sw-grand" checked><span class="track"></span><span class="switch-text">Grand total at top</span></label>
+        </div>
+        <div class="ctrl"><p class="ctrl-hint">The subtotal sums the group right below it. The sex total sums across the regions — "all males", "all females".</p></div>
+        <div class="expr-bonus" id="sub-expr"></div>
       </div>
 
       <div class="table-card">
@@ -253,34 +257,35 @@
     <div class="callout" id="subtotal-callout"></div>
   </section>
 
-  <!-- DEL 3: TOTAL MED UNDERFORDELING -->
-  <section class="step wrap" id="totaldist">
+  <!-- DEL 3: RAD MOT KOLONNE -->
+  <section class="step wrap" id="transpose">
     <div class="step-head">
       <div class="step-num">Part 3</div>
-      <h2>When the total itself should be broken down</h2>
-      <p>Usually the total row is just one sum. But sometimes you want the total <em>broken down the same way as the rest of the table</em> — "the whole population, split by education" as its own block at the top, alongside the same breakdown for each region. That puts the basis for comparison right in the table.</p>
+      <h2>Same table, turned: rows or columns?</h2>
+      <p>Everything we've put in the rows so far could just as well sit in the columns. A table has two axes, and which variable you place where is a choice — not a property of the figures. Here region and sex are crossed. Switch which way they run, and see that the cells are exactly the same, just mirrored across the diagonal.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Controls</h3>
+        <h3>Layout</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Total row</span>
-          <div class="seg" id="seg-totaldist" role="group" aria-label="Choose total type">
-            <button data-td="plain" aria-pressed="true">Sum only</button>
-            <button data-td="dist">Split by education</button>
+          <span class="ctrl-label">What goes in the rows?</span>
+          <div class="seg" id="seg-transpose" role="group" aria-label="Choose layout">
+            <button data-t="region-rows" aria-pressed="true">Region down</button>
+            <button data-t="sex-rows">Sex down</button>
           </div>
-          <p class="ctrl-hint">"Sum only" gives one figure for the total. "Split" breaks the total down like the rest.</p>
+          <p class="ctrl-hint">Same four figures either way. What was rows becomes columns, and vice versa.</p>
         </div>
+        <div class="expr-bonus" id="transpose-expr"></div>
       </div>
 
       <div class="table-card">
-        <div class="table-scroll"><table id="tbl-totaldist" aria-live="polite"></table></div>
-        <div class="legend"><span><span class="swatch" style="background:var(--total)"></span> Total block</span><span>Figures in thousands of people (fictitious)</span></div>
+        <div class="table-scroll"><table id="tbl-transpose" aria-live="polite"></table></div>
+        <div class="legend"><span><span class="swatch" style="background:var(--accent)"></span> Row dimension</span><span><span class="swatch" style="background:var(--blue)"></span> Column dimension</span><span>Figures in thousands of people (fictitious)</span></div>
       </div>
     </div>
 
-    <div class="callout" id="totaldist-callout"></div>
+    <div class="callout" id="transpose-callout"></div>
   </section>
 
   <!-- AVSLUTNING -->
@@ -288,7 +293,7 @@
     <div class="step-head">
       <div class="step-num">In closing</div>
       <h2>Grammar, not guesswork</h2>
-      <p class="body">Composite tables look complicated, but they're built from three simple moves: nesting places something inside something, stacking sets things side by side, and grouping decides what belongs together. Once you recognise the three, you can read any table by asking: what is nested inside what, what is stacked, and where are the groupings? Tools like flextab write exactly this as a short expression — but the moves are the same whether you click or type.</p>
+      <p class="body">Composite tables look complicated, but they're built from a few simple moves: nesting places something inside something, stacking sets things side by side, grouping decides what belongs together, and totals can be placed at any level you like. And however you combine the variables, the whole arrangement can sit in the rows or in the columns — the axis is a choice, not a property of the figures. Once you recognise the moves, you can read any table by asking: what is nested inside what, what is stacked, where are the groupings and totals, and what's in rows versus columns? Tools like flextab write exactly this as a short expression — but the moves are the same whether you click or type.</p>
     </div>
   </section>
 
@@ -436,7 +441,7 @@ wireSeg("combo-grid", btn => { combo = btn.dataset.combo; renderCombo(); });
 /* =================================================================
    PART 2 — Subtotals (region > sex, subtotal per region)
    ================================================================= */
-const subState = { subtotal: true, grand: true };
+const subState = { subtotal: true, sextotal: false, grand: true };
 
 function renderSubtotal() {
   const tbl = document.getElementById("tbl-subtotal");
@@ -449,56 +454,78 @@ function renderSubtotal() {
     else h += `<tr><th class="grp0">${r}</th><td class="num is-total">${fmt(byRegion(r))}</td></tr>`;
     for (const s of S) h += `<tr><th class="grp1">${s}</th><td class="num">${fmt(byRegionSex(r, s))}</td></tr>`;
   }
+  // Separate total block for sex across regions
+  if (subState.sextotal) {
+    h += `<tr class="subtotal-row block-gap"><th class="grp0">Sex – across</th><td class="num"></td></tr>`;
+    for (const s of S) h += `<tr><th class="grp1">All ${s.toLowerCase()}</th><td class="num">${fmt(bySex(s))}</td></tr>`;
+  }
   h += `</tbody>`;
   tbl.innerHTML = h;
-  document.getElementById("subtotal-callout").innerHTML = subState.subtotal
+
+  // flextab expression mirrors the choices
+  let expr;
+  if (subState.sextotal)
+    expr = `<span class="op">total</span> <span class="var">region</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
+  else if (subState.subtotal)
+    expr = `<span class="op">total</span> <span class="var">region</span> <span class="op">*</span> <span class="var">sex</span>`;
+  else
+    expr = `<span class="var">region</span> <span class="op">*</span> <span class="var">sex</span>`;
+  document.getElementById("sub-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}`;
+
+  document.getElementById("subtotal-callout").innerHTML = subState.sextotal
+    ? `<strong>Total across:</strong> at the bottom, sex is summed across the regions — all males (240) and all females (260). This is a total at the inner level, not just per region. Both total types can be shown at once, and both add up to 500.`
+    : subState.subtotal
     ? `<strong>Subtotals:</strong> each region now has its own subtotal (West = 200, East = 300). The subtotals add up to the grand total at the top (500). A subtotal is always the sum of the group it sits above.`
-    : `<strong>Without subtotals:</strong> now you see only the group figures and the grand total. Switch the subtotal on to see the sum for each region.`;
+    : `<strong>Without subtotals:</strong> now you see only the group figures and the grand total. Switch on one of the totals to see subtotals — per region, or for sex across.`;
 }
 document.getElementById("sw-subtotal").addEventListener("change", e => { subState.subtotal = e.target.checked; renderSubtotal(); });
+document.getElementById("sw-sextotal").addEventListener("change", e => { subState.sextotal = e.target.checked; renderSubtotal(); });
 document.getElementById("sw-grand").addEventListener("change", e => { subState.grand = e.target.checked; renderSubtotal(); });
 
 /* =================================================================
-   PART 3 — Total with sub-distribution
+   PART 3 — Rows vs columns (transpose)
    ================================================================= */
-let tdMode = "plain";
+let transMode = "region-rows";
 
-function renderTotalDist() {
-  const tbl = document.getElementById("tbl-totaldist");
-  const R = V.region.verdier, E = V.education.verdier;
-  let h = `<caption>Count by region and education</caption><div class="caption-sub">${tdMode === "dist" ? "The total broken down by education, like the rest" : "The total as one sum"}</div>`;
-  h += `<thead><tr><th class="corner">Group</th>`;
-  for (const e of E) h += `<th>${e}</th>`;
-  h += `<th class="is-total">All</th></tr></thead><tbody>`;
+function renderTranspose() {
+  const tbl = document.getElementById("tbl-transpose");
+  const R = V.region.verdier, S = V.sex.verdier;
+  let rowVar, colVar, rowVals, colVals;
+  if (transMode === "region-rows") { rowVar = V.region; colVar = V.sex; rowVals = R; colVals = S; }
+  else                             { rowVar = V.sex; colVar = V.region; rowVals = S; colVals = R; }
 
-  // Total block
-  if (tdMode === "dist") {
-    h += `<tr class="subtotal-row block-gap"><th class="grp0">TOTAL</th>`;
-    for (const e of E) h += `<td class="num">${fmt(byEdu(e))}</td>`;
-    h += `<td class="num">${fmt(GRAND)}</td></tr>`;
-  } else {
-    h += `<tr class="subtotal-row block-gap"><th class="grp0">TOTAL</th>`;
-    for (const e of E) h += `<td class="num"></td>`;
-    h += `<td class="num">${fmt(GRAND)}</td></tr>`;
+  function cell(rv, cv) {
+    return transMode === "region-rows" ? byRegionSex(rv, cv) : byRegionSex(cv, rv);
   }
-  // Per region, always broken down by education
-  for (const r of R) {
-    h += `<tr><th class="grp0">${r}</th>`;
-    for (const e of E) h += `<td class="num">${fmt(byRegionEdu(r, e))}</td>`;
-    h += `<td class="num is-total">${fmt(byRegion(r))}</td></tr>`;
+
+  let h = `<caption>Count by region and sex</caption>`;
+  h += `<div class="caption-sub">${rowVar.navn} down · ${colVar.navn} across</div>`;
+  h += `<thead><tr><th class="corner" style="color:var(--accent)">${rowVar.navn}</th>`;
+  for (const c of colVals) h += `<th class="colspan-head">${c}</th>`;
+  h += `</tr></thead><tbody>`;
+  for (const rv of rowVals) {
+    h += `<tr><th>${rv}</th>`;
+    for (const cv of colVals) h += `<td class="num">${fmt(cell(rv, cv))}</td>`;
+    h += `</tr>`;
   }
   h += `</tbody>`;
   tbl.innerHTML = h;
-  document.getElementById("totaldist-callout").innerHTML = tdMode === "dist"
-    ? `<strong>The total split:</strong> the TOTAL row is now broken down by education just like the regions below (Elementary = 165, Higher = 335). That lets you compare each region directly against the whole, without doing the arithmetic yourself.`
-    : `<strong>The total as one sum:</strong> here the total row gives just one figure (500). You see the whole, but not how it splits. Switch to "Split by education" to bring the basis for comparison into the table.`;
+
+  const expr = transMode === "region-rows"
+    ? `<span class="var">region</span> <span class="op">,</span> <span class="var">sex</span>`
+    : `<span class="var">sex</span> <span class="op">,</span> <span class="var">region</span>`;
+  document.getElementById("transpose-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}<span style="display:block;margin-top:6px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:#8b97ad">The comma separates rows (before) from columns (after).</span>`;
+
+  document.getElementById("transpose-callout").innerHTML = transMode === "region-rows"
+    ? `<strong>Region in the rows:</strong> the regions run down, sex across. West/Males is 100. In flextab this is the left side of the comma — what comes before the comma goes into the rows.`
+    : `<strong>Sex in the rows:</strong> now sex runs down and region across — but Males/West is still 100. The table is mirrored across the diagonal, the figures unchanged. Only the single comma in the expression has moved.`;
 }
-wireSeg("seg-totaldist", btn => { tdMode = btn.dataset.td; renderTotalDist(); });
+wireSeg("seg-transpose", btn => { transMode = btn.dataset.t; renderTranspose(); });
 
 /* init */
 renderCombo();
 renderSubtotal();
-renderTotalDist();
+renderTranspose();
 </script>
 </body>
 </html>

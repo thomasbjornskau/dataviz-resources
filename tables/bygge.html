@@ -244,7 +244,7 @@
         <div class="ctrl">
           <label class="switch"><input type="checkbox" id="sw-grand" checked><span class="track"></span><span class="switch-text">Totalsum øverst</span></label>
         </div>
-        <div class="ctrl"><p class="ctrl-hint">Subtotalen summerer gruppen rett under. Kjønn-totalen summerer på tvers av landsdelene – «alle menn», «alle kvinner».</p></div>
+        <div class="ctrl"><p class="ctrl-hint">Subtotalen summerer gruppen rett under. Kjønn-totalen summerer på tvers av landsdelene – menn og kvinner samlet.</p></div>
         <div class="expr-bonus" id="sub-expr"></div>
       </div>
 
@@ -448,16 +448,22 @@ function renderSubtotal() {
   const R = V.region.verdier, S = V.sex.verdier;
   let h = `<caption>Antall etter landsdel og kjønn</caption><div class="caption-sub">Landsdel nestet med kjønn</div>`;
   h += `<thead><tr><th class="corner">Gruppe</th><th>Antall</th></tr></thead><tbody>`;
+  // Totalsum øverst
   if (subState.grand) h += `<tr class="subtotal-row"><th>TOTALT</th><td class="num">${fmt(GRAND)}</td></tr>`;
-  for (const r of R) {
-    if (subState.subtotal) h += `<tr class="subtotal-row"><th class="grp0">${r} – sum</th><td class="num">${fmt(byRegion(r))}</td></tr>`;
-    else h += `<tr><th class="grp0">${r}</th><td class="num is-total">${fmt(byRegion(r))}</td></tr>`;
-    for (const s of S) h += `<tr><th class="grp1">${s}</th><td class="num">${fmt(byRegionSex(r, s))}</td></tr>`;
-  }
-  // Egen totalblokk for kjønn på tvers av landsdelene
+  // Kjønn-total på tvers: ligger nest-øverst, rett under totalsummen
   if (subState.sextotal) {
-    h += `<tr class="subtotal-row block-gap"><th class="grp0">Kjønn – på tvers</th><td class="num"></td></tr>`;
-    for (const s of S) h += `<tr><th class="grp1">Alle ${s.toLowerCase()}</th><td class="num">${fmt(bySex(s))}</td></tr>`;
+    for (const s of S) h += `<tr class="subtotal-row"><th class="grp0">${s}</th><td class="num">${fmt(bySex(s))}</td></tr>`;
+  }
+  // Landsdeler
+  for (const r of R) {
+    if (subState.subtotal) {
+      // Med subtotal: landsdel-sum som gruppeoverskrift, kjønn brutt ned under
+      h += `<tr class="subtotal-row block-gap"><th class="grp0">${r} – sum</th><td class="num">${fmt(byRegion(r))}</td></tr>`;
+    } else {
+      // Uten subtotal: landsdel som ren gruppeoverskrift uten tall
+      h += `<tr class="block-gap"><th class="grp0">${r}</th><td class="num"></td></tr>`;
+    }
+    for (const s of S) h += `<tr><th class="grp1">${s}</th><td class="num">${fmt(byRegionSex(r, s))}</td></tr>`;
   }
   h += `</tbody>`;
   tbl.innerHTML = h;
@@ -465,18 +471,18 @@ function renderSubtotal() {
   // flextab-uttrykk speiler valgene
   let expr;
   if (subState.sextotal)
-    expr = `<span class="op">total</span> <span class="var">landsdel</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`;
+    expr = `<span class="paren">(</span><span class="op">total</span> <span class="var">landsdel</span><span class="paren">)</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`;
   else if (subState.subtotal)
-    expr = `<span class="op">total</span> <span class="var">landsdel</span> <span class="op">*</span> <span class="var">kjønn</span>`;
+    expr = `<span class="var">landsdel</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`;
   else
     expr = `<span class="var">landsdel</span> <span class="op">*</span> <span class="var">kjønn</span>`;
   document.getElementById("sub-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}`;
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal
-    ? `<strong>Total på tvers:</strong> nederst er kjønn summert på tvers av landsdelene – alle menn (240) og alle kvinner (260). Dette er en total på det indre nivået, ikke bare per landsdel. Begge totaltyper kan vises samtidig, og begge summerer til 500.`
+    ? `<strong>Total på tvers:</strong> rett under totalsummen er kjønn summert på tvers av landsdelene – menn (240) og kvinner (260). Dette er en total på det indre nivået. Begge totaltyper kan vises samtidig, og begge summerer til 500.`
     : subState.subtotal
     ? `<strong>Subtotaler:</strong> hver landsdel har fått sin egen delsum (Vest = 200, Øst = 300). Delsummene summerer til totalsummen øverst (500). En subtotal er alltid summen av gruppen den står over.`
-    : `<strong>Uten subtotaler:</strong> nå ser du bare gruppetallene og totalsummen. Skru på en av totalene for å se delsummer – per landsdel, eller for kjønn på tvers.`;
+    : `<strong>Uten subtotaler:</strong> kjønn vises fortsatt per landsdel, men landsdelen har ingen egen sumrad lenger. Skru på en av totalene for å se delsummer – per landsdel, eller for kjønn på tvers.`;
 }
 document.getElementById("sw-subtotal").addEventListener("change", e => { subState.subtotal = e.target.checked; renderSubtotal(); });
 document.getElementById("sw-sextotal").addEventListener("change", e => { subState.sextotal = e.target.checked; renderSubtotal(); });

@@ -244,7 +244,7 @@
         <div class="ctrl">
           <label class="switch"><input type="checkbox" id="sw-grand" checked><span class="track"></span><span class="switch-text">Grand total at top</span></label>
         </div>
-        <div class="ctrl"><p class="ctrl-hint">The subtotal sums the group right below it. The sex total sums across the regions — "all males", "all females".</p></div>
+        <div class="ctrl"><p class="ctrl-hint">The subtotal sums the group right below it. The sex total sums across the regions — males and females combined.</p></div>
         <div class="expr-bonus" id="sub-expr"></div>
       </div>
 
@@ -448,16 +448,22 @@ function renderSubtotal() {
   const R = V.region.verdier, S = V.sex.verdier;
   let h = `<caption>Count by region and sex</caption><div class="caption-sub">Region nested with sex</div>`;
   h += `<thead><tr><th class="corner">Group</th><th>Count</th></tr></thead><tbody>`;
+  // Grand total at top
   if (subState.grand) h += `<tr class="subtotal-row"><th>TOTAL</th><td class="num">${fmt(GRAND)}</td></tr>`;
-  for (const r of R) {
-    if (subState.subtotal) h += `<tr class="subtotal-row"><th class="grp0">${r} – sum</th><td class="num">${fmt(byRegion(r))}</td></tr>`;
-    else h += `<tr><th class="grp0">${r}</th><td class="num is-total">${fmt(byRegion(r))}</td></tr>`;
-    for (const s of S) h += `<tr><th class="grp1">${s}</th><td class="num">${fmt(byRegionSex(r, s))}</td></tr>`;
-  }
-  // Separate total block for sex across regions
+  // Sex total across regions: sits second from top, right under the grand total
   if (subState.sextotal) {
-    h += `<tr class="subtotal-row block-gap"><th class="grp0">Sex – across</th><td class="num"></td></tr>`;
-    for (const s of S) h += `<tr><th class="grp1">All ${s.toLowerCase()}</th><td class="num">${fmt(bySex(s))}</td></tr>`;
+    for (const s of S) h += `<tr class="subtotal-row"><th class="grp0">${s}</th><td class="num">${fmt(bySex(s))}</td></tr>`;
+  }
+  // Regions
+  for (const r of R) {
+    if (subState.subtotal) {
+      // With subtotal: region sum as group header, sex broken down below
+      h += `<tr class="subtotal-row block-gap"><th class="grp0">${r} – sum</th><td class="num">${fmt(byRegion(r))}</td></tr>`;
+    } else {
+      // Without subtotal: region as a plain group header with no figure
+      h += `<tr class="block-gap"><th class="grp0">${r}</th><td class="num"></td></tr>`;
+    }
+    for (const s of S) h += `<tr><th class="grp1">${s}</th><td class="num">${fmt(byRegionSex(r, s))}</td></tr>`;
   }
   h += `</tbody>`;
   tbl.innerHTML = h;
@@ -465,18 +471,18 @@ function renderSubtotal() {
   // flextab expression mirrors the choices
   let expr;
   if (subState.sextotal)
-    expr = `<span class="op">total</span> <span class="var">region</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
+    expr = `<span class="paren">(</span><span class="op">total</span> <span class="var">region</span><span class="paren">)</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
   else if (subState.subtotal)
-    expr = `<span class="op">total</span> <span class="var">region</span> <span class="op">*</span> <span class="var">sex</span>`;
+    expr = `<span class="var">region</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
   else
     expr = `<span class="var">region</span> <span class="op">*</span> <span class="var">sex</span>`;
   document.getElementById("sub-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}`;
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal
-    ? `<strong>Total across:</strong> at the bottom, sex is summed across the regions — all males (240) and all females (260). This is a total at the inner level, not just per region. Both total types can be shown at once, and both add up to 500.`
+    ? `<strong>Total across:</strong> right under the grand total, sex is summed across the regions — males (240) and females (260). This is a total at the inner level. Both total types can be shown at once, and both add up to 500.`
     : subState.subtotal
     ? `<strong>Subtotals:</strong> each region now has its own subtotal (West = 200, East = 300). The subtotals add up to the grand total at the top (500). A subtotal is always the sum of the group it sits above.`
-    : `<strong>Without subtotals:</strong> now you see only the group figures and the grand total. Switch on one of the totals to see subtotals — per region, or for sex across.`;
+    : `<strong>Without subtotals:</strong> sex is still shown per region, but the region no longer has its own sum row. Switch on one of the totals to see subtotals — per region, or for sex across.`;
 }
 document.getElementById("sw-subtotal").addEventListener("change", e => { subState.subtotal = e.target.checked; renderSubtotal(); });
 document.getElementById("sw-sextotal").addEventListener("change", e => { subState.sextotal = e.target.checked; renderSubtotal(); });

@@ -468,15 +468,17 @@ function renderSubtotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-uttrykk speiler valgene
-  let expr;
-  if (subState.sextotal)
-    expr = `<span class="paren">(</span><span class="op">total</span> <span class="var">landsdel</span><span class="paren">)</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`;
-  else if (subState.subtotal)
-    expr = `<span class="var">landsdel</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`;
-  else
-    expr = `<span class="var">landsdel</span> <span class="op">*</span> <span class="var">kjønn</span>`;
-  document.getElementById("sub-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}`;
+  // flextab-uttrykk speiler valgene (åtte kombinasjoner av grand, subtotal, sextotal)
+  const eT = subState.grand, eS = subState.subtotal, eK = subState.sextotal;
+  let left;
+  if (!eT && !eK)      left = `<span class="var">landsdel</span>`;
+  else if (!eT && eK)  left = `<span class="var">kjønn</span> <span class="var">landsdel</span>`;
+  else if (eT && !eK)  left = `<span class="op">total</span> <span class="var">landsdel</span>`;
+  else                 left = `<span class="paren">(</span><span class="op">total</span> <span class="var">landsdel</span><span class="paren">)</span>`;
+  const right = eS
+    ? `<span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`
+    : `<span class="var">kjønn</span>`;
+  document.getElementById("sub-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${left} <span class="op">*</span> ${right}`;
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal
     ? `<strong>Total på tvers:</strong> rett under totalsummen er kjønn summert på tvers av landsdelene – menn (240) og kvinner (260). Dette er en total på det indre nivået. Begge totaltyper kan vises samtidig, og begge summerer til 500.`

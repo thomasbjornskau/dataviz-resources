@@ -468,15 +468,17 @@ function renderSubtotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab expression mirrors the choices
-  let expr;
-  if (subState.sextotal)
-    expr = `<span class="paren">(</span><span class="op">total</span> <span class="var">region</span><span class="paren">)</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
-  else if (subState.subtotal)
-    expr = `<span class="var">region</span> <span class="op">*</span> <span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`;
-  else
-    expr = `<span class="var">region</span> <span class="op">*</span> <span class="var">sex</span>`;
-  document.getElementById("sub-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}`;
+  // flextab expression mirrors the choices (eight combinations of grand, subtotal, sextotal)
+  const eT = subState.grand, eS = subState.subtotal, eK = subState.sextotal;
+  let left;
+  if (!eT && !eK)      left = `<span class="var">region</span>`;
+  else if (!eT && eK)  left = `<span class="var">sex</span> <span class="var">region</span>`;
+  else if (eT && !eK)  left = `<span class="op">total</span> <span class="var">region</span>`;
+  else                 left = `<span class="paren">(</span><span class="op">total</span> <span class="var">region</span><span class="paren">)</span>`;
+  const right = eS
+    ? `<span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`
+    : `<span class="var">sex</span>`;
+  document.getElementById("sub-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${left} <span class="op">*</span> ${right}`;
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal
     ? `<strong>Total across:</strong> right under the grand total, sex is summed across the regions — males (240) and females (260). This is a total at the inner level. Both total types can be shown at once, and both add up to 500.`

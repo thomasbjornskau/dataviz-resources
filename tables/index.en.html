@@ -137,6 +137,14 @@
   a.inline:hover { border-bottom-color: var(--accent); }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  /* ---- flextab box (as pages 2/3) ---- */
+  .expr-bonus { margin-top: 14px; padding: 12px 14px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 13px; color: #e6ebf3; overflow-x: auto; }
+  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 7px; }
+  .expr-bonus .op { color: #e0956b; font-weight:600; }
+  .expr-bonus .paren { color: #7dd3a8; font-weight:600; }
+  .expr-bonus .var { color:#a9c7f0; }
+  .expr-bonus .note { display:block; margin-top:6px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; }
 </style>
 </head>
 <body>
@@ -161,7 +169,7 @@
     <span class="badge"><span class="tick">✓</span> All figures are fictitious, made for the explainer</span>
   </header>
 
-  <!-- DEL 1: DIMENSJONER -->
+  <!-- PART 1: DIMENSIONS -->
   <section class="step wrap" id="dim">
     <div class="step-head">
       <div class="step-num">Part 1</div>
@@ -180,6 +188,7 @@
           </div>
           <p class="ctrl-hint">Same figures, turned on their side. We keep these two variables throughout the whole explainer.</p>
         </div>
+        <div class="expr-bonus" id="dim-expr"></div>
       </div>
 
       <div class="table-card">
@@ -193,7 +202,7 @@
     </div>
   </section>
 
-  <!-- DEL 2: TOTALER / MARGINALER -->
+  <!-- PART 2: TOTALS / MARGINALS -->
   <section class="step wrap" id="total">
     <div class="step-head">
       <div class="step-num">Part 2</div>
@@ -211,6 +220,7 @@
           <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Column totals (sum down)</span></label>
         </div>
         <div class="ctrl"><p class="ctrl-hint">The corner appears when both are on — it's the grand total, and it has to match both ways.</p></div>
+        <div class="expr-bonus" id="total-expr"></div>
       </div>
 
       <div class="table-card">
@@ -223,7 +233,7 @@
     </div>
   </section>
 
-  <!-- DEL 3: STABLING OG NESTING -->
+  <!-- PART 3: STACKING AND NESTING -->
   <section class="step wrap" id="nest">
     <div class="step-head">
       <div class="step-num">Part 3</div>
@@ -251,6 +261,7 @@
           </div>
           <p class="ctrl-hint">Nesting can run either way. The order decides what is read "within" what.</p>
         </div>
+        <div class="expr-bonus" id="nest-expr"></div>
       </div>
 
       <div class="table-card">
@@ -262,7 +273,7 @@
     <div class="callout" id="nest-callout"></div>
   </section>
 
-  <!-- DEL 4: PROSENT -->
+  <!-- PART 4: PERCENTAGES -->
   <section class="step wrap" id="pct">
     <div class="step-head">
       <div class="step-num">Part 4 · the heart of it</div>
@@ -303,6 +314,7 @@
           </div>
         </div>
         <div class="ctrl"><p class="ctrl-hint" id="pct-explain"></p></div>
+        <div class="expr-bonus" id="pct-expr"></div>
       </div>
 
       <div class="table-card">
@@ -388,7 +400,7 @@ function syncSeg(id, attr, val) {
 }
 
 /* =================================================================
-   DEL 1 — Dimensjoner (orientering: utdanning som kolonne eller rad)
+   PART 1 — Dimensions (orientation: education as column or row)
    ================================================================= */
 let orient = "ut-cols";
 
@@ -417,11 +429,17 @@ function renderDim() {
   }
   h += `</tbody>`;
   tbl.innerHTML = h;
+
+  // flextab expression: what comes before the comma goes into the rows
+  const expr = orient === "ut-cols"
+    ? `<span class="var">employment</span> <span class="op">,</span> <span class="var">education</span>`
+    : `<span class="var">education</span> <span class="op">,</span> <span class="var">employment</span>`;
+  document.getElementById("dim-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}<span class="note">The comma separates rows (before) from columns (after).</span>`;
 }
 wireSeg("seg-orient", btn => { orient = btn.dataset.orient; renderDim(); });
 
 /* =================================================================
-   DEL 2 — Totaler / marginaler
+   PART 2 — Totals / marginals
    Fixed: education across (columns), employment down (rows).
    ================================================================= */
 const totState = { rowTot: true, colTot: true };
@@ -461,13 +479,18 @@ function renderTotal() {
   h += TOTAL_FIRST ? (marginRow + dataRows) : (dataRows + marginRow);
   h += `</tbody>`;
   tbl.innerHTML = h;
+
+  // flextab expression: total is added on each axis. Rows = employment, columns = education.
+  const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">employment</span>` : `<span class="var">employment</span>`;
+  const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">education</span>` : `<span class="var">education</span>`;
+  document.getElementById("total-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${rowSide} <span class="op">,</span> ${colSide}<span class="note">total adds a marginal on that axis.</span>`;
 }
 document.getElementById("sw-rowtot").addEventListener("change", e => { totState.rowTot = e.target.checked; renderTotal(); });
 document.getElementById("sw-coltot").addEventListener("change", e => { totState.colTot = e.target.checked; renderTotal(); });
 
 /* =================================================================
-   DEL 3 — Stabling og nesting
-   Rekkefølge: Én fordeling → Stabling → Nesting.
+   PART 3 — Stacking and nesting
+   Order: One distribution → Stacking → Nesting.
    ================================================================= */
 let nestMode = "none";
 let nestDir = "ut-first";
@@ -531,12 +554,28 @@ function renderNest() {
   tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Figures in thousands of people (fictitious)</div>` + h;
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
+
+  // flextab expression: a space stacks, * nests
+  let expr, note;
+  if (nestMode === "none") {
+    expr = `<span class="var">employment</span>`;
+    note = "One variable — one distribution.";
+  } else if (nestMode === "stack") {
+    expr = `<span class="var">education</span>&nbsp;&nbsp;<span class="var">employment</span>`;
+    note = "A space stacks two distributions.";
+  } else {
+    expr = nestDir === "ut-first"
+      ? `<span class="var">education</span> <span class="op">*</span> <span class="var">employment</span>`
+      : `<span class="var">employment</span> <span class="op">*</span> <span class="var">education</span>`;
+    note = "The star (*) nests one inside the other.";
+  }
+  document.getElementById("nest-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}<span class="note">${note}</span>`;
 }
 wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
 
 /* =================================================================
-   DEL 4 — Prosent (kjernen)
+   PART 4 — Percentages (the heart of it)
    Fixed: education across (columns = background), employment down.
    ================================================================= */
 let pctMode = "count";
@@ -628,6 +667,16 @@ function renderPct() {
   for (const [id, mode] of [["card-col","col"],["card-row","row"],["card-tot","tot"]])
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
+
+  // flextab expression: the percentage keyword sets the denominator
+  const PCT_EXPR = {
+    count: { kw: `<span class="op">n</span>`, note: "n counts observations." },
+    col:   { kw: `<span class="op">colpctn</span>`, note: "colpctn: percent of the column total." },
+    row:   { kw: `<span class="op">rowpctn</span>`, note: "rowpctn: percent of the row total." },
+    tot:   { kw: `<span class="op">pctn</span>`, note: "pctn: percent of the grand total." },
+  };
+  const pe = PCT_EXPR[pctMode];
+  document.getElementById("pct-expr").innerHTML = `<span class="lbl">As a flextab expression</span><span class="var">employment</span> <span class="op">,</span> <span class="var">education</span> <span class="op">*</span> ${pe.kw}<span class="note">${pe.note}</span>`;
 
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const t = tbl.querySelector(".pulse-target");

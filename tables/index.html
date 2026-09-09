@@ -137,6 +137,14 @@
   a.inline:hover { border-bottom-color: var(--accent); }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  /* ---- flextab-boks (som side 2/3) ---- */
+  .expr-bonus { margin-top: 14px; padding: 12px 14px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 13px; color: #e6ebf3; overflow-x: auto; }
+  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 7px; }
+  .expr-bonus .op { color: #e0956b; font-weight:600; }
+  .expr-bonus .paren { color: #7dd3a8; font-weight:600; }
+  .expr-bonus .var { color:#a9c7f0; }
+  .expr-bonus .note { display:block; margin-top:6px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; }
 </style>
 </head>
 <body>
@@ -180,6 +188,7 @@
           </div>
           <p class="ctrl-hint">Samme tall, snudd på siden. Vi holder oss til disse to variablene gjennom hele forklaringen.</p>
         </div>
+        <div class="expr-bonus" id="dim-expr"></div>
       </div>
 
       <div class="table-card">
@@ -211,6 +220,7 @@
           <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Kolonnetotaler (sum nedover)</span></label>
         </div>
         <div class="ctrl"><p class="ctrl-hint">Hjørnet dukker opp når begge er på – det er totalsummen, og den må stemme begge veier.</p></div>
+        <div class="expr-bonus" id="total-expr"></div>
       </div>
 
       <div class="table-card">
@@ -251,6 +261,7 @@
           </div>
           <p class="ctrl-hint">Nesting kan gå begge veier. Rekkefølgen bestemmer hva som leses «innenfor» hva.</p>
         </div>
+        <div class="expr-bonus" id="nest-expr"></div>
       </div>
 
       <div class="table-card">
@@ -303,6 +314,7 @@
           </div>
         </div>
         <div class="ctrl"><p class="ctrl-hint" id="pct-explain"></p></div>
+        <div class="expr-bonus" id="pct-expr"></div>
       </div>
 
       <div class="table-card">
@@ -417,6 +429,12 @@ function renderDim() {
   }
   h += `</tbody>`;
   tbl.innerHTML = h;
+
+  // flextab-uttrykk: det som står før komma havner i radene
+  const expr = orient === "ut-cols"
+    ? `<span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span>`
+    : `<span class="var">utdanning</span> <span class="op">,</span> <span class="var">yrkesstatus</span>`;
+  document.getElementById("dim-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}<span class="note">Komma skiller rader (før) fra kolonner (etter).</span>`;
 }
 wireSeg("seg-orient", btn => { orient = btn.dataset.orient; renderDim(); });
 
@@ -461,6 +479,11 @@ function renderTotal() {
   h += TOTAL_FIRST ? (marginRow + dataRows) : (dataRows + marginRow);
   h += `</tbody>`;
   tbl.innerHTML = h;
+
+  // flextab-uttrykk: total legges til på hver akse. Rader = yrkesstatus, kolonner = utdanning.
+  const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">yrkesstatus</span>` : `<span class="var">yrkesstatus</span>`;
+  const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">utdanning</span>` : `<span class="var">utdanning</span>`;
+  document.getElementById("total-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${rowSide} <span class="op">,</span> ${colSide}<span class="note">total legger en marginal på den aksen.</span>`;
 }
 document.getElementById("sw-rowtot").addEventListener("change", e => { totState.rowTot = e.target.checked; renderTotal(); });
 document.getElementById("sw-coltot").addEventListener("change", e => { totState.colTot = e.target.checked; renderTotal(); });
@@ -531,6 +554,22 @@ function renderNest() {
   tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Tall i tusen personer (fiktivt)</div>` + h;
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
+
+  // flextab-uttrykk: mellomrom stabler, * nester
+  let expr, note;
+  if (nestMode === "none") {
+    expr = `<span class="var">yrkesstatus</span>`;
+    note = "Én variabel – én fordeling.";
+  } else if (nestMode === "stack") {
+    expr = `<span class="var">utdanning</span>&nbsp;&nbsp;<span class="var">yrkesstatus</span>`;
+    note = "Mellomrom stabler to fordelinger.";
+  } else {
+    expr = nestDir === "ut-first"
+      ? `<span class="var">utdanning</span> <span class="op">*</span> <span class="var">yrkesstatus</span>`
+      : `<span class="var">yrkesstatus</span> <span class="op">*</span> <span class="var">utdanning</span>`;
+    note = "Stjernen (*) nester den ene inni den andre.";
+  }
+  document.getElementById("nest-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}<span class="note">${note}</span>`;
 }
 wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
@@ -628,6 +667,16 @@ function renderPct() {
   for (const [id, mode] of [["card-col","col"],["card-row","row"],["card-tot","tot"]])
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
+
+  // flextab-uttrykk: prosentnøkkelordet bestemmer nevneren
+  const PCT_EXPR = {
+    count: { kw: `<span class="op">n</span>`, note: "n teller observasjoner." },
+    col:   { kw: `<span class="op">colpctn</span>`, note: "colpctn: prosent av kolonnetotalen." },
+    row:   { kw: `<span class="op">rowpctn</span>`, note: "rowpctn: prosent av radtotalen." },
+    tot:   { kw: `<span class="op">pctn</span>`, note: "pctn: prosent av totalsummen." },
+  };
+  const pe = PCT_EXPR[pctMode];
+  document.getElementById("pct-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span><span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span> <span class="op">*</span> ${pe.kw}<span class="note">${pe.note}</span>`;
 
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const t = tbl.querySelector(".pulse-target");

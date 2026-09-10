@@ -166,6 +166,18 @@
   .weight-result .r .val { font-size:24px; font-weight:600; font-variant-numeric:tabular-nums; margin-top:3px; }
   .weight-result .r.uw .val { color:var(--ink-soft); }
   .weight-result .r.w .val { color:var(--accent); }
+
+  /* ---- flextab-boks: fullt Python-kall ---- */
+  .expr-bonus { margin-top: 14px; padding: 14px 16px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #e6ebf3; overflow-x: auto; }
+  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 9px; }
+  .expr-bonus .ln { display:block; white-space:pre-wrap; word-break:break-word; padding-left:2.2em; text-indent:-2.2em; }
+  .expr-bonus .fn { color:#e6ebf3; }
+  .expr-bonus .arg { color:#8bb8e0; }
+  .expr-bonus .str { color:#a3d9a5; }
+  .expr-bonus .op { color:#e0956b; font-weight:600; }
+  .expr-bonus .paren { color:#7dd3a8; font-weight:600; }
+  .expr-bonus .kw { color:#c99bd6; }
+  .expr-bonus .note { display:block; margin-top:9px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; line-height:1.45; }
 </style>
 </head>
 <body>
@@ -209,6 +221,7 @@
           </div>
           <p class="ctrl-hint" id="stat-hint"></p>
         </div>
+        <div class="expr-bonus" id="stat-expr"></div>
       </div>
 
       <div class="table-card">
@@ -247,6 +260,7 @@
           </div>
         </div>
         <div class="ctrl"><p class="ctrl-hint">Hver målevariabel får sin egen blokk med de valgte statistikkene. Antall er alltid det samme – det teller personer, uansett målevariabel.</p></div>
+        <div class="expr-bonus" id="multi-expr"></div>
       </div>
 
       <div class="table-card">
@@ -289,6 +303,7 @@
           </div>
           <p class="ctrl-hint" id="pct-hint"></p>
         </div>
+        <div class="expr-bonus" id="pct-expr"></div>
       </div>
 
       <div class="table-card">
@@ -328,6 +343,7 @@
         <div class="r w"><div class="lab">Vektet snitt</div><div class="val">430</div></div>
       </div>
       <p style="font-family:'Inter',system-ui,sans-serif;font-size:13.5px;color:var(--ink-soft);margin:16px 0 0;line-height:1.5">Det uvektede snittet behandler alle fem likt: (300 + 350 + 400 + 450 + 500) / 5 = 400. Det vektede lar personen med vekt 5 telle tilsvarende mer: (300 + 350 + 400 + 450×5 + 500×2) / 10 = 430. Forskjellen er hele poenget med vekting – tallet trekkes mot enhetene som representerer flest. Antall (N) telles alltid uvektet: det er fortsatt fem personer.</p>
+      <div class="expr-bonus" id="weight-expr" style="margin-top:18px"></div>
     </div>
   </section>
 
@@ -385,6 +401,35 @@ function wireSeg(id, onPick) {
 }
 
 /* =================================================================
+   flextab-boks: bygger et fargelagt, flerlinjes Python-kall.
+   Viser bare argumentene som er relevante for visningen.
+   opts: { groupby:[...], measure:"x" | [...], weight:"w", table:"...", note:"..." }
+   Strenger fargelegges; table-uttrykket sendes inn som ferdig fargelagt HTML.
+   ================================================================= */
+function S(txt) { return `<span class="str">"${txt}"</span>`; }
+function slist(arr) {
+  if (arr.length === 1) return S(arr[0]);
+  return `[${arr.map(S).join(", ")}]`;
+}
+function flextabCall(targetId, opts) {
+  const lines = [];
+  lines.push(`<span class="ln"><span class="fn">flextab</span>(</span>`);
+  lines.push(`<span class="ln">    <span class="arg">data</span>=<span class="kw">df</span>,</span>`);
+  if (opts.groupby) lines.push(`<span class="ln">    <span class="arg">groupby</span>=${slist(opts.groupby)},</span>`);
+  if (opts.measure) {
+    const m = Array.isArray(opts.measure) ? slist(opts.measure) : S(opts.measure);
+    lines.push(`<span class="ln">    <span class="arg">measure</span>=${m},</span>`);
+  }
+  if (opts.weight) lines.push(`<span class="ln">    <span class="arg">weight</span>=${S(opts.weight)},</span>`);
+  if (opts.table) lines.push(`<span class="ln">    <span class="arg">table</span>=<span class="str">"${opts.table}"</span>,</span>`);
+  lines.push(`<span class="ln">)</span>`);
+  const note = opts.note ? `<span class="note">${opts.note}</span>` : "";
+  document.getElementById(targetId).innerHTML = `<span class="lbl">Som flextab-kall</span>${lines.join("")}${note}`;
+}
+// fargelegging av table-uttrykk (operatorer/parenteser) for bruk i strengen over
+function T_op(s) { return s; } // table-strengen vises som ren streng, ikke videre fargelagt
+
+/* =================================================================
    DEL 1 — Telling til statistikk
    ================================================================= */
 let stat = "n";
@@ -416,6 +461,24 @@ function renderStat() {
   document.getElementById("stat-hint").textContent = STAT_META[stat].hint;
   document.getElementById("stat-legend").innerHTML = STAT_META[stat].legend;
   document.getElementById("stat-callout").innerHTML = STAT_META[stat].callout;
+
+  // flextab-kall: antall trenger ingen measure; sum/snitt bruker measure=inntekt
+  if (stat === "n") {
+    flextabCall("stat-expr", {
+      groupby: ["landsdel"],
+      table: "landsdel",
+      note: "Uten measure teller flextab observasjoner (N) per gruppe."
+    });
+  } else {
+    flextabCall("stat-expr", {
+      groupby: ["landsdel"],
+      measure: "inntekt",
+      table: `inntekt * landsdel * ${stat === "sum" ? "sum" : "mean"}`,
+      note: stat === "sum"
+        ? "measure=inntekt gjør cellene til kroner; sum summerer dem."
+        : "measure=inntekt med mean gir gjennomsnitt per gruppe."
+    });
+  }
 }
 wireSeg("seg-stat", btn => { stat = btn.dataset.stat; renderStat(); });
 
@@ -458,6 +521,17 @@ function renderMulti() {
   }
   h += `</tr></tbody>`;
   tbl.innerHTML = h;
+
+  // flextab-kall: measure er inntekt eller [inntekt, skatt]; table lister statistikkene
+  const measList = measures === "both" ? ["inntekt", "skatt"] : ["inntekt"];
+  const statKw = sList.join(" ");
+  const measTable = measList.length === 1 ? "inntekt" : "(inntekt skatt)";
+  flextabCall("multi-expr", {
+    groupby: ["landsdel"],
+    measure: measList,
+    table: `landsdel , ${measTable} * (${statKw})`,
+    note: "Flere målevariabler i measure gir hver sin blokk; statistikkene står i parentes."
+  });
 }
 wireSeg("seg-measures", btn => { measures = btn.dataset.m; renderMulti(); });
 wireSeg("seg-stats", btn => { stats = btn.dataset.s; renderMulti(); });
@@ -507,6 +581,29 @@ function renderPct() {
   document.getElementById("pct-hint").textContent = PCT_HINT[pcttype];
   document.getElementById("pct-callout").innerHTML =
     `<strong>Se Oslo mot Nord-Norge:</strong> begge har mange innbyggere, men Oslo har 25 % av personene og 32,5 % av inntekten, mens Nord-Norge har 25 % av personene og bare 20,5 % av inntekten. Forskjellen er inntekt per person. Vestland er unntaket som bekrefter regelen: 30 % begge veier, fordi snittinntekten der ligger nær landssnittet.`;
+
+  // flextab-kall: pctn teller personer (ingen measure); pctsum krever measure=inntekt
+  if (pcttype === "pctn") {
+    flextabCall("pct-expr", {
+      groupby: ["landsdel"],
+      table: "landsdel * pctn",
+      note: "pctn er andel av antall – ingen measure nødvendig."
+    });
+  } else if (pcttype === "pctsum") {
+    flextabCall("pct-expr", {
+      groupby: ["landsdel"],
+      measure: "inntekt",
+      table: "landsdel * inntekt * pctsum",
+      note: "pctsum er andel av summen – krever measure=inntekt."
+    });
+  } else {
+    flextabCall("pct-expr", {
+      groupby: ["landsdel"],
+      measure: "inntekt",
+      table: "landsdel * (pctn inntekt * pctsum)",
+      note: "Begge samtidig: pctn av antall og pctsum av inntekt side om side."
+    });
+  }
 }
 wireSeg("seg-pcttype", btn => { pcttype = btn.dataset.p; renderPct(); });
 
@@ -514,6 +611,12 @@ wireSeg("seg-pcttype", btn => { pcttype = btn.dataset.p; renderPct(); });
 renderStat();
 renderMulti();
 renderPct();
+flextabCall("weight-expr", {
+  measure: "inntekt",
+  weight: "vekt",
+  table: "inntekt * mean",
+  note: "weight=vekt gjør snittet vektet. n telles alltid uvektet."
+});
 </script>
 </body>
 </html>

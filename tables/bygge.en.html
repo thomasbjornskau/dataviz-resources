@@ -146,11 +146,17 @@
   .combo-btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: var(--shadow); }
   .combo-btn .ctitle { font-size: 13.5px; font-weight: 600; color: var(--ink); display:block; margin-bottom: 3px; }
   .combo-btn .cdesc { font-size: 12px; color: var(--ink-soft); line-height: 1.35; }
-  .expr-bonus { margin-top: 14px; padding: 12px 14px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 13px; color: #e6ebf3; overflow-x: auto; }
-  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 7px; }
+  .expr-bonus { margin-top: 14px; padding: 14px 16px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #e6ebf3; overflow-x: auto; }
+  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 9px; }
+  .expr-bonus .ln { display:block; white-space:pre-wrap; word-break:break-word; padding-left:2.2em; text-indent:-2.2em; }
+  .expr-bonus .fn { color:#e6ebf3; }
+  .expr-bonus .arg { color:#8bb8e0; }
+  .expr-bonus .str { color:#a3d9a5; }
   .expr-bonus .op { color: #e0956b; font-weight:600; }
   .expr-bonus .paren { color: #7dd3a8; font-weight:600; }
   .expr-bonus .var { color:#a9c7f0; }
+  .expr-bonus .kw { color:#c99bd6; }
+  .expr-bonus .note { display:block; margin-top:9px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; line-height:1.45; }
   .struct-note { display:flex; gap:9px; align-items:flex-start; margin-top: 14px; font-family:"Inter",system-ui,sans-serif; font-size: 13px; color: var(--ink-soft); line-height:1.45; }
   .struct-note .mark { flex:none; width:20px; height:20px; border-radius:5px; background:var(--accent-bg); color:var(--accent); font-weight:700; font-size:12px; display:grid; place-items:center; margin-top:1px; }
   tbody th.grp0 { color: var(--ink); font-weight: 700; }
@@ -344,6 +350,23 @@ function wireSeg(id, onPick) {
 }
 
 /* =================================================================
+   flextab box: full coloured Python call.
+   The table expression is passed as ready-coloured HTML (tableHTML).
+   ================================================================= */
+function fxStr(txt) { return `<span class="str">"${txt}"</span>`; }
+function fxList(arr) { return arr.length === 1 ? fxStr(arr[0]) : `[${arr.map(fxStr).join(", ")}]`; }
+function flextabCall(targetId, opts) {
+  const L = [];
+  L.push(`<span class="ln"><span class="fn">flextab</span>(</span>`);
+  L.push(`<span class="ln">    <span class="arg">data</span>=<span class="kw">df</span>,</span>`);
+  if (opts.groupby) L.push(`<span class="ln">    <span class="arg">groupby</span>=${fxList(opts.groupby)},</span>`);
+  if (opts.tableHTML) L.push(`<span class="ln">    <span class="arg">table</span>=<span class="str">"</span>${opts.tableHTML}<span class="str">"</span>,</span>`);
+  L.push(`<span class="ln">)</span>`);
+  const note = opts.note ? `<span class="note">${opts.note}</span>` : "";
+  document.getElementById(targetId).innerHTML = `<span class="lbl">As a flextab call</span>${L.join("")}${note}`;
+}
+
+/* =================================================================
    PART 1 — Combinations of nesting/stacking/grouping
    ================================================================= */
 let combo = "nest";
@@ -432,7 +455,10 @@ function renderCombo() {
 
   tbl.innerHTML = h;
   const m = COMBO_META[combo];
-  document.getElementById("expr-bonus").innerHTML = `<span class="lbl">As a flextab expression</span>${m.expr}`;
+  flextabCall("expr-bonus", {
+    groupby: ["region", "sex", "education"],
+    tableHTML: m.expr
+  });
   document.getElementById("struct-note").innerHTML = `<span class="mark">i</span><span>${m.note}</span>`;
   document.getElementById("combo-callout").innerHTML = m.callout;
 }
@@ -478,7 +504,10 @@ function renderSubtotal() {
   const right = eS
     ? `<span class="paren">(</span><span class="op">total</span> <span class="var">sex</span><span class="paren">)</span>`
     : `<span class="var">sex</span>`;
-  document.getElementById("sub-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${left} <span class="op">*</span> ${right}`;
+  flextabCall("sub-expr", {
+    groupby: ["region", "sex"],
+    tableHTML: `${left} <span class="op">*</span> ${right}`
+  });
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal
     ? `<strong>Total across:</strong> right under the grand total, sex is summed across the regions — males (240) and females (260). This is a total at the inner level. Both total types can be shown at once, and both add up to 500.`
@@ -522,7 +551,11 @@ function renderTranspose() {
   const expr = transMode === "region-rows"
     ? `<span class="var">region</span> <span class="op">,</span> <span class="var">sex</span>`
     : `<span class="var">sex</span> <span class="op">,</span> <span class="var">region</span>`;
-  document.getElementById("transpose-expr").innerHTML = `<span class="lbl">As a flextab expression</span>${expr}<span style="display:block;margin-top:6px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:#8b97ad">The comma separates rows (before) from columns (after).</span>`;
+  flextabCall("transpose-expr", {
+    groupby: ["region", "sex"],
+    tableHTML: expr,
+    note: "The comma separates rows (before) from columns (after)."
+  });
 
   document.getElementById("transpose-callout").innerHTML = transMode === "region-rows"
     ? `<strong>Region in the rows:</strong> the regions run down, sex across. West/Males is 100. In flextab this is the left side of the comma — what comes before the comma goes into the rows.`

@@ -138,13 +138,18 @@
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
-  /* ---- flextab-boks (som side 2/3) ---- */
-  .expr-bonus { margin-top: 14px; padding: 12px 14px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 13px; color: #e6ebf3; overflow-x: auto; }
-  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 7px; }
+  /* ---- flextab-boks (fullt Python-kall) ---- */
+  .expr-bonus { margin-top: 14px; padding: 14px 16px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #e6ebf3; overflow-x: auto; }
+  .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 9px; }
+  .expr-bonus .ln { display:block; white-space:pre-wrap; word-break:break-word; padding-left:2.2em; text-indent:-2.2em; }
+  .expr-bonus .fn { color:#e6ebf3; }
+  .expr-bonus .arg { color:#8bb8e0; }
+  .expr-bonus .str { color:#a3d9a5; }
   .expr-bonus .op { color: #e0956b; font-weight:600; }
   .expr-bonus .paren { color: #7dd3a8; font-weight:600; }
   .expr-bonus .var { color:#a9c7f0; }
-  .expr-bonus .note { display:block; margin-top:6px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; }
+  .expr-bonus .kw { color:#c99bd6; }
+  .expr-bonus .note { display:block; margin-top:9px; font-family:"Inter",system-ui,sans-serif; font-size:11px; color:#8b97ad; line-height:1.45; }
 </style>
 </head>
 <body>
@@ -214,10 +219,10 @@
       <div class="controls">
         <h3>Kontroller</h3>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-rowtot" checked><span class="track"></span><span class="switch-text">Radtotaler (sum bortover)</span></label>
+          <label class="switch"><input type="checkbox" id="sw-rowtot" checked><span class="track"></span><span class="switch-text">Totalkolonne (sum bortover)</span></label>
         </div>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Kolonnetotaler (sum nedover)</span></label>
+          <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Totalrad (sum nedover)</span></label>
         </div>
         <div class="ctrl"><p class="ctrl-hint">Hjørnet dukker opp når begge er på – det er totalsummen, og den må stemme begge veier.</p></div>
         <div class="expr-bonus" id="total-expr"></div>
@@ -400,6 +405,26 @@ function syncSeg(id, attr, val) {
 }
 
 /* =================================================================
+   flextab-boks: fullt fargelagt Python-kall.
+   table-uttrykket sendes inn som ferdig fargelagt HTML (tableHTML).
+   ================================================================= */
+function fxStr(txt) { return `<span class="str">"${txt}"</span>`; }
+function fxList(arr) { return arr.length === 1 ? fxStr(arr[0]) : `[${arr.map(fxStr).join(", ")}]`; }
+function flextabCall(targetId, opts) {
+  const L = [];
+  L.push(`<span class="ln"><span class="fn">flextab</span>(</span>`);
+  L.push(`<span class="ln">    <span class="arg">data</span>=<span class="kw">df</span>,</span>`);
+  if (opts.groupby) L.push(`<span class="ln">    <span class="arg">groupby</span>=${fxList(opts.groupby)},</span>`);
+  if (opts.measure) { const m = Array.isArray(opts.measure) ? fxList(opts.measure) : fxStr(opts.measure); L.push(`<span class="ln">    <span class="arg">measure</span>=${m},</span>`); }
+  if (opts.weight) L.push(`<span class="ln">    <span class="arg">weight</span>=${fxStr(opts.weight)},</span>`);
+  // table vises med fargelagt uttrykk inne i strengen: <span class="str">"..."</span> der ... er tableHTML
+  if (opts.tableHTML) L.push(`<span class="ln">    <span class="arg">table</span>=<span class="str">"</span>${opts.tableHTML}<span class="str">"</span>,</span>`);
+  L.push(`<span class="ln">)</span>`);
+  const note = opts.note ? `<span class="note">${opts.note}</span>` : "";
+  document.getElementById(targetId).innerHTML = `<span class="lbl">Som flextab-kall</span>${L.join("")}${note}`;
+}
+
+/* =================================================================
    DEL 1 — Dimensjoner (orientering: utdanning som kolonne eller rad)
    ================================================================= */
 let orient = "ut-cols";
@@ -430,11 +455,15 @@ function renderDim() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-uttrykk: det som står før komma havner i radene
-  const expr = orient === "ut-cols"
+  // flextab-kall: det som står før komma havner i radene
+  const tableHTML = orient === "ut-cols"
     ? `<span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span>`
     : `<span class="var">utdanning</span> <span class="op">,</span> <span class="var">yrkesstatus</span>`;
-  document.getElementById("dim-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}<span class="note">Komma skiller rader (før) fra kolonner (etter).</span>`;
+  flextabCall("dim-expr", {
+    groupby: ["utdanning", "yrkesstatus"],
+    tableHTML,
+    note: "Komma skiller rader (før) fra kolonner (etter)."
+  });
 }
 wireSeg("seg-orient", btn => { orient = btn.dataset.orient; renderDim(); });
 
@@ -452,27 +481,32 @@ function renderTotal() {
   let h = `<caption>Antall personer etter yrkesstatus og utdanningsnivå</caption>`;
   h += `<div class="caption-sub">Marginaler vises langs kanten</div>`;
   h += `<thead><tr><th class="corner">Yrkesstatus</th>`;
+  if (totState.rowTot && TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
   for (const u of ut) h += `<th>${u}</th>`;
-  if (totState.rowTot) h += `<th class="is-total">Alle</th>`;
+  if (totState.rowTot && !TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
   h += `</tr></thead><tbody>`;
 
   let marginRow = "";
   if (totState.colTot) {
     marginRow = `<tr><th class="is-total">Alle</th>`;
+    const grandCell = `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${fmt(GRAND)}</td>`;
+    if (totState.rowTot && TOTAL_FIRST) marginRow += grandCell;
     for (const u of ut) {
       let cs = 0; for (const y of ys) cs += d[`${u}|${y}`];
       marginRow += `<td class="num is-total">${fmt(cs)}</td>`;
     }
-    if (totState.rowTot) marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${fmt(GRAND)}</td>`;
+    if (totState.rowTot && !TOTAL_FIRST) marginRow += grandCell;
     marginRow += `</tr>`;
   }
 
   let dataRows = "";
   for (const y of ys) {
     dataRows += `<tr><th>${y}</th>`;
-    let rs = 0;
-    for (const u of ut) { const v = d[`${u}|${y}`]; rs += v; dataRows += `<td class="num">${fmt(v)}</td>`; }
-    if (totState.rowTot) dataRows += `<td class="num is-total">${fmt(rs)}</td>`;
+    let rs = 0; for (const u of ut) rs += d[`${u}|${y}`];
+    const rowTotCell = `<td class="num is-total">${fmt(rs)}</td>`;
+    if (totState.rowTot && TOTAL_FIRST) dataRows += rowTotCell;
+    for (const u of ut) dataRows += `<td class="num">${fmt(d[`${u}|${y}`])}</td>`;
+    if (totState.rowTot && !TOTAL_FIRST) dataRows += rowTotCell;
     dataRows += `</tr>`;
   }
 
@@ -480,10 +514,14 @@ function renderTotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-uttrykk: total legges til på hver akse. Rader = yrkesstatus, kolonner = utdanning.
+  // flextab-kall: total legges til på hver akse. Rader = yrkesstatus, kolonner = utdanning.
   const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">yrkesstatus</span>` : `<span class="var">yrkesstatus</span>`;
   const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">utdanning</span>` : `<span class="var">utdanning</span>`;
-  document.getElementById("total-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${rowSide} <span class="op">,</span> ${colSide}<span class="note">total legger en marginal på den aksen.</span>`;
+  flextabCall("total-expr", {
+    groupby: ["utdanning", "yrkesstatus"],
+    tableHTML: `${rowSide} <span class="op">,</span> ${colSide}`,
+    note: "total legger en marginal på den aksen."
+  });
 }
 document.getElementById("sw-rowtot").addEventListener("change", e => { totState.rowTot = e.target.checked; renderTotal(); });
 document.getElementById("sw-coltot").addEventListener("change", e => { totState.colTot = e.target.checked; renderTotal(); });
@@ -555,21 +593,24 @@ function renderNest() {
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
 
-  // flextab-uttrykk: mellomrom stabler, * nester
-  let expr, note;
+  // flextab-kall: mellomrom stabler, * nester
+  let tableHTML, note, gb;
   if (nestMode === "none") {
-    expr = `<span class="var">yrkesstatus</span>`;
+    tableHTML = `<span class="var">yrkesstatus</span>`;
     note = "Én variabel – én fordeling.";
+    gb = ["yrkesstatus"];
   } else if (nestMode === "stack") {
-    expr = `<span class="var">utdanning</span>&nbsp;&nbsp;<span class="var">yrkesstatus</span>`;
+    tableHTML = `<span class="var">utdanning</span>&nbsp;&nbsp;<span class="var">yrkesstatus</span>`;
     note = "Mellomrom stabler to fordelinger.";
+    gb = ["utdanning", "yrkesstatus"];
   } else {
-    expr = nestDir === "ut-first"
+    tableHTML = nestDir === "ut-first"
       ? `<span class="var">utdanning</span> <span class="op">*</span> <span class="var">yrkesstatus</span>`
       : `<span class="var">yrkesstatus</span> <span class="op">*</span> <span class="var">utdanning</span>`;
     note = "Stjernen (*) nester den ene inni den andre.";
+    gb = ["utdanning", "yrkesstatus"];
   }
-  document.getElementById("nest-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span>${expr}<span class="note">${note}</span>`;
+  flextabCall("nest-expr", { groupby: gb, tableHTML, note });
 }
 wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
@@ -641,21 +682,29 @@ function renderPct() {
     pctMode === "row" ? "Radprosent · hver yrkesstatus-rad = 100 %" :
     "Totalprosent · hele tabellen = 100 %"}</div>`;
   h += `<thead><tr><th class="corner">Yrkesstatus</th>`;
+  if (TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
   for (const u of ut) h += `<th>${u}</th>`;
-  h += `<th class="is-total">Alle</th></tr></thead><tbody>`;
+  if (!TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
+  h += `</tr></thead><tbody>`;
 
+  const grandCell = `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totVal("grand")}</td>`;
   let marginRow = `<tr><th class="is-total">Alle</th>`;
+  if (TOTAL_FIRST) marginRow += grandCell;
   for (const u of ut) marginRow += `<td class="num is-total">${totVal("col", u)}</td>`;
-  marginRow += `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totVal("grand")}</td></tr>`;
+  if (!TOTAL_FIRST) marginRow += grandCell;
+  marginRow += `</tr>`;
 
   let dataRows = "";
   for (const y of ys) {
     dataRows += `<tr><th>${y}</th>`;
+    const rowTotCell = `<td class="num is-total">${totVal("row", y)}</td>`;
+    if (TOTAL_FIRST) dataRows += rowTotCell;
     for (const u of ut) {
       const hl = (y === "Yrkesaktiv" && u === "Høyere utdanning") ? " pulse-target" : "";
       dataRows += `<td class="num ${cellClass}${hl}">${valueOf(y, u)}</td>`;
     }
-    dataRows += `<td class="num is-total">${totVal("row", y)}</td></tr>`;
+    if (!TOTAL_FIRST) dataRows += rowTotCell;
+    dataRows += `</tr>`;
   }
 
   h += TOTAL_FIRST ? (marginRow + dataRows) : (dataRows + marginRow);
@@ -668,7 +717,7 @@ function renderPct() {
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
 
-  // flextab-uttrykk: prosentnøkkelordet bestemmer nevneren
+  // flextab-kall: prosentnøkkelordet bestemmer nevneren
   const PCT_EXPR = {
     count: { kw: `<span class="op">n</span>`, note: "n teller observasjoner." },
     col:   { kw: `<span class="op">colpctn</span>`, note: "colpctn: prosent av kolonnetotalen." },
@@ -676,7 +725,11 @@ function renderPct() {
     tot:   { kw: `<span class="op">pctn</span>`, note: "pctn: prosent av totalsummen." },
   };
   const pe = PCT_EXPR[pctMode];
-  document.getElementById("pct-expr").innerHTML = `<span class="lbl">Som flextab-uttrykk</span><span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span> <span class="op">*</span> ${pe.kw}<span class="note">${pe.note}</span>`;
+  flextabCall("pct-expr", {
+    groupby: ["utdanning", "yrkesstatus"],
+    tableHTML: `<span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span> <span class="op">*</span> ${pe.kw}`,
+    note: pe.note
+  });
 
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const t = tbl.querySelector(".pulse-target");

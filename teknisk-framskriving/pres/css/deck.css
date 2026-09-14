@@ -1,0 +1,76 @@
+/* Presentasjonsgeometri er tillegg til designsystemet. */
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body { font-family: var(--ds-font-family); color: var(--ds-color-neutral-text-default); background: var(--ds-color-neutral-background-tinted); }
+#deck { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform: translate(-50%, -50%) scale(var(--deck-scale, .5)); background: var(--ds-color-neutral-background-default); overflow: hidden; font-size: var(--ds-font-size-7); }
+header { position: absolute; top: calc(var(--ds-size-12) * 1.5); left: calc(var(--ds-size-12) * 2); font-size: var(--ds-font-size-6); color: var(--ds-color-neutral-text-subtle); }
+.slide { position: absolute; inset: 160px 108px 150px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 100ms ease; }
+.slide.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
+h1 { font-size: var(--ds-heading-2xl-font-size); line-height: var(--ds-line-height-sm); font-weight: var(--ds-font-weight-bold); margin: 0; max-width: 1500px; }
+.show-placeholders [data-slot] { outline: 2px dashed var(--ds-color-neutral-border-subtle); outline-offset: 4px; }
+footer { position: absolute; bottom: var(--ds-size-12); left: calc(var(--ds-size-12) * 2); right: calc(var(--ds-size-12) * 2); display: flex; align-items: center; justify-content: space-between; font-size: var(--ds-font-size-6); }
+nav { display: flex; gap: var(--ds-size-4); }
+nav .ds-button { font: inherit; min-height: 60px; padding: var(--ds-size-4) var(--ds-size-6); }
+.overlay { position: absolute; z-index: 10; inset: 220px 260px 220px; padding: calc(var(--ds-size-12) * 1.5); background: var(--ds-color-neutral-background-default); border: 3px solid var(--ds-color-neutral-border-default); font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+.overlay h2 { margin-top: 0; font-size: var(--ds-heading-lg-font-size); }
+.overlay p { margin-bottom: var(--ds-size-8); }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+
+/* Levende demo: fast figurflate og faste utlesninger. */
+:root {
+  --chart-history: var(--ds-color-neutral-text-default);
+  --chart-forecast: var(--ds-color-primary-base-default);
+  --chart-actual: var(--ds-color-secondary-text-default);
+  --chart-band: var(--ds-color-primary-surface-tinted);
+  --chart-grid: var(--ds-color-neutral-border-subtle);
+}
+#slide-3 h1, #slide-4 h1 { font-size: var(--ds-heading-lg-font-size); margin-bottom: var(--ds-size-8); }
+.demo-controls { display: flex; align-items: center; gap: var(--ds-size-4); height: 64px; margin: 0 0 var(--ds-size-6); font-size: var(--ds-font-size-6); }
+.demo-controls select, .demo-controls button { font: inherit; padding: var(--ds-size-2) var(--ds-size-4); min-height: 52px; }
+.demo-controls select { color: inherit; background: var(--ds-color-neutral-background-default); border: 2px solid var(--ds-color-neutral-border-default); max-width: 520px; }
+#data-status { margin-left: auto; white-space: nowrap; color: var(--ds-color-neutral-text-subtle); }
+.working-figure { margin: 0 0 var(--ds-size-6); }
+.working-figure figcaption { font-size: var(--ds-font-size-6); margin-bottom: var(--ds-size-2); }
+.working-figure svg { display: block; width: 100%; height: 320px; overflow: visible; }
+#coverage-chart { height: 380px; }
+.working-figure svg text { font: 28px var(--ds-font-family); fill: var(--ds-color-neutral-text-default); }
+.legend { display: flex; gap: var(--ds-size-8); font-size: var(--ds-font-size-6); height: 36px; align-items: center; }
+.legend span::before { content: ''; display: inline-block; width: 35px; margin-right: var(--ds-size-2); vertical-align: middle; border-top: 5px solid var(--chart-history); }
+.legend .forecast-key::before { border-color: var(--chart-forecast); border-top-style: dashed; }
+.legend .actual-key::before { border-color: var(--chart-actual); }
+.legend .band-key::before { border: 0; height: 20px; background: var(--chart-band); }
+.origin-controls { display: flex; gap: var(--ds-size-8); align-items: center; height: 50px; margin-bottom: var(--ds-size-4); font-size: var(--ds-font-size-6); }
+.origin-controls label { width: 310px; flex-shrink: 0; }
+.origin-controls input { flex: 1; accent-color: var(--chart-forecast); }
+#demo-readout, #coverage-readout { font-size: var(--ds-font-size-6); line-height: var(--ds-line-height-sm); font-variant-numeric: tabular-nums; min-height: 95px; }
+.data-caveat { font-size: var(--ds-font-size-6); margin: var(--ds-size-2) 0 0; color: var(--ds-color-neutral-text-subtle); }
+.consequence { font-size: var(--ds-font-size-7); margin-top: var(--ds-size-6); }
+.show-placeholders #slide-3 [data-slot], .show-placeholders #slide-4 [data-slot] { outline-offset: 4px; }
+
+/* Punkt 4: layoutskjelett. Plassholdere fylles i senere arbeid.
+   Geometri for 1920 × 1080 er presentasjonstillegg; farger/skrift/avstand fra SSB. */
+.slot { margin: 0; }
+.slot--figure { padding: var(--ds-size-8); }
+.slot--figure figcaption { max-width: 100%; font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+.show-placeholders .slot--figure { background: var(--ds-color-neutral-background-tinted); }
+#slide-1 h1 { height: 174px; max-width: 1600px; }
+.pipeline-slot { height: 440px; margin-top: var(--ds-size-8); }
+.pipeline-slot figcaption { max-width: 1430px; }
+.team-label { margin: var(--ds-size-8) 0 0; font-size: var(--ds-font-size-6); width: fit-content; }
+#slide-2 h1, #slide-5 h1 { height: 104px; font-size: var(--ds-heading-xl-font-size); }
+.claims-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ds-size-12); margin-top: var(--ds-size-8); }
+.claim-text { margin: 0 0 var(--ds-size-8); height: 186px; font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+.support-slot { height: 280px; }
+.scope-slot { margin-top: var(--ds-size-12); font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+.proposal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--ds-size-12) * 1.5); margin-top: var(--ds-size-8); }
+.proposal-grid h2 { height: 94px; font-size: var(--ds-heading-md-font-size); line-height: var(--ds-line-height-sm); margin: 0; }
+.naming-column > p { height: 150px; margin: var(--ds-size-6) 0; font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+.figure-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ds-size-6); }
+.figure-pair figure { height: 300px; padding: var(--ds-size-6); }
+.figure-pair figcaption { font-size: var(--ds-font-size-6); }
+.decision-list { margin: var(--ds-size-6) 0 0; padding-left: var(--ds-size-12); }
+.decision-list li { min-height: 92px; padding: var(--ds-size-4) 0; margin-bottom: var(--ds-size-6); font-size: var(--ds-font-size-7); line-height: var(--ds-line-height-md); }
+/* Nestede data-slot gir presise referanser, uten doble rammer på kontrollene. */
+.show-placeholders [data-slot] [data-slot] { outline: none; }
+#demo-readout { height: 95px; }

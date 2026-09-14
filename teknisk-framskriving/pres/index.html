@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="nb" data-color-scheme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hackathon · Teknisk framskriving · Skall</title>
+<link rel="stylesheet" href="vendor/ssb/digdir.css">
+<link rel="stylesheet" href="vendor/ssb/design-css/theme/ssb.css">
+<link rel="stylesheet" href="vendor/ssb/design-css/src/fonts/fonts.css">
+<link rel="stylesheet" href="css/deck.css">
+<script src="js/engine.js" defer></script>
+<script src="js/data.js" defer></script>
+<script src="js/evaluation.js" defer></script>
+<script src="js/deck.js" defer></script>
+<script src="js/slides.js" defer></script>
+</head>
+<body class="show-placeholders">
+<main id="deck" aria-label="Hackathonpresentasjon">
+<header>HACKATHON-ARBEID · UTKAST</header>
+<!-- ===== SIDE 1: PREMISSET ===== -->
+<section class="slide is-active" id="slide-1" aria-label="Side 1: Premisset" aria-hidden="false">
+  <h1 data-slot="s1.headline">[PÅSTANDSOVERSKRIFT — tallene finnes allerede. Maks to linjer.]</h1>
+  <figure class="slot slot--figure pipeline-slot" data-slot="s1.pipeline">
+    <figcaption>[FIGUR — produksjonslinje: rådata → RegARIMA → framskriving → sesongjustering → publisert tall. En gren fra framskriving ender i en papirkurv.]</figcaption>
+  </figure>
+  <p class="team-label" data-slot="s1.team">[ETIKETT — lagnavn og oppgavenummer]</p>
+</section>
+<!-- ===== SIDE 2: HVA OBJEKTET FAKTISK ER ===== -->
+<section class="slide" id="slide-2" aria-label="Side 2: Hva objektet faktisk er" inert aria-hidden="true">
+  <h1 data-slot="s2.headline">[OVERSKRIFT — fra prognose til referansebane. Maks 8 ord.]</h1>
+  <div class="claims-grid">
+    <div class="claim-column">
+      <p class="claim-text" data-slot="s2.claim1">[PÅSTAND 1 — univariat. To korte setninger: Hva ser modellen ikke?]</p>
+      <figure class="slot slot--figure support-slot" data-slot="s2.support1"><figcaption>[STØTTEFIGUR ELLER NØKKELTALL — modellen ser bare seriens egen historikk]</figcaption></figure>
+    </div>
+    <div class="claim-column">
+      <p class="claim-text" data-slot="s2.claim2">[PÅSTAND 2 — referansebane. To korte setninger: Hva kan nullmodellen brukes til?]</p>
+      <figure class="slot slot--figure support-slot" data-slot="s2.support2"><figcaption>[STØTTEFIGUR ELLER NØKKELTALL — en referanse andre prognoser kan måles mot]</figcaption></figure>
+    </div>
+    <div class="claim-column">
+      <p class="claim-text" data-slot="s2.claim3">[PÅSTAND 3 — betinget intervall. To korte setninger: Hvilke forutsetninger ligger bak?]</p>
+      <figure class="slot slot--figure support-slot" data-slot="s2.support3"><figcaption>[STØTTEFIGUR ELLER NØKKELTALL — intervallets forutsetninger]</figcaption></figure>
+    </div>
+  </div>
+  <p class="scope-slot" data-slot="s2.scope">[AVGRENSNING — én kort setning som skiller referansebanen fra Konjunkturtendensene]</p>
+</section>
+<!-- ===== SIDE 3: DEMO ===== -->
+<section class="slide" id="slide-3" aria-label="Side 3: Demo" inert aria-hidden="true">
+  <h1 data-slot="s3.headline">[OVERSKRIFT — demoens poeng, maks 8 ord]</h1>
+  <div class="demo-controls" data-slot="s3.controls">
+    <label for="series">Serie</label>
+    <select id="series" data-slot="s3.series"><option value="08403">Hotellovernattinger · 08403</option><option value="08655">Byggekostnadsindeks · 08655</option></select>
+    <button id="calm" data-slot="s3.calm" class="ds-button" data-variant="secondary">Rolig · jan 2018</button>
+    <button id="shock" data-slot="s3.shock" class="ds-button" data-variant="secondary">Brudd · jan 2020</button>
+    <button id="live" data-slot="s3.live" class="ds-button" data-variant="tertiary">Hent live</button>
+    <span id="data-status">Lokale data</span>
+  </div>
+  <figure class="working-figure" data-slot="s3.chart">
+    <figcaption>[FIGUR — historikk, referansebane, 95 %-intervall og faktisk utfall]</figcaption>
+    <svg id="demo-chart" viewBox="0 0 1680 320" role="img" aria-label="Framskriving med faktisk utfall"></svg>
+    <div class="legend"><span class="history-key">Historikk</span><span class="forecast-key">Stiplet: referansebane</span><span class="band-key">Flate: 95 %-intervall</span><span class="actual-key">Faktisk utfall</span></div>
+  </figure>
+  <div class="origin-controls" data-slot="s3.origin"><label for="origin">«I dag»: <output id="origin-label" for="origin"></output></label><input id="origin" type="range" min="61" step="1"></div>
+  <div id="demo-readout" data-purpose="Modellparametre, 12-månedersbane, intervall og fasit" data-slot="s3.readout" aria-live="polite"></div>
+  <p class="data-caveat" data-slot="s3.scope">Avkortet, lagret historikk. Senere revisjoner er ikke rekonstruert.</p>
+</section>
+<!-- ===== SIDE 4: FUNNET ===== -->
+<section class="slide" id="slide-4" aria-label="Side 4: Funnet" inert aria-hidden="true">
+  <h1 data-slot="s4.headline">[OVERSKRIFT — hva etterprøvingen viser]</h1>
+  <div class="demo-controls" data-slot="s4.controls"><label for="window">Antall startpunkt</label><select id="window" data-slot="s4.window"><option>24</option><option>48</option><option>72</option><option>120</option></select><span>Byggekostnadsindeks · 08655 · fast reservekopi</span></div>
+  <figure class="working-figure" data-slot="s4.chart"><figcaption>[FIGUR — faktisk dekning per horisont, med 95 % som referanse]</figcaption><svg id="coverage-chart" viewBox="0 0 1680 380" role="img" aria-label="Dekningsgrad per horisont"></svg></figure>
+  <div id="coverage-readout" data-purpose="Antall startpunkt, faktisk testperiode og gjennomsnittlig dekning" data-slot="s4.readout" aria-live="polite"></div>
+  <p class="consequence" data-slot="s4.consequence">[KONSEKVENS — én setning om å fastsette etterprøvingsvinduet på forhånd]</p>
+</section>
+<!-- ===== SIDE 5: HVA VI FORESLÅR ===== -->
+<section class="slide" id="slide-5" aria-label="Side 5: Hva vi foreslår" inert aria-hidden="true">
+  <h1 data-slot="s5.headline">[OVERSKRIFT — hva vi foreslår. Maks 8 ord.]</h1>
+  <div class="proposal-grid">
+    <div class="naming-column">
+      <h2 data-slot="s5.name">[NAVNEVALG — foreslått betegnelse]</h2>
+      <p data-slot="s5.reason">[BEGRUNNELSE — hvorfor «framskriving» og «prognose» kan gi feil forventninger. Maks tre linjer.]</p>
+      <div class="figure-pair">
+        <figure class="slot slot--figure" data-slot="s5.line"><figcaption>[FIGUR A — stiplet linje. Vis hvordan formen påvirker forventningen.]</figcaption></figure>
+        <figure class="slot slot--figure" data-slot="s5.band"><figcaption>[FIGUR B — samme bane som gradert flate. Samme målestokk som A.]</figcaption></figure>
+      </div>
+    </div>
+    <div class="decisions-column">
+      <h2 data-slot="s5.decisionsTitle">[AVGJØRELSER — hva ber vi om?]</h2>
+      <ol class="decision-list">
+        <li data-slot="s5.decision1">[AVGJØRELSE 1 — én linje]</li>
+        <li data-slot="s5.decision2">[AVGJØRELSE 2 — én linje]</li>
+        <li data-slot="s5.decision3">[AVGJØRELSE 3 — én linje]</li>
+        <li data-slot="s5.decision4">[AVGJØRELSE 4 — valgfri, én linje]</li>
+      </ol>
+    </div>
+  </div>
+</section>
+<footer>
+<span id="indicator" aria-live="polite">1 / 5</span>
+<nav aria-label="Presentasjonskontroller">
+<button class="ds-button" data-variant="tertiary" id="previous" aria-label="Forrige side">←</button>
+<button class="ds-button" data-variant="tertiary" id="next" aria-label="Neste side">→</button>
+<button class="ds-button" data-variant="tertiary" id="notes-toggle" aria-controls="notes" aria-expanded="false">Notater · n</button>
+<button class="ds-button" data-variant="tertiary" id="help-toggle" aria-controls="help" aria-expanded="false">Hjelp · ?</button>
+</nav>
+</footer>
+<aside id="notes" class="overlay" aria-label="Presentatørnotater" hidden>
+<h2>Presentatørnotater</h2><p id="note-time"></p><p id="note-sentence"></p>
+<p>Overlegget vises også på projektoren. Trykk n eller Esc for å lukke.</p>
+</aside>
+<aside id="help" class="overlay" aria-label="Tastaturhjelp" hidden>
+<h2>Tastatur</h2>
+<p>→ / ↓ / mellomrom: neste side<br>← / ↑ / Shift + mellomrom: forrige side<br>1–5: gå til side<br>n: notater av/på<br>?: hjelp av/på<br>Esc: lukk overlegg</p>
+<p>Piltaster og mellomrom beholder vanlig funksjon når et skjemaelement har fokus.</p>
+</aside>
+</main>
+</body>
+</html>

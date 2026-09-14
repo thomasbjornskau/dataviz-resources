@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "engine": "ordrett",
+  "data": "originalblokk ordrett; hotellserie lik JSON-stat",
+  "coverage": [
+    {
+      "K": 24,
+      "start": "aug 2023",
+      "end": "jul 2025",
+      "hits": 277,
+      "total": 288,
+      "percent": 96.18055555555554
+    },
+    {
+      "K": 48,
+      "start": "aug 2021",
+      "end": "jul 2025",
+      "hits": 491,
+      "total": 576,
+      "percent": 85.24305555555554
+    },
+    {
+      "K": 72,
+      "start": "aug 2019",
+      "end": "jul 2025",
+      "hits": 642,
+      "total": 864,
+      "percent": 74.30555555555554
+    },
+    {
+      "K": 120,
+      "start": "aug 2015",
+      "end": "jul 2025",
+      "hits": 1217,
+      "total": 1440,
+      "percent": 84.51388888888887
+    }
+  ],
+  "demos": [
+    {
+      "year": 2018,
+      "hits": 12,
+      "months": 12
+    },
+    {
+      "year": 2020,
+      "hits": 1,
+      "months": 12
+    }
+  ]
+}

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signaturfigur — test av teknisk framskriving</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#131C24;--rule:#DED9CF;--rule2:#EDEAE3;
+  --obs:#1B3A4B;--fan:#4E5D94;--actual:#9E2B4E;--prev:#8A8577;--mute:#71767E;
+  --serif:"IBM Plex Serif",Georgia,serif;
+  --cond:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+  font-size:16px;line-height:1.6;font-variant-numeric:tabular-nums}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+h1{font-family:var(--cond);font-size:clamp(26px,4.2vw,38px);font-weight:700;letter-spacing:-.01em;margin:0 0 10px;line-height:1.1}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+p{margin:0 0 14px}
+header.top{border-bottom:1px solid var(--rule);padding:26px 0 24px}
+.q{font-family:var(--cond);font-size:18px;font-weight:600;max-width:58ch}
+
+/* velgere */
+.picker{padding:22px 0 0}
+.plabel{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.chip{font-family:var(--cond);font-size:14px;font-weight:600;padding:8px 13px;border:1px solid var(--rule);
+  background:#fff;color:var(--ink);cursor:pointer;line-height:1.25;text-align:left}
+.chip small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--mute);letter-spacing:.04em}
+.chip[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip[aria-pressed=true] small{color:#BFC6CC}
+.chip:hover{border-color:var(--ink)}
+
+/* spørsmålsbanner */
+.banner{border-left:3px solid var(--actual);padding:12px 0 12px 16px;margin:0 0 22px}
+.banner .who{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+
+/* panel */
+.panel{border:1px solid var(--rule);background:#fff}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--rule2)}
+.panel-t{font-family:var(--cond);font-weight:600;font-size:17px}
+.panel-s{font-family:var(--mono);font-size:11px;color:var(--mute)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.chart{padding:10px 6px 2px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--mute);padding:0 18px 12px}
+.legend i{display:inline-block;width:15px;height:3px;vertical-align:middle;margin-right:6px}
+.legend span[hidden]{display:none}
+
+/* kildestripe */
+.sources{border-top:1px solid var(--rule2);display:grid;grid-template-columns:1fr 1fr;font-family:var(--mono);font-size:11.5px}
+@media(max-width:620px){.sources{grid-template-columns:1fr}}
+.src{padding:12px 18px}
+.src+.src{border-left:1px solid var(--rule2)}
+@media(max-width:620px){.src+.src{border-left:0;border-top:1px solid var(--rule2)}}
+.src b{display:block;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-size:10.5px;margin-bottom:3px}
+.badge{display:inline-block;padding:1px 6px;border:1px solid currentColor;font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
+.badge.stub{color:var(--actual)}
+.badge.jd{color:var(--obs)}
+
+/* brytere */
+.toggles{border-top:1px solid var(--rule2);padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px}
+.tg{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;padding:7px 12px;border:1px solid var(--rule);background:#fff;color:var(--mute);cursor:pointer}
+.tg[aria-pressed=true]{border-color:var(--ink);color:var(--ink);background:#F3F1EB}
+.tg::before{content:"○ ";}
+.tg[aria-pressed=true]::before{content:"● ";}
+
+.explain{border-top:1px solid var(--rule2);padding:16px 18px;background:#F6F4EF;font-size:15px}
+.explain[hidden]{display:none}
+.readout{font-family:var(--mono);font-size:12px;line-height:1.7;border-top:1px solid var(--rule2);padding:13px 18px;color:var(--ink)}
+.readout .dim{color:var(--mute)}
+.readout b{font-weight:500;color:var(--actual)}
+.status{font-family:var(--mono);font-size:11px;color:var(--mute);padding:0 18px 12px}
+.status.warn{color:var(--actual)}
+a{color:var(--obs)}
+footer{border-top:1px solid var(--rule);margin-top:40px;padding:28px 0 60px;font-size:14px;color:var(--mute)}
+footer h3{font-family:var(--cond);font-size:15px;color:var(--ink);margin:20px 0 6px}
+code,pre{font-family:var(--mono);font-size:12px;background:#F1EEE8}
+code{padding:1px 5px}
+pre{padding:12px 14px;overflow-x:auto;border:1px solid var(--rule2);line-height:1.5}
+:focus-visible{outline:2px solid var(--actual);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Hackathon · oppgave 5 · testoppsett, ikke publisert materiale</p>
+    <h1>Signaturfigur for utvalgte serier</h1>
+    <p class="q">Er en automatisk teknisk framskriving av en SSB-serie nyttig for ulike typer
+    brukere — og hvilken informasjon må følge med?</p>
+  </div>
+</header>
+
+<div class="wrap picker">
+  <p class="plabel">Hvem ser på tallene?</p>
+  <div class="chips" id="users" role="group" aria-label="Velg bruker"></div>
+
+  <div class="banner" id="banner">
+    <div class="who" id="who"></div>
+    <div id="question"></div>
+  </div>
+
+  <p class="plabel">Hvilken serie?</p>
+  <div class="chips" id="series" role="group" aria-label="Velg serie"></div>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="panel-h">
+      <span class="panel-t" id="ttl">—</span>
+      <span class="panel-s" id="sub"></span>
+    </div>
+    <div class="chart"><svg id="chart" viewBox="0 0 860 380" role="img" aria-labelledby="ttl"></svg></div>
+    <div class="legend">
+      <span><i style="background:var(--obs)"></i>Observert (Statistikkbanken)</span>
+      <span id="lgF"><i style="background:var(--fan)"></i>Teknisk framskriving</span>
+      <span id="lgU"><i style="background:var(--fan);opacity:.4"></i>Usikkerhet</span>
+      <span id="lgP"><i style="background:var(--prev)"></i>Framskriving laget for 6 md. siden</span>
+    </div>
+    <div class="readout" id="readout"></div>
+    <div class="toggles" id="toggles">
+      <button class="tg" data-k="fc"      aria-pressed="true">Framskriving</button>
+      <button class="tg" data-k="unc"     aria-pressed="true">Usikkerhetsintervall</button>
+      <button class="tg" data-k="prev"    aria-pressed="false">Tidligere prognose / treff</button>
+      <button class="tg" data-k="explain" aria-pressed="false">Kort forklaring</button>
+    </div>
+    <div class="explain" id="explain" hidden>
+      Framskrivingen viser hvordan serien kan utvikle seg dersom mønstrene i tidligere data
+      fortsetter. Den tar ikke hensyn til ny informasjon eller hendelser utenfor serien.
+    </div>
+    <div class="sources">
+      <div class="src"><b>Observert historie</b><span id="srcHist">—</span></div>
+      <div class="src"><b>Framskriving</b><span id="srcFc">—</span></div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <h3>Datakontrakt mot JDemetra+</h3>
+    <p>Siden holder de to kildene atskilt, slik spesifikasjonen krever. Observert historie
+    hentes fra Statistikkbanken. Framskrivingen leses fra en fil per serie under
+    <code>forecasts/</code>. Finnes filen, brukes den, og kildestripen merkes JDemetra+.
+    Finnes den ikke, regnes en midlertidig framskriving lokalt og merkes tydelig som
+    <span class="badge stub">lokal beregning</span> — den er en plassholder, ikke SSBs tall.</p>
+    <p>Forventet format, <code>forecasts/detaljhandel.json</code>:</p>
+<pre>{
+  "kilde": "JDemetra+ 3.x",
+  "kjort": "2026-09-01",
+  "spesifikasjon": "RSA5c",
+  "siste_observasjon": "2026M07",
+  "enhet": "indeks",
+  "framskriving": [
+    {"periode":"2026M08","verdi":112.4,"lo95":110.1,"hi95":114.8},
+    {"periode":"2026M09","verdi":112.9,"lo95":109.6,"hi95":116.3}
+  ],
+  "tidligere_kjoring": {
+    "opphav": "2026M01",
+    "framskriving": [{"periode":"2026M02","verdi":111.2,"lo95":109.4,"hi95":113.1}]
+  }
+}</pre>
+    <p><code>tidligere_kjoring</code> driver bryteren «Tidligere prognose / treff» og er
+    valgfri. Uten den faller siden tilbake på en lokalt beregnet etterprøving, også merket.</p>
+
+    <h3>Om den midlertidige beregningen</h3>
+    <p>To modeller, valgt etter seriens type. For serier som ikke er sesongjustert
+    brukes airline-modellen ARIMA(0,1,1)(0,1,1)<sub>12</sub> på log. For serier som allerede
+    er sesongjustert brukes ARIMA(0,1,1) med drift på log — sesongdifferensiering av en
+    sesongjustert serie ville vært overdifferensiering. Begge er kontrollert mot
+    <code>statsmodels.SARIMAX</code>: airline innenfor 0,5 %, ikke-sesongmodellen innenfor
+    0,03 %.</p>
+    <p>Dette er ikke JDemetra+. Ingen automatisk modellvalg, ingen outlier-deteksjon, ingen
+    kalenderjustering. Nivåene er illustrerende.</p>
+  </div>
+</footer>
+
+<script>
+/* ===================== MOTOR ===================== */
+const S=12;
+function seasDiff(x){const d1=[];for(let i=1;i<x.length;i++)d1.push(x[i]-x[i-1]);
+  const w=[];for(let i=S;i<d1.length;i++)w.push(d1[i]-d1[i-S]);return w;}
+function cssInnov(w,th,TH){const n=w.length,a=new Float64Array(n);
+  for(let t=0;t<n;t++){let v=w[t];
+    if(t-1>=0)v+=th*a[t-1]; if(t-S>=0)v+=TH*a[t-S]; if(t-S-1>=0)v-=th*TH*a[t-S-1]; a[t]=v;}
+  return a;}
+function sseA(w,th,TH){const a=cssInnov(w,th,TH);let s=0;for(let i=0;i<a.length;i++)s+=a[i]*a[i];return s;}
+function fitAirline(y){
+  const x=y.map(Math.log),w=seasDiff(x); if(w.length<24)return null;
+  let best=Infinity,bth=0,bTH=0;
+  for(let i=0;i<=30;i++)for(let j=0;j<=30;j++){
+    const th=-0.95+1.9*i/30,TH=-0.95+1.9*j/30,s=sseA(w,th,TH);
+    if(s<best){best=s;bth=th;bTH=TH;}}
+  let step=0.06;
+  for(let k=0;k<60;k++){let imp=false;
+    for(const d of[[step,0],[-step,0],[0,step],[0,-step]]){
+      const th=bth+d[0],TH=bTH+d[1];
+      if(Math.abs(th)>0.999||Math.abs(TH)>0.999)continue;
+      const s=sseA(w,th,TH); if(s<best-1e-13){best=s;bth=th;bTH=TH;imp=true;}}
+    if(!imp){step/=2; if(step<1e-6)break;}}
+  return {kind:"airline",th:bth,TH:bTH,sig2:best/w.length,a:cssInnov(w,bth,bTH),x:x};
+}
+function psiW(th,TH,H){
+  const num=new Float64Array(H+2),den=new Float64Array(H+2);
+  num[0]=1; if(H>=1)num[1]=-th; if(H>=S)num[S]-=TH; if(H>=S+1)num[S+1]+=th*TH;
+  den[0]=1; if(H>=1)den[1]-=1;  if(H>=S)den[S]-=1;  if(H>=S+1)den[S+1]+=1;
+  const p=new Float64Array(H+1);
+  for(let j=0;j<=H;j++){let v=num[j];for(let k=1;k<=j;k++)v-=den[k]*p[j-k];p[j]=v;}
+  return p;
+}
+function fitIMA(y){
+  const x=y.map(Math.log),w=[];
+  for(let i=1;i<x.length;i++)w.push(x[i]-x[i-1]);
+  if(w.length<12)return null;
+  const mu=w.reduce((a,b)=>a+b,0)/w.length, wc=w.map(v=>v-mu);
+  const run=th=>{const a=new Float64Array(wc.length);let s=0;
+    for(let t=0;t<wc.length;t++){a[t]=wc[t]+(t>0?th*a[t-1]:0);s+=a[t]*a[t];}return{s,a};};
+  let best=Infinity,bth=0,ba=null;
+  for(let i=0;i<=60;i++){const th=-0.95+1.9*i/60,r=run(th);if(r.s<best){best=r.s;bth=th;ba=r.a;}}
+  let step=0.05;
+  for(let k=0;k<60;k++){let imp=false;
+    for(const d of[step,-step]){const th=bth+d; if(Math.abs(th)>0.999)continue;
+      const r=run(th); if(r.s<best-1e-14){best=r.s;bth=th;ba=r.a;imp=true;}}
+    if(!imp){step/=2; if(step<1e-7)break;}}
+  return {kind:"ima",th:bth,mu:mu,sig2:best/wc.length,aN:ba[ba.length-1],last:x[x.length-1]};
+}
+function runModel(y,sa,H){
+  const m=sa?fitIMA(y):fitAirline(y);
+  if(!m)return null;
+  const out=[];
+  if(m.kind==="ima"){
+    for(let h=1;h<=H;h++){
+      const lg=m.last+h*m.mu-m.th*m.aN;
+      const se=Math.sqrt(m.sig2*(1+(h-1)*Math.pow(1-m.th,2)));
+      out.push({lg:lg,se:se,f:Math.exp(lg)});
+    }
+  }else{
+    const a=Array.from(m.a).concat(new Array(H).fill(0)),xx=m.x.slice(),m0=m.a.length;
+    for(let h=1;h<=H;h++){
+      const i=m0+h-1;let w=0;
+      if(i-1>=0)w-=m.th*a[i-1]; if(i-S>=0)w-=m.TH*a[i-S]; if(i-S-1>=0)w+=m.th*m.TH*a[i-S-1];
+      const n=xx.length; xx.push(w+xx[n-1]+xx[n-S]-xx[n-S-1]);
+    }
+    const f=xx.slice(m.x.length),p=psiW(m.th,m.TH,H);let cum=0;
+    for(let h=0;h<H;h++){cum+=p[h]*p[h];
+      out.push({lg:f[h],se:Math.sqrt(m.sig2*cum),f:Math.exp(f[h])});}
+  }
+  out.model=m;
+  return out;
+}
+
+/* ===================== KONFIGURASJON ===================== */
+const H=6;
+
+const SERIES=[
+  {key:"fisk",  navn:"Fiskeeksport", tabell:"08806",
+   uttrekk:"Eksport → 03 Fisk, krepsdyr, bløtdyr mv. → verdi",
+   pick:[/eksport/i,/fisk|krepsdyr|bløtdyr/i,/verdi|mill/i],
+   sa:false, enhet:"mill. kr"},
+  {key:"detalj",navn:"Detaljhandel", tabell:"07129",
+   uttrekk:"47 Detaljhandel → volumindeks → sesongjustert",
+   pick:[/^47|detaljhandel/i,/volum/i,/sesongjustert/i],
+   sa:true, enhet:"volumindeks"},
+  {key:"industri",navn:"Industriproduksjon", tabell:"07095",
+   uttrekk:"Industri → produksjonsindeks → sesongjustert",
+   pick:[/industri/i,/produksjonsindeks|produksjon/i,/sesongjustert/i],
+   sa:true, enhet:"indeks"},
+  {key:"tjenester",navn:"Markedsrettede tjenester", tabell:"13863",
+   uttrekk:"H–J + M–N tjenester → omsetningsindeks → sesongjustert",
+   pick:[/H-J|H–J|M-N|M–N|tjenester/i,/omsetning/i,/sesongjustert/i],
+   sa:true, enhet:"indeks"},
+  {key:"kpijae",navn:"KPI-JAE", tabell:"14708",
+   uttrekk:"KPI-JAE → sesongjustert indeks",
+   pick:[/JAE/i,/sesongjustert/i],
+   sa:true, enhet:"indeks"}
+];
+
+const USERS=[
+  {navn:"Bransjeanalytiker", start:"fisk",
+   q:"Hvordan ser utviklingen ut de neste månedene dersom tidligere mønstre fortsetter?"},
+  {navn:"Forsker", start:"detalj",
+   q:"Kan jeg bruke dette som en standardisert statistisk baseline?"},
+  {navn:"Journalist", start:"detalj",
+   q:"Ser siste oppgang ut til å fortsette?"},
+  {navn:"Makroøkonom", start:"industri",
+   q:"Hva er en enkel baseline for de neste 3–6 månedene?"},
+  {navn:"Offentlig analytiker", start:"tjenester",
+   q:"Hva er den mekaniske referansebanen jeg kan sammenligne vår vurdering med?"},
+  {navn:"SSB-fagekspert", start:"kpijae",
+   q:"Hva beregner modellen faktisk for månedene framover?"}
+];
+
+/* ===================== DATAKILDE 1: STATISTIKKBANKEN ===================== */
+const API="https://data.ssb.no/api/pxwebapi/v2/tables/";
+
+async function hentHistorie(cfg){
+  const meta=await fetch(API+cfg.tabell+"/metadata?lang=no&outputFormat=json-stat2")
+    .then(r=>{if(!r.ok)throw new Error("Tabell "+cfg.tabell+" svarte ikke");return r.json();});
+  const dims=meta.id||Object.keys(meta.dimension);
+  const tRoles=(meta.role&&meta.role.time)||[];
+  const timeDim=dims.find(d=>tRoles.indexOf(d)>=0)||dims[dims.length-1];
+  const ubrukte=cfg.pick.slice(), valgt=[], usikre=[];
+  const q=[];
+  for(const d of dims){
+    if(d===timeDim){q.push("valueCodes["+d+"]=*");continue;}
+    const cat=meta.dimension[d].category, idx=cat.index;
+    const koder=Array.isArray(idx)?idx:Object.keys(idx).sort((a,b)=>idx[a]-idx[b]);
+    const navn=k=>(cat.label&&cat.label[k])||k;
+    let traff=null,ri=-1;
+    for(let i=0;i<ubrukte.length && !traff;i++)
+      for(const k of koder)
+        if(ubrukte[i].test(navn(k))||ubrukte[i].test(k)){traff=k;ri=i;break;}
+    if(traff!==null){ubrukte.splice(ri,1);}
+    else {traff=koder[0]; usikre.push(navn(traff));}
+    valgt.push(navn(traff));
+    q.push("valueCodes["+d+"]="+encodeURIComponent(traff));
+  }
+  const ds=await fetch(API+cfg.tabell+"/data?lang=no&outputFormat=json-stat2&"+q.join("&"))
+    .then(r=>{if(!r.ok)throw new Error("Ingen data fra "+cfg.tabell);return r.json();});
+  const tIdx=ds.dimension[timeDim].category.index;
+  const per=Array.isArray(tIdx)?tIdx:Object.keys(tIdx).sort((a,b)=>tIdx[a]-tIdx[b]);
+  if(!/^\d{4}M\d{2}$/.test(per[0]))throw new Error("Tabell "+cfg.tabell+" har ikke månedstall");
+  const v=[],p=[];
+  for(let i=0;i<per.length;i++){
+    const x=ds.value[i];
+    if(x===null||x===undefined||!(x>0)){ if(v.length)break; else continue; }
+    v.push(x); p.push(per[i]);
+  }
+  if(v.length<48)throw new Error("For kort serie i "+cfg.tabell);
+  return {v:v, per:p, valgt:valgt, usikre:usikre};
+}
+
+/* ===================== DATAKILDE 2: JDEMETRA ===================== */
+async function hentFramskriving(cfg, hist){
+  try{
+    const r=await fetch("forecasts/"+cfg.key+".json",{cache:"no-store"});
+    if(r.ok){
+      const j=await r.json();
+      if(j.framskriving && j.framskriving.length)
+        return {kilde:"jd", meta:j, rader:j.framskriving, tidligere:j.tidligere_kjoring||null};
+    }
+  }catch(e){/* ingen fil — faller gjennom */}
+  const fc=runModel(hist.v,cfg.sa,H);
+  if(!fc)return null;
+  const rader=fc.map((p,i)=>({periode:nesteP(hist.per[hist.per.length-1],i+1),
+    verdi:p.f, lo95:Math.exp(p.lg-1.96*p.se), hi95:Math.exp(p.lg+1.96*p.se)}));
+  const n=hist.v.length, back=runModel(hist.v.slice(0,n-H),cfg.sa,H);
+  let tidligere=null;
+  if(back) tidligere={opphav:hist.per[n-H-1],
+    framskriving:back.map((p,i)=>({periode:hist.per[n-H+i],verdi:p.f,
+      lo95:Math.exp(p.lg-1.96*p.se),hi95:Math.exp(p.lg+1.96*p.se)}))};
+  return {kilde:"lokal", meta:{modell:fc.model.kind,th:fc.model.th,TH:fc.model.TH,mu:fc.model.mu},
+          rader:rader, tidligere:tidligere};
+}
+function nesteP(p,k){let y=+p.slice(0,4),m=+p.slice(5)+k;
+  y+=Math.floor((m-1)/12); m=((m-1)%12)+1;
+  return y+"M"+String(m).padStart(2,"0");}
+
+/* ===================== FIGUR ===================== */
+const MN=["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des"];
+function pLab(p){return MN[+p.slice(5)-1]+" "+p.slice(0,4);}
+const NS="http://www.w3.org/2000/svg";
+function el(p,n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e;}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function fmt(v){return v>=1000?Math.round(v).toLocaleString("no"):(Math.round(v*10)/10).toLocaleString("no");}
+
+const VIS={fc:true,unc:true,prev:false,explain:false};
+let HIST=null,FC=null,CFG=null;
+
+function tegn(){
+  const svg=document.getElementById("chart"); clear(svg);
+  if(!HIST)return;
+  const W=860,Ht=380,L=60,R=18,T=18,B=36;
+  const NBACK=42, n=HIST.v.length;
+  const i0=Math.max(0,n-NBACK);
+  const tot=(n-i0)+ (VIS.fc&&FC?H:0);
+  const xs=i=>L+(i-i0)/(tot-1)*(W-L-R);   // i er indeks i historikk; framskriving n..n+H-1
+  let lo=Infinity,hi=-Infinity;
+  for(let i=i0;i<n;i++){lo=Math.min(lo,HIST.v[i]);hi=Math.max(hi,HIST.v[i]);}
+  if(VIS.fc&&FC)FC.rader.forEach(r=>{
+    hi=Math.max(hi,VIS.unc?r.hi95:r.verdi); lo=Math.min(lo,VIS.unc?r.lo95:r.verdi);});
+  if(VIS.prev&&FC&&FC.tidligere)FC.tidligere.framskriving.forEach(r=>{
+    hi=Math.max(hi,r.verdi);lo=Math.min(lo,r.verdi);});
+  const pad=(hi-lo)*0.12||1; lo-=pad; hi+=pad;
+  const ys=v=>T+(hi-v)/(hi-lo)*(Ht-T-B);
+
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,y=ys(v);
+    el(svg,"line",{x1:L,x2:W-R,y1:y,y2:y,stroke:"#EDEAE3"});
+    el(svg,"text",{x:L-9,y:y+4,"text-anchor":"end","font-family":"IBM Plex Mono","font-size":10,fill:"#71767E"}).textContent=fmt(v);}
+  for(let i=i0;i<n;i++){
+    if(HIST.per[i].slice(5)==="01"){
+      el(svg,"line",{x1:xs(i),x2:xs(i),y1:T,y2:Ht-B,stroke:"#F3F1EB"});
+      el(svg,"text",{x:xs(i),y:Ht-B+16,"text-anchor":"middle","font-family":"IBM Plex Mono","font-size":10,fill:"#71767E"}).textContent=HIST.per[i].slice(0,4);}}
+
+  // tidligere kjøring
+  if(VIS.prev&&FC&&FC.tidligere){
+    const t=FC.tidligere, o=HIST.per.indexOf(t.opphav);
+    if(o>=0){
+      let d="M "+xs(o)+" "+ys(HIST.v[o]);
+      t.framskriving.forEach((r,k)=>{d+=" L "+xs(o+1+k)+" "+ys(r.verdi);});
+      el(svg,"path",{d:d,fill:"none",stroke:"#8A8577","stroke-width":1.6,"stroke-dasharray":"4 3"});
+      t.framskriving.forEach((r,k)=>el(svg,"circle",{cx:xs(o+1+k),cy:ys(r.verdi),r:2.2,fill:"#8A8577"}));
+    }
+  }
+
+  // framskriving
+  if(VIS.fc&&FC){
+    const xf=k=>xs(n+k), y0=ys(HIST.v[n-1]);
+    if(VIS.unc){
+      for(const [f,op] of [[1.0,.10],[0.72,.12],[0.46,.14],[0.22,.16]]){
+        let d="M "+xs(n-1)+" "+y0;
+        FC.rader.forEach((r,k)=>{d+=" L "+xf(k)+" "+ys(r.verdi+(r.hi95-r.verdi)*f);});
+        for(let k=FC.rader.length-1;k>=0;k--){const r=FC.rader[k];
+          d+=" L "+xf(k)+" "+ys(r.verdi-(r.verdi-r.lo95)*f);}
+        el(svg,"path",{d:d+" Z",fill:"#4E5D94","fill-opacity":op});
+      }
+    }
+    let d="M "+xs(n-1)+" "+y0;
+    FC.rader.forEach((r,k)=>{d+=" L "+xf(k)+" "+ys(r.verdi);});
+    el(svg,"path",{d:d,fill:"none",stroke:"#4E5D94","stroke-width":1.8});
+    FC.rader.forEach((r,k)=>el(svg,"circle",{cx:xf(k),cy:ys(r.verdi),r:2.6,fill:"#4E5D94"}));
+    el(svg,"line",{x1:xs(n-1),x2:xs(n-1),y1:T-6,y2:Ht-B,stroke:"#131C24","stroke-dasharray":"2 3"});
+    el(svg,"text",{x:xs(n-1)+5,y:T+1,"font-family":"IBM Plex Mono","font-size":10,fill:"#131C24"}).textContent="siste publiserte tall";
+  }
+
+  // observert
+  let dh="";
+  for(let i=i0;i<n;i++)dh+=(i===i0?"M ":" L ")+xs(i)+" "+ys(HIST.v[i]);
+  el(svg,"path",{d:dh,fill:"none",stroke:"#1B3A4B","stroke-width":2.1});
+  el(svg,"circle",{cx:xs(n-1),cy:ys(HIST.v[n-1]),r:3.4,fill:"#1B3A4B"});
+
+  document.getElementById("lgF").hidden=!VIS.fc;
+  document.getElementById("lgU").hidden=!(VIS.fc&&VIS.unc);
+  document.getElementById("lgP").hidden=!VIS.prev;
+}
+
+function utlesning(){
+  const ro=document.getElementById("readout");
+  if(!HIST){ro.textContent="";return;}
+  const n=HIST.v.length;
+  let s='<span class="dim">Siste publiserte tall:</span> '+pLab(HIST.per[n-1])+
+        ' · '+fmt(HIST.v[n-1])+' '+CFG.enhet;
+  if(VIS.fc&&FC){
+    const r=FC.rader[FC.rader.length-1];
+    s+='<br><span class="dim">'+H+' måneder fram ('+pLab(r.periode)+'):</span> '+fmt(r.verdi);
+    if(VIS.unc)s+=' <span class="dim">· 95 %-intervall</span> '+fmt(r.lo95)+'–'+fmt(r.hi95);
+  }
+  if(VIS.prev&&FC&&FC.tidligere){
+    const t=FC.tidligere; let inn=0,tot=0,verst=0;
+    t.framskriving.forEach(r=>{
+      const i=HIST.per.indexOf(r.periode); if(i<0)return; tot++;
+      const a=HIST.v[i];
+      if(a>=r.lo95&&a<=r.hi95)inn++;
+      const e=Math.abs(a/r.verdi-1); if(e>verst)verst=e;});
+    if(tot)s+='<br><span class="dim">Forrige kjøring ('+pLab(t.opphav)+'):</span> '+inn+' av '+tot+
+             ' faktiske tall lå innenfor intervallet · største bom <b>'+(verst*100).toFixed(1)+' %</b>';
+  }
+  ro.innerHTML=s;
+}
+
+/* ===================== TILSTAND ===================== */
+let uIdx=0, sKey=USERS[0].start;
+const cacheH={}, cacheF={};
+
+function byggChips(){
+  const u=document.getElementById("users");
+  USERS.forEach((x,i)=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.setAttribute("aria-pressed",i===uIdx);
+    b.innerHTML=x.navn+"<small>start: "+SERIES.find(s=>s.key===x.start).navn+"</small>";
+    b.onclick=()=>{uIdx=i; sKey=USERS[i].start; oppdater(true);};
+    u.appendChild(b);
+  });
+  const s=document.getElementById("series");
+  SERIES.forEach(x=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.setAttribute("aria-pressed",x.key===sKey);
+    b.innerHTML=x.navn+"<small>tabell "+x.tabell+(x.sa?" · sesongjustert":" · ujustert")+"</small>";
+    b.onclick=()=>{sKey=x.key; oppdater(true);};
+    s.appendChild(b);
+  });
+}
+function merkChips(){
+  document.querySelectorAll("#users .chip").forEach((b,i)=>b.setAttribute("aria-pressed",i===uIdx));
+  document.querySelectorAll("#series .chip").forEach((b,i)=>b.setAttribute("aria-pressed",SERIES[i].key===sKey));
+}
+
+document.getElementById("toggles").addEventListener("click",e=>{
+  const b=e.target.closest(".tg"); if(!b)return;
+  const k=b.dataset.k; VIS[k]=!VIS[k]; b.setAttribute("aria-pressed",VIS[k]);
+  document.getElementById("explain").hidden=!VIS.explain;
+  tegn(); utlesning();
+});
+
+function status(m,warn){
+  const s=document.getElementById("status");
+  s.textContent=m||""; s.className="status"+(warn?" warn":"");
+}
+
+async function oppdater(hent){
+  const u=USERS[uIdx]; CFG=SERIES.find(s=>s.key===sKey);
+  document.getElementById("who").textContent=u.navn;
+  document.getElementById("question").textContent=u.q;
+  document.getElementById("ttl").textContent=CFG.navn;
+  document.getElementById("sub").textContent=CFG.uttrekk;
+  merkChips();
+  if(hent){
+    if(!cacheH[sKey]){
+      status("Henter tabell "+CFG.tabell+" fra Statistikkbanken …");
+      try{ cacheH[sKey]=await hentHistorie(CFG); }
+      catch(e){ HIST=null;FC=null;tegn();utlesning();
+        document.getElementById("srcHist").textContent="—";
+        document.getElementById("srcFc").textContent="—";
+        status(e.message+" — ingen innebygde data for denne serien ennå.",true); return; }
+    }
+    HIST=cacheH[sKey];
+    if(!cacheF[sKey]) cacheF[sKey]=await hentFramskriving(CFG,HIST);
+    FC=cacheF[sKey];
+    status(HIST.usikre.length
+      ? "Uttrekket gjettet på: "+HIST.usikre.join(", ")+". Bør verifiseres mot tabellen."
+      : "");
+  }
+  const a='<a href="https://www.ssb.no/statbank/table/'+CFG.tabell+'" target="_blank" rel="noopener">tabell '+CFG.tabell+'</a>';
+  document.getElementById("srcHist").innerHTML=
+    "Statistikkbanken "+a+(HIST?" · "+HIST.valgt.join(" · "):"");
+  document.getElementById("srcFc").innerHTML= !FC ? "—"
+    : (FC.kilde==="jd"
+        ? (FC.meta.kilde||"JDemetra+")+' <span class="badge jd">JDemetra+</span>'
+        : (CFG.sa?"ARIMA(0,1,1) med drift":"Airline (0,1,1)(0,1,1)<sub>12</sub>")+
+          ' <span class="badge stub">lokal beregning</span>');
+  tegn(); utlesning();
+}
+
+byggChips();
+oppdater(true);
+</script>
+</body>
+</html>

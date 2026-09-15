@@ -258,10 +258,10 @@ function runModel(y,sa,H){
 const H=6;
 
 const SERIES=[
-  {key:"fisk",  navn:"Fiskeeksport", tabell:"08806",
-   uttrekk:"Eksport → 03 Fisk, krepsdyr, bløtdyr mv. → verdi",
-   pick:[/eksport/i,/fisk|krepsdyr|bløtdyr/i,/verdi|mill/i],
-   sa:false, enhet:"mill. kr"},
+  {key:"fisk",  navn:"Fiskeeksport", tabell:"08864",
+   uttrekk:"Eksport → Fisk → volumindeks",
+   pick:[/eksport/i,/fisk|krepsdyr|bløtdyr/i,/volum/i],
+   sa:false, enhet:"volumindeks"},
   {key:"detalj",navn:"Detaljhandel", tabell:"07129",
    uttrekk:"47 Detaljhandel → volumindeks → sesongjustert",
    pick:[/^47|detaljhandel/i,/volum/i,/sesongjustert/i],
@@ -324,15 +324,22 @@ async function hentHistorie(cfg){
     .then(r=>{if(!r.ok)throw new Error("Ingen data fra "+cfg.tabell);return r.json();});
   const tIdx=ds.dimension[timeDim].category.index;
   const per=Array.isArray(tIdx)?tIdx:Object.keys(tIdx).sort((a,b)=>tIdx[a]-tIdx[b]);
-  if(!/^\d{4}M\d{2}$/.test(per[0]))throw new Error("Tabell "+cfg.tabell+" har ikke månedstall");
-  const v=[],p=[];
+  if(!/^\d{4}M\d{2}$/.test(per[0]))
+    throw new Error("Tabell "+cfg.tabell+" har ikke månedstall (første periode: "+per[0]+")");
+  // finn den LENGSTE sammenhengende strekningen uten hull, ikke bare den første
+  let bStart=0,bLen=0,cStart=0,cLen=0;
   for(let i=0;i<per.length;i++){
     const x=ds.value[i];
-    if(x===null||x===undefined||!(x>0)){ if(v.length)break; else continue; }
-    v.push(x); p.push(per[i]);
+    if(x!==null&&x!==undefined&&x>0){ if(cLen===0)cStart=i; cLen++;
+      if(cLen>bLen){bLen=cLen;bStart=cStart;} }
+    else cLen=0;
   }
-  if(v.length<48)throw new Error("For kort serie i "+cfg.tabell);
-  return {v:v, per:p, valgt:valgt, usikre:usikre};
+  const MIN=48;
+  if(bLen<MIN)
+    throw new Error("Tabell "+cfg.tabell+" ga bare "+bLen+" sammenhengende månedsobservasjoner"+
+      (valgt.length?" for uttrekket "+valgt.join(" · "):"")+". Trenger minst "+MIN+".");
+  return {v:ds.value.slice(bStart,bStart+bLen), per:per.slice(bStart,bStart+bLen),
+          valgt:valgt, usikre:usikre, avTotal:per.length};
 }
 
 /* ===================== DATAKILDE 2: JDEMETRA ===================== */
@@ -527,7 +534,8 @@ async function oppdater(hent){
   }
   const a='<a href="https://www.ssb.no/statbank/table/'+CFG.tabell+'" target="_blank" rel="noopener">tabell '+CFG.tabell+'</a>';
   document.getElementById("srcHist").innerHTML=
-    "Statistikkbanken "+a+(HIST?" · "+HIST.valgt.join(" · "):"");
+    "Statistikkbanken "+a+(HIST?" · "+HIST.valgt.join(" · ")+
+      "<br>"+HIST.v.length+" månedsobservasjoner · "+pLab(HIST.per[0])+"–"+pLab(HIST.per[HIST.per.length-1]):"");
   document.getElementById("srcFc").innerHTML= !FC ? "—"
     : (FC.kilde==="jd"
         ? (FC.meta.kilde||"JDemetra+")+' <span class="badge jd">JDemetra+</span>'

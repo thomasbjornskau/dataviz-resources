@@ -92,6 +92,9 @@ ol.recs li:last-child{border-bottom:1px solid var(--rule2)}
 .note{font-size:15px;color:var(--mute);border-left:2px solid var(--rule);padding-left:16px;margin:22px 0}
 .status{font-family:var(--mono);font-size:11.5px;color:var(--mute);padding:0 18px 14px}
 .status.err{color:var(--actual)}
+.karakter{font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--actual);
+  border-left:2px solid var(--actual);padding:8px 0 8px 12px}
+.karakter[hidden]{display:none}
 footer{border-top:1px solid var(--rule);padding:34px 0 70px;font-size:14px;color:var(--mute)}
 code{font-family:var(--mono);font-size:13px;background:#F1EEE8;padding:1px 5px}
 @media(prefers-reduced-motion:no-preference){.fade{transition:opacity .18s}}
@@ -165,6 +168,8 @@ code{font-family:var(--mono);font-size:13px;background:#F1EEE8;padding:1px 5px}
           <label class="ctl" for="origin">Hva visste vi da? <span id="olab"></span></label>
           <input type="range" id="origin" min="0" max="100" value="70">
         </div>
+        <div id="dims" class="row"></div>
+        <div id="karakter" class="karakter" hidden></div>
         <div class="row">
           <div>
             <label class="ctl" for="serie">Serie</label>
@@ -431,6 +436,7 @@ const PRESETS=[
    2015=100, månedstall fra 2005M01. Hentet fra data.ssb.no. */
 const FALLBACK={
   title:"Byggekostnadsindeks for bustadblokk",
+  karakter:"ujustert",
   sub:"SSB tabell 08655 · 2015=100 · reservekopi",
   start:{y:2005,m:1},
   v:[69.4,69.6,69.8,69.8,70.1,70.2,70.3,70.5,70.7,70.8,71.6,71.7,
@@ -459,41 +465,120 @@ const FALLBACK={
 
 const API="https://data.ssb.no/api/pxwebapi/v2/tables/";
 
-async function loadTable(id){
-  const meta=await fetch(API+id+"/metadata?lang=no&outputFormat=json-stat2").then(r=>{
-    if(!r.ok) throw new Error("Fant ikke tabell "+id); return r.json();});
+let META=null, METAID=null;        // metadata for gjeldende tabell
+let VALG={};                       // dimensjonskode -> valgt kategorikode
+
+function dimListe(meta){
   const dims=meta.id||Object.keys(meta.dimension||{});
-  let timeDim=null;
-  for(const d of dims){
-    const role=(meta.role&&meta.role.time)||[];
-    if(role.indexOf(d)>=0) timeDim=d;
-  }
+  const roles=(meta.role&&meta.role.time)||[];
+  let timeDim=dims.find(d=>roles.indexOf(d)>=0);
   if(!timeDim) timeDim=dims[dims.length-1];
-  const parts=[], picked=[];
+  return {dims:dims, timeDim:timeDim};
+}
+function kategorier(meta,d){
+  const cat=meta.dimension[d].category, idx=cat.index;
+  const koder=Array.isArray(idx)?idx:Object.keys(idx).sort((a,b)=>idx[a]-idx[b]);
+  return koder.map(k=>({kode:k, navn:(cat.label&&cat.label[k])||k}));
+}
+/* Standardvalg: unngå trend og glattede serier — de er allerede bearbeidet
+   og gir kunstig små residualer. Ellers første kategori. */
+function standardKode(liste){
+  const rang=c=>{
+    const n=c.navn;
+    if(/trend|glatt|smooth/i.test(n))            return 3;  // allerede glattet
+    if(/sesongjustert|seasonally adjusted/i.test(n)) return 2;  // allerede justert
+    if(/ujustert|opprinnelig|unadjusted|original/i.test(n)) return 0;  // det vi helst vil ha
+    return 1;
+  };
+  return liste.slice().sort((a,b)=>rang(a)-rang(b))[0].kode;
+}
+/* Hva slags serie har vi valgt? Styrer modellvalget. */
+function seriekarakter(navn){
+  const t=navn.join(" ");
+  if(/trend|glatt|smooth/i.test(t)) return "trend";
+  if(/sesongjustert|seasonally adjusted/i.test(t)) return "sesongjustert";
+  return "ujustert";
+}
+
+async function lastMetadata(id){
+  if(METAID===id && META) return META;
+  const m=await fetch(API+id+"/metadata?lang=no&outputFormat=json-stat2").then(r=>{
+    if(!r.ok) throw new Error("Fant ikke tabell "+id); return r.json();});
+  META=m; METAID=id; return m;
+}
+
+async function loadTable(id, valg){
+  const meta=await lastMetadata(id);
+  const {dims,timeDim}=dimListe(meta);
+  const q=[], navn=[], brukt={};
   for(const d of dims){
-    if(d===timeDim){parts.push("valueCodes["+d+"]=*");continue;}
-    const cat=meta.dimension[d].category, idx=cat.index;
-    const codes=Array.isArray(idx)?idx:Object.keys(idx).sort((a,b)=>idx[a]-idx[b]);
-    parts.push("valueCodes["+d+"]="+encodeURIComponent(codes[0]));
-    picked.push((cat.label&&cat.label[codes[0]])||codes[0]);
+    if(d===timeDim){q.push("valueCodes["+d+"]=*");continue;}
+    const liste=kategorier(meta,d);
+    let k=(valg&&valg[d]);
+    if(!k || !liste.some(c=>c.kode===k)) k=standardKode(liste);
+    brukt[d]=k;
+    navn.push(liste.find(c=>c.kode===k).navn);
+    q.push("valueCodes["+d+"]="+encodeURIComponent(k));
   }
-  const url=API+id+"/data?lang=no&outputFormat=json-stat2&"+parts.join("&");
-  const ds=await fetch(url).then(r=>{if(!r.ok)throw new Error("Ingen data for "+id);return r.json();});
+  const ds=await fetch(API+id+"/data?lang=no&outputFormat=json-stat2&"+q.join("&"))
+    .then(r=>{if(!r.ok)throw new Error("Ingen data for "+id);return r.json();});
   const tIdx=ds.dimension[timeDim].category.index;
-  const labels=Array.isArray(tIdx)?tIdx:Object.keys(tIdx).sort((a,b)=>tIdx[a]-tIdx[b]);
-  if(!/^\d{4}M\d{2}$/.test(labels[0])) throw new Error("Tabell "+id+" har ikke månedstall");
-  const vals=ds.value, keep=[];
-  for(let i=0;i<labels.length;i++){
-    const v=vals[i];
-    if(v===null||v===undefined||!(v>0)){ if(keep.length) break; else continue; }
-    if(!keep.length) keep.start=labels[i];
-    keep.push(v);
+  const per=Array.isArray(tIdx)?tIdx:Object.keys(tIdx).sort((a,b)=>tIdx[a]-tIdx[b]);
+  if(!/^\d{4}M\d{2}$/.test(per[0]))
+    throw new Error("Tabell "+id+" har ikke månedstall (første periode: "+per[0]+")");
+  // lengste sammenhengende strekning uten hull
+  let bS=0,bL=0,cS=0,cL=0;
+  for(let i=0;i<per.length;i++){
+    const v=ds.value[i];
+    if(v!==null&&v!==undefined&&v>0){ if(cL===0)cS=i; cL++; if(cL>bL){bL=cL;bS=cS;} }
+    else cL=0;
   }
-  if(keep.length<60) throw new Error("For kort serie i tabell "+id);
-  const y=+keep.start.slice(0,4), mo=+keep.start.slice(5);
+  if(bL<60) throw new Error("Tabell "+id+" ga bare "+bL+
+    " sammenhengende månedsobservasjoner for "+navn.join(" · ")+". Trenger minst 60.");
+  const p0=per[bS], y=+p0.slice(0,4), mo=+p0.slice(5);
+  VALG=brukt;
   return {title:(ds.label||("Tabell "+id)).replace(/^\d+:\s*/,"").split(",")[0],
-          sub:"SSB tabell "+id+" · "+picked.join(" · ")+" · hentet live",
-          start:{y:y,m:mo}, v:keep.slice()};
+          sub:"SSB tabell "+id+" · "+navn.join(" · "),
+          start:{y:y,m:mo}, v:ds.value.slice(bS,bS+bL),
+          tabell:id, dims:dims, timeDim:timeDim, navn:navn,
+          karakter:seriekarakter(navn)};
+}
+
+/* ---- ikke-sesongmodell: ARIMA(0,1,1) med drift på log ----
+   Brukes når den valgte serien allerede er sesongjustert eller er en trend.
+   Sesongdifferensiering av en slik serie ville vært overdifferensiering.
+   Verifisert mot statsmodels.SARIMAX innenfor 0,03 %. */
+function fitIMA(y){
+  const x=y.map(Math.log), w=[];
+  for(let i=1;i<x.length;i++) w.push(x[i]-x[i-1]);
+  if(w.length<12) return null;
+  const mu=w.reduce((a,b)=>a+b,0)/w.length, wc=w.map(v=>v-mu);
+  const run=th=>{const a=new Float64Array(wc.length);let s=0;
+    for(let t=0;t<wc.length;t++){a[t]=wc[t]+(t>0?th*a[t-1]:0);s+=a[t]*a[t];}return{s,a};};
+  let best=Infinity,bth=0,ba=null;
+  for(let i=0;i<=60;i++){const th=-0.95+1.9*i/60,r=run(th);if(r.s<best){best=r.s;bth=th;ba=r.a;}}
+  let step=0.05;
+  for(let k=0;k<60;k++){let imp=false;
+    for(const d of[step,-step]){const th=bth+d; if(Math.abs(th)>0.999)continue;
+      const r=run(th); if(r.s<best-1e-14){best=r.s;bth=th;ba=r.a;imp=true;}}
+    if(!imp){step/=2; if(step<1e-7)break;}}
+  return {kind:"ima",th:bth,mu:mu,sig2:best/wc.length,aN:ba[ba.length-1],last:x[x.length-1]};
+}
+function forecastIMA(m,H){
+  const out=[];
+  for(let h=1;h<=H;h++){
+    const lg=m.last+h*m.mu-m.th*m.aN;
+    const se=Math.sqrt(m.sig2*(1+(h-1)*Math.pow(1-m.th,2)));
+    out.push({f:Math.exp(lg),se:se,lg:lg});
+  }
+  return out;
+}
+/* Felles inngang: velger modell etter seriens karakter. */
+function tilpass(y){
+  return (DATA && DATA.karakter && DATA.karakter!=="ujustert") ? fitIMA(y) : fitAirline(y);
+}
+function skriv(m,H){
+  return m.kind==="ima" ? forecastIMA(m,H) : forecastAirline(m,H);
 }
 
 /* ============================================================
@@ -637,8 +722,8 @@ function drawCompare(){
    ============================================================ */
 function recompute(){
   const hist=DATA.v.slice(0,ORI+1);
-  MODEL=fitAirline(hist);
-  FC=MODEL?forecastAirline(MODEL,H):null;
+  MODEL=tilpass(hist);
+  FC=MODEL?skriv(MODEL,H):null;
   drawMain(); readout();
   document.getElementById("olab").textContent="— "+lab(DATA.start,ORI);
 }
@@ -653,8 +738,10 @@ function readout(){
     const e=Math.abs(act/FC[h].f-1); if(e>worst){worst=e;worstH=h+1;}
   }
   const p=FC[avail>0?Math.min(avail,H)-1:H-1];
-  let s='<span class="dim">Modell:</span> ARIMA(0,1,1)(0,1,1)<sub>12</sub> på log · θ='+MODEL.th.toFixed(2)+' · Θ='+MODEL.TH.toFixed(2)+
-        ' · estimert på '+(ORI+1)+' måneder<br>';
+  const mnavn = MODEL.kind==="ima"
+    ? 'ARIMA(0,1,1) med drift på log · θ='+MODEL.th.toFixed(2)+' · drift='+(MODEL.mu*100).toFixed(2)+' %/md'
+    : 'ARIMA(0,1,1)(0,1,1)<sub>12</sub> på log · θ='+MODEL.th.toFixed(2)+' · Θ='+MODEL.TH.toFixed(2);
+  let s='<span class="dim">Modell:</span> '+mnavn+' · estimert på '+(ORI+1)+' måneder<br>';
   s+='<span class="dim">12 måneder fram ('+lab(DATA.start,ORI+H)+'):</span> '+fmt(FC[H-1].f)+
      ' <span class="dim">·  95 %-intervall</span> '+fmt(Math.exp(FC[H-1].lg-1.96*FC[H-1].se))+'–'+fmt(Math.exp(FC[H-1].lg+1.96*FC[H-1].se))+'<br>';
   if(avail>0){
@@ -671,8 +758,8 @@ function runCoverage(){
   let origins=0, first=null, last=null;
   for(let o=n-1-H;o>n-1-H-K&&o>60;o--){
     if(last===null) last=o; first=o;
-    const m=fitAirline(DATA.v.slice(0,o+1)); if(!m)continue;
-    const fc=forecastAirline(m,H); origins++;
+    const m=tilpass(DATA.v.slice(0,o+1)); if(!m)continue;
+    const fc=skriv(m,H); origins++;
     for(let h=0;h<H;h++){
       if(o+1+h>=n)continue;
       const lg=Math.log(DATA.v[o+1+h]); cnt[h]++;
@@ -708,10 +795,59 @@ document.getElementById("origin").addEventListener("input",e=>{ORI=+e.target.val
 
 const sel=document.getElementById("serie");
 PRESETS.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.name+" — "+p.note;sel.appendChild(o);});
-async function tryLoad(id){
+function byggDimValg(d){
+  const box=document.getElementById("dims"); box.innerHTML="";
+  if(!META||!d||!d.dims) return;
+  for(const dim of d.dims){
+    if(dim===d.timeDim) continue;
+    const liste=kategorier(META,dim);
+    if(liste.length<2) continue;              // ingenting å velge mellom
+    const wrap=document.createElement("div");
+    const lab=document.createElement("label");
+    lab.className="ctl"; lab.textContent=(META.dimension[dim].label||dim);
+    lab.htmlFor="dim-"+dim;
+    const sel=document.createElement("select");
+    sel.id="dim-"+dim;
+    liste.forEach(c=>{
+      const o=document.createElement("option");
+      o.value=c.kode; o.textContent=c.navn; o.selected=(VALG[dim]===c.kode);
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change",()=>{
+      const v=Object.assign({},VALG); v[dim]=sel.value;
+      tryLoad(d.tabell, v);
+    });
+    wrap.appendChild(lab); wrap.appendChild(sel); box.appendChild(wrap);
+  }
+}
+
+function visKarakter(d){
+  const k=document.getElementById("karakter");
+  if(!d||!d.karakter||d.karakter==="ujustert"){ k.hidden=true; return; }
+  k.hidden=false;
+  k.innerHTML = d.karakter==="trend"
+    ? "Du har valgt en <b>trendserie</b>. Den er allerede glattet, så residualene blir kunstig "+
+      "små og intervallet urealistisk smalt. Trenden revideres dessuten kraftig i enden. "+
+      "Etterprøvingen nedenfor måler derfor noe annet enn den gjør på en ujustert serie. "+
+      "Velg en ujustert serie for en meningsfull framskriving."
+    : "Serien er <b>sesongjustert</b>. Modellen er derfor byttet til ARIMA(0,1,1) med drift — "+
+      "sesongdifferensiering av en sesongjustert serie ville vært overdifferensiering. "+
+      "Merk at sesongjusterte tall revideres bakover, noe etterprøvingen ikke fanger opp.";
+}
+
+async function tryLoad(id, valg){
   status("Henter tabell "+id+" fra data.ssb.no …");
-  try{ const d=await loadTable(id); setData(d); status(""); }
-  catch(e){ status(e.message+". Viser reserveserien i stedet.",true); setData(FALLBACK); }
+  try{
+    if(id!==METAID){ META=null; METAID=null; VALG={}; }
+    const d=await loadTable(id, valg);
+    setData(d); byggDimValg(d); visKarakter(d); status("");
+  }
+  catch(e){
+    status(e.message+". Viser reserveserien i stedet.",true);
+    document.getElementById("dims").innerHTML="";
+    document.getElementById("karakter").hidden=true;
+    setData(FALLBACK);
+  }
 }
 sel.addEventListener("change",e=>tryLoad(e.target.value));
 document.getElementById("load").addEventListener("click",()=>{

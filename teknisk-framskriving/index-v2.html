@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modellbasert forlengelse av tidsserier — internt utforskingsnotat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#274247; --green:#00824D; --light:#F0F8F9; --mid:#C3DCDC;
+  --purple:#7E5EE8; --text:#1B2E32; --white:#fff;
+  --line:#C3DCDC; --line-soft:#E4EEF0; --muted:#5A7378;
+  --font:"Open Sans",Roboto,Arial,Helvetica,sans-serif;
+  --max:1180px; --read:660px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:40px; --s5:64px; --s6:96px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--white);color:var(--text);font-family:var(--font);
+  font-size:16px;line-height:1.65;font-variant-numeric:tabular-nums}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s3)}
+.read{max-width:var(--read)}
+h1,h2,h3,h4{font-weight:700;line-height:1.25;margin:0 0 var(--s2);color:var(--dark)}
+h1{font-size:clamp(28px,3.6vw,40px);letter-spacing:-.01em;max-width:20ch}
+h2{font-size:clamp(21px,2.4vw,26px)}
+h3{font-size:17px;margin-bottom:var(--s1)}
+h4{font-size:14px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--s1)}
+p{margin:0 0 var(--s2)}
+a{color:var(--green)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--green);margin:0 0 var(--s1)}
+.lede{font-size:clamp(17px,1.9vw,20px);line-height:1.55}
+.muted{color:var(--muted)}
+.small{font-size:13px;line-height:1.55}
+
+/* ---- masthead ---- */
+.masthead{background:var(--dark);color:#fff;padding:var(--s2) 0}
+.masthead .wrap{display:flex;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.masthead b{color:var(--mid);font-weight:600}
+.intro{background:var(--light);border-bottom:1px solid var(--line);padding:var(--s5) 0}
+.intro .eyebrow{color:var(--green)}
+
+section{padding:var(--s5) 0;border-bottom:1px solid var(--line-soft)}
+section:last-of-type{border-bottom:0}
+
+/* ---- trestegsfiguren ---- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin:var(--s4) 0 var(--s3)}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.step{border:1px solid var(--line);border-top:3px solid var(--mid);padding:var(--s3);background:var(--white)}
+.step.now{border-top-color:var(--purple);background:var(--light)}
+.step .num{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--s1)}
+.step.now .num{color:var(--purple)}
+.step p{font-size:14.5px;line-height:1.6;margin:0}
+.step p+p{margin-top:var(--s1)}
+.step ul{margin:var(--s1) 0 0;padding-left:18px;font-size:14.5px}
+.step li{margin-bottom:2px}
+
+/* ---- panel ---- */
+.panel{border:1px solid var(--line);background:var(--white);margin:var(--s4) 0}
+.panel-head{padding:var(--s3) var(--s3) var(--s2);border-bottom:1px solid var(--line-soft)}
+.panel-head h3{font-size:20px;margin-bottom:4px}
+.panel-head .variant{font-size:14px;color:var(--muted)}
+
+/* ---- kontroller ---- */
+.ctrls{padding:var(--s3);border-bottom:1px solid var(--line-soft);display:grid;gap:var(--s3)}
+.ctrl>.lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:var(--s1)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s1)}
+.chip{font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border:1px solid var(--line);
+  background:var(--white);color:var(--dark);cursor:pointer;border-radius:0;min-height:40px}
+.chip:hover{border-color:var(--dark)}
+.chip[aria-pressed=true]{background:var(--dark);border-color:var(--dark);color:#fff}
+.freeform{display:flex;gap:var(--s1);flex-wrap:wrap;align-items:flex-end}
+input[type=text],select{font:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--line);
+  background:var(--white);color:var(--text);border-radius:0;min-height:40px;max-width:100%}
+input[type=text]{width:150px}
+.btn{font:inherit;font-size:14px;font-weight:600;padding:9px 18px;border:1px solid var(--green);
+  background:var(--green);color:#fff;cursor:pointer;border-radius:0;min-height:40px}
+.btn:hover{background:#006B40;border-color:#006B40}
+.vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--s2)}
+.vars .lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:4px}
+.vars select{width:100%}
+input[type=range]{width:100%;accent-color:var(--purple);min-height:32px}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+
+/* ---- diagram ---- */
+.figure{padding:var(--s3) var(--s3) var(--s2)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.key{display:flex;gap:var(--s3);flex-wrap:wrap;padding:0 var(--s3) var(--s2);font-size:13px;color:var(--muted)}
+.key span[hidden]{display:none}
+.key svg{display:inline-block;width:30px;height:10px;vertical-align:-1px;margin-right:6px}
+.finding{padding:var(--s2) var(--s3);background:var(--light);border-top:1px solid var(--line-soft);
+  font-size:14.5px;line-height:1.7}
+.finding b{color:var(--dark)}
+.finding .hl{color:var(--purple);font-weight:700}
+.sourceline{padding:var(--s2) var(--s3);border-top:1px solid var(--line-soft);font-size:13px;color:var(--muted)}
+.notice{padding:var(--s2) var(--s3);border-top:1px solid var(--line-soft);border-left:3px solid var(--purple);
+  font-size:13.5px;line-height:1.6;background:var(--white)}
+.notice[hidden]{display:none}
+.notice b{color:var(--dark)}
+.state{padding:0 var(--s3) var(--s2);font-size:13px;color:var(--muted)}
+.state.err{color:#A3232B;font-weight:600}
+
+/* ---- sammenlikning ---- */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin:var(--s4) 0}
+@media(max-width:760px){.pair{grid-template-columns:1fr}}
+.pair .panel{margin:0}
+.verdict{padding:var(--s2) var(--s3);border-top:1px solid var(--line-soft);font-size:13px;font-weight:600}
+.verdict.no{color:#A3232B}
+.verdict.yes{color:var(--green)}
+
+/* ---- tabell ---- */
+table{width:100%;border-collapse:collapse;margin:var(--s3) 0;font-size:15px}
+caption{text-align:left;font-size:13px;color:var(--muted);padding-bottom:var(--s1)}
+th,td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--line)}
+td.term{font-weight:700;color:var(--dark);white-space:nowrap;padding-right:24px}
+td.tag{white-space:nowrap;font-size:13px;font-weight:600}
+.tag.avoid{color:#A3232B} .tag.ok{color:var(--muted)} .tag.rec{color:var(--green)}
+
+/* ---- anbefalinger ---- */
+ol.recs{list-style:none;counter-reset:r;padding:0;margin:var(--s3) 0 0;max-width:var(--read)}
+ol.recs li{counter-increment:r;border-top:1px solid var(--line-soft);padding:var(--s3) 0 var(--s3) 44px;position:relative}
+ol.recs li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:calc(var(--s3) + 2px);
+  font-size:13px;font-weight:700;color:var(--green)}
+ol.recs li:last-child{border-bottom:1px solid var(--line-soft)}
+
+footer{background:var(--light);border-top:1px solid var(--line);padding:var(--s5) 0 var(--s6);
+  font-size:14px;color:var(--muted);line-height:1.7}
+footer h3{font-size:15px;margin-top:var(--s3)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--mid);padding:1px 5px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wrap">
+    <span>Statistisk sentralbyrå · hackathon, oppgave 5</span>
+    <span><b>Internt arbeidsmateriale</b> — ikke for ekstern publisering</span>
+  </div>
+</div>
+
+<div class="intro">
+  <div class="wrap">
+    <p class="eyebrow">Utforskingsnotat</p>
+    <h1>En modellbasert forlengelse av tidsserien</h1>
+    <p class="lede read">Når SSB sesongjusterer en månedsserie, produserer JDemetra+ også
+    beregnede verdier for månedene etter siste observasjon. Dette notatet er et internt
+    verktøy for å undersøke hva de verdiene er, hva de tåler, og hva som eventuelt skulle til
+    for å gi dem en ny funksjon. Ingenting her er et forslag til et ferdig produkt.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Det metodiske skillet</p>
+    <h2 class="read">Tre ting som ofte blandes sammen</h2>
+    <p class="read">Diskusjonen blir uklar hvis vi behandler dette som en publiseringsbeslutning.
+    JDemetra+ produserer ikke et brukerprodukt vi bare kan slippe ut. Det vi vurderer, er å gi
+    et eksisterende mellomresultat en ny anvendelse — og det er et større sprang enn det høres ut som.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p class="num">1 · Det JDemetra trenger</p>
+        <h3>Forlengelse for å kunne justere enden</h3>
+        <p>Sesongjusteringsfiltrene er symmetriske. For å beregne sesongfaktoren for de siste
+        månedene må serien forlenges i begge ender. Forlengelsen er her et regneteknisk
+        hjelpemiddel, ikke et svar på noe spørsmål.</p>
+      </div>
+      <div class="step">
+        <p class="num">2 · Det JDemetra produserer</p>
+        <h3>Flere beregnede størrelser</h3>
+        <p>Underveis faller det ut flere forlengede serier:</p>
+        <ul>
+          <li>framskrevne verdier fra regARIMA-modellen</li>
+          <li>forlenget sesongjustert serie</li>
+          <li>forlenget trend-syklus</li>
+        </ul>
+        <p>Disse er ikke det samme, og de har ulik usikkerhet.</p>
+      </div>
+      <div class="step now">
+        <p class="num">3 · Det vi vurderer å lage</p>
+        <h3>En ny funksjon for én av dem</h3>
+        <p>Å velge én av disse beregningene og gi den en rolle den ikke har i dag:
+        kortsiktig informasjon om framtidig utvikling, rettet mot en bruker.</p>
+        <p>Det er her hackathon-idéen ligger. Ikke i å publisere noe vi har, men i å foreslå
+        en ny anvendelse av et eksisterende modellresultat — med det ansvaret det medfører.</p>
+      </div>
+    </div>
+
+    <p class="read">Formuleringen som lover minst, og som antakelig er den riktige: <b>en
+    modellbasert forlengelse av tidsserien, basert på informasjonen som ligger i serien fram til
+    siste observasjon.</b> Det er et beskjedent objekt. Det interessante produktspørsmålet er om
+    noe så beskjedent likevel har reell brukerverdi.</p>
+    <p class="read">Tre egenskaper følger av definisjonen, og de gjelder uansett hvilken av de tre
+    beregningene vi velger. Forlengelsen er <b>univariat</b> — den kjenner ingen priser, renter,
+    ordrer eller politiske vedtak. Den er en <b>referansebane</b>, altså et sammenlikningsgrunnlag
+    heller enn et anslag. Og <b>usikkerhetsintervallet er betinget</b> på at modellen er riktig
+    spesifisert; risikoen for at modellen selv tar feil, ligger utenfor intervallet.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Signaturdiagram</p>
+    <h2 class="read">Hva ville modellen sagt, og hva skjedde faktisk?</h2>
+    <p class="read">Velg en serie, flytt «siste observasjon» bakover i tid, og se hva en
+    modellbasert forlengelse ville gitt med bare det som var kjent da. Den lilla linjen er det
+    som faktisk skjedde. Beregningen skjer i nettleseren og er en forenklet stedfortreder for
+    JDemetra+ — se metodenotatet nederst.</p>
+
+    <div class="panel">
+      <div class="ctrls">
+        <div class="ctrl">
+          <span class="lab" id="lab-utvalg">Utvalgte serier</span>
+          <div class="chips" id="presets" role="group" aria-labelledby="lab-utvalg"></div>
+        </div>
+        <div class="ctrl">
+          <span class="lab" id="lab-fritt">Eller en hvilken som helst tabell i Statistikkbanken</span>
+          <div class="freeform" role="group" aria-labelledby="lab-fritt">
+            <input type="text" id="tbl" inputmode="numeric" placeholder="tabellnummer"
+                   aria-label="Tabellnummer i Statistikkbanken">
+            <button class="btn" id="load" type="button">Hent tabell</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <span class="lab">Variabler i tabellen</span>
+          <div class="vars" id="vars"></div>
+          <p class="small muted" id="varsnote" style="margin:8px 0 0"></p>
+        </div>
+      </div>
+
+      <div class="panel-head">
+        <h3 id="figTitle">—</h3>
+        <p class="variant" id="figVariant"></p>
+      </div>
+
+      <div class="figure">
+        <svg id="chart" viewBox="0 0 900 400" role="img" aria-labelledby="figTitle figFinding"></svg>
+      </div>
+      <div class="key">
+        <span><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="0" y1="5" x2="30" y2="5" stroke="#274247" stroke-width="3"/></svg>Observert fram til valgt tidspunkt</span>
+        <span id="keyF"><svg viewBox="0 0 30 10" aria-hidden="true"><rect x="0" y="1" width="30" height="8" fill="#00824D" fill-opacity=".18"/><line x1="0" y1="5" x2="30" y2="5" stroke="#00824D" stroke-width="2.5"/></svg>Modellbasert forlengelse med usikkerhet</span>
+        <span id="keyA"><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="0" y1="5" x2="30" y2="5" stroke="#7E5EE8" stroke-width="2.5" stroke-dasharray="5 3"/></svg>Faktisk utfall</span>
+      </div>
+
+      <div class="ctrls" style="border-top:1px solid var(--line-soft);border-bottom:0">
+        <div class="ctrl">
+          <label class="lab" for="origin">Sett siste observasjon til <span id="originLab"></span></label>
+          <input type="range" id="origin" min="0" max="100" value="70">
+        </div>
+      </div>
+
+      <p class="finding" id="figFinding" aria-live="polite"></p>
+      <div class="notice" id="notice" hidden></div>
+      <p class="sourceline" id="source"></p>
+      <p class="state" id="state"></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Etterprøving</p>
+    <h2 class="read">Intervallet lover 95 prosent. Hva holder det?</h2>
+    <p class="read">Modellen kjøres fra en rekke startpunkt bakover i serien, hver gang med bare
+    det som var kjent da. Så telles det hvor ofte det faktiske tallet havnet innenfor
+    intervallet, fordelt på hvor langt fram vi så.</p>
+
+    <div class="panel">
+      <div class="ctrls">
+        <div class="ctrl">
+          <label class="lab" for="window">Etterprøvingsvindu</label>
+          <select id="window">
+            <option value="24">Siste 24 startpunkt — to år</option>
+            <option value="48" selected>Siste 48 startpunkt — fire år</option>
+            <option value="72">Siste 72 startpunkt — seks år</option>
+            <option value="120">Siste 120 startpunkt — ti år</option>
+          </select>
+        </div>
+      </div>
+      <div class="figure">
+        <svg id="cov" viewBox="0 0 900 260" role="img" aria-labelledby="covFinding"></svg>
+      </div>
+      <p class="finding" id="covFinding" aria-live="polite"></p>
+    </div>
+
+    <p class="read"><b>Bytt vindu, og svaret endrer seg.</b> På byggekostnadsindeksen gir de siste
+    to årene rundt 96 prosent dekning — bedre enn lovet. Utvider du til seks år, og dermed får med
+    prisveksten i 2021 og 2022, faller den til rundt 74 prosent. Samme serie, samme modell.</p>
+    <p class="read">Det betyr to ting for en intern vurdering. En etterprøving som ser bra ut er
+    ikke i seg selv en kvalitetsattest — det kan like gjerne bety at testperioden var rolig. Og
+    skulle dette noen gang bli et produkt, må <b>vinduet fastsettes på forhånd og være likt for
+    alle serier</b>. Ellers vil den som presenterer tallene, bevisst eller ubevisst, ende opp med
+    å velge det vinduet som kler resultatet best.</p>
+    <p class="read">Selve avviket er ikke en feil i JDemetra+. Intervallet svarer ærlig på sitt
+    eget spørsmål: gitt at modellen er riktig, hvor mye støy er det igjen? Problemet oppstår først
+    når tallet leses som om det svarte på «hvor sikre er dere?».</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Visuell form</p>
+    <h2 class="read">Strek betyr målt. Flate betyr regnet ut.</h2>
+    <p class="read">Standardgrepet — stiplet linje i forlengelsen — gir den beregnede delen samme
+    status som observasjonen, bare med en annen strektype. Leseren avleser ett tall per måned og
+    tror det er et anslag på nivået. Det er det ikke; det er midtpunktet i en fordeling som er
+    bred fra første måned.</p>
+    <div class="pair">
+      <div class="panel">
+        <div class="panel-head"><h3>Stiplet linje</h3></div>
+        <div class="figure"><svg id="cmpA" viewBox="0 0 420 240" role="img" aria-label="Forlengelse tegnet som stiplet linje uten usikkerhet"></svg></div>
+        <p class="verdict no">Leses som ett tall per måned</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Gradert flate</h3></div>
+        <div class="figure"><svg id="cmpB" viewBox="0 0 420 240" role="img" aria-label="Forlengelse tegnet som gradert flate som viser utfallsrom"></svg></div>
+        <p class="verdict yes">Leses som et utfallsrom</p>
+      </div>
+    </div>
+    <p class="read">Fire regler som følger av dette. <b>Ingen forlengelseslinje uten flate rundt</b> —
+    er figuren for liten til at flaten er lesbar, er den for liten til å vise forlengelsen.
+    <b>Ikke la fargen bære skillet alene</b>; overgangen trenger en fysisk markør som overlever
+    svart-hvitt og fargeblindhet. <b>Vis nærhistorikken med samme vekt</b>, ellers ser ikke leseren
+    hvor mye serien normalt svinger. <b>Ikke sett forlengelsen på en akse som starter i null</b>,
+    og ikke to enheter på hver sin y-akse — begge deler skjuler variasjonen som gjør usikkerheten
+    forståelig.</p>
+    <p class="read muted">Et vanskeligere problem uten god standardløsning: sesongjusterte tall
+    revideres bakover. Figuren må altså vise at både framtiden og fortiden er usikker, uten at det
+    blir grøt. Et forslag verdt å prøve internt er å legge forrige publiserings kurve inn som en
+    tynn spøkelseslinje.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Begrepsbruk</p>
+    <h2 class="read">Hva vi kaller det internt, betyr noe for hva det blir</h2>
+    <p class="read">Ordvalget er ikke kosmetikk. Det bestemmer hvilken forventning objektet møter,
+    og hvem som opplever seg ansvarlig for det. «Framskriving» er dessuten opptatt: det brukes om
+    befolkningsframskrivingene, som er scenarier under eksplisitte forutsetninger med et helt
+    annet forankringsnivå.</p>
+    <table>
+      <caption>Vurdering av aktuelle begreper</caption>
+      <thead><tr><th scope="col">Begrep</th><th scope="col">Vurdering</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr><td class="term">Prognose</td><td>Lover et vurdert anslag. Setter oss i konkurranse med Konjunkturtendensene om samme variabel, med andre tall.</td><td class="tag avoid">Unngå</td></tr>
+        <tr><td class="term">Framskriving</td><td>Kollisjon med befolkningsframskrivingene. Brukeren vil tro det er samme type produkt.</td><td class="tag avoid">Unngå</td></tr>
+        <tr><td class="term">Forventet utvikling</td><td>Antyder at SSB forventer noe. Modellen forventer; SSB gjør ikke.</td><td class="tag avoid">Unngå</td></tr>
+        <tr><td class="term">Referansebane</td><td>Sier hva objektet brukes til: sammenlikningsgrunnlag. Etablert i fagmiljøet, ukjent utenfor.</td><td class="tag ok">Mulig</td></tr>
+        <tr><td class="term">Teknisk framskriving</td><td>Adjektivet signaliserer regnet, ikke vurdert — men arver fortsatt kollisjonen over.</td><td class="tag ok">Mulig</td></tr>
+        <tr><td class="term">Modellbasert forlengelse</td><td>Lover minst og beskriver mest presist hva som faktisk er gjort. Tungt, men ærlig.</td><td class="tag rec">Anbefalt internt</td></tr>
+      </tbody>
+    </table>
+    <p class="read">Og et spørsmål verdt å ta i motsatt retning av det oppgaveteksten forutsetter:
+    skulle dette bli et produkt, bør det da ha <b>et eget område</b> på ssb.no? En serieforlengelse
+    hører logisk hjemme rett ved siden av serien den forlenger. Et samlet «prognoseområde» gjør det
+    til noe som ser ut som en institusjonell spådom, og inviterer til nettopp den sammenlikningen
+    med Forskningsavdelingens tall vi ikke ønsker.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Neste steg internt</p>
+    <h2 class="read">Seks spørsmål som bør avklares før noe designes</h2>
+    <ol class="recs">
+      <li><h3>Hvilken av de tre beregningene snakker vi om?</h3>
+        regARIMA-forlengelsen, den sesongjusterte serien eller trend-syklusen. Tre ulike objekter
+        med tre ulike usikkerheter. Uten et valg vil alle mene noe forskjellig.</li>
+      <li><h3>Hva slags status skal objektet ha?</h3>
+        Kan en modellbasert forlengelse bære merkelappen offisiell statistikk? Svaret styrer alt
+        annet og bør komme før noen tegner en figur.</li>
+      <li><h3>Hvilket etterprøvingsvindu, fastsatt på forhånd?</h3>
+        Uten et felles vindu kan tallene ikke sammenliknes mellom serier, og valget blir
+        et retorisk virkemiddel.</li>
+      <li><h3>Hvor lang horisont tåler vi å vise?</h3>
+        JDemetra+ regner typisk tolv måneder. At verktøyet regner tolv, er ikke det samme som at
+        tolv er forsvarlig å vise.</li>
+      <li><h3>Hvem eier objektet?</h3>
+        Seksjonen som eier serien, metodemiljøet, eller formidling? Et objekt uten eier blir
+        et objekt uten vedlikehold.</li>
+      <li><h3>Hvilke serier egner seg, og hvilke gjør det ikke?</h3>
+        Test med kontrast: én stabilt sesongbasert, én volatil, én med brudd. Samme metode gir
+        svært ulik nytteverdi, og et opplegg må tåle den variasjonen.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap read">
+    <h3>Om beregningen i dette verktøyet</h3>
+    <p>Forlengelsen beregnes i nettleseren, ikke av JDemetra+. Modellen velges etter hva slags
+    serie du har valgt. For ujusterte serier brukes airline-modellen,
+    ARIMA(0,1,1)(0,1,1)<sub>12</sub>. For serier som allerede er sesongjustert eller er en
+    trend, brukes ARIMA(0,1,1) med drift — sesongdifferensiering av en justert serie ville vært
+    overdifferensiering. Serier med bare positive verdier modelleres på logaritmen, med
+    asymmetriske intervaller; serier som inneholder null eller negative tall modelleres på nivå,
+    med symmetriske intervaller.</p>
+    <p>Parametrene estimeres med betinget minste kvadraters metode, og prediksjonsintervallene
+    kommer fra modellens ψ-vekter. Begge modellene er kontrollert mot
+    <code>statsmodels.SARIMAX</code>: airline innenfor 0,5 prosent, ikke-sesongmodellen innenfor
+    0,03 prosent.</p>
+    <p>Dette er ikke automatisk ARIMA-modellering. JDemetra+ søker over modellordener, tester
+    differensieringsgrad og transformasjon, og kjører outlier-deteksjon og kalendereffekter
+    sammen med modellvalget. Her er spesifikasjonen låst på forhånd. Avviket er minst på jevne
+    serier og størst på serier med brudd, der JDemetra+ typisk legger inn en outlier-regressor.</p>
+    <h3>Data</h3>
+    <p>Observerte tall hentes direkte fra Statistikkbankens API (<code>data.ssb.no</code>) når
+    du åpner siden eller bytter serie. Ingen tall lagres her, bortsett fra én reserveserie som
+    brukes hvis API-et ikke svarer. Verktøyet er laget for intern utforsking under et hackathon
+    og er ikke kvalitetssikret for ekstern bruk.</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   MOTOR
+   Airline (0,1,1)(0,1,1)12 og IMA(0,1,1) med drift.
+   Begge kan kjøre på log (bare positive verdier) eller på nivå.
+   ========================================================================== */
+const S=12, H=12;
+
+function tr(y,log){return log?y.map(Math.log):y.slice();}
+function inv(v,log){return log?Math.exp(v):v;}
+function kanLogges(y){return y.every(v=>v>0);}
+
+function seasDiff(x){const d=[];for(let i=1;i<x.length;i++)d.push(x[i]-x[i-1]);
+  const w=[];for(let i=S;i<d.length;i++)w.push(d[i]-d[i-S]);return w;}
+function innov(w,th,TH){const n=w.length,a=new Float64Array(n);
+  for(let t=0;t<n;t++){let v=w[t];
+    if(t-1>=0)v+=th*a[t-1]; if(t-S>=0)v+=TH*a[t-S]; if(t-S-1>=0)v-=th*TH*a[t-S-1]; a[t]=v;}
+  return a;}
+function sseA(w,th,TH){const a=innov(w,th,TH);let s=0;for(let i=0;i<a.length;i++)s+=a[i]*a[i];return s;}
+
+function fitAirline(y,log){
+  const x=tr(y,log), w=seasDiff(x);
+  if(w.length<24||!x.every(isFinite))return null;
+  let best=Infinity,bth=0,bTH=0;
+  for(let i=0;i<=30;i++)for(let j=0;j<=30;j++){
+    const th=-0.95+1.9*i/30,TH=-0.95+1.9*j/30,s=sseA(w,th,TH);
+    if(s<best){best=s;bth=th;bTH=TH;}}
+  let step=0.06;
+  for(let k=0;k<60;k++){let imp=false;
+    for(const d of[[step,0],[-step,0],[0,step],[0,-step]]){
+      const th=bth+d[0],TH=bTH+d[1];
+      if(Math.abs(th)>0.999||Math.abs(TH)>0.999)continue;
+      const s=sseA(w,th,TH); if(s<best-1e-13){best=s;bth=th;bTH=TH;imp=true;}}
+    if(!imp){step/=2;if(step<1e-6)break;}}
+  return {kind:"airline",log:log,th:bth,TH:bTH,sig2:best/w.length,a:innov(w,bth,bTH),x:x};
+}
+function psiW(th,TH,n){
+  const num=new Float64Array(n+2),den=new Float64Array(n+2);
+  num[0]=1; if(n>=1)num[1]=-th; if(n>=S)num[S]-=TH; if(n>=S+1)num[S+1]+=th*TH;
+  den[0]=1; if(n>=1)den[1]-=1;  if(n>=S)den[S]-=1;  if(n>=S+1)den[S+1]+=1;
+  const p=new Float64Array(n+1);
+  for(let j=0;j<=n;j++){let v=num[j];for(let k=1;k<=j;k++)v-=den[k]*p[j-k];p[j]=v;}
+  return p;
+}
+function fitIMA(y,log){
+  const x=tr(y,log), w=[];
+  for(let i=1;i<x.length;i++)w.push(x[i]-x[i-1]);
+  if(w.length<12||!x.every(isFinite))return null;
+  const mu=w.reduce((a,b)=>a+b,0)/w.length, wc=w.map(v=>v-mu);
+  const run=th=>{const a=new Float64Array(wc.length);let s=0;
+    for(let t=0;t<wc.length;t++){a[t]=wc[t]+(t>0?th*a[t-1]:0);s+=a[t]*a[t];}return{s,a};};
+  let best=Infinity,bth=0,ba=null;
+  for(let i=0;i<=60;i++){const th=-0.95+1.9*i/60,r=run(th);if(r.s<best){best=r.s;bth=th;ba=r.a;}}
+  let step=0.05;
+  for(let k=0;k<60;k++){let imp=false;
+    for(const d of[step,-step]){const th=bth+d;if(Math.abs(th)>0.999)continue;
+      const r=run(th); if(r.s<best-1e-14){best=r.s;bth=th;ba=r.a;imp=true;}}
+    if(!imp){step/=2;if(step<1e-7)break;}}
+  return {kind:"ima",log:log,th:bth,mu:mu,sig2:best/wc.length,
+          aN:ba[ba.length-1],last:x[x.length-1]};
+}
+function skriv(m,n){
+  const out=[];
+  if(m.kind==="ima"){
+    for(let h=1;h<=n;h++){
+      const t=m.last+h*m.mu-m.th*m.aN;
+      out.push({t:t,se:Math.sqrt(m.sig2*(1+(h-1)*Math.pow(1-m.th,2))),log:m.log});
+    }
+  }else{
+    const a=Array.from(m.a).concat(new Array(n).fill(0)),xx=m.x.slice(),m0=m.a.length;
+    for(let h=1;h<=n;h++){
+      const i=m0+h-1;let w=0;
+      if(i-1>=0)w-=m.th*a[i-1]; if(i-S>=0)w-=m.TH*a[i-S]; if(i-S-1>=0)w+=m.th*m.TH*a[i-S-1];
+      const L=xx.length; xx.push(w+xx[L-1]+xx[L-S]-xx[L-S-1]);
+    }
+    const f=xx.slice(m.x.length),p=psiW(m.th,m.TH,n);let cum=0;
+    for(let h=0;h<n;h++){cum+=p[h]*p[h];
+      out.push({t:f[h],se:Math.sqrt(m.sig2*cum),log:m.log});}
+  }
+  return out;
+}
+function niv(p,z){return inv(p.t+(z||0)*p.se,p.log);}
+
+/* velger modell og transformasjon ut fra serien */
+function tilpass(y,karakter){
+  const log=kanLogges(y);
+  const m=(karakter&&karakter!=="ujustert")?fitIMA(y,log):fitAirline(y,log);
+  return m;
+}
+
+/* ==========================================================================
+   AKSEVERDIER — jevne tall, ikke rådata-ekstremer
+   ========================================================================== */
+/* Velger jevne akseverdier. Blant alle kandidatsteg som gir mellom 4 og 7
+   merker, velges det som sløser minst vertikal plass. */
+function jevneTicks(lo,hi,maks){
+  let span=hi-lo;
+  if(!(span>0)){span=Math.abs(hi)||1; lo=hi-span/2; hi=lo+span;}
+  const mag=Math.pow(10,Math.floor(Math.log10(span/(maks||5))));
+  let best=null;
+  for(const m of [0.1,0.2,0.25,0.5,1,2,2.5,5,10,20,25,50]){
+    const steg=m*mag;
+    const t0=Math.floor(lo/steg)*steg, t1=Math.ceil(hi/steg)*steg;
+    const ant=Math.round((t1-t0)/steg)+1;
+    if(ant<4||ant>7) continue;
+    if(!best||(t1-t0)<best.bredde-1e-12) best={steg:steg,lo:t0,hi:t1,bredde:t1-t0};
+  }
+  if(!best){const steg=mag*Math.max(1,Math.ceil(span/(5*mag)));
+    best={steg:steg,lo:Math.floor(lo/steg)*steg,hi:Math.ceil(hi/steg)*steg};}
+  const ticks=[];
+  for(let k=0;k<=Math.round((best.hi-best.lo)/best.steg);k++)
+    ticks.push(+(best.lo+k*best.steg).toPrecision(12));
+  return {ticks:ticks,lo:best.lo,hi:best.hi,steg:best.steg};
+}
+function tickTekst(v,steg){
+  const d=steg<0.01?4:steg<0.1?3:steg<1?2:steg<10?1:0;
+  return v.toLocaleString("no-NO",{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function tall(v){
+  const a=Math.abs(v);
+  const d=a>=1000?0:a>=100?1:a>=1?2:3;
+  return v.toLocaleString("no-NO",{minimumFractionDigits:0,maximumFractionDigits:d});
+}
+
+/* ==========================================================================
+   DATA
+   ========================================================================== */
+const API="https://data.ssb.no/api/pxwebapi/v2/tables/";
+const PRESETS=[
+  {id:"08655",navn:"Byggekostnader"},
+  {id:"08403",navn:"Hotellovernattingar"},
+  {id:"13760",navn:"Arbeidsstyrken"},
+  {id:"03013",navn:"Konsumprisindeksen"},
+  {id:"07095",navn:"Produksjonsindeks"}
+];
+
+const FALLBACK={
+  title:"Byggekostnadsindeks for bustadblokk",
+  variant:"I alt · 2015 = 100",
+  kilde:"Reservekopi i siden — Statistikkbanken svarte ikke",
+  tabell:"08655", karakter:"ujustert", start:{y:2005,m:1},
+  v:[69.4,69.6,69.8,69.8,70.1,70.2,70.3,70.5,70.7,70.8,71.6,71.7,
+     71.8,72.0,72.2,72.4,72.9,73.1,73.2,73.5,73.7,74.4,75.5,75.7,
+     76.0,76.2,76.3,76.9,77.4,77.6,77.6,78.1,78.3,78.6,80.0,80.4,
+     80.8,81.3,81.5,81.8,82.1,82.4,82.6,83.2,83.3,83.8,84.3,84.1,
+     84.0,84.1,84.0,83.9,83.9,83.9,84.1,84.5,84.6,84.7,84.7,84.9,
+     85.0,85.6,86.0,86.4,86.7,86.7,86.7,86.9,87.0,87.3,87.8,87.9,
+     88.5,88.9,89.3,89.6,89.9,90.2,90.2,90.3,90.3,90.6,91.1,91.2,
+     91.4,91.7,92.1,92.1,92.4,92.4,92.4,92.8,93.0,93.1,93.7,93.7,
+     94.2,94.5,94.5,94.7,95.1,95.1,95.2,95.8,95.8,95.9,96.2,96.2,
+     96.5,97.0,97.1,97.6,97.8,97.9,97.9,98.3,98.4,98.4,98.7,98.8,
+     99.1,99.5,99.6,99.8,100.0,99.9,100.1,100.1,100.2,100.4,100.7,100.8,
+     100.9,101.3,101.2,101.8,102.3,102.4,102.7,103.0,102.9,103.1,103.4,103.7,
+     103.8,104.3,104.4,104.7,105.1,105.2,105.2,105.5,105.5,105.9,106.3,106.6,
+     107.0,107.6,107.7,108.1,108.5,108.6,108.9,109.7,109.8,110.1,110.1,110.2,
+     110.7,111.0,111.1,111.4,111.9,111.6,111.6,112.4,112.2,112.5,112.4,112.6,
+     113.1,112.7,112.4,113.4,114.2,114.0,114.4,114.4,114.3,115.0,115.2,115.7,
+     117.5,118.0,118.4,118.5,119.4,120.0,121.7,123.0,123.1,124.1,125.0,124.5,
+     125.9,124.8,125.9,127.6,129.1,129.3,130.7,131.7,131.8,132.8,134.1,133.7,
+     134.3,134.8,134.5,135.3,136.3,136.0,135.8,136.4,136.5,137.3,137.8,137.8,
+     138.9,138.8,139.0,139.1,141.2,141.2,141.3,140.8,141.1,141.4,142.1,142.2,
+     143.1,144.3,143.8,144.4,147.5,147.0,146.9,146.7,147.0,147.1,148.3,148.3,
+     151.0,151.0,150.1,150.5,155.0,154.6,155.0]
+};
+
+let META=null, METAID=null, VALG={};
+
+function dimInfo(meta){
+  const dims=meta.id||Object.keys(meta.dimension||{});
+  const roles=(meta.role&&meta.role.time)||[];
+  return {dims:dims, timeDim:dims.find(d=>roles.indexOf(d)>=0)||dims[dims.length-1]};
+}
+function kategorier(meta,d){
+  const cat=meta.dimension[d].category, idx=cat.index;
+  const koder=Array.isArray(idx)?idx:Object.keys(idx).sort((a,b)=>idx[a]-idx[b]);
+  return koder.map(k=>({kode:k,navn:(cat.label&&cat.label[k])||k}));
+}
+/* foretrekk ujustert, unngå trend */
+function standardKode(liste){
+  const rang=c=>{
+    const n=c.navn;
+    if(/trend|glatt|smooth/i.test(n)) return 3;
+    if(/sesongjustert|seasonally adjusted/i.test(n)) return 2;
+    if(/ujustert|opprinnelig|unadjusted|original/i.test(n)) return 0;
+    return 1;
+  };
+  return liste.slice().sort((a,b)=>rang(a)-rang(b))[0].kode;
+}
+function karakterAv(navn){
+  const t=navn.join(" ");
+  if(/trend|glatt|smooth/i.test(t))return "trend";
+  if(/sesongjustert|seasonally adjusted/i.test(t))return "sesongjustert";
+  return "ujustert";
+}
+/* Kort undertittel: den skal si hva som skiller DETTE uttrekket fra andre
+   uttrekk av samme tabell. Derfor fjernes «i alt»-kategorier, og kategorier
+   som bare gjentar tittelen reduseres til enheten sin. */
+function variantTekst(navn,tittel){
+  const tomme=/^(i alt|alle|begge kjønn|begge kjonn|total|totalt|hele landet|heile landet|uoppgitt)$/i;
+  const t=(tittel||"").toLowerCase();
+  const ut=[];
+  for(const n0 of navn){
+    const n=n0.trim();
+    if(tomme.test(n)) continue;
+    const par=n.match(/\(([^)]+)\)\s*$/);          // enhet i parentes
+    const kjerne=n.replace(/\s*\([^)]*\)\s*$/,"").trim();
+    const gjentar=kjerne.length>5 && t.indexOf(kjerne.toLowerCase())>=0;
+    if(gjentar){ if(par) ut.push(par[1]); continue; }
+    ut.push(n);
+  }
+  return ut.length?ut.join(" · "):navn.join(" · ");
+}
+
+async function hentMeta(id){
+  if(METAID===id&&META)return META;
+  const m=await fetch(API+id+"/metadata?lang=no&outputFormat=json-stat2")
+    .then(r=>{if(!r.ok)throw new Error("Fant ikke tabell "+id);return r.json();});
+  META=m; METAID=id; return m;
+}
+async function hentTabell(id,valg){
+  const meta=await hentMeta(id);
+  const {dims,timeDim}=dimInfo(meta);
+  const q=[],navn=[],brukt={};
+  for(const d of dims){
+    if(d===timeDim){q.push("valueCodes["+d+"]=*");continue;}
+    const liste=kategorier(meta,d);
+    let k=valg&&valg[d];
+    if(!k||!liste.some(c=>c.kode===k))k=standardKode(liste);
+    brukt[d]=k; navn.push(liste.find(c=>c.kode===k).navn);
+    q.push("valueCodes["+d+"]="+encodeURIComponent(k));
+  }
+  const ds=await fetch(API+id+"/data?lang=no&outputFormat=json-stat2&"+q.join("&"))
+    .then(r=>{if(!r.ok)throw new Error("Ingen data for tabell "+id);return r.json();});
+  const tIdx=ds.dimension[timeDim].category.index;
+  const per=Array.isArray(tIdx)?tIdx:Object.keys(tIdx).sort((a,b)=>tIdx[a]-tIdx[b]);
+  if(!/^\d{4}M\d{2}$/.test(per[0]))
+    throw new Error("Tabell "+id+" har ikke månedstall (første periode: "+per[0]+")");
+  /* lengste sammenhengende strekning. Null og negative tall er gyldige verdier,
+     bare manglende tall (null/undefined/NaN) bryter serien. */
+  let bS=0,bL=0,cS=0,cL=0;
+  for(let i=0;i<per.length;i++){
+    const v=ds.value[i];
+    const ok=(v!==null&&v!==undefined&&typeof v==="number"&&isFinite(v));
+    if(ok){if(cL===0)cS=i;cL++;if(cL>bL){bL=cL;bS=cS;}} else cL=0;
+  }
+  if(bL<60)throw new Error("Tabell "+id+" ga bare "+bL+
+    " sammenhengende månedsobservasjoner for "+navn.join(" · ")+". Trenger minst 60.");
+  const p0=per[bS];
+  VALG=brukt;
+  return {title:(ds.label||("Tabell "+id)).replace(/^\d+:\s*/,"").split(",")[0],
+          variant:variantTekst(navn,(ds.label||"")), navn:navn, tabell:id, dims:dims, timeDim:timeDim,
+          karakter:karakterAv(navn), start:{y:+p0.slice(0,4),m:+p0.slice(5)},
+          v:ds.value.slice(bS,bS+bL), levende:true};
+}
+
+/* ==========================================================================
+   FIGURER
+   ========================================================================== */
+const MN=["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des"];
+function lab(st,i){const t=st.m-1+i;return MN[t%12]+" "+(st.y+Math.floor(t/12));}
+function aar(st,i){return st.y+Math.floor((st.m-1+i)/12);}
+const NS="http://www.w3.org/2000/svg";
+function el(p,n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e;}
+function txt(p,x,y,s,o){const e=el(p,"text",Object.assign({x:x,y:y,"font-family":"Open Sans, Arial, sans-serif","font-size":11,fill:"#5A7378"},o||{}));e.textContent=s;return e;}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild);}
+
+let DATA=FALLBACK, ORI=0, MODEL=null, FC=null;
+
+function tegn(){
+  const svg=document.getElementById("chart"); clear(svg);
+  if(!DATA)return;
+  const W=900,Hh=400,L=76,R=20,T=22,B=40;
+  const n=DATA.v.length, fra=Math.max(0,ORI-72), til=Math.min(n-1,ORI+H);
+  const xs=i=>L+(i-fra)/(til-fra)*(W-L-R);
+  let lo=Infinity,hi=-Infinity;
+  for(let i=fra;i<=til;i++){lo=Math.min(lo,DATA.v[i]);hi=Math.max(hi,DATA.v[i]);}
+  if(FC)FC.forEach(p=>{hi=Math.max(hi,niv(p,2.3));lo=Math.min(lo,niv(p,-2.3));});
+  const ax=jevneTicks(lo-(hi-lo)*0.04,hi+(hi-lo)*0.04,5);
+  const ys=v=>T+(ax.hi-v)/(ax.hi-ax.lo)*(Hh-T-B);
+
+  ax.ticks.forEach(v=>{
+    el(svg,"line",{x1:L,x2:W-R,y1:ys(v),y2:ys(v),stroke:"#E4EEF0","stroke-width":1});
+    txt(svg,L-10,ys(v)+4,tickTekst(v,ax.steg),{"text-anchor":"end"});
+  });
+  if(ax.lo<0&&ax.hi>0)
+    el(svg,"line",{x1:L,x2:W-R,y1:ys(0),y2:ys(0),stroke:"#C3DCDC","stroke-width":1.5});
+  for(let i=fra;i<=til;i++)
+    if((DATA.start.m-1+i)%12===0) txt(svg,xs(i),Hh-B+18,aar(DATA.start,i),{"text-anchor":"middle"});
+
+  if(FC){
+    for(const [z,op] of [[2.3,.06],[1.96,.08],[1.44,.10],[1.04,.12],[0.67,.14],[0.32,.16]]){
+      let d="M "+xs(ORI)+" "+ys(DATA.v[ORI]);
+      for(let h=0;h<H;h++)d+=" L "+xs(ORI+1+h)+" "+ys(niv(FC[h],z));
+      for(let h=H-1;h>=0;h--)d+=" L "+xs(ORI+1+h)+" "+ys(niv(FC[h],-z));
+      el(svg,"path",{d:d+" Z",fill:"#00824D","fill-opacity":op});
+    }
+    let d="M "+xs(ORI)+" "+ys(DATA.v[ORI]);
+    for(let h=0;h<H;h++)d+=" L "+xs(ORI+1+h)+" "+ys(niv(FC[h],0));
+    el(svg,"path",{d:d,fill:"none",stroke:"#00824D","stroke-width":2.4});
+  }
+
+  if(til>ORI){
+    let d="";
+    for(let i=ORI;i<=til;i++)d+=(i===ORI?"M ":" L ")+xs(i)+" "+ys(DATA.v[i]);
+    el(svg,"path",{d:d,fill:"none",stroke:"#7E5EE8","stroke-width":2.4,"stroke-dasharray":"6 4"});
+    for(let i=ORI+1;i<=til;i++)
+      el(svg,"rect",{x:xs(i)-2.4,y:ys(DATA.v[i])-2.4,width:4.8,height:4.8,fill:"#7E5EE8"});
+  }
+
+  let dh="";
+  for(let i=fra;i<=ORI;i++)dh+=(i===fra?"M ":" L ")+xs(i)+" "+ys(DATA.v[i]);
+  el(svg,"path",{d:dh,fill:"none",stroke:"#274247","stroke-width":2.6});
+
+  el(svg,"line",{x1:xs(ORI),x2:xs(ORI),y1:T-8,y2:Hh-B,stroke:"#274247","stroke-width":1,"stroke-dasharray":"3 3"});
+  txt(svg,xs(ORI)+6,T-1,"siste observasjon",{fill:"#274247","font-weight":600});
+
+  document.getElementById("keyF").hidden=!FC;
+  document.getElementById("keyA").hidden=(til<=ORI);
+}
+
+function funn(){
+  const f=document.getElementById("figFinding");
+  if(!MODEL||!FC){f.textContent="For kort historikk til å estimere modellen for denne serien.";return;}
+  const n=DATA.v.length, har=Math.min(H,n-1-ORI);
+  let inne=0,verst=0,verstH=0;
+  for(let h=0;h<har;h++){
+    const a=DATA.v[ORI+1+h];
+    if(a>=niv(FC[h],-1.96)&&a<=niv(FC[h],1.96))inne++;
+    const e=Math.abs((a-niv(FC[h],0))/(Math.abs(niv(FC[h],0))||1));
+    if(e>verst){verst=e;verstH=h+1;}
+  }
+  const modellnavn=MODEL.kind==="ima"
+    ? "ARIMA(0,1,1) med drift"
+    : "ARIMA(0,1,1)(0,1,1)<sub>12</sub>";
+  let s="<b>"+lab(DATA.start,ORI+H)+"</b>, tolv måneder etter valgt tidspunkt: "+
+        tall(niv(FC[H-1],0))+". 95 prosent av utfallene ligger mellom "+
+        tall(niv(FC[H-1],-1.96))+" og "+tall(niv(FC[H-1],1.96))+
+        " <b>hvis modellen er riktig</b>. ";
+  if(har>0) s+="Faktisk lå <span class='hl'>"+inne+" av "+har+"</span> tall innenfor intervallet, "+
+    "og største avvik var <span class='hl'>"+(verst*100).toFixed(1)+" prosent</span> etter "+verstH+
+    " måned"+(verstH>1?"er":"")+".";
+  else s+="Dette er enden av serien, så det finnes ingen fasit å sammenlikne med.";
+  s+="<br><span class='muted'>"+modellnavn+" på "+(MODEL.log?"logaritmen":"nivå")+
+     ", estimert på "+(ORI+1)+" månedsobservasjoner.</span>";
+  f.innerHTML=s;
+}
+
+function tegnDekning(cov,antall,fra,til){
+  const svg=document.getElementById("cov"); clear(svg);
+  const W=900,Hh=260,L=76,R=20,T=24,B=44;
+  const xs=h=>L+(h-0.5)/H*(W-L-R), ys=p=>T+(1-p)*(Hh-T-B);
+  for(let k=0;k<=4;k++){const p=k/4;
+    el(svg,"line",{x1:L,x2:W-R,y1:ys(p),y2:ys(p),stroke:"#E4EEF0"});
+    txt(svg,L-10,ys(p)+4,Math.round(p*100)+" %",{"text-anchor":"end"});}
+  el(svg,"line",{x1:L,x2:W-R,y1:ys(.95),y2:ys(.95),stroke:"#274247","stroke-width":1.5,"stroke-dasharray":"5 3"});
+  txt(svg,W-R,ys(.95)-8,"lovet nivå: 95 %",{"text-anchor":"end",fill:"#274247","font-weight":600});
+  const bw=(W-L-R)/H*0.56;
+  for(let h=1;h<=H;h++){
+    const p=cov[h-1],x=xs(h),under=p<0.9;
+    el(svg,"rect",{x:x-bw/2,y:ys(p),width:bw,height:ys(0)-ys(p),
+      fill:under?"#7E5EE8":"#274247","fill-opacity":under?.85:.75});
+    txt(svg,x,ys(p)-7,Math.round(p*100),{"text-anchor":"middle","font-weight":600,
+      fill:under?"#7E5EE8":"#274247"});
+    txt(svg,x,Hh-B+18,h,{"text-anchor":"middle"});
+  }
+  txt(svg,L,Hh-B+36,"måneder fram");
+  const snitt=cov.reduce((a,b)=>a+b,0)/H;
+  document.getElementById("covFinding").innerHTML=
+    "Over "+antall+" startpunkt, fra "+fra+" til "+til+
+    ", lå i gjennomsnitt <span class='hl'>"+Math.round(snitt*100)+" prosent</span> av de faktiske "+
+    "tallene innenfor intervallet, mot lovet 95 prosent. Lilla søyler er horisonter der dekningen "+
+    "ligger under 90 prosent.";
+}
+function kjørDekning(){
+  if(!DATA)return;
+  const K=+document.getElementById("window").value;
+  const n=DATA.v.length, tr=new Array(H).fill(0), ant=new Array(H).fill(0);
+  let o0=0,første=null,siste=null;
+  for(let o=n-1-H;o>n-1-H-K&&o>60;o--){
+    const m=tilpass(DATA.v.slice(0,o+1),DATA.karakter); if(!m)continue;
+    const fc=skriv(m,H); o0++;
+    if(siste===null)siste=o; første=o;
+    for(let h=0;h<H;h++){
+      if(o+1+h>=n)continue;
+      const a=DATA.v[o+1+h]; ant[h]++;
+      if(a>=niv(fc[h],-1.96)&&a<=niv(fc[h],1.96))tr[h]++;
+    }
+  }
+  if(!o0)return;
+  tegnDekning(tr.map((r,i)=>ant[i]?r/ant[i]:0),o0,lab(DATA.start,første),lab(DATA.start,siste));
+}
+
+function tegnPar(){
+  const base=[],n=60;
+  for(let i=0;i<n;i++)base.push(100+i*0.35+7*Math.sin(i/12*2*Math.PI)+2.2*Math.sin(i*1.7));
+  const m=fitAirline(base,true), fc=skriv(m,H);
+  const lag=(id,modus)=>{
+    const svg=document.getElementById(id); clear(svg);
+    const W=420,Hh=240,L=46,R=14,T=16,B=26;
+    const fra=n-30,til=n+H, xs=i=>L+(i-fra)/(til-fra)*(W-L-R);
+    let lo=Infinity,hi=-Infinity;
+    for(let i=fra;i<n;i++){lo=Math.min(lo,base[i]);hi=Math.max(hi,base[i]);}
+    fc.forEach(p=>{hi=Math.max(hi,niv(p,2.3));lo=Math.min(lo,niv(p,-2.3));});
+    const ax=jevneTicks(lo,hi,4), ys=v=>T+(ax.hi-v)/(ax.hi-ax.lo)*(Hh-T-B);
+    ax.ticks.forEach(v=>{el(svg,"line",{x1:L,x2:W-R,y1:ys(v),y2:ys(v),stroke:"#E4EEF0"});
+      txt(svg,L-8,ys(v)+4,tickTekst(v,ax.steg),{"text-anchor":"end","font-size":10});});
+    if(modus==="flate"){
+      for(const [z,op] of [[2.3,.07],[1.7,.10],[1.1,.13],[0.5,.16]]){
+        let d="M "+xs(n-1)+" "+ys(base[n-1]);
+        fc.forEach((p,k)=>{d+=" L "+xs(n+k)+" "+ys(niv(p,z));});
+        for(let k=fc.length-1;k>=0;k--)d+=" L "+xs(n+k)+" "+ys(niv(fc[k],-z));
+        el(svg,"path",{d:d+" Z",fill:"#00824D","fill-opacity":op});
+      }
+      let d="M "+xs(n-1)+" "+ys(base[n-1]);
+      fc.forEach((p,k)=>{d+=" L "+xs(n+k)+" "+ys(niv(p,0));});
+      el(svg,"path",{d:d,fill:"none",stroke:"#00824D","stroke-width":2});
+      el(svg,"line",{x1:xs(n-1),x2:xs(n-1),y1:T,y2:Hh-B,stroke:"#274247","stroke-dasharray":"3 3"});
+      txt(svg,xs(n-1)+5,T+9,"beregnet",{fill:"#274247","font-weight":600,"font-size":10});
+    }else{
+      let d="M "+xs(n-1)+" "+ys(base[n-1]);
+      fc.forEach((p,k)=>{d+=" L "+xs(n+k)+" "+ys(niv(p,0));});
+      el(svg,"path",{d:d,fill:"none",stroke:"#274247","stroke-width":2,"stroke-dasharray":"5 4"});
+      fc.forEach((p,k)=>el(svg,"circle",{cx:xs(n+k),cy:ys(niv(p,0)),r:2.2,fill:"#274247"}));
+    }
+    let dh="";
+    for(let i=fra;i<n;i++)dh+=(i===fra?"M ":" L ")+xs(i)+" "+ys(base[i]);
+    el(svg,"path",{d:dh,fill:"none",stroke:"#274247","stroke-width":2.4});
+  };
+  lag("cmpA","linje"); lag("cmpB","flate");
+}
+
+/* ==========================================================================
+   TILSTAND
+   ========================================================================== */
+function beregn(){
+  MODEL=tilpass(DATA.v.slice(0,ORI+1),DATA.karakter);
+  FC=MODEL?skriv(MODEL,H):null;
+  tegn(); funn();
+  document.getElementById("originLab").textContent="— "+lab(DATA.start,ORI);
+}
+function byggVariabler(d){
+  const box=document.getElementById("vars"), note=document.getElementById("varsnote");
+  box.innerHTML="";
+  if(!META||!d||!d.dims){
+    note.textContent="Variabelvalg blir tilgjengelig når en tabell er hentet fra Statistikkbanken.";
+    return;
+  }
+  let antall=0;
+  for(const dim of d.dims){
+    if(dim===d.timeDim)continue;
+    const liste=kategorier(META,dim);
+    if(liste.length<2)continue;
+    antall++;
+    const w=document.createElement("div");
+    const l=document.createElement("label");
+    l.className="lab"; l.htmlFor="v-"+dim;
+    l.textContent=(META.dimension[dim].label||dim);
+    const s=document.createElement("select"); s.id="v-"+dim;
+    liste.forEach(c=>{const o=document.createElement("option");
+      o.value=c.kode;o.textContent=c.navn;o.selected=(VALG[dim]===c.kode);s.appendChild(o);});
+    s.addEventListener("change",()=>{
+      const v=Object.assign({},VALG); v[dim]=s.value; hent(d.tabell,v);
+    });
+    w.appendChild(l); w.appendChild(s); box.appendChild(w);
+  }
+  note.textContent=antall?"":"Denne tabellen har ingen variabler å velge mellom.";
+}
+function visVarsel(d){
+  const el=document.getElementById("notice");
+  if(!d||!d.karakter||d.karakter==="ujustert"){el.hidden=true;return;}
+  el.hidden=false;
+  el.innerHTML = d.karakter==="trend"
+    ? "<b>Du har valgt en trendserie.</b> Den er allerede glattet, så residualene blir kunstig små "+
+      "og intervallet urealistisk smalt. Trenden revideres dessuten kraftigst nettopp i enden av "+
+      "serien. Etterprøvingen nedenfor måler derfor noe annet her enn på en ujustert serie."
+    : "<b>Serien er sesongjustert.</b> Modellen er byttet til ARIMA(0,1,1) med drift — "+
+      "sesongdifferensiering av en justert serie ville vært overdifferensiering. Merk at "+
+      "sesongjusterte tall revideres bakover, noe etterprøvingen ikke fanger opp.";
+}
+function settData(d){
+  DATA=d;
+  document.getElementById("figTitle").textContent=d.title;
+  document.getElementById("figVariant").textContent=d.variant||"";
+  const sl=document.getElementById("origin");
+  sl.min=Math.min(60,d.v.length-14); sl.max=d.v.length-1;
+  ORI=Math.max(+sl.min,d.v.length-1-H); sl.value=ORI;
+  const sist=lab(d.start,d.v.length-1), først=lab(d.start,0);
+  document.getElementById("source").textContent = d.levende
+    ? "Kilde: Statistikkbanken tabell "+d.tabell+", hentet direkte fra data.ssb.no. "+
+      d.v.length+" månedsobservasjoner, "+først+"–"+sist+". Uttrekk: "+d.navn.join(" · ")+"."
+    : d.kilde+". "+d.v.length+" månedsobservasjoner, "+først+"–"+sist+".";
+  beregn(); kjørDekning();
+}
+function state(m,err){
+  const s=document.getElementById("state");
+  s.textContent=m||""; s.className="state"+(err?" err":"");
+}
+async function hent(id,valg){
+  state("Henter tabell "+id+" fra Statistikkbanken …");
+  try{
+    if(id!==METAID){META=null;METAID=null;VALG={};}
+    const d=await hentTabell(id,valg);
+    settData(d); byggVariabler(d); visVarsel(d); state("");
+    document.querySelectorAll("#presets .chip").forEach(b=>
+      b.setAttribute("aria-pressed",b.dataset.id===id));
+    document.getElementById("tbl").value=id;
+  }catch(e){
+    state(e.message+" Viser reserveserien i stedet.",true);
+    META=null;METAID=null;VALG={};
+    byggVariabler(null); visVarsel(null); settData(FALLBACK);
+    document.querySelectorAll("#presets .chip").forEach(b=>b.setAttribute("aria-pressed",false));
+  }
+}
+
+const pbox=document.getElementById("presets");
+PRESETS.forEach(p=>{
+  const b=document.createElement("button");
+  b.className="chip"; b.type="button"; b.dataset.id=p.id;
+  b.setAttribute("aria-pressed","false");
+  b.textContent=p.navn;
+  b.onclick=()=>hent(p.id);
+  pbox.appendChild(b);
+});
+document.getElementById("origin").addEventListener("input",e=>{ORI=+e.target.value;beregn();});
+document.getElementById("window").addEventListener("change",kjørDekning);
+document.getElementById("load").addEventListener("click",()=>{
+  const v=document.getElementById("tbl").value.trim(); if(v)hent(v);});
+document.getElementById("tbl").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){e.preventDefault();document.getElementById("load").click();}});
+
+tegnPar();
+byggVariabler(null);
+settData(FALLBACK);
+hent("08403");
+</script>
+</body>
+</html>

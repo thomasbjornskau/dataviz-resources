@@ -170,9 +170,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
       <div class="step">
         <p class="num">1 · Det JDemetra trenger</p>
         <h3>Forlengelse for å kunne justere enden</h3>
-        <p>Sesongjusteringsfiltrene er symmetriske. For å beregne sesongfaktoren for de siste
-        månedene må serien forlenges i begge ender. Forlengelsen er her et regneteknisk
-        hjelpemiddel, ikke et svar på noe spørsmål.</p>
+        <p>X-11-filtrene som skiller sesong fra trend er symmetriske, og trenger data på begge
+        sider av måneden de beregner. I enden av serien finnes ikke den høyre siden. Uten en
+        forlengelse må filtrene erstattes med asymmetriske tilnærminger.</p>
+        <p>Forlengelsen lar de symmetriske filtrene brukes nærmere enden. Den <em>fjerner</em>
+        ikke revisjonene i de siste månedene, den reduserer dem. Her er forlengelsen et
+        regneteknisk hjelpemiddel, ikke et svar på et spørsmål noen har stilt.</p>
       </div>
       <div class="step">
         <p class="num">2 · Det JDemetra produserer</p>
@@ -183,13 +186,20 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
           <li>forlenget sesongjustert serie</li>
           <li>forlenget trend-syklus</li>
         </ul>
-        <p>Disse er ikke det samme, og de har ulik usikkerhet.</p>
+        <p>Dette er ikke tre uavhengige beregninger, men en kjede: de to siste utledes av den
+        første. Trenden inneholder derfor ikke mer informasjon enn regARIMA-forlengelsen —
+        den inneholder mindre, fordi den er glattet.</p>
+        <p><b>Bare det første leddet har et veldefinert usikkerhetsintervall.</b> For de to
+        andre kommer det i tillegg feil fra selve dekomponeringen, og for trenden også
+        filterrevisjon.</p>
       </div>
       <div class="step now">
         <p class="num">3 · Det vi vurderer å lage</p>
         <h3>En ny funksjon for én av dem</h3>
         <p>Å velge én av disse beregningene og gi den en rolle den ikke har i dag:
         kortsiktig informasjon om framtidig utvikling, rettet mot en bruker.</p>
+        <p>Valget er ikke nøytralt. Den serien som er lettest å lese, er trenden — og den er
+        den eneste vi ikke kan sette et ærlig intervall på.</p>
         <p>Det er her hackathon-idéen ligger. Ikke i å publisere noe vi har, men i å foreslå
         en ny anvendelse av et eksisterende modellresultat — med det ansvaret det medfører.</p>
       </div>
@@ -277,6 +287,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
     <div class="panel">
       <div class="ctrls">
         <div class="ctrl">
+          <label class="lab" for="regime">Identifikasjonsregime</label>
+          <select id="regime">
+            <option value="ny" selected>Full reidentifikasjon — modellen estimeres på nytt ved hvert startpunkt</option>
+            <option value="fast">Faste parametre — estimert én gang, deretter låst</option>
+          </select>
+        </div>
+        <div class="ctrl">
           <label class="lab" for="window">Etterprøvingsvindu</label>
           <select id="window">
             <option value="24">Siste 24 startpunkt — to år</option>
@@ -300,6 +317,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
     skulle dette noen gang bli et produkt, må <b>vinduet fastsettes på forhånd og være likt for
     alle serier</b>. Ellers vil den som presenterer tallene, bevisst eller ubevisst, ende opp med
     å velge det vinduet som kler resultatet best.</p>
+    <p class="read"><b>Om de to regimene.</b> Full reidentifikasjon estimerer modellen på nytt
+    ved hvert startpunkt. Faste parametre låser θ og Θ til én estimering på det tidligste
+    startpunktet i vinduet, og lar bare dataene rulle framover. Gapet mellom dem viser hvor mye
+    av treffsikkerheten som kommer av at modellen får tilpasse seg underveis.</p>
+    <p class="read muted">Dette er ikke det samme som partiell løpende justering slik SSB kjører
+    den i produksjon. Der holdes modellorden, outliere og filtre fast fra en identifikasjonsdato,
+    mens koeffisientene reestimeres for hver kjøring. Verktøyet her har ingen modellsøk å fryse —
+    ordenen er låst på forhånd uansett — så «faste parametre» er en strengere variant enn
+    produksjonsregimet, ikke en kopi av det. Den nærmeste ekte målingen får dere ved å kjøre
+    <code>x13_pickmdl()</code> med <code>filter_input()</code> over rullende startpunkt.</p>
     <p class="read">Selve avviket er ikke en feil i JDemetra+. Intervallet svarer ærlig på sitt
     eget spørsmål: gitt at modellen er riktig, hvor mye støy er det igjen? Problemet oppstår først
     når tallet leses som om det svarte på «hvor sikre er dere?».</p>
@@ -503,6 +530,27 @@ function skriv(m,n){
   return out;
 }
 function niv(p,z){return inv(p.t+(z||0)*p.se,p.log);}
+
+/* Samme modell, men med parametrene låst til en tidligere kjøring.
+   Innovasjoner og residualvarians regnes på nytt av dagens data;
+   bare theta og Theta holdes fast. */
+function medFaste(y,ref){
+  const log=ref.log, x=tr(y,log);
+  if(!x.every(isFinite))return null;
+  if(ref.kind==="ima"){
+    const w=[];for(let i=1;i<x.length;i++)w.push(x[i]-x[i-1]);
+    if(w.length<12)return null;
+    const mu=w.reduce((a,b)=>a+b,0)/w.length, wc=w.map(v=>v-mu);
+    const a=new Float64Array(wc.length);let ss=0;
+    for(let t=0;t<wc.length;t++){a[t]=wc[t]+(t>0?ref.th*a[t-1]:0);ss+=a[t]*a[t];}
+    return {kind:"ima",log:log,th:ref.th,mu:mu,sig2:ss/wc.length,
+            aN:a[a.length-1],last:x[x.length-1],fast:true};
+  }
+  const w=seasDiff(x); if(w.length<24)return null;
+  const a=innov(w,ref.th,ref.TH);let ss=0;
+  for(let i=0;i<a.length;i++)ss+=a[i]*a[i];
+  return {kind:"airline",log:log,th:ref.th,TH:ref.TH,sig2:ss/w.length,a:a,x:x,fast:true};
+}
 
 /* velger modell og transformasjon ut fra serien */
 function tilpass(y,karakter){
@@ -813,20 +861,68 @@ function tegnDekning(cov,antall,fra,til){
 function kjørDekning(){
   if(!DATA)return;
   const K=+document.getElementById("window").value;
-  const n=DATA.v.length, tr=new Array(H).fill(0), ant=new Array(H).fill(0);
-  let o0=0,første=null,siste=null;
-  for(let o=n-1-H;o>n-1-H-K&&o>60;o--){
-    const m=tilpass(DATA.v.slice(0,o+1),DATA.karakter); if(!m)continue;
-    const fc=skriv(m,H); o0++;
-    if(siste===null)siste=o; første=o;
-    for(let h=0;h<H;h++){
-      if(o+1+h>=n)continue;
-      const a=DATA.v[o+1+h]; ant[h]++;
-      if(a>=niv(fc[h],-1.96)&&a<=niv(fc[h],1.96))tr[h]++;
+  const regime=document.getElementById("regime").value;   // "ny" | "fast"
+  const n=DATA.v.length, oer=[];
+  for(let o=n-1-H;o>n-1-H-K&&o>60;o--)oer.push(o);
+  if(!oer.length)return;
+  const oMin=oer[oer.length-1];
+  /* Referansemodellen estimeres på det tidligste startpunktet i vinduet,
+     slik at ingen av kjøringene bruker informasjon fra framtiden. */
+  const ref=tilpass(DATA.v.slice(0,oMin+1),DATA.karakter);
+  if(!ref)return;
+  const ut={};
+  for(const fast of [false,true]){
+    const tr=new Array(H).fill(0), ant=new Array(H).fill(0);
+    let brukt=0;
+    for(const o of oer){
+      const y=DATA.v.slice(0,o+1);
+      const m=fast?medFaste(y,ref):tilpass(y,DATA.karakter);
+      if(!m)continue;
+      const fc=skriv(m,H); brukt++;
+      for(let h=0;h<H;h++){
+        if(o+1+h>=n)continue;
+        const a=DATA.v[o+1+h]; ant[h]++;
+        if(a>=niv(fc[h],-1.96)&&a<=niv(fc[h],1.96))tr[h]++;
+      }
     }
+    ut[fast?"fast":"ny"]={cov:tr.map((r,i)=>ant[i]?r/ant[i]:0),brukt:brukt};
   }
-  if(!o0)return;
-  tegnDekning(tr.map((r,i)=>ant[i]?r/ant[i]:0),o0,lab(DATA.start,første),lab(DATA.start,siste));
+  tegnDekning(ut,regime,oer.length,lab(DATA.start,oMin),lab(DATA.start,oer[0]),ref);
+}
+
+function tegnDekning(ut,regime,antall,fra,til,ref){
+  const valgt=ut[regime].cov, annen=ut[regime==="ny"?"fast":"ny"].cov;
+  const svg=document.getElementById("cov"); clear(svg);
+  const W=900,Hh=260,L=76,R=20,T=24,B=44;
+  const xs=h=>L+(h-0.5)/H*(W-L-R), ys=p=>T+(1-p)*(Hh-T-B);
+  for(let k=0;k<=4;k++){const p=k/4;
+    el(svg,"line",{x1:L,x2:W-R,y1:ys(p),y2:ys(p),stroke:"#E4EEF0"});
+    txt(svg,L-10,ys(p)+4,Math.round(p*100)+" %",{"text-anchor":"end"});}
+  el(svg,"line",{x1:L,x2:W-R,y1:ys(.95),y2:ys(.95),stroke:"#274247","stroke-width":1.5,"stroke-dasharray":"5 3"});
+  txt(svg,W-R,ys(.95)-8,"lovet nivå: 95 %",{"text-anchor":"end",fill:"#274247","font-weight":600});
+  const bw=(W-L-R)/H*0.56;
+  for(let h=1;h<=H;h++){
+    const p=valgt[h-1],x=xs(h),under=p<0.9;
+    el(svg,"rect",{x:x-bw/2,y:ys(p),width:bw,height:ys(0)-ys(p),
+      fill:under?"#7E5EE8":"#274247","fill-opacity":under?.85:.75});
+    txt(svg,x,ys(p)-7,Math.round(p*100),{"text-anchor":"middle","font-weight":600,
+      fill:under?"#7E5EE8":"#274247"});
+    /* det andre regimet som åpen markør, så gapet er direkte avlesbart */
+    el(svg,"circle",{cx:x,cy:ys(annen[h-1]),r:3.4,fill:"#fff",
+      stroke:"#00824D","stroke-width":1.6});
+    txt(svg,x,Hh-B+18,h,{"text-anchor":"middle"});
+  }
+  txt(svg,L,Hh-B+36,"måneder fram");
+  const m=a=>a.reduce((x,y)=>x+y,0)/H;
+  const navn=r=>r==="ny"?"full reidentifikasjon":"faste parametre";
+  document.getElementById("covFinding").innerHTML=
+    "Over "+antall+" startpunkt, fra "+fra+" til "+til+", lå i gjennomsnitt <span class='hl'>"+
+    Math.round(m(valgt)*100)+" prosent</span> av de faktiske tallene innenfor intervallet med "+
+    navn(regime)+", mot lovet 95 prosent. Søyler i lilla er horisonter under 90 prosent."+
+    "<br><span class='muted'>Grønne ringer viser det andre regimet, "+navn(regime==="ny"?"fast":"ny")+
+    ": gjennomsnitt "+Math.round(m(annen)*100)+" prosent. Faste parametre er låst til "+
+    (ref.kind==="ima"?"\u03b8="+pst(ref.th,2):"\u03b8="+pst(ref.th,2)+", \u0398="+pst(ref.TH,2))+
+    ", estimert ved "+fra+".</span>";
 }
 
 function tegnPar(){
@@ -962,6 +1058,7 @@ PRESETS.forEach(p=>{
 });
 document.getElementById("origin").addEventListener("input",e=>{ORI=+e.target.value;beregn();});
 document.getElementById("window").addEventListener("change",kjørDekning);
+document.getElementById("regime").addEventListener("change",kjørDekning);
 document.getElementById("load").addEventListener("click",()=>{
   const v=document.getElementById("tbl").value.trim(); if(v)hent(v);});
 document.getElementById("tbl").addEventListener("keydown",e=>{

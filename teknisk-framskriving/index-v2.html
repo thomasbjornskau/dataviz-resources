@@ -539,10 +539,21 @@ function tickTekst(v,steg){
   const d=steg<0.01?4:steg<0.1?3:steg<1?2:steg<10?1:0;
   return v.toLocaleString("no-NO",{minimumFractionDigits:d,maximumFractionDigits:d});
 }
-function tall(v){
-  const a=Math.abs(v);
-  const d=a>=1000?0:a>=100?1:a>=1?2:3;
-  return v.toLocaleString("no-NO",{minimumFractionDigits:0,maximumFractionDigits:d});
+function desimaler(a){a=Math.abs(a);return a>=1000?0:a>=100?1:a>=1?2:3;}
+function tall(v,d){
+  if(d===undefined)d=desimaler(v);
+  return v.toLocaleString("no-NO",{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+/* Tall som leses sammen skal ha samme presisjon. 81,83 og 157,2 i samme
+   setning ser ut som ulik nøyaktighet; det er det ikke. */
+function tallPar(){
+  const v=[].slice.call(arguments);
+  const d=Math.max.apply(null,v.map(desimaler));
+  return v.map(x=>tall(x,d));
+}
+function pst(v,d){
+  return v.toLocaleString("no-NO",{minimumFractionDigits:d===undefined?1:d,
+    maximumFractionDigits:d===undefined?1:d});
 }
 
 /* ==========================================================================
@@ -756,17 +767,19 @@ function funn(){
     if(e>verst){verst=e;verstH=h+1;}
   }
   const modellnavn=MODEL.kind==="ima"
-    ? "ARIMA(0,1,1) med drift"
-    : "ARIMA(0,1,1)(0,1,1)<sub>12</sub>";
-  let s="<b>"+lab(DATA.start,ORI+H)+"</b>, tolv måneder etter valgt tidspunkt: "+
-        tall(niv(FC[H-1],0))+". 95 prosent av utfallene ligger mellom "+
-        tall(niv(FC[H-1],-1.96))+" og "+tall(niv(FC[H-1],1.96))+
+    ? "ARIMA(0,1,1) med drift · \u03b8="+pst(MODEL.th,2)+
+      " · drift="+pst(MODEL.mu*(MODEL.log?100:1),2)+(MODEL.log?" % per md":" per md")
+    : "ARIMA(0,1,1)(0,1,1)<sub>12</sub> · \u03b8="+pst(MODEL.th,2)+
+      " · \u0398="+pst(MODEL.TH,2);
+  const [mid,lo95,hi95]=tallPar(niv(FC[H-1],0),niv(FC[H-1],-1.96),niv(FC[H-1],1.96));
+  let s="<b>"+lab(DATA.start,ORI+H)+"</b>, tolv måneder etter valgt tidspunkt: "+mid+
+        ". 95 prosent av utfallene ligger mellom "+lo95+" og "+hi95+
         " <b>hvis modellen er riktig</b>. ";
   if(har>0) s+="Faktisk lå <span class='hl'>"+inne+" av "+har+"</span> tall innenfor intervallet, "+
-    "og største avvik var <span class='hl'>"+(verst*100).toFixed(1)+" prosent</span> etter "+verstH+
+    "og største avvik var <span class='hl'>"+pst(verst*100)+" prosent</span> etter "+verstH+
     " måned"+(verstH>1?"er":"")+".";
   else s+="Dette er enden av serien, så det finnes ingen fasit å sammenlikne med.";
-  s+="<br><span class='muted'>"+modellnavn+" på "+(MODEL.log?"logaritmen":"nivå")+
+  s+="<br><span class='muted'>"+modellnavn+", på "+(MODEL.log?"logaritmen":"nivå")+
      ", estimert på "+(ORI+1)+" månedsobservasjoner.</span>";
   f.innerHTML=s;
 }

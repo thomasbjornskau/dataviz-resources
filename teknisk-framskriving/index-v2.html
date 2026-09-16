@@ -248,7 +248,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
       <div class="key">
         <span><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="0" y1="5" x2="30" y2="5" stroke="#274247" stroke-width="3"/></svg>Observert fram til valgt tidspunkt</span>
         <span id="keyF"><svg viewBox="0 0 30 10" aria-hidden="true"><rect x="0" y="1" width="30" height="8" fill="#00824D" fill-opacity=".18"/><line x1="0" y1="5" x2="30" y2="5" stroke="#00824D" stroke-width="2.5"/></svg>Modellbasert forlengelse med usikkerhet</span>
-        <span id="keyA"><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="0" y1="5" x2="30" y2="5" stroke="#7E5EE8" stroke-width="2.5" stroke-dasharray="5 3"/></svg>Faktisk utfall</span>
+        <span id="keyA"><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="0" y1="5" x2="30" y2="5" stroke="#7E5EE8" stroke-width="2.6"/><rect x="8" y="2.4" width="5" height="5" fill="#7E5EE8"/><rect x="20" y="2.4" width="5" height="5" fill="#7E5EE8"/></svg>Faktisk utfall</span>
       </div>
 
       <div class="ctrls" style="border-top:1px solid var(--line-soft);border-bottom:0">
@@ -725,7 +725,10 @@ function tegn(){
   if(til>ORI){
     let d="";
     for(let i=ORI;i<=til;i++)d+=(i===ORI?"M ":" L ")+xs(i)+" "+ys(DATA.v[i]);
-    el(svg,"path",{d:d,fill:"none",stroke:"#7E5EE8","stroke-width":2.4,"stroke-dasharray":"6 4"});
+    /* Heltrukket, samme vekt som historikken: dette ER observerte tall.
+       Stipling er reservert for beregnede størrelser. Skillet mot historikken
+       bæres av farge OG firkantmarkører, ikke av farge alene. */
+    el(svg,"path",{d:d,fill:"none",stroke:"#7E5EE8","stroke-width":2.6});
     for(let i=ORI+1;i<=til;i++)
       el(svg,"rect",{x:xs(i)-2.4,y:ys(DATA.v[i])-2.4,width:4.8,height:4.8,fill:"#7E5EE8"});
   }

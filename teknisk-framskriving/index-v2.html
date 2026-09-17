@@ -153,7 +153,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
     <h1>En modellbasert forlengelse av tidsserien</h1>
     <p class="lede read">Når SSB sesongjusterer en månedsserie, produserer JDemetra+ også
     beregnede verdier for månedene etter siste observasjon. Dette notatet er et internt
-    verktøy for å undersøke hva slike verdier er, hva de tåler, og hva som eventuelt skulle til
+    verktøy for å undersøke hva de verdiene er, hva de tåler, og hva som eventuelt skulle til
     for å gi dem en ny funksjon. Ingenting her er et forslag til et ferdig produkt.</p>
   </div>
 </div>
@@ -182,12 +182,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
         <h3>Flere beregnede størrelser</h3>
         <p>Underveis faller det ut flere forlengede serier:</p>
         <ul>
-          <li>framskrevne verdier fra regARIMA-modellen</li>
-          <li>forlenget sesongjustert serie</li>
-          <li>forlenget trend-syklus</li>
+          <li>forlengelse av den ujusterte serien</li>
+          <li>forlengelse av den sesongjusterte serien</li>
+          <li>forlengelse av trend-syklusen</li>
         </ul>
+        <p>Det er de samme tre variantene brukeren allerede velger mellom i Statistikkbanken.
+        Den første kommer fra regARIMA-modellen, som tilpasses serien etter at kalendereffekter
+        og outliere er trukket ut, og deretter legges de tilbake.</p>
         <p>Dette er ikke tre uavhengige beregninger, men en kjede: de to siste utledes av den
-        første. Trenden inneholder derfor ikke mer informasjon enn regARIMA-forlengelsen —
+        første. Trenden inneholder derfor ikke mer informasjon enn den ujusterte forlengelsen —
         den inneholder mindre, fordi den er glattet.</p>
         <p><b>Bare det første leddet har et veldefinert usikkerhetsintervall.</b> For de to
         andre kommer det i tillegg feil fra selve dekomponeringen, og for trenden også
@@ -400,9 +403,10 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;back
     <p class="eyebrow">Neste steg internt</p>
     <h2 class="read">Seks spørsmål som bør avklares før noe designes</h2>
     <ol class="recs">
-      <li><h3>Hvilken av de tre beregningene snakker vi om?</h3>
-        regARIMA-forlengelsen, den sesongjusterte serien eller trend-syklusen. Tre ulike objekter
-        med tre ulike usikkerheter. Uten et valg vil alle mene noe forskjellig.</li>
+      <li><h3>Hvilken av de tre forlengelsene snakker vi om?</h3>
+        Den ujusterte serien, den sesongjusterte serien eller trend-syklusen — de samme tre
+        variantene som ligger i Statistikkbanken i dag. Tre ulike objekter med tre ulike
+        usikkerheter. Uten et valg vil alle mene noe forskjellig.</li>
       <li><h3>Hva slags status skal objektet ha?</h3>
         Kan en modellbasert forlengelse bære merkelappen offisiell statistikk? Svaret styrer alt
         annet og bør komme før noen tegner en figur.</li>

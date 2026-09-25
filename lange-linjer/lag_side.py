@@ -20,35 +20,89 @@ advarsler = []
 def varsle(msg):
     advarsler.append(msg)
 
+PERIODE = re.compile(r"^\s*(1[6-9]\d\d|20\d\d)\s*[-–]\s*(1[6-9]\d\d|20\d\d)\s*$")
+
+def er_tall(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
 def les_ark(ws):
-    rader = list(ws.iter_rows(values_only=True))
-    første = next((i for i, r in enumerate(rader) if r and r[0] is not None and ÅR.match(str(r[0]))), None)
-    if første is None or første == 0:
-        varsle(f"{ws.title}: fant ingen årsrad")
+    rader = [list(r) for r in ws.iter_rows(values_only=True)]
+    etikett = lambda r: (str(r[0]).strip() if r and r[0] is not None else "")
+    første = next((i for i, r in enumerate(rader) if ÅR.match(etikett(r)) or PERIODE.match(etikett(r))), None)
+    if første is None:
+        varsle(f"{ws.title}: fant ingen rad med årstall eller periode i kolonne A")
         return None
-    hode = rader[første - 1]
-    kol = [j for j in range(1, len(hode)) if hode[j] not in (None, "")]
-    år, verdier = [], {j: [] for j in kol}
-    tittel = None
+    # datakolonner: kolonner med tall i dataradene
+    bredde = max(len(r) for r in rader)
+    for r in rader: r.extend([None] * (bredde - len(r)))
+    hode = rader[første - 1] if første > 0 else [None] * bredde
+    tittel, løse = None, 0
     for i, r in enumerate(rader):
-        # løs tekstcelle som ser ut som tittel (lengste tekst utenfor datakolonnene)
         for j, v in enumerate(r):
-            if isinstance(v, str) and len(v) > 25 and (j not in kol or i < første - 1):
-                if tittel is None or len(v) > len(tittel):
-                    tittel = v.strip()
-        if i < første or not r or r[0] is None or not ÅR.match(str(r[0])):
+            if isinstance(v, str) and len(v) > 25 and (tittel is None or len(v) > len(tittel)):
+                tittel = v.strip()
+    # finn siste datarad: rader etter første med tall i kolonne 1..
+    datarader = []
+    for i in range(første, len(rader)):
+        r = rader[i]
+        e = etikett(r)
+        harTall = any(er_tall(v) for v in r[1:])
+        if ÅR.match(e) or PERIODE.match(e) or (e == "" and harTall):
+            datarader.append(i)
+        elif e and not harTall:
             continue
-        år.append(int(str(r[0]).strip()))
+    kol = [j for j in range(1, bredde)
+           if any(er_tall(rader[i][j]) for i in datarader)
+           and (hode[j] not in (None, "") or sum(er_tall(rader[i][j]) for i in datarader) > len(datarader) * 0.5)]
+    # hopp over hjelpekolonner uten overskrift som bare inneholder 0
+    kol = [j for j in kol if hode[j] not in (None, "") or any(er_tall(rader[i][j]) and rader[i][j] != 0 for i in datarader)]
+    # etiketter: år, perioder, eller tomme (fylles ut mellom kjente år)
+    år, start, verdier = [], [], {j: [] for j in kol}
+    for i in datarader:
+        e = etikett(rader[i])
+        m = PERIODE.match(e)
+        if m:
+            år.append(int(m.group(2))); start.append(int(m.group(1)))
+        elif ÅR.match(e):
+            år.append(int(e)); start.append(None)
+        else:
+            år.append(None); start.append(None)
         for j in kol:
-            v = r[j] if j < len(r) else None
-            if v is not None and not isinstance(v, (int, float)):
-                varsle(f"{ws.title}: ikke-tall «{v}» i {hode[j]!r} {år[-1]} – satt til tom")
+            v = rader[i][j]
+            if v is not None and not er_tall(v):
+                varsle(f"{ws.title}: ikke-tall «{str(v)[:40]}» i {hode[j]!r} – satt til tom")
                 v = None
             verdier[j].append(None if v is None else round(float(v), 4))
-        for j, v in enumerate(r):
-            if j > 0 and j not in kol and v not in (None, "") and not (isinstance(v, str) and len(v) > 25):
-                varsle(f"{ws.title}: løs celle «{v}» ved {år[-1]} ignorert")
-    return {"år": år, "hode": {j: str(hode[j]) for j in kol}, "verdier": verdier, "arktittel": tittel}
+        for j in range(1, bredde):
+            v = rader[i][j]
+            if j not in kol and v not in (None, "") and not (isinstance(v, str) and len(v) > 25):
+                løse += 1
+    # kontroll før utfylling: avstanden mellom kjente etiketter må stemme med antall rader
+    kjente = [(k, a) for k, a in enumerate(år) if a is not None]
+    for (k1, a1), (k2, a2) in zip(kjente, kjente[1:]):
+        if k2 - k1 > 1 and a2 - a1 != k2 - k1:
+            varsle(f"{ws.title}: {k2 - k1 - 1} rader uten årstall mellom {a1} og {a2} stemmer ikke med årsavstanden")
+    # fyll ut år uten etikett
+    utfylt = 0
+    for k in range(len(år)):
+        if år[k] is None:
+            forrige = next((q for q in range(k - 1, -1, -1) if år[q] is not None), None)
+            if forrige is not None:
+                år[k] = år[forrige] + (k - forrige); utfylt += 1
+    if None in år:
+        varsle(f"{ws.title}: rader uten årstall før første etikett – utelatt")
+        behold = [k for k, a in enumerate(år) if a is not None]
+        år = [år[k] for k in behold]; start = [start[k] for k in behold]
+        verdier = {j: [v[k] for k in behold] for j, v in verdier.items()}
+    if any(b <= a for a, b in zip(år, år[1:])):
+        varsle(f"{ws.title}: årstallene er ikke stigende etter utfylling – sjekk arket")
+    if utfylt:
+        varsle(f"{ws.title}: {utfylt} rader uten årstall fylt ut mellom etikettene (hvert 5. år er merket i arket)")
+    if løse:
+        varsle(f"{ws.title}: {løse} løse celler utenfor datakolonnene ignorert")
+    navn = {j: (str(hode[j]).strip() if hode[j] not in (None, "") else "") for j in kol}
+    return {"år": år, "periodestart": start if any(start) else None, "hode": navn,
+            "verdier": verdier, "arktittel": tittel}
 
 def main():
     katalog = json.loads((ROT / "data/katalog.json").read_text("utf-8"))
@@ -57,22 +111,33 @@ def main():
     epoker = json.loads((ROT / "data/epoker.json").read_text("utf-8"))
     kat = {k["id"]: k for k in katalog}
 
+    kobling = {}
+    kp = ROT / "data/arkkobling.json"
+    if kp.exists():
+        kobling = {k: v for k, v in json.loads(kp.read_text("utf-8")).items() if not k.startswith("_")}
     ark = {}
     for fil in sorted(glob.glob(str(ROT / "excel/*.xlsx"))):
         wb = openpyxl.load_workbook(fil, data_only=True)
         for ws in wb.worksheets:
             fid = ws.title.strip().rstrip(".")
+            nøkkel = f"{os.path.basename(fil)}:{fid}"
+            if nøkkel in kobling:
+                varsle(f"{nøkkel}: koblet til figur {kobling[nøkkel]} (se data/arkkobling.json)")
+                fid = kobling[nøkkel]
             if fid in ark:
                 varsle(f"{fid}: finnes i flere filer, bruker {os.path.basename(fil)}")
             d = les_ark(ws)
             if d:
-                d["fil"] = os.path.basename(fil)
+                d["fil"] = os.path.basename(fil); d["ark"] = ws.title
                 ark[fid] = d
 
     indikatorer = []
     for k in katalog:
         fid = k["id"]
-        cfg = figurer.get(fid, {})
+        cfg = json.loads(json.dumps(figurer.get(fid, {})))
+        if "serier" in cfg: cfg["serier"] = {k.strip(): v for k, v in cfg["serier"].items()}
+        if "samme_farge" in cfg: cfg["samme_farge"] = [[x.strip() for x in g] for g in cfg["samme_farge"]]
+        for m_ in cfg.get("merknader", []): m_["serie"] = m_["serie"].strip()
         ind = {
             "id": fid, "emne": k["emne"], "tittel": k["tittel"], "side": k["side"],
             "kort": cfg.get("kort"), "enhet": cfg.get("enhet"),
@@ -83,9 +148,13 @@ def main():
             a = ark[fid]
             år = a["år"]
             steg = sorted(set(b - a_ for a_, b in zip(år, år[1:])))
-            if steg == [1]:
+            if cfg.get("type"):
+                typ = cfg["type"]
+            elif a["periodestart"]:
+                typ = "periode"
+            elif steg == [1]:
                 typ = "aar"
-            elif re.search(r"5-år", k["tittel"]):
+            elif re.search(r"5-år", k["tittel"]) or (set(steg) <= {4, 5, 6} and 1939 in år and 1945 in år):
                 typ = "periode"
             else:
                 typ = "telling"
@@ -105,15 +174,15 @@ def main():
                 else:
                     rolle = "serie"
                 gruppe = next((g[0] for g in samme if h in g), h)
-                serier.append({"id": h, "navn": navn.get(h, h.strip()[:1].upper() + h.strip()[1:]),
+                serier.append({"id": h, "navn": navn.get(h, (h.strip()[:1].upper() + h.strip()[1:]) or "Verdi"),
                                "rolle": rolle, "gruppe": gruppe, "v": v})
             # periodestart for femårsperioder: verdien for år t gjelder (forrige t) til t
             start = None
             if typ == "periode":
-                start = [år[0] - 5] + år[:-1]
+                start = a["periodestart"] or ([år[0] - 5] + år[:-1])
             ind.update({"harData": True, "type": typ, "år": år, "periodeStart": start,
-                        "serier": serier, "fra": år[0], "til": år[-1], "periodekilde": "data",
-                        "kilde": f"{a['fil']}, ark {fid}"})
+                        "serier": serier, "fra": (start[0] if start else år[0]), "til": år[-1], "periodekilde": "data",
+                        "kilde": f"{a['fil']}, ark {a['ark']}", "tallart": cfg.get("tallart")})
             if not cfg:
                 varsle(f"{fid}: har tall, men mangler redaksjonell konfig i figurer.json")
             # valider merknader

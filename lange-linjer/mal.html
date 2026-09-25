@@ -179,7 +179,7 @@ footer p{margin:0 0 8px;max-width:90ch}
 <main>
 <section class="ramme" aria-labelledby="h-inngang">
   <h2 id="h-inngang">Velg en indikator</h2>
-  <p class="seksjon-tekst">Hver strek er én figur fra publikasjonen. Streken står i sitt emne og går fra første til siste år med tall, så høyden viser hvor langt tilbake kunnskapen rekker. Heltrukne streker har tallgrunnlag. Stiplede venter på det.</p>
+  <p class="seksjon-tekst">Hver strek er én figur fra publikasjonen. Streken står i sitt emne og går fra første til siste år med tall, så høyden viser hvor langt tilbake kunnskapen rekker.<span id="stiplet-tekst"> Heltrukne streker har tallgrunnlag. Stiplede venter på det.</span></p>
   <div class="inngang">
     <nav class="liste" id="liste" aria-label="Emner og indikatorer"></nav>
     <div class="graf-boks">
@@ -260,7 +260,7 @@ function lesFarger(){
 lesFarger();
 const emneFarge = nr => FARGE["e"+nr];
 
-const tilstand = {valgt:null, hover:null, emne:null};
+const tilstand = {valgt:null, hover:null, emne:null, init:true};
 
 /* =====================================================================
    LISTE OG DETALJ
@@ -270,7 +270,7 @@ function byggListe(){
   nav.innerHTML = EMNER.map(e => {
     const ind = IND.filter(i => i.emne === e.nr);
     const med = ind.filter(i => i.harData).length;
-    return `<details class="emne" data-emne="${e.nr}" ${med ? "open" : ""}>
+    return `<details class="emne" data-emne="${e.nr}">
       <summary><span class="prikk" style="background:var(--e${e.nr})"></span><span>${esc(e.navn)}</span><span class="ant tall">${med ? med + " av " : ""}${ind.length}</span></summary>
       <ul>${ind.map(i => `<li><button class="ind-knapp ${i.harData ? "" : "uten"}" data-id="${i.id}" title="${esc(i.tittel)}"><span class="nr tall">${i.id}</span><span class="txt">${esc(tittelFor(i))}</span></button></li>`).join("")}</ul>
     </details>`;
@@ -284,7 +284,7 @@ function byggListe(){
     if (b && IX[b.dataset.id].harData) apne(b.dataset.id);
   });
   nav.querySelectorAll("details").forEach(d => d.addEventListener("toggle", () => {
-    if (d.open) { tilstand.emne = +d.dataset.emne; setTimeout(() => { if (tilstand.emne === +d.dataset.emne) tilstand.emne = null; }, 1600); }
+    if (d.open && !tilstand.init) { tilstand.emne = +d.dataset.emne; setTimeout(() => { if (tilstand.emne === +d.dataset.emne) tilstand.emne = null; }, 1600); }
   }));
 }
 
@@ -292,7 +292,7 @@ function visDetalj(id){
   const el = $("detalj");
   if (!id){
     const med = IND.filter(i => i.harData).length;
-    el.innerHTML = `<p class="tom">${IND.length} figurer i ${EMNER.length} emner. ${med} har tallgrunnlag så langt, resten kommer når Excel-filene for kapittel 4–9 er på plass.</p>
+    el.innerHTML = `<p class="tom">${IND.length} figurer i ${EMNER.length} emner. ${med === IND.length ? "Alle har tallgrunnlag." : `${med} har tallgrunnlag så langt. Resten vises med tittel og tidsrom fra figurteksten.`}</p>
       <p class="tom" style="margin-top:10px">Velg en strek i kartet eller en linje i lista.</p>`;
     return;
   }
@@ -306,7 +306,7 @@ function visDetalj(id){
     <dl>
       <dt>Tidsrom</dt><dd class="tall">${periodeTekst(i)}${pkilde ? ` <span style="color:var(--svak)">(${pkilde})</span>` : ""}</dd>
       ${i.harData ? `<dt>Serier</dt><dd><ul class="ser">${i.serier.filter(s=>s.rolle!=="referanse").map(s => `<li>${esc(s.navn)}</li>`).join("")}</ul></dd>
-      <dt>Tall</dt><dd>${i.type === "periode" ? "Femårsperioder" : i.type === "telling" ? "Folketellinger" : "Årlige"}</dd>` : `<dt>Status</dt><dd>Tallgrunnlag kommer</dd>`}
+      <dt>Tall</dt><dd>${i.tallart || (i.type === "periode" ? "Perioder" : i.type === "telling" ? "Ujevne år" : "Årlige")}</dd>` : `<dt>Status</dt><dd>Tallgrunnlag kommer</dd>`}
     </dl>
     ${i.harData ? `<button class="hovedknapp" id="apne-knapp">Vis i diagrammet</button>` : `<button class="hovedknapp" disabled>Tallgrunnlag kommer</button>`}`;
   const b = $("apne-knapp"); if (b) b.addEventListener("click", () => apne(id));
@@ -1117,11 +1117,14 @@ function settOppHover(){
    ===================================================================== */
 byggListe();
 visDetalj(null);
+if (IND.every(i => i.harData)){ document.querySelector(".graf-tegn").remove(); $("stiplet-tekst").remove(); }
 const fraHash = (location.hash.match(/figur-([\d.]+)/) || [])[1];
 const start = fraHash && IX[fraHash] && IX[fraHash].harData ? fraHash : "2.4";
 tilstand.valgt = start;
 document.querySelectorAll(".ind-knapp").forEach(b => b.setAttribute("aria-current", b.dataset.id === start ? "true" : "false"));
 visDetalj(start);
+document.querySelector(`details[data-emne="${IX[start].emne}"]`).open = true;
+setTimeout(() => { tilstand.init = false; }, 0);
 lastDiagram(start);
 markerEpoke();
 let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => tegnDiagram(), 120); });

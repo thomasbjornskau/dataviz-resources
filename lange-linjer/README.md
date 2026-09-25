@@ -18,6 +18,7 @@ data/katalog.json     Alle 100 figurer fra PDF-en: tittel, side, tidsrom fra fig
 data/figurer.json     Redaksjonelt lag: korttittel, enhet, serienavn, skjøter, merknader, fotnote
 data/emner.json       De ni emnene (kapitlene)
 data/epoker.json      Delperioder (zoomknapper og bakgrunnsbånd) og hendelser (skraverte bånd)
+data/arkkobling.json  Når et Excel-ark har et annet nummer enn figuren i publikasjonen
 .nojekyll             Hindrer at GitHub Pages kjører Jekyll på repoet
 ```
 
@@ -43,7 +44,15 @@ Skriptet leser ting slik:
 - En kolonne med «trend» i navnet blir tegnet mørk og tykk når figuren også har vanlige serier.
 - Figurer med «5-år» i tittelen tolkes som femårsperioder. Verdien for år *t* gjelder perioden fra forrige år i lista til *t*.
 - Uregelmessige år, som folketellinger, tegnes med punkter.
+- Radetiketter som «1900-1950» i kolonne A tolkes som delperioder.
+- Er bare hvert femte år merket i kolonne A (som i kapittel 9), fylles årene imellom ut. Skriptet kontrollerer at antall rader stemmer med avstanden mellom de merkede årene, og varsler hvis ikke.
+- En datakolonne uten overskrift får navn fra `serier` i `figurer.json` med tom nøkkel (`""`).
 - Tomme celler blir hull. Det interpoleres aldri.
+- Feltet `tallart` i `figurer.json` overstyrer teksten om tallenes art i detaljpanelet, for eksempel «Folketellinger».
+
+## Når arknummeret ikke stemmer
+
+I `FigurerKap5.xlsx` har arkene 5.4 og 5.5 byttet plass i forhold til publikasjonen. Det er rettet i `data/arkkobling.json`, med nøkkelen `filnavn:fanenavn`. Skriptet skriver en linje om hver kobling når det kjører.
 
 ## Merknader i figurer.json
 

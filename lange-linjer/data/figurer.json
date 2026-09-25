@@ -738,7 +738,14 @@
    }
   ],
   "fotnote": "Tallene er fra folketellingene. Linjene mellom punktene er bare en leseveiledning.",
-  "tallart": "Folketellinger"
+  "tallart": "Folketellinger",
+  "stabel": {
+   "total": "i alt",
+   "deler": [
+    "husmødre",
+    "døtre"
+   ]
+  }
  },
  "3.5": {
   "kort": "Kvinner i yrkeslivet ifølge folketellingene",
@@ -888,7 +895,14 @@
     "niva": 1,
     "plass": "o"
    }
-  ]
+  ],
+  "stabel": {
+   "total": "Samlet",
+   "deler": [
+    "Menn",
+    "Kvinner"
+   ]
+  }
  },
  "4.1": {
   "kort": "Flere i arbeid, men ikke flere timer",
@@ -1133,7 +1147,14 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Tradisjonell energi: hest, mekanisk vannkraft, menneskelig arbeid, ved og torv. Moderne: kull, elektrisitet og petroleumsprodukter. Norge utenom skipsfart. Tallene bygger på Lindmark og Minde og må tolkes med forbehold."
+  "fotnote": "Tradisjonell energi: hest, mekanisk vannkraft, menneskelig arbeid, ved og torv. Moderne: kull, elektrisitet og petroleumsprodukter. Norge utenom skipsfart. Tallene bygger på Lindmark og Minde og må tolkes med forbehold.",
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "tradisjonell",
+    "moderne"
+   ]
+  }
  },
  "5.4": {
   "kort": "De tre største energikildene",
@@ -1164,7 +1185,15 @@
     "plass": "o"
    }
   ],
-  "fotnote": "I Excel-filen ligger denne figuren på arket 5.5."
+  "fotnote": "I Excel-filen ligger denne figuren på arket 5.5.",
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "ved + torv",
+    "kull",
+    "elektrisitet"
+   ]
+  }
  },
  "5.5": {
   "kort": "Kull fra utlandet og fra Svalbard",
@@ -1203,7 +1232,14 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Importen omfatter også koks og sinders. I Excel-filen ligger denne figuren på arket 5.4."
+  "fotnote": "Importen omfatter også koks og sinders. I Excel-filen ligger denne figuren på arket 5.4.",
+  "stabel": {
+   "total": "Tilgang i alt",
+   "deler": [
+    "Innførsel",
+    "Svalbard"
+   ]
+  }
  },
  "5.6": {
   "kort": "Vedens andel av energien",
@@ -1353,7 +1389,14 @@
     "niva": 1,
     "plass": "o"
    }
-  ]
+  ],
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "primærnæringer",
+    "sekundærnæringer"
+   ]
+  }
  },
  "5.10": {
   "kort": "Hestekraft mot vannkraft",
@@ -1450,7 +1493,15 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Ved, torv og andre tradisjonelle kilder er ikke med. Bunkers i sjøfart er holdt utenom."
+  "fotnote": "Ved, torv og andre tradisjonelle kilder er ikke med. Bunkers i sjøfart er holdt utenom.",
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "kull og koks",
+    "petroleumsprodukter",
+    "elektrisitet"
+   ]
+  }
  },
  "5.13": {
   "kort": "Fyringsolje ut, bensin og diesel inn",
@@ -1479,7 +1530,14 @@
     "niva": 1,
     "plass": "o"
    }
-  ]
+  ],
+  "stabel": {
+   "total": "Samlet",
+   "deler": [
+    "Fyringsprodukter",
+    "Bensin og diesel"
+   ]
+  }
  },
  "5.14": {
   "kort": "Kjøretøyene",
@@ -1518,7 +1576,15 @@
     "niva": 1,
     "plass": "o"
    }
-  ]
+  ],
+  "stabel": {
+   "total": "Samlet kjøretøybestand",
+   "deler": [
+    "Busser/lastebiler/traktorer/motorsykler",
+    "Fossildrevne og hybride biler",
+    "Elbiler"
+   ]
+  }
  },
  "5.15": {
   "kort": "Flere biler, mindre drivstoff",
@@ -1620,7 +1686,15 @@
     "plass": "o"
    }
   ],
-  "fotnote": "Industri mv. omfatter også bergverk og oljenæringene."
+  "fotnote": "Industri mv. omfatter også bergverk og oljenæringene.",
+  "stabel": {
+   "total": "totalt brutto forbruk",
+   "deler": [
+    "industri mv.",
+    "tjenesteyting og husholdninger",
+    "tap"
+   ]
+  }
  },
  "5.19": {
   "kort": "Energi i hjemmet",
@@ -1670,7 +1744,16 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Tilført energi, ikke nyttiggjort. Strøm til elbiler er ikke med."
+  "fotnote": "Tilført energi, ikke nyttiggjort. Strøm til elbiler er ikke med.",
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "ved og torv",
+    "kull, koks, fjernvarme",
+    "fyringsolje",
+    "elektrisitet"
+   ]
+  }
  },
  "5.20": {
   "kort": "Seil, damp og motor",
@@ -1710,7 +1793,15 @@
     "plass": "u"
    }
   ],
-  "tallart": "Ujevne år"
+  "tallart": "Ujevne år",
+  "stabel": {
+   "total": "I alt",
+   "deler": [
+    "Seilskip",
+    "Dampskip",
+    "Motorskip"
+   ]
+  }
  },
  "5.21": {
   "kort": "Energien i skipsfarten",
@@ -1731,7 +1822,14 @@
     "plass": "o"
    }
   ],
-  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert."
+  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert.",
+  "stabel": {
+   "total": "Samlet",
+   "deler": [
+    "Seil og damp",
+    "Motor"
+   ]
+  }
  },
  "5.22": {
   "kort": "Seil og damp før 1910",
@@ -1753,7 +1851,15 @@
     "plass": "o"
    }
   ],
-  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert."
+  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert.",
+  "stabel": {
+   "total": "Samlet",
+   "deler": [
+    "Seil",
+    "Damp",
+    "Motor"
+   ]
+  }
  },
  "5.23": {
   "kort": "Skipsfarten mot resten av landet",
@@ -1774,7 +1880,14 @@
     "plass": "o"
    }
   ],
-  "fotnote": "Etter 1960 bygger skipsfartstallene på publikasjonens egne summariske beregninger."
+  "fotnote": "Etter 1960 bygger skipsfartstallene på publikasjonens egne summariske beregninger.",
+  "stabel": {
+   "total": "Norge",
+   "deler": [
+    "Fastlands-Norge",
+    "Skipsfart"
+   ]
+  }
  },
  "5.24": {
   "kort": "Skipsfartens andel av energibruken",
@@ -1851,7 +1964,15 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Skip i opplag er medregnet i seriene, men også vist for seg."
+  "fotnote": "Skip i opplag er medregnet i seriene, men også vist for seg.",
+  "stabel": {
+   "total": "Samlet",
+   "deler": [
+    "Utenom tankskip",
+    "Tankskip",
+    "Opplag"
+   ]
+  }
  },
  "5.26": {
   "kort": "Realkapital og BNP i femårsperioder",
@@ -2784,7 +2905,14 @@
     "plass": "u"
    }
   ],
-  "fotnote": "Handelsfart er frakt til og fra Norge. Fraktfart er frakt på norsk kjøl mellom utenlandske havner."
+  "fotnote": "Handelsfart er frakt til og fra Norge. Fraktfart er frakt på norsk kjøl mellom utenlandske havner.",
+  "stabel": {
+   "total": "samlet",
+   "deler": [
+    "handelsfart",
+    "fraktfart"
+   ]
+  }
  },
  "9.9": {
   "kort": "Eksporten på 1800-tallet",
@@ -2804,7 +2932,14 @@
     "niva": 1,
     "plass": "o"
    }
-  ]
+  ],
+  "stabel": {
+   "total": "Eksport",
+   "deler": [
+    "Eksport utenom skipsfart",
+    "Skipsfartstjenester"
+   ]
+  }
  },
  "9.10": {
   "kort": "Statens inntekter og utgifter før 1910",

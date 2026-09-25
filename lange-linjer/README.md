@@ -50,6 +50,21 @@ Skriptet leser ting slik:
 - Tomme celler blir hull. Det interpoleres aldri.
 - Feltet `tallart` i `figurer.json` overstyrer teksten om tallenes art i detaljpanelet, for eksempel «Folketellinger».
 
+## Stablet visning
+
+Figurer der én serie er summen av de andre, kan få veksleren «Linjer / Stablet / Andel». Stablingen legges inn eksplisitt i `figurer.json`:
+
+```json
+"stabel": {"total": "samlet", "deler": ["ved og torv", "kull, koks, fjernvarme", "fyringsolje", "elektrisitet"]}
+```
+
+- Delene stables i den rekkefølgen de står, nederst først.
+- Byggeskriptet kontrollerer at delene summerer til totalen, og varsler ved avvik over 0,5 prosent. Avviket vises også under diagrammet.
+- Negative verdier slår av stablingen.
+- Figurer med ujevne år, som folketellinger, stables som stolper.
+
+Periodefigurene (femårsperioder og delperioder) får veksleren «Trinn / Linje». Linje trekkes gjennom midtpunktet av hver periode.
+
 ## Når arknummeret ikke stemmer
 
 I `FigurerKap5.xlsx` har arkene 5.4 og 5.5 byttet plass i forhold til publikasjonen. Det er rettet i `data/arkkobling.json`, med nøkkelen `filnavn:fanenavn`. Skriptet skriver en linje om hver kobling når det kjører.

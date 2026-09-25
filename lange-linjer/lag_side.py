@@ -199,6 +199,26 @@ def main():
                         continue
                 ok.append(m)
             ind["merknader"] = ok
+            if cfg.get("stabel"):
+                stb = {"total": cfg["stabel"]["total"].strip(), "deler": [x.strip() for x in cfg["stabel"]["deler"]]}
+                mangler = [x for x in [stb["total"]] + stb["deler"] if x not in ids]
+                if mangler:
+                    varsle(f"{fid}: stabel viser til ukjente serier {mangler} – stabling slått av")
+                else:
+                    tot = next(x for x in serier if x["id"] == stb["total"])
+                    dl = [next(x for x in serier if x["id"] == d) for d in stb["deler"]]
+                    avvik, neg = 0.0, False
+                    for k_, t_ in enumerate(tot["v"]):
+                        vals = [d_["v"][k_] for d_ in dl]
+                        if any(v_ is not None and v_ < 0 for v_ in vals): neg = True
+                        if t_ in (None, 0) or all(v_ is None for v_ in vals): continue
+                        avvik = max(avvik, abs(sum(v_ or 0 for v_ in vals) - t_) / abs(t_))
+                    stb["avvik"] = round(avvik * 100, 2)
+                    if neg:
+                        varsle(f"{fid}: stabel har negative verdier – stabling slått av"); stb = None
+                    elif avvik > 0.005:
+                        varsle(f"{fid}: delene avviker fra totalen med opptil {avvik*100:.1f} prosent")
+                    if stb: ind["stabel"] = stb
             ind["skjot"] = cfg.get("skjot", [])
             ind["fotnote"] = cfg.get("fotnote")
         else:

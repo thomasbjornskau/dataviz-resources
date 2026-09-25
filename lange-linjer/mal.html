@@ -99,6 +99,7 @@ h2{font-size:24px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .diagram-hode{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:end;margin-bottom:14px}
 .diagram-hode .figurref{margin:0 0 4px;font-size:14px;color:var(--svak)}
 .diagram-hode h2{font-size:30px;margin:0}
+.diagram-hode .bla{align-self:start}
 .diagram-hode .pdf-tittel{grid-column:1/-1;margin:2px 0 0;font-size:14.5px;color:var(--dempet);max-width:80ch}
 
 .epoker{margin:18px 0 6px}
@@ -112,7 +113,27 @@ h2{font-size:24px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .vindu-spor{position:relative;height:4px;margin:6px 0 0;background:var(--grid)}
 .vindu{position:absolute;top:0;height:4px;background:var(--ssb-gronn);transition:left .5s,width .5s}
 
-.enhet{margin:14px 0 2px;font-size:14px;font-weight:600;color:var(--dempet)}
+.enhet-rad{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:14px 0 2px}
+.enhet{margin:0;font-size:14px;font-weight:600;color:var(--dempet)}
+.visning{display:inline-flex;border:1px solid var(--grid-sterk);border-radius:3px;overflow:hidden}
+.visning[hidden]{display:none}
+.visning button{background:var(--bg);border:0;border-left:1px solid var(--grid-sterk);padding:5px 12px;font-size:13.5px;cursor:pointer;color:var(--dempet)}
+.visning button:first-child{border-left:0}
+.visning button:hover{color:var(--tekst);background:var(--flate)}
+.visning button[aria-pressed="true"]{background:var(--ssb-mork);color:#fff}
+:root[data-theme="dark"] .visning button[aria-pressed="true"]{background:var(--akse);color:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .visning button[aria-pressed="true"]{background:var(--akse);color:var(--bg)}}
+.bla{display:flex;gap:8px;align-items:stretch}
+.bla button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;max-width:230px;min-width:0;background:var(--flate);border:1px solid transparent;border-radius:3px;padding:6px 12px;cursor:pointer;text-align:left}
+.bla button:hover{border-color:var(--grid-sterk)}
+.bla button.neste{align-items:flex-end;text-align:right}
+.bla .retning{font-size:12.5px;color:var(--svak)}
+.bla .hvilken{font-size:13.5px;font-weight:600;line-height:1.3;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bla button[disabled]{visibility:hidden}
+.bla-bunn{justify-content:space-between;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--haarstrek)}
+.bla-bunn button{max-width:48%}
+.serie-navn{cursor:pointer}
+.legende span{cursor:pointer}
 .legende{display:none;flex-wrap:wrap;gap:6px 16px;margin:6px 0 4px;font-size:13.5px}
 .legende span{display:inline-flex;align-items:center;gap:6px}
 .legende i{display:inline-block;width:16px;height:3px;border-radius:1px}
@@ -121,6 +142,7 @@ h2{font-size:24px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .merk-lag{position:absolute;inset:0;pointer-events:none}
 .merk{position:absolute;font-size:13px;line-height:1.38;color:var(--tekst);padding:2px 4px;max-width:200px;text-shadow:0 0 2px var(--bg),0 0 2px var(--bg),0 0 3px var(--bg),0 0 4px var(--bg),0 0 6px var(--bg)}
 .merk.spenn{text-align:center}
+.merk.fylt{background:var(--merk-bg);box-shadow:0 0 0 1px var(--haarstrek);border-radius:2px;padding:3px 6px}
 .merk.data{color:var(--dempet)}
 .verktoy{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--grid-sterk);box-shadow:0 2px 8px rgba(0,0,0,.08);padding:8px 10px;font-size:13px;min-width:170px;z-index:5;display:none}
 .verktoy .aar{font-weight:700;font-size:14px;margin-bottom:2px}
@@ -159,6 +181,10 @@ footer p{margin:0 0 8px;max-width:90ch}
   .grep{grid-template-columns:1fr}
   .under-diagram{grid-template-columns:1fr}
   .graf-tegn{display:none}
+  .detalj{display:none}
+  .detalj.vis{display:block}
+  .diagram-hode{grid-template-columns:1fr}
+  .diagram-hode .bla{display:none}
   .epoke-rad{flex-wrap:wrap}
   .epoke-rad button{flex:1 0 auto !important;padding:7px 10px}
 }
@@ -197,13 +223,14 @@ footer p{margin:0 0 8px;max-width:90ch}
       <p class="figurref" id="d-ref"></p>
       <h2 id="d-tittel"></h2>
     </div>
+    <nav class="bla" id="bla-topp" aria-label="Bla mellom figurene"></nav>
     <p class="pdf-tittel" id="d-pdf"></p>
   </div>
   <div class="epoker" role="group" aria-label="Velg tidsepoke">
     <div class="epoke-rad" id="epoke-rad"></div>
     <div class="vindu-spor" aria-hidden="true"><div class="vindu" id="vindu"></div></div>
   </div>
-  <p class="enhet" id="d-enhet"></p>
+  <div class="enhet-rad"><p class="enhet" id="d-enhet"></p><div class="visning" id="visning" role="group" aria-label="Visning" hidden></div></div>
   <div class="legende" id="legende"></div>
   <div class="diagram" id="diagram">
     <svg id="d-svg" role="img" aria-labelledby="d-tittel"></svg>
@@ -214,6 +241,7 @@ footer p{margin:0 0 8px;max-width:90ch}
     <div id="d-noter"></div>
     <div class="zoomhint" id="zoomhint"></div>
   </div>
+  <nav class="bla bla-bunn" id="bla-bunn" aria-label="Bla mellom figurene"></nav>
 </section>
 
 <section class="ramme" aria-labelledby="h-grep">
@@ -242,6 +270,7 @@ const DATA = JSON.parse(document.getElementById("data").textContent);
 const EMNER = DATA.emner, IND = DATA.indikatorer, EPOKER = DATA.epoker;
 const IX = {}; IND.forEach(i => IX[i.id] = i);
 const EMNE = {}; EMNER.forEach(e => EMNE[e.nr] = e);
+const MOBIL = window.matchMedia("(max-width: 760px)");
 const REDUSERT = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -277,7 +306,9 @@ function byggListe(){
   }).join("");
   nav.addEventListener("click", ev => {
     const b = ev.target.closest(".ind-knapp");
-    if (b) velg(b.dataset.id, {fraListe:true});
+    if (!b) return;
+    if (MOBIL.matches && IX[b.dataset.id].harData) apne(b.dataset.id);
+    else velg(b.dataset.id, {fraListe:true});
   });
   nav.addEventListener("dblclick", ev => {
     const b = ev.target.closest(".ind-knapp");
@@ -319,7 +350,8 @@ function velg(id, opt = {}){
     const d = document.querySelector(`details[data-emne="${IX[id].emne}"]`);
     if (d && !d.open) d.open = true;
     const b = document.querySelector(`.ind-knapp[data-id="${id}"]`);
-    if (b) b.scrollIntoView({block:"nearest"});
+    if (b && !MOBIL.matches) b.scrollIntoView({block:"nearest"});
+    $("detalj").classList.add("vis");
   }
   visDetalj(id);
   graf.vekk();
@@ -570,7 +602,7 @@ const graf = (() => {
 /* =====================================================================
    SIGNATURDIAGRAM
    ===================================================================== */
-const D = {ind:null, full:[0,1], dom:[0,1], ydom:[0,1], anim:null, epoke:null};
+const D = {ind:null, full:[0,1], dom:[0,1], ydom:[0,1], anim:null, epoke:null, visning:"linje", fokus:null};
 const PALETT = ["s1","s2","s3","s4","s5"];
 const NS = "http://www.w3.org/2000/svg";
 
@@ -598,6 +630,8 @@ function lastDiagram(id){
   const x1 = ind.år[ind.år.length - 1];
   D.full = [x0, x1];
   D.dom = D.full.slice();
+  D.visning = ind.type === "periode" ? "trinn" : "linje";
+  D.fokus = null;
   D.ydom = yDomene(D.dom);
   D.epoke = null;
   $("d-ref").textContent = `Figur ${ind.id} i publikasjonen${ind.side ? `, side ${ind.side}` : ""}  ·  ${EMNE[ind.emne].navn}`;
@@ -605,11 +639,118 @@ function lastDiagram(id){
   $("d-pdf").textContent = ind.kort ? ind.tittel : "";
   $("d-enhet").textContent = ind.enhet || "";
   byggEpoker();
+  byggVisning();
   byggLegende();
   byggNoter();
+  byggBla();
   tegnDiagram();
   markerEpoke();
 }
+
+/* ---------- blaing ---------- */
+const MED_TALL = IND.filter(i => i.harData).map(i => i.id);
+function naboer(id){
+  const k = MED_TALL.indexOf(id);
+  return [MED_TALL[k - 1] || null, MED_TALL[k + 1] || null];
+}
+function byggBla(){
+  const [f, n] = naboer(D.ind.id);
+  const knapp = (id, kls, retning) => id
+    ? `<button class="${kls}" data-id="${id}" title="Figur ${id}: ${esc(IX[id].tittel)}"><span class="retning">${retning}</span><span class="hvilken">${id} ${esc(tittelFor(IX[id]))}</span></button>`
+    : `<button class="${kls}" disabled></button>`;
+  ["bla-topp", "bla-bunn"].forEach(nav => {
+    $(nav).innerHTML = knapp(f, "forrige", "← Forrige") + knapp(n, "neste", "Neste →");
+    $(nav).querySelectorAll("button[data-id]").forEach(b => b.addEventListener("click", () => blaTil(b.dataset.id, nav === "bla-bunn")));
+  });
+}
+function blaTil(id, rullOpp){
+  if (!id) return;
+  tilstand.valgt = id;
+  document.querySelectorAll(".ind-knapp").forEach(b => b.setAttribute("aria-current", b.dataset.id === id ? "true" : "false"));
+  const d = document.querySelector(`details[data-emne="${IX[id].emne}"]`);
+  if (d && !d.open){ tilstand.init = true; d.open = true; setTimeout(() => { tilstand.init = false; }, 0); }
+  visDetalj(id);
+  graf.vekk();
+  lastDiagram(id);
+  history.replaceState(null, "", "#figur-" + id);
+  const r = $("diagram-seksjon").getBoundingClientRect();
+  if (rullOpp || r.top < -40) $("diagram-seksjon").scrollIntoView({behavior: REDUSERT ? "auto" : "smooth", block:"start"});
+}
+document.addEventListener("keydown", e => {
+  if (!D.ind || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  if (e.key === "Escape" && D.fokus){ D.fokus = null; tegnDiagram(); return; }
+  if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  const r = $("diagram-seksjon").getBoundingClientRect();
+  if (r.bottom < 80 || r.top > window.innerHeight - 80) return;
+  const [f, n] = naboer(D.ind.id);
+  const mål = e.key === "ArrowLeft" ? f : n;
+  if (mål){ e.preventDefault(); blaTil(mål); }
+});
+
+/* ---------- visninger ---------- */
+function visninger(ind){
+  if (ind.stabel) return [["linje", "Linjer"], ["stablet", "Stablet"], ["andel", "Andel"]];
+  if (ind.type === "periode") return [["trinn", "Trinn"], ["midt", "Linje"]];
+  return [];
+}
+function byggVisning(){
+  const v = visninger(D.ind), el_ = $("visning");
+  el_.hidden = !v.length;
+  el_.innerHTML = v.map(([k, t]) => `<button data-v="${k}" aria-pressed="${k === D.visning}">${t}</button>`).join("");
+  el_.querySelectorAll("button").forEach(b => b.addEventListener("click", () => settVisning(b.dataset.v)));
+}
+function settVisning(v){
+  D.visning = v;
+  $("visning").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  $("d-enhet").textContent = v === "andel" ? "Prosent av samlet" : (D.ind.enhet || "");
+  const fraY = D.ydom.slice(), tilY = yDomene(D.dom);
+  byggLegende();
+  if (REDUSERT){ D.ydom = tilY; tegnDiagram(); return; }
+  const t0 = performance.now();
+  cancelAnimationFrame(D.anim);
+  const steg = now => {
+    let t = Math.min(1, (now - t0) / 400); t = 1 - Math.pow(1 - t, 3);
+    D.ydom = [fraY[0] + (tilY[0] - fraY[0]) * t, fraY[1] + (tilY[1] - fraY[1]) * t];
+    tegnDiagram(t < 1);
+    if (t < 1) D.anim = requestAnimationFrame(steg);
+  };
+  D.anim = requestAnimationFrame(steg);
+}
+const erStablet = () => D.visning === "stablet" || D.visning === "andel";
+function stabel(ind){
+  if (!ind.stabel) return null;
+  if (ind._st) return ind._st;
+  const deler = ind.stabel.deler.map(id => ind.serier.find(s => s.id === id));
+  const n = ind.år.length, sum = new Array(n).fill(null), topp = {}, bunn = {};
+  deler.forEach(s => { topp[s.id] = new Array(n).fill(null); bunn[s.id] = new Array(n).fill(null); });
+  for (let k = 0; k < n; k++){
+    if (!deler.some(s => s.v[k] != null)) continue;
+    let c = 0;
+    deler.forEach(s => { bunn[s.id][k] = c; c += s.v[k] || 0; topp[s.id][k] = c; });
+    sum[k] = c;
+  }
+  return ind._st = {deler, delIds:new Set(deler.map(s => s.id)), total:ind.stabel.total, sum, topp, bunn};
+}
+// verdien som faktisk tegnes, gitt visning
+function pv(s, k){
+  const ind = D.ind, st = erStablet() ? stabel(ind) : null;
+  if (!st) return s.v[k];
+  const andel = D.visning === "andel";
+  if (st.delIds.has(s.id)){
+    const t = st.topp[s.id][k]; if (t == null) return null;
+    return andel ? (st.sum[k] ? t / st.sum[k] * 100 : null) : t;
+  }
+  if (s.id === st.total) return andel ? (st.sum[k] != null ? 100 : null) : (st.sum[k] != null ? st.sum[k] : s.v[k]);
+  return s.v[k];
+}
+function pvBunn(s, k){
+  const st = stabel(D.ind), b = st.bunn[s.id][k];
+  if (b == null) return null;
+  return D.visning === "andel" ? (st.sum[k] ? b / st.sum[k] * 100 : null) : b;
+}
+const dimmet = s => D.fokus && s.gruppe !== D.fokus;
+function settFokus(gruppe){ D.fokus = D.fokus === gruppe ? null : gruppe; byggLegende(); tegnDiagram(); }
 
 function synligeEpoker(){
   const [f0, f1] = D.full;
@@ -634,7 +775,9 @@ function markerEpoke(){
 function byggLegende(){
   const ind = D.ind, seen = new Set();
   $("legende").innerHTML = ind.serier.filter(s => { if (seen.has(s.gruppe) && s.rolle !== "trend") return false; seen.add(s.gruppe); return true; })
-    .map(s => `<span><i style="background:var(--${s.farge});${s.rolle==="referanse"?"height:0;border-top:1.5px dashed var(--akse);background:none":""}"></i>${esc(navnFor(s))}</span>`).join("");
+    .filter(s => !(D.visning === "andel" && erStablet() && s.id === (D.ind.stabel || {}).total))
+    .map(s => `<span data-gruppe="${esc(s.gruppe)}" style="${dimmet(s) ? "opacity:.35" : ""}"><i style="background:var(--${s.farge});${s.rolle==="referanse"?"height:0;border-top:1.5px dashed var(--akse);background:none":""}"></i>${esc(navnFor(s))}</span>`).join("");
+  $("legende").querySelectorAll("span[data-gruppe]").forEach(sp => sp.addEventListener("click", () => settFokus(sp.dataset.gruppe)));
 }
 function navnFor(s){
   const ind = D.ind;
@@ -662,6 +805,7 @@ function byggNoter(){
   const hk = Object.entries(hullKart);
   if (hk.length) deler.push(`<p>Ingen tall for ${hk.map(([k, n]) => `${k} (${n.map(esc).join(", ")})`).join("; ")}.</p>`);
   if (ind.fotnote) deler.push(`<p>${esc(ind.fotnote)}</p>`);
+  if (ind.stabel && ind.stabel.avvik > 0.5) deler.push(`<p>Delene summerer ikke helt til totalen (avvik opptil ${NF1.format(ind.stabel.avvik)} prosent). I stablet visning er toppkanten summen av delene.</p>`);
   const harTekst = ind.merknader.some(m => m.kilde === "tekst"), harData = ind.merknader.some(m => m.kilde === "data");
   if (harTekst || harData){
     deler.push(`<p>${harTekst ? `<span class="prov"><svg aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="currentColor" stroke-width="1"/></svg>Merknad gjengitt fra publikasjonens tekst${ind.side ? `, side ${ind.side}` : ""}.</span> ` : ""}${harData ? `<span class="prov"><svg aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/></svg>Avlest direkte i tallene.</span>` : ""}</p>`);
@@ -675,7 +819,10 @@ function byggNoter(){
 /* ---------- domener og skalaer ---------- */
 function verdierI(dom){
   const ind = D.ind, [a, b] = dom, ut = [];
-  ind.serier.forEach(s => s.v.forEach((v, k) => {
+  if (D.visning === "andel" && stabel(ind)) return [0, 100];
+  if (erStablet() && stabel(ind)) ut.push(0);
+  ind.serier.forEach(s => s.v.forEach((v_, k) => {
+    const v = pv(s, k);
     if (v == null) return;
     const y = ind.år[k], y0 = ind.type === "periode" ? ind.periodeStart[k] : y;
     if (y >= a - .01 && y0 <= b + .01) ut.push(v);
@@ -690,6 +837,7 @@ function yDomene(dom){
   const v = verdierI(dom);
   let lo = Math.min(...v), hi = Math.max(...v);
   if (!isFinite(lo)) { lo = 0; hi = 1; }
+  if (D.visning === "andel" && stabel(D.ind)) return [0, 100];
   if (lo >= 0 && lo < hi * .3) lo = 0;
   if (hi <= 0 && hi > lo * .3) hi = 0;
   if (hi === lo){ hi += 1; lo -= 1; }
@@ -743,7 +891,8 @@ function tegnDiagram(underAnimasjon){
   svg.innerHTML = ""; lag.innerHTML = "";
   $("legende").style.display = smal ? "flex" : "none";
 
-  const [x0, x1] = D.dom, [y0, y1] = D.ydom;
+  let [x0, x1] = D.dom; const [y0, y1] = D.ydom;
+  if (ind.type === "telling"){ const pad = (x1 - x0) * .025; x0 -= pad; x1 += pad; }
   const X = a => m.l + (a - x0) / (x1 - x0) * pw;
   const Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * ph;
   const pxÅr = pw / (x1 - x0);
@@ -834,15 +983,62 @@ function tegnDiagram(underAnimasjon){
   // serier
   const punkter = [];
   const serieG = el("g", {"clip-path":"url(#klipp)"}, svg);
-  ind.tegneRekke.forEach(s => {
+  const st = erStablet() ? stabel(ind) : null;
+  if (st){
+    const minGap = Math.min(...ind.år.slice(1).map((a, k) => X(a) - X(ind.år[k])));
+    const bw = Math.max(3, Math.min(34, minGap * .55));
+    st.deler.forEach(s => {
+      const farge = FARGE[s.farge], op = dimmet(s) ? .15 : .88;
+      if (ind.type === "telling"){
+        ind.år.forEach((a, k) => {
+          const t = pv(s, k), b = pvBunn(s, k);
+          if (t == null || t === b) return;
+          el("rect", {x:X(a) - bw / 2, y:Y(t), width:bw, height:Math.max(0, Y(b) - Y(t)), fill:farge, opacity:op, stroke:FARGE.bg, "stroke-width":.8}, serieG);
+          punkter.push([X(a), Y(t)]);
+        });
+        return;
+      }
+      let k = 0;
+      while (k < ind.år.length){
+        if (pv(s, k) == null){ k++; continue; }
+        let j = k; while (j + 1 < ind.år.length && pv(s, j + 1) != null) j++;
+        let d = "";
+        for (let q = k; q <= j; q++) d += (q === k ? "M" : "L") + X(ind.år[q]).toFixed(1) + "," + Y(pv(s, q)).toFixed(1);
+        for (let q = j; q >= k; q--) d += "L" + X(ind.år[q]).toFixed(1) + "," + Y(pvBunn(s, q)).toFixed(1);
+        el("path", {d: d + "Z", fill:farge, opacity:op, stroke:FARGE.bg, "stroke-width":.8, "stroke-linejoin":"round"}, serieG);
+        for (let q = k; q <= j; q++) if (ind.år[q] >= x0 && ind.år[q] <= x1) punkter.push([X(ind.år[q]), Y(pv(s, q))]);
+        k = j + 1;
+      }
+    });
+    if (D.visning === "stablet"){
+      const tot = ind.serier.find(s => s.id === st.total);
+      let d = "", på = false;
+      ind.år.forEach((a, k) => { const v = pv(tot, k); if (v == null){ på = false; return; } d += (på ? "L" : "M") + X(a).toFixed(1) + "," + Y(v).toFixed(1); på = true; });
+      if (ind.type !== "telling") el("path", {d, fill:"none", stroke:FARGE.akse, "stroke-width":1.3, opacity: dimmet(tot) ? .2 : .9}, serieG);
+    }
+  }
+  if (!st) ind.tegneRekke.forEach(s => {
     const farge = FARGE[s.farge];
+    const opF = dimmet(s) ? .15 : 1;
+    if (ind.type === "periode" && s.rolle !== "referanse" && D.visning === "midt"){
+      let d = "", på = false;
+      s.v.forEach((v, k) => {
+        if (v == null){ på = false; return; }
+        const mx = (X(ind.periodeStart[k]) + X(ind.år[k])) / 2;
+        d += (på ? "L" : "M") + mx.toFixed(1) + "," + Y(v).toFixed(1); på = true;
+        punkter.push([mx, Y(v)]);
+      });
+      el("path", {d, fill:"none", stroke:farge, "stroke-width":s.bredde, "stroke-linejoin":"round", opacity:s.opak * opF}, serieG);
+      s.v.forEach((v, k) => { if (v != null) el("circle", {cx:(X(ind.periodeStart[k]) + X(ind.år[k])) / 2, cy:Y(v), r:3.8, fill:FARGE.bg, stroke:farge, "stroke-width":2, opacity:opF}, serieG); });
+      return;
+    }
     if (ind.type === "periode" && s.rolle !== "referanse"){
       let forrige = null;
       s.v.forEach((v, k) => {
         if (v == null){ forrige = null; return; }
         const a = ind.periodeStart[k], b = ind.år[k];
-        if (forrige) el("line", {x1:X(a), x2:X(a), y1:Y(forrige), y2:Y(v), stroke:farge, "stroke-width":1, opacity:.35}, serieG);
-        el("line", {x1:X(a) + 1, x2:X(b) - 1, y1:Y(v), y2:Y(v), stroke:farge, "stroke-width":s.bredde + .6, "stroke-linecap":"butt", opacity:s.opak}, serieG);
+        if (forrige) el("line", {x1:X(a), x2:X(a), y1:Y(forrige), y2:Y(v), stroke:farge, "stroke-width":1, opacity:.35 * opF}, serieG);
+        el("line", {x1:X(a) + 1, x2:X(b) - 1, y1:Y(v), y2:Y(v), stroke:farge, "stroke-width":s.bredde + .6, "stroke-linecap":"butt", opacity:s.opak * opF}, serieG);
         punkter.push([(X(a) + X(b)) / 2, Y(v)]);
         forrige = v;
       });
@@ -856,9 +1052,9 @@ function tegnDiagram(underAnimasjon){
       på = true;
       if (a >= x0 && a <= x1) punkter.push([X(a), Y(v)]);
     });
-    el("path", {d, fill:"none", stroke:farge, "stroke-width":s.bredde, "stroke-linejoin":"round", "stroke-linecap":"round", opacity:s.opak, "stroke-dasharray":s.strek || ""}, serieG);
+    el("path", {d, fill:"none", stroke:farge, "stroke-width":s.bredde, "stroke-linejoin":"round", "stroke-linecap":"round", opacity:s.opak * opF, "stroke-dasharray":s.strek || ""}, serieG);
     if (ind.type === "telling" && s.rolle !== "referanse"){
-      s.v.forEach((v, k) => { if (v != null) el("circle", {cx:X(ind.år[k]), cy:Y(v), r:3.6, fill:FARGE.bg, stroke:farge, "stroke-width":2}, serieG); });
+      s.v.forEach((v, k) => { if (v != null) el("circle", {cx:X(ind.år[k]), cy:Y(v), r:3.6, fill:FARGE.bg, stroke:farge, "stroke-width":2, opacity:opF}, serieG); });
     }
   });
 
@@ -867,6 +1063,7 @@ function tegnDiagram(underAnimasjon){
     const et = [];
     const sett = new Set();
     ind.serier.forEach(s => {
+      if (st && D.visning === "andel" && s.id === st.total) return;
       let k = -1;
       for (let j = s.v.length - 1; j >= 0; j--){ const a = ind.år[j], a0 = ind.type === "periode" ? ind.periodeStart[j] : a; if (s.v[j] != null && a0 <= x1 + .01 && a >= x0 - .01){ k = j; break; } }
       if (k < 0) return;
@@ -881,7 +1078,11 @@ function tegnDiagram(underAnimasjon){
         brukes = siste.t;
       }
       sett.add(s.gruppe);
-      et.push({s: brukes, y: Y(s.v[k]), ay: Y(s.v[k]), ax: X(sistÅr), inne: X(sistÅr) < m.l + pw - 60});
+      let yv = pv(s, k);
+      if (st && st.delIds.has(s.id)) yv = (pv(s, k) + pvBunn(s, k)) / 2;
+      if (yv == null) return;
+      const axv = ind.type === "periode" && D.visning === "midt" ? (ind.periodeStart[k] + ind.år[k]) / 2 : sistÅr;
+      et.push({s: brukes, y: Y(yv), ay: Y(yv), ax: X(axv), inne: !st && X(axv) < m.l + pw - 60});
     });
     et.sort((a, b) => a.y - b.y);
     const gap = 17;
@@ -889,7 +1090,8 @@ function tegnDiagram(underAnimasjon){
     // etiketter for serier som slutter tidlig står inne i plottet, rett etter siste punkt
     const inne = et.filter(e => e.inne);
     inne.forEach(e => {
-      const t = el("text", {x:e.ax + 7, y:e.ay + 4, "font-size":12.5, "font-weight":600, fill:FARGE[e.s.farge], stroke:FARGE.bg, "stroke-width":4, "paint-order":"stroke", "stroke-linejoin":"round"}, topp);
+      const t = el("text", {x:e.ax + 7, y:e.ay + 4, "font-size":12.5, "font-weight":600, fill:FARGE[e.s.farge], stroke:FARGE.bg, "stroke-width":4, "paint-order":"stroke", "stroke-linejoin":"round", class:"serie-navn", opacity: dimmet(e.s) ? .3 : 1}, topp);
+      t.addEventListener("click", () => settFokus(e.s.gruppe));
       t.textContent = e.s.navn;
       e.bredde = tekstbredde(e.s.navn, 12.5, 600);
     });
@@ -911,7 +1113,9 @@ function tegnDiagram(underAnimasjon){
     et.forEach(e => {
       const x = m.l + pw + 10;
       if (Math.abs(e.y - e.ay) > 2 || e.ax < m.l + pw - 2) el("path", {d:`M${e.ax + 3},${e.ay} L${m.l + pw + 3},${e.ay} L${x - 2},${e.y}`, fill:"none", stroke:FARGE["grid-sterk"], "stroke-width":1}, topp);
-      const t = el("text", {x, y:e.y + 4, "font-size":13, "font-weight": e.s.rolle === "referanse" ? 400 : 600, fill: e.s.rolle === "referanse" ? FARGE.svak : FARGE[e.s.farge]}, topp);
+      const erTot = st && e.s.id === st.total;
+      const t = el("text", {x, y:e.y + 4, "font-size":13, "font-weight": e.s.rolle === "referanse" ? 400 : 600, fill: e.s.rolle === "referanse" ? FARGE.svak : erTot ? FARGE.tekst : FARGE[e.s.farge], class:"serie-navn", opacity: dimmet(e.s) ? .3 : 1}, topp);
+      t.addEventListener("click", () => settFokus(e.s.gruppe));
       linjer(e.s.navn, 150, 13, 600).forEach((l, n, arr) => {
         const ts = el("tspan", {x, dy: n === 0 ? -(arr.length - 1) * 7.5 : 15}, t); ts.textContent = l;
       });
@@ -921,7 +1125,7 @@ function tegnDiagram(underAnimasjon){
   if (!underAnimasjon) tegnMerknader(punkter);
   else lag.innerHTML = "";
   settOppHover();
-  $("zoomhint").textContent = (x1 - x0) < (D.full[1] - D.full[0]) - .5 ? "Dobbeltklikk i diagrammet for hele perioden" : (smal ? "" : "Dra over et tidsrom i diagrammet for å zoome");
+  $("zoomhint").textContent = (x1 - x0) < (D.full[1] - D.full[0]) - .5 ? "Dobbeltklikk i diagrammet for hele perioden" : (smal ? "Trykk på et navn for å fremheve serien" : "Dra over et tidsrom for å zoome. Klikk på et serienavn for å fremheve det");
 }
 function linjer(tekst, maks, px, vekt){
   const ord = tekst.split(" "), ut = [];
@@ -952,12 +1156,13 @@ function tegnMerknader(punkter){
   };
   const lagBoks = (tekst, kls, bredde) => {
     const d = document.createElement("div");
-    d.className = "merk " + kls; d.textContent = tekst;
+    d.className = "merk " + kls + (erStablet() && stabel(D.ind) ? " fylt" : ""); d.textContent = tekst;
     d.style.maxWidth = bredde + "px"; d.style.visibility = "hidden";
     lag.appendChild(d);
     return {d, w: d.offsetWidth, h: d.offsetHeight};
   };
-  const vis = ind.merknader.filter(mk => mk.niva === 1 || innzoomet);
+  const stM = erStablet() ? stabel(ind) : null;
+  const vis = ind.merknader.filter(mk => (mk.niva === 1 || innzoomet) && !(stM && D.visning === "andel" && mk.serie === stM.total));
   const nrListe = [];
   const gammel = $("d-noter").querySelector(".nummer-liste");
   if (gammel) gammel.remove();
@@ -966,17 +1171,17 @@ function tegnMerknader(punkter){
       const s = ind.serier.find(t => t.id === mk.serie); if (!s) return;
       let x, y;
       if (mk.type === "punkt"){
-        const k = ind.år.indexOf(mk.ar); if (k < 0 || s.v[k] == null) return;
+        const k = ind.år.indexOf(mk.ar); if (k < 0 || pv(s, k) == null) return;
         const a = ind.type === "periode" ? (ind.periodeStart[k] + mk.ar) / 2 : mk.ar;
         if (a < x0 || a > x1) return;
-        x = X(a); y = Y(s.v[k]);
+        x = X(a); y = Y(pv(s, k));
         el("circle", {cx:x, cy:y, r:3.5, fill:FARGE.bg, stroke:FARGE[s.farge], "stroke-width":2}, g);
         y -= 16;
       } else {
         const a = Math.max(mk.fra, x0), b = Math.min(mk.til, x1);
         if (b - a < (mk.til - mk.fra) * .4) return;
         let ext = null;
-        s.v.forEach((v, k) => { const år = ind.år[k]; if (v == null || år < a || år > b) return; const yy = Y(v); ext = ext == null ? yy : Math.min(ext, yy); });
+        s.v.forEach((v_, k) => { const v = pv(s, k), år = ind.år[k]; if (v == null || år < a || år > b) return; const yy = Y(v); ext = ext == null ? yy : Math.min(ext, yy); });
         if (ext == null) return;
         el("path", {d:`M${X(a)},${ext - 6} L${X(a)},${ext - 10} L${X(b)},${ext - 10} L${X(b)},${ext - 6}`, fill:"none", stroke:FARGE.dempet, "stroke-width":1.2}, g);
         x = (X(a) + X(b)) / 2; y = ext - 22;
@@ -999,10 +1204,10 @@ function tegnMerknader(punkter){
     const strek = mk.kilde === "data" ? "3 3" : "";
     const farge = FARGE[s.farge] || FARGE.akse;
     if (mk.type === "punkt"){
-      const k = ind.år.indexOf(mk.ar); if (k < 0 || s.v[k] == null) return;
+      const k = ind.år.indexOf(mk.ar); if (k < 0 || pv(s, k) == null) return;
       const ax_ = ind.type === "periode" ? (ind.periodeStart[k] + mk.ar) / 2 : mk.ar;
       if (ax_ < x0 || ax_ > x1) return;
-      const ax = X(ax_), ay = Y(s.v[k]);
+      const ax = X(ax_), ay = Y(pv(s, k));
       const {d, w, h} = lagBoks(mk.tekst, mk.kilde, smal ? 160 : (mk.tekst.length > 90 ? 250 : 210));
       const o = [], u = [];
       [30, 58, 92].forEach(off => { o.push([ax + 10, ay - off - h], [ax - 10 - w, ay - off - h]); u.push([ax + 10, ay + off], [ax - 10 - w, ay + off]); });
@@ -1019,12 +1224,12 @@ function tegnMerknader(punkter){
       const a = Math.max(mk.fra, x0), b = Math.min(mk.til, x1);
       if (b - a < (mk.til - mk.fra) * .4 || X(b) - X(a) < 24) return;
       let ext = null;
-      s.v.forEach((v, k) => { const år = ind.år[k]; if (v == null || år < a || år > b) return; const y = Y(v); ext = ext == null ? y : (mk.plass === "u" ? Math.max(ext, y) : Math.min(ext, y)); });
+      s.v.forEach((v_, k) => { const v = pv(s, k), år = ind.år[k]; if (v == null || år < a || år > b) return; const y = Y(v); ext = ext == null ? y : (mk.plass === "u" ? Math.max(ext, y) : Math.min(ext, y)); });
       if (ext == null) return;
       const xa = X(a), xb = X(b), bredde = Math.max(180, Math.min(xb - xa, 280));
       const {d, w, h} = lagBoks(mk.tekst, "spenn " + mk.kilde, bredde);
       let ext2 = null;
-      s.v.forEach((v, k) => { const år = ind.år[k]; if (v == null || år < a || år > b) return; const y = Y(v); ext2 = ext2 == null ? y : (mk.plass === "u" ? Math.min(ext2, y) : Math.max(ext2, y)); });
+      s.v.forEach((v_, k) => { const v = pv(s, k), år = ind.år[k]; if (v == null || år < a || år > b) return; const y = Y(v); ext2 = ext2 == null ? y : (mk.plass === "u" ? Math.min(ext2, y) : Math.max(ext2, y)); });
       let best = null, bs = Infinity;
       for (const side of [mk.plass === "u" ? "u" : "o", mk.plass === "u" ? "o" : "u"]){
         const e0 = side === (mk.plass === "u" ? "u" : "o") ? ext : ext2;
@@ -1099,11 +1304,16 @@ function settOppHover(){
       if (v == null && !iOmfang) return;
       if (v == null && sett.has(s.gruppe)) return;
       sett.add(s.gruppe);
-      if (v != null){
+      const p_ = pv(s, k);
+      const stt = erStablet() ? stabel(ind) : null;
+      if (stt && D.visning === "andel" && s.id === stt.total) return;
+      if (p_ != null){
         const cx = ind.type === "periode" ? (X(ind.periodeStart[k]) + X(aa)) / 2 : X(aa);
-        el("circle", {cx, cy:Y(v), r:4, fill:FARGE[s.farge], stroke:FARGE.bg, "stroke-width":1.5}, hov);
+        el("circle", {cx, cy:Y(p_), r:4, fill: (stt && s.id === stt.total) ? FARGE.akse : FARGE[s.farge], stroke:FARGE.bg, "stroke-width":1.5}, hov);
       }
-      rader.push(`<div class="rad"><i style="background:var(--${s.farge})"></i><span>${esc(s.navn)}</span><span class="tall ${v == null ? "mangler" : ""}">${v == null ? "ingen tall" : NF1.format(v)}</span></div>`);
+      let tekst = v == null ? "ingen tall" : NF1.format(v);
+      if (v != null && stt && D.visning === "andel" && stt.delIds.has(s.id) && stt.sum[k]) tekst = `${NF1.format(v / stt.sum[k] * 100)} %`;
+      rader.push(`<div class="rad" style="${dimmet(s) ? "opacity:.45" : ""}"><i style="background:var(--${(stt && s.id === stt.total) ? "akse" : s.farge})"></i><span>${esc(s.navn)}</span><span class="tall ${v == null ? "mangler" : ""}">${tekst}</span></div>`);
     });
     vt.innerHTML = `<div class="aar tall">${etikett}</div>${hend ? `<div class="hend">${esc(hend.navn)}</div>` : ""}${rader.join("")}`;
     vt.style.display = "block";

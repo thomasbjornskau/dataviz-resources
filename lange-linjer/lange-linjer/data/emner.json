@@ -1,0 +1,11 @@
+[
+ {"nr":1,"navn":"Kilder og metode","kort":"Hvordan seriene er skjøtt sammen, og hvor kildene spriker","metode":true},
+ {"nr":2,"navn":"Verdiskaping","kort":"BNP, anvendelse, næringer, priser og bytteforhold"},
+ {"nr":3,"navn":"Befolkning og yrkesdeltakelse","kort":"Fødte, døde, flytting og kvinners vei inn i arbeidslivet"},
+ {"nr":4,"navn":"Sysselsetting og arbeidstid","kort":"Personer, årsverk, timeverk og selvstendige"},
+ {"nr":5,"navn":"Energi og realkapital","kort":"Fra hest og ved til elektrisitet og olje"},
+ {"nr":6,"navn":"Produktivitet","kort":"Totalproduktivitet og verdiskaping per timeverk"},
+ {"nr":7,"navn":"Lønn og inntektsfordeling","kort":"Lønnsvekst, realpriser og kapitalavkastning"},
+ {"nr":8,"navn":"Statsfinanser","kort":"Statens inntekter, utgifter og gjeld"},
+ {"nr":9,"navn":"Velstand i Norden","kort":"Norge mot Sverige, Danmark og handelspartnerne"}
+]

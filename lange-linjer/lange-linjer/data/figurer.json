@@ -1,0 +1,2899 @@
+{
+ "_om": "Redaksjonelt lag oppå Excel-tallene. kilde: 'tekst' = gjengitt med egne ord fra publikasjonens tekst (side i katalogen). kilde: 'data' = avlest direkte i tallserien. niva 1 vises alltid, niva 2 bare når du har zoomet inn. plass: o=over, u=under (valgfritt hint).",
+ "1.1": {
+  "kort": "Privat konsum etter krigen: tre beregninger",
+  "enhet": "Volumvekst, prosent",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "NOS-publikasjonene",
+    "ar": 1969,
+    "tekst": "Momsen fra 1970 framskyndet kjøp av varige goder til høsten 1969: 7,7 prosent vekst i 1969, nullvekst året etter",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "1.2": {
+  "kort": "BNP 1865–1950: SSB mot Grytten",
+  "enhet": "Indeks, 1865 = 100",
+  "serier": {
+   "Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Grytten",
+    "ar": 1942,
+    "tekst": "SSB publiserte ikke nasjonalregnskap for krigsårene. Her dekker bare Gryttens serie",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "1.3": {
+  "kort": "Årlig BNP-vekst 1866–1939: SSB mot Grytten",
+  "enhet": "Volumvekst, prosent",
+  "serier": {
+   "Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "Grytten",
+    "fra": 1915,
+    "til": 1921,
+    "tekst": "1915–1921: større feilmarginer på grunn av 1. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "1.4": {
+  "kort": "Prisutvikling i BNP 1865–1939: SSB mot Grytten",
+  "enhet": "Indeks, 1865 = 100",
+  "serier": {
+   "Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "Nasjonalregnskap 1865-1960",
+    "fra": 1915,
+    "til": 1921,
+    "tekst": "Store pris- og lønnsbevegelser gjør det vanskelig å skille pris fra volum i disse årene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "1.5": {
+  "kort": "BNP i løpende priser 1865–1939: SSB mot Grytten",
+  "enhet": "Indeks, 1865 = 100",
+  "serier": {
+   "Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"
+  },
+  "merknader": []
+ },
+ "1.6": {
+  "kort": "Trendveksten i BNP over 200 år",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "bnp med Grytten som kilde før 1930": "BNP, Grytten før 1930",
+   "bnp med NOS 1865-1960 som kilde før 1930": "BNP, NOS før 1930",
+   "Fastlands-Norge": "BNP Fastlands-Norge"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "bnp med Grytten som kilde før 1930",
+    "fra": 1820,
+    "til": 1939,
+    "tekst": "Fra rundt 1820 til 2. verdenskrig: stabil trendvekst på om lag 2¼ prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "Fastlands-Norge",
+    "fra": 1947,
+    "til": 1975,
+    "tekst": "Etterkrigsårene skiller seg ut som en unntaksperiode",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.1": {
+  "kort": "Hva brukes pengene til?",
+  "enhet": "Prosent av innenlands anvendelse",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Privat konsum",
+    "ar": 1850,
+    "tekst": "Privat konsum: rundt 80 prosent gjennom 1800-tallet …",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "Privat konsum",
+    "ar": 2025,
+    "tekst": "… og under 50 prosent i dag",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Offentlig konsum",
+    "ar": 1920,
+    "tekst": "Veksten i offentlig konsum starter etter 1. verdenskrig og skyter fart etter 1945",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "Offentlig konsum",
+    "fra": 1990,
+    "til": 2025,
+    "tekst": "Om lag konstant andel etter 1990",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Bruttoinvesteringer",
+    "ar": 1950,
+    "tekst": "Investeringene: fra rundt 20 prosent før krigen til over 30 prosent etter",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.2": {
+  "kort": "En liten, åpen økonomi",
+  "enhet": "Prosent av BNP",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Eksport",
+    "ar": 1916,
+    "tekst": "Under 1. verdenskrig steg eksporten til 50 prosent av BNP",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Import",
+    "ar": 1919,
+    "tekst": "De høye inntektene i 1915–16 ga svært høy import mot slutten av krigen",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Eksport",
+    "ar": 2022,
+    "tekst": "2022: krigen i Ukraina ga høye olje- og gasspriser. Handlingsregelen dempet virkningen innenlands",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.3": {
+  "kort": "Eksportoverskudd og gjeld til utlandet",
+  "enhet": "Prosent av BNP",
+  "serier": {
+   "eksportoverskudd": "Eksportoverskudd",
+   "netto gjeld i prosent av BNP": "Netto gjeld til utlandet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "netto gjeld i prosent av BNP",
+    "ar": 1919,
+    "tekst": "Rett etter begge verdenskrigene hadde Norge netto fordringer på utlandet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "netto gjeld i prosent av BNP",
+    "ar": 1932,
+    "tekst": "Fra 1920-årene: underskudd og oppbygging av gjeld",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "netto gjeld i prosent av BNP",
+    "ar": 1994,
+    "tekst": "1993 og 1994 var de siste årene som gjeldsnasjon",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Gjeldstallene har ingen observasjoner for 1920–1923 og 1940–1945. Serien slutter i 1996."
+ },
+ "2.4": {
+  "kort": "Hvor fort vokser økonomien?",
+  "enhet": "Volumvekst, prosent",
+  "serier": {
+   "vekst bnp": "BNP",
+   "vekst fastlands-bnp": "BNP Fastlands-Norge",
+   "trendvekst fastlands-bnp": "Beregnet trend"
+  },
+  "samme_farge": [
+   [
+    "vekst bnp",
+    "vekst fastlands-bnp"
+   ]
+  ],
+  "skjot": [
+   {
+    "ar": 1970,
+    "tekst": "Fra 1970: Fastlands-Norge"
+   }
+  ],
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "trendvekst fastlands-bnp",
+    "fra": 1900,
+    "til": 1939,
+    "tekst": "Trenden ligger i overkant av 2 prosent fram til krigen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "vekst bnp",
+    "ar": 1921,
+    "tekst": "Fra slutten av 1. verdenskrig og fram til årene etter 2. verdenskrig svinger veksten svært mye fra år til år",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "trendvekst fastlands-bnp",
+    "fra": 1946,
+    "til": 1973,
+    "tekst": "Etter krigen dobles trenden til om lag 4 prosent, og den holder seg der til 1970-årene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "vekst bnp",
+    "ar": 1947,
+    "tekst": "Gjenreisningen: investeringsledet vekst i industri og i byer og landsdeler som ble ødelagt under krigen",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "trendvekst fastlands-bnp",
+    "fra": 2009,
+    "til": 2025,
+    "tekst": "Etter finanskrisen faller trenden fra om lag 3 til knapt 2 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Trenden er beregnet med Hodrick-Prescott-filter. Før 1970 er trenden beregnet for hele BNP, selv om kolonnen i Excel-filen heter «trendvekst fastlands-bnp»."
+ },
+ "2.5": {
+  "kort": "Etterkrigsveksten var investeringsledet",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "Fastlands-Norge": "BNP Fastlands-Norge",
+   "Konsum": "Privat konsum",
+   "Investeringer": "Bruttorealinvesteringer"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Investeringer",
+    "ar": 1950,
+    "tekst": "Oppsvinget etter krigen var i særlig grad knyttet til økte investeringer",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.6": {
+  "kort": "Industri og jordbruk i femårsperioder",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "bnp/bnp fastland": "BNP / BNP Fastlands-Norge",
+   "industri": "Industri",
+   "jordbruk": "Jordbruk"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "industri",
+    "ar": 1950,
+    "tekst": "1945–1950: industriveksten var omtrent dobbelt så stor som fallet under krigen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "jordbruk",
+    "ar": 1980,
+    "tekst": "Jordbruket: svak vekst i verdiskapingen tross kraftig fall i sysselsettingen",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden. Rundt krigen er periodene 1935–1939 og 1939–1945."
+ },
+ "2.7": {
+  "kort": "Kapital per årsverk: jordbruket går forbi",
+  "enhet": "Indeks, industri = 100",
+  "serier": {
+   "skjermet næringsliv": "Skjermet næringsliv",
+   "jordbruk": "Jordbruk",
+   "industri": "Industri = 100"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "jordbruk",
+    "ar": 2000,
+    "tekst": "Siden 2000 har jordbruket om lag dobbelt så mye kapital per årsverk som industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.8": {
+  "kort": "Skjermet næringsliv og offentlig forvaltning",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "bnp/bnp fastland": "BNP / BNP Fastlands-Norge",
+   "skjermet næringsliv": "Skjermet næringsliv",
+   "offentlig forvaltning": "Offentlig forvaltning"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "skjermet næringsliv",
+    "ar": 1925,
+    "tekst": "Store svingninger i skjermet næringsliv. Offentlig forvaltning demper dem i perioder",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden."
+ },
+ "2.9": {
+  "kort": "Bygg og anlegg etter krigen",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "skjermet næringsliv": "Skjermet næringsliv",
+   "bygg og anlegg": "Bygg og anlegg",
+   "varehandel": "Varehandel"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "bygg og anlegg",
+    "ar": 1950,
+    "tekst": "Gjenoppbygging etter bombing og nedbrenning av byer som Molde, Kristiansund, Bodø og Narvik",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden."
+ },
+ "2.10": {
+  "kort": "Prisvekst: fra gullstandard til gasspriser",
+  "enhet": "Prisvekst, prosent",
+  "serier": {
+   "bnp": "BNP-deflator",
+   "fastlands-Norge": "BNP Fastlands-Norge",
+   "konsumpris": "Konsumpriser"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "konsumpris",
+    "fra": 1900,
+    "til": 1913,
+    "tekst": "Stabile priser mens kronen var knyttet til gull",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "konsumpris",
+    "ar": 1918,
+    "tekst": "Ekspansiv pengetrykking gir høy prisvekst mot slutten av 1. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "konsumpris",
+    "ar": 1922,
+    "tekst": "Paripolitikken fra 1920: høy rente og stram kreditt for å føre kronen tilbake til gullverdien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "bnp",
+    "ar": 2022,
+    "tekst": "2022–23: kraftig økte gasspriser i Europa slår ut i BNP-deflatoren",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.11": {
+  "kort": "Eksport- og importpriser mot BNP",
+  "enhet": "Prisvekst, prosent",
+  "serier": {
+   "bnp": "BNP",
+   "eksport": "Eksport",
+   "import": "Import"
+  },
+  "merknader": []
+ },
+ "2.12": {
+  "kort": "Bytteforholdet med utlandet",
+  "enhet": "Indeks, 1910 = 100",
+  "serier": {
+   "bytteforhold": "Bytteforhold",
+   " uten eksport av petroleum": "Uten petroleumseksport",
+   "1910 = 100": "1910 = 100"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "bytteforhold",
+    "fra": 1985,
+    "til": 2000,
+    "tekst": "Dramatisk fall fra 1985 fram mot 2000",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "bytteforhold",
+    "ar": 2022,
+    "tekst": "De siste 40 årene er bytteforholdet sterkt preget av petroleumsinntektene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.13": {
+  "kort": "Fra hvalfangst og sjøfart til olje",
+  "enhet": "Prosent av BNP",
+  "serier": {
+   "hvalfangst og sjøfart": "Hvalfangst og sjøfart",
+   "petroleumsvirksomhet": "Petroleumsvirksomhet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "hvalfangst og sjøfart",
+    "ar": 1916,
+    "tekst": "Høye fraktrater under 1. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "petroleumsvirksomhet",
+    "ar": 1980,
+    "tekst": "Fra 1970-tallet tar petroleumsvirksomheten over",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "petroleumsvirksomhet",
+    "ar": 2022,
+    "tekst": "Toppen i 2022: olje- og gasspriser etter krigen i Ukraina",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.14": {
+  "kort": "Hvor skapes verdiene?",
+  "enhet": "Prosent av BNP Fastlands-Norge",
+  "serier": {
+   "jordbruk/skogbruk": "Jordbruk og skogbruk",
+   "industri": "Industri",
+   "offentlig forvaltning": "Offentlig forvaltning",
+   "skjermet næringsliv": "Skjermet næringsliv"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "jordbruk/skogbruk",
+    "ar": 1955,
+    "tekst": "Jordbruket: rundt 20 prosent fram til 1910, 10 prosent midt på 1950-tallet, under 1 prosent i dag",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "industri",
+    "ar": 1980,
+    "tekst": "Industrien lå rundt 20 prosent til om lag 1980, deretter under 10 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "offentlig forvaltning",
+    "fra": 1990,
+    "til": 2025,
+    "tekst": "Stabilt rundt 23–24 prosent siden 1990-tallet",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "skjermet næringsliv",
+    "ar": 2025,
+    "tekst": "Fra om lag 30 prosent i 1900 til knapt 50 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "2.15": {
+  "kort": "Finansnæringen",
+  "enhet": "Prosent",
+  "serier": {
+   "finansnæringens andel av bnp ": "Andel av BNP",
+   "andel av årsverk Fastlands-Norge": "Andel av årsverk"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "finansnæringens andel av bnp ",
+    "fra": 1900,
+    "til": 1939,
+    "tekst": "Målt ved bruttoprodukt var næringen stor før krigen, med høy godtgjøring til eierne",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "finansnæringens andel av bnp ",
+    "fra": 1960,
+    "til": 2025,
+    "tekst": "BNP-andelen øker betydelig etter 1960, i stor grad på grunn av høye overskudd",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "3.1": {
+  "kort": "Fødte, døde, utvandrede og innvandrede",
+  "enhet": "1000 personer",
+  "serier": {
+   "fødte": "Fødte",
+   "døde": "Døde",
+   "utvandring": "Utvandring",
+   "innvandring": "Innvandring"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "utvandring",
+    "ar": 1882,
+    "tekst": "Fram til om lag 1910 motvirket utvandringen til Amerika mye av fødselsoverskuddet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "fødte",
+    "ar": 1935,
+    "tekst": "Fra over 60 000 fødte før 1920 til vel 40 000 i 1935. Færre ekteskap forklarer mye",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "innvandring",
+    "ar": 1951,
+    "tekst": "Tall for innvandring finnes først fra 1951",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ]
+ },
+ "3.2": {
+  "kort": "Fødsels- og dødsrater",
+  "enhet": "Promille av befolkningen",
+  "serier": {
+   "fødselsrate": "Fødte",
+   "dødsrate": "Døde"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "fødselsrate",
+    "ar": 1935,
+    "tekst": "Markert nedgang fra 1920 til midten av 1930-årene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "fødselsrate",
+    "ar": 1946,
+    "tekst": "De store kullene fra rundt 1920 blir foreldre etter krigen",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ]
+ },
+ "3.3": {
+  "kort": "Arbeidsfør befolkning og sysselsetting",
+  "enhet": "1000 personer",
+  "serier": {
+   "menn 18-64": "Menn 18–64 år",
+   "kvinner 18-64": "Kvinner 18–64 år",
+   "sysselsatte menn og kvinner": "Sysselsatte i alt"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "sysselsatte menn og kvinner",
+    "ar": 1920,
+    "tekst": "Etter 1. verdenskrig holder ikke sysselsettingen lenger tritt med befolkningen. Det er særlig kvinnene som presses ut",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "kvinner 18-64",
+    "fra": 1900,
+    "til": 1950,
+    "tekst": "1900–1950: befolkningen +47 prosent, 18–64 år +80 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "3.4": {
+  "kort": "Husmødre og døtre hjemme",
+  "enhet": "1000 personer",
+  "serier": {
+   "husmødre": "Husmødre",
+   "døtre": "Døtre",
+   "i alt": "I alt"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "i alt",
+    "ar": 1930,
+    "tekst": "Når sysselsettingen ikke vokser i takt med befolkningen, presses kvinner tilbake til husarbeid",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Tallene er fra folketellingene. Linjene mellom punktene er bare en leseveiledning.",
+  "tallart": "Folketellinger"
+ },
+ "3.5": {
+  "kort": "Kvinner i yrkeslivet ifølge folketellingene",
+  "enhet": "Prosent",
+  "serier": {
+   "andel kvinner i yrkeslivet": "Kvinner i yrkeslivet",
+   "andel husmødre og døtre hjemme ": "Husmødre og døtre hjemme"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "andel kvinner i yrkeslivet",
+    "ar": 1910,
+    "tekst": "Rundt 30 prosent fram til 1910 …",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "andel kvinner i yrkeslivet",
+    "ar": 1960,
+    "tekst": "… og rundt 23 prosent i 1950 og 1960",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Tallene er fra folketellingene. Linjene mellom punktene er bare en leseveiledning.",
+  "tallart": "Folketellinger"
+ },
+ "3.6": {
+  "kort": "Jordbruk, industri og lønt husarbeid",
+  "enhet": "1000 personer",
+  "serier": {
+   "jordbruk ": "Jordbruk og skogbruk",
+   "industri": "Industri",
+   "lønt husarbeid": "Lønt husarbeid"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "jordbruk ",
+    "fra": 1900,
+    "til": 1945,
+    "tekst": "Mellom 400 000 og 450 000 i jordbruket helt til etter krigen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "industri",
+    "ar": 1935,
+    "tekst": "Først midt på 1930-tallet stiger industrisysselsettingen markert",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "lønt husarbeid",
+    "fra": 1900,
+    "til": 1939,
+    "tekst": "Rundt 100 000 i lønt husarbeid fram til krigen",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ]
+ },
+ "3.7": {
+  "kort": "Sysselsatte i tjenester og offentlig sektor",
+  "enhet": "1000 personer",
+  "serier": {
+   "skjermet næringsliv inkl. finansnæringen": "Skjermet næringsliv inkl. finans",
+   "offentlig forvaltning": "Offentlig forvaltning"
+  },
+  "merknader": []
+ },
+ "3.8": {
+  "kort": "Andeler av sysselsettingen",
+  "enhet": "Prosent av samlet sysselsetting",
+  "serier": {
+   "skjermet næringsliv inkl. finansnæringen": "Skjermet næringsliv inkl. finans",
+   "offentlig forvaltning": "Offentlig forvaltning"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "offentlig forvaltning",
+    "fra": 1990,
+    "til": 2025,
+    "tekst": "Offentlig andel om lag konstant på 30 prosent siden tidlig 1990-tall",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "3.9": {
+  "kort": "Kvinners andel av sysselsettingen",
+  "enhet": "Prosent",
+  "serier": {
+   "ØA nr 7/1989": "Økonomiske analyser 7/1989",
+   "AKU": "AKU"
+  },
+  "skjot": [
+   {
+    "ar": 1972,
+    "tekst": "AKU fra 1972"
+   }
+  ],
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "ØA nr 7/1989",
+    "ar": 1962,
+    "tekst": "32 prosent tidlig på 1960-tallet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "AKU",
+    "ar": 2025,
+    "tekst": "47 prosent i dag",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "To kilder overlapper 1972–1988. AKU erstattet den gamle sykelønnsstatistikken, som ble nedlagt fra 1970."
+ },
+ "3.10": {
+  "kort": "Sysselsatte menn og kvinner",
+  "enhet": "1000 personer",
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "Kvinner",
+    "fra": 1962,
+    "til": 1990,
+    "tekst": "Om lag 85 prosent av veksten på en halv million sysselsatte kom fra kvinner",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "4.1": {
+  "kort": "Flere i arbeid, men ikke flere timer",
+  "enhet": "Indeks, 1900 = 100",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Personer",
+    "ar": 2025,
+    "tekst": "Personer og årsverk er om lag tredoblet siden 1900",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Timeverk",
+    "ar": 2025,
+    "tekst": "Utførte timeverk har bare økt med 40 prosent. Forskjellen er kortere arbeidstid og mer ferie",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "4.2": {
+  "kort": "Arbeidsåret krymper",
+  "enhet": "Timer per år",
+  "serier": {
+   "normalarbeidstid": "Normalarbeidstid"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "normalarbeidstid",
+    "fra": 1910,
+    "til": 1920,
+    "tekst": "1910–1920: fra om lag 3000 til 2300 timer. 54-timersuke fra 1915, 8-timersdag fra 1919",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "normalarbeidstid",
+    "ar": 1948,
+    "tekst": "1948: ferien utvides fra to til tre uker",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "normalarbeidstid",
+    "fra": 1959,
+    "til": 1987,
+    "tekst": "1959–1987: ny runde med kortere arbeidsuke, fra 48 til 37,5 timer",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "normalarbeidstid",
+    "ar": 2025,
+    "tekst": "Knapt 1700 timer i dag",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "4.3": {
+  "kort": "Avtalt og faktisk arbeidstid",
+  "enhet": "Timer per årsverk per år",
+  "serier": {
+   "normalarbeidstid": "Normalarbeidstid",
+   "faktisk industri": "Faktisk, industri",
+   "faktisk Fastlands-Norge": "Faktisk, Fastlands-Norge"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "faktisk industri",
+    "fra": 1930,
+    "til": 1939,
+    "tekst": "1930-tallet: omfattende arbeidskonflikter trekker den faktiske arbeidstiden ned",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Serien for Fastlands-Norge gjelder lønnstakere. Selvstendige er holdt utenom."
+ },
+ "4.4": {
+  "kort": "Selvstendige i og utenfor jordbruket",
+  "enhet": "1000 årsverk",
+  "serier": {
+   "jordbruk": "Jordbruk",
+   "resten av økonomien": "Resten av økonomien"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "jordbruk",
+    "ar": 1930,
+    "tekst": "Oppgang rundt 1930: jordloven fra 1928 gir husmenn rett til å løse inn plassen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "resten av økonomien",
+    "fra": 1920,
+    "til": 2025,
+    "tekst": "Utenom jordbruket: stabilt på drøyt 100 000 over lang tid",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "4.5": {
+  "kort": "Andel selvstendige",
+  "enhet": "Prosent av sysselsatte årsverk",
+  "serier": {
+   "jordbruk": "Jordbruk",
+   "industri": "Industri",
+   "skjermet næringsliv": "Skjermet næringsliv"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "jordbruk",
+    "ar": 1980,
+    "tekst": "Jordbruket: fra 60 prosent selvstendige i 1900 til 80 prosent i 1970–1990, og tilbake mot 60 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "skjermet næringsliv",
+    "ar": 2000,
+    "tekst": "I industri og skjermet næringsliv har andelen falt kraftig fordi samlet sysselsetting har økt",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.1": {
+  "kort": "Energi, kapital og BNP etter krigen",
+  "enhet": "Indeks, 1946 = 100",
+  "serier": {
+   "BNP Fastlands-Norge": "BNP Fastlands-Norge",
+   "petroleum, elektrisitet, kull og koks": "Energiforbruk",
+   "realkapital Fastlands-Norge": "Realkapital"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "petroleum, elektrisitet, kull og koks",
+    "fra": 1946,
+    "til": 1980,
+    "tekst": "Fra krigens slutt til rundt 1980 vokser energiforbruket sterkere enn både realkapital og BNP",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "petroleum, elektrisitet, kull og koks",
+    "fra": 2000,
+    "til": 2025,
+    "tekst": "Etter 2000: liten eller ingen vekst i energiforbruket",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Energi omfatter petroleumsprodukter, elektrisitet og kull og koks. Ved er ikke med, og skipsfart er holdt utenom. Figurtittelen i PDF-en sier «1900–1925», men tallene går til 2025."
+ },
+ "5.2": {
+  "kort": "Elektrisitet mot olje og kull",
+  "enhet": "Indeks, 1946 = 100",
+  "serier": {
+   "Bnp Fastlands-Norge": "BNP Fastlands-Norge",
+   "petroleum, elektrisitet, kull og koks": "Energiforbruk i alt",
+   "realkapital": "Realkapital",
+   "elektrisitet": "Elektrisitet",
+   "petroleum, kull og koks": "Petroleum, kull og koks"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "elektrisitet",
+    "ar": 1995,
+    "tekst": "Elektrisiteten ligger over banen for realkapital og BNP fra 1980, og er først de siste årene tilbake",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "petroleum, kull og koks",
+    "ar": 1974,
+    "tekst": "Oljekrisen i 1973 bremser, men bilparken trekker oljeforbruket opp igjen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Figurtittelen i PDF-en sier «1900–1925», men tallene går til 2025."
+ },
+ "5.3": {
+  "kort": "Fra hest og ved til kull og strøm",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "tradisjonell": "Tradisjonell energi",
+   "moderne": "Moderne energi",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "tradisjonell",
+    "ar": 1875,
+    "tekst": "Tradisjonell energi når toppen midt på 1870-tallet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "moderne",
+    "ar": 1900,
+    "tekst": "Fra rundt 1900 er de moderne kildene større enn de tradisjonelle",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Tradisjonell energi: hest, mekanisk vannkraft, menneskelig arbeid, ved og torv. Moderne: kull, elektrisitet og petroleumsprodukter. Norge utenom skipsfart. Tallene bygger på Lindmark og Minde og må tolkes med forbehold."
+ },
+ "5.4": {
+  "kort": "De tre største energikildene",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "ved + torv": "Ved og torv",
+   "elektrisitet": "Elektrisitet",
+   "kull": "Kull",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "kull",
+    "ar": 1939,
+    "tekst": "Kull var den dominerende moderne energikilden fram mot 2. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "elektrisitet",
+    "ar": 1910,
+    "tekst": "Fra 1905–1910 tar elektrisiteten over som den raskest voksende kilden for ny industri",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "I Excel-filen ligger denne figuren på arket 5.5."
+ },
+ "5.5": {
+  "kort": "Kull fra utlandet og fra Svalbard",
+  "enhet": "1000 tonn",
+  "serier": {
+   "Innførsel": "Import",
+   "Svalbard": "Svalbard",
+   "Tilgang i alt": "Tilgang i alt"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Tilgang i alt",
+    "ar": 1915,
+    "tekst": "Et høydepunkt i 1915 …",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Tilgang i alt",
+    "ar": 1939,
+    "tekst": "… og et nytt i årene før 2. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Tilgang i alt",
+    "ar": 1944,
+    "tekst": "Under krigen måtte mer av energien dekkes av ved og torv på grunn av kullmangel",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Importen omfatter også koks og sinders. I Excel-filen ligger denne figuren på arket 5.4."
+ },
+ "5.6": {
+  "kort": "Vedens andel av energien",
+  "enhet": "Prosent av innenlands energiforbruk",
+  "serier": {
+   "ved": "Ved",
+   "torv": "Torv",
+   "ved + torv": "Ved og torv"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "ved + torv",
+    "fra": 1835,
+    "til": 1875,
+    "tekst": "Ved og torv: rundt 80 prosent fram til 1875",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "ved",
+    "ar": 1950,
+    "tekst": "Ved: fra om lag 70 prosent i 1880 til nær 10 prosent i 1950",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.7": {
+  "kort": "Skogen som ble hogd",
+  "enhet": "Millioner kubikkmeter",
+  "serier": {
+   "skogavvirkning": "Skogavvirkning",
+   "trend avvirkning": "Trend",
+   "ved": "Ved",
+   "eksport av trelast og tømmer": "Eksport av trelast og tømmer",
+   "bygninger/industri": "Bygninger og industri"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "skogavvirkning",
+    "fra": 1840,
+    "til": 1875,
+    "tekst": "Sterk vekst fra 1840 til midten av 1870-årene, til drøyt 10 millioner m³",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "skogavvirkning",
+    "fra": 1880,
+    "til": 2010,
+    "tekst": "Deretter rundt 10 millioner m³ i året helt fram til 2010",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "skogavvirkning",
+    "ar": 2025,
+    "tekst": "Nå nærmere 13 millioner m³",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Tallene etter 1934 og trenden fra 1900 er publikasjonens egne tillegg til beregningene til Minde."
+ },
+ "5.8": {
+  "kort": "Hva tømmeret ble brukt til",
+  "enhet": "Prosent av avvirkningen",
+  "serier": {
+   "ved": "Ved",
+   "eksport trelast": "Eksport av trelast",
+   "annen innenlands anvendelse": "Annen innenlandsk bruk"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "ved",
+    "ar": 1850,
+    "tekst": "Fram til 1850 gikk rundt 70 prosent av skogen til ved",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "ved",
+    "ar": 1900,
+    "tekst": "Dramatisk fall fra midten av 1880-årene: rundt 40 prosent i 1900",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "annen innenlands anvendelse",
+    "ar": 1930,
+    "tekst": "Tømmeret går til tremasse, cellulose og papir, ikke til mer eksport av trelast",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Ved omfatter også hunsved, altså rester fra sagbrukene."
+ },
+ "5.9": {
+  "kort": "Vannhjul og turbiner",
+  "enhet": "Millioner kWh",
+  "serier": {
+   "primærnæringer": "Primærnæringer",
+   "sekundærnæringer": "Sekundærnæringer",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "sekundærnæringer",
+    "ar": 1880,
+    "tekst": "Kraftig vekst fra rundt 1870 med tremasse, cellulose og papir",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "sekundærnæringer",
+    "ar": 1905,
+    "tekst": "Toppen rundt 1905–1910, deretter raskt fall",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "samlet",
+    "ar": 1950,
+    "tekst": "Rundt 1950 er mekanisk vannkraft faset ut",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.10": {
+  "kort": "Hestekraft mot vannkraft",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "Mekanisk vannkraft": "Mekanisk vannkraft",
+   "Hester": "Hester"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Hester",
+    "ar": 1919,
+    "tekst": "1917–1921: hester står for rundt 6 prosent av samlet energi",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.11": {
+  "kort": "Hester og traktorer",
+  "enhet": "1000 dyr og maskiner",
+  "serier": {
+   "antall hester": "Hester",
+   "antall traktorer": "Traktorer"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "antall hester",
+    "ar": 1920,
+    "tekst": "Fra rundt 150 000 til rundt 200 000 hester i 1920",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "antall hester",
+    "ar": 1946,
+    "tekst": "Toppen kommer like etter krigen. Deretter går det bratt nedover",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "antall traktorer",
+    "ar": 1960,
+    "tekst": "Første traktor kom i 1908, men antallet øker kraftig først etter krigen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.12": {
+  "kort": "Moderne energi siden 1900",
+  "enhet": "TWh",
+  "serier": {
+   "petroleumsprodukter": "Petroleumsprodukter",
+   "elektrisitet": "Elektrisitet",
+   "kull og koks": "Kull og koks",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "petroleumsprodukter",
+    "fra": 1950,
+    "til": 1980,
+    "tekst": "Særlig sterk vekst i petroleum fra 1950 til 1980",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "elektrisitet",
+    "ar": 2025,
+    "tekst": "Elektrisitet: i underkant av 140 TWh, medregnet tap i nettet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "petroleumsprodukter",
+    "ar": 2025,
+    "tekst": "Petroleum: knapt 100 TWh, lavere enn elektrisitet siden 1980",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Ved, torv og andre tradisjonelle kilder er ikke med. Bunkers i sjøfart er holdt utenom."
+ },
+ "5.13": {
+  "kort": "Fyringsolje ut, bensin og diesel inn",
+  "enhet": "Millioner liter",
+  "serier": {
+   "Fyringsprodukter": "Fyringsprodukter",
+   "Bensin og diesel": "Bensin og diesel",
+   "Samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Fyringsprodukter",
+    "ar": 1972,
+    "tekst": "Oppgangen fram mot 1970-årene var oppvarming. Etter oljekrisen i 1973 kom panelovnene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Fyringsprodukter",
+    "ar": 2020,
+    "tekst": "Fyringsforbudet fra 2020: oljefyring er langt på vei avviklet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.14": {
+  "kort": "Kjøretøyene",
+  "enhet": "1000 kjøretøyer",
+  "serier": {
+   "Busser/lastebiler/traktorer/motorsykler": "Busser, lastebiler, traktorer og motorsykler",
+   "Fossildrevne og hybride biler": "Fossil- og hybridbiler",
+   "Elbiler": "Elbiler",
+   "Samlet kjøretøybestand": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Samlet kjøretøybestand",
+    "ar": 1960,
+    "tekst": "Kraftig vekst fra 1960, da bilrasjonering og importrestriksjoner ble lempet på",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Samlet kjøretøybestand",
+    "ar": 2025,
+    "tekst": "Knapt 4,2 millioner kjøretøyer ved utgangen av 2025",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Elbiler",
+    "ar": 2025,
+    "tekst": "Snart om lag 1 million elbiler",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.15": {
+  "kort": "Flere biler, mindre drivstoff",
+  "enhet": "Indeks, 1960 = 100",
+  "serier": {
+   "Antall kjøretøyer": "Kjøretøyer",
+   "Forbruk av bensin/diesel": "Bensin og diesel",
+   "Antall fossilbiler/hybridbiler": "Fossil- og hybridbiler"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Antall kjøretøyer",
+    "ar": 2025,
+    "tekst": "Bilbestanden er om lag 8-doblet siden 1960, drivstofforbruket 5-doblet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Forbruk av bensin/diesel",
+    "ar": 2016,
+    "tekst": "Fra rundt 2010 trekker elbilene forbruket ned",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "5.16": {
+  "kort": "Drivstoff per kjøretøy",
+  "enhet": "Liter per kjøretøy",
+  "serier": {
+   "": "Bensin og diesel per kjøretøy"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "",
+    "fra": 1960,
+    "til": 2025,
+    "tekst": "Gradvis ned fra rundt 1600 til 1300 liter",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "",
+    "ar": 2018,
+    "tekst": "Overraskende lite fall det siste tiåret, trass i hybridbilene. Kjørelengde og biltyper spiller inn",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Elbiler er holdt utenom. Serien har ingen overskrift i Excel-arket."
+ },
+ "5.17": {
+  "kort": "Strøm: produksjon, forbruk og eksport",
+  "enhet": "TWh",
+  "serier": {
+   "produksjon": "Produksjon",
+   "netto eksport": "Nettoeksport",
+   "brutto forbruk": "Brutto forbruk"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "netto eksport",
+    "ar": 2025,
+    "tekst": "Nettoeksporten var knapt 23 TWh i 2025, men svinger kraftig med nedbør og tilsig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Brutto forbruk er medregnet tap i ledningsnettet."
+ },
+ "5.18": {
+  "kort": "Hvem bruker strømmen?",
+  "enhet": "TWh",
+  "serier": {
+   "tap": "Tap i nettet",
+   "industri mv.": "Industri mv.",
+   "tjenesteyting og husholdninger": "Tjenester og husholdninger",
+   "totalt brutto forbruk": "Brutto forbruk i alt"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "industri mv.",
+    "fra": 1946,
+    "til": 1970,
+    "tekst": "Særlig kraftig vekst i industrien etter krigen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Industri mv. omfatter også bergverk og oljenæringene."
+ },
+ "5.19": {
+  "kort": "Energi i hjemmet",
+  "enhet": "kWh per husholdning",
+  "serier": {
+   "ved og torv": "Ved og torv",
+   "kull, koks, fjernvarme": "Kull, koks og fjernvarme",
+   "elektrisitet": "Elektrisitet",
+   "fyringsolje": "Fyringsolje",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "elektrisitet",
+    "ar": 1930,
+    "tekst": "1930: bare drøyt 2000 kWh strøm, mest til lys og radio",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "fyringsolje",
+    "ar": 1970,
+    "tekst": "Olje og parafin stiger kraftig fra 1960 til oljekrisen i 1973",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "samlet",
+    "ar": 1986,
+    "tekst": "Høyest i 1979, 1986 og 1987: drøyt 25 000 kWh",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "elektrisitet",
+    "ar": 2025,
+    "tekst": "Om lag 85 prosent elektrisitet de siste elleve årene, opp fra rundt 12 prosent tidlig på 1930-tallet",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Tilført energi, ikke nyttiggjort. Strøm til elbiler er ikke med."
+ },
+ "5.20": {
+  "kort": "Seil, damp og motor",
+  "enhet": "Antall skip",
+  "serier": {
+   "I alt": "I alt",
+   "Seilskip": "Seilskip",
+   "Dampskip": "Dampskip",
+   "Motorskip": "Motorskip"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Seilskip",
+    "ar": 1880,
+    "tekst": "Seilskutenes gullalder varte til om lag 1880",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Dampskip",
+    "ar": 1915,
+    "tekst": "Dampskipenes epoke: fra rundt 1880 til 1920",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Motorskip",
+    "ar": 1930,
+    "tekst": "Motorskipene overtar i mellomkrigstiden",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "tallart": "Ujevne år"
+ },
+ "5.21": {
+  "kort": "Energien i skipsfarten",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "Seil og damp": "Seil og damp",
+   "Motor": "Motor",
+   "Samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Motor",
+    "ar": 1960,
+    "tekst": "Eksepsjonelt kraftig økning i energibruken når motorskipene tar over",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert."
+ },
+ "5.22": {
+  "kort": "Seil og damp før 1910",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "Seil": "Seil",
+   "Damp": "Damp",
+   "Motor": "Motor",
+   "Samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Seil",
+    "ar": 1878,
+    "tekst": "Vinden drev handelsflåten til rundt 1880",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Anslagene for skipsfarten er usikre, fordi kildegrunnlaget er magert."
+ },
+ "5.23": {
+  "kort": "Skipsfarten mot resten av landet",
+  "enhet": "Petajoule (PJ)",
+  "serier": {
+   "Fastlands-Norge": "Fastlands-Norge",
+   "Skipsfart": "Skipsfart",
+   "Norge": "Norge i alt"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Skipsfart",
+    "ar": 1974,
+    "tekst": "Toppen før shippingkrisen i 1973–74",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Etter 1960 bygger skipsfartstallene på publikasjonens egne summariske beregninger."
+ },
+ "5.24": {
+  "kort": "Skipsfartens andel av energibruken",
+  "enhet": "Prosent",
+  "serier": {
+   "andel sjøfart": "Skipsfartens andel"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "andel sjøfart",
+    "ar": 1900,
+    "tekst": "Med vind som drivkraft: mellom 5 og 10 prosent gjennom 1800-tallet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "andel sjøfart",
+    "ar": 1950,
+    "tekst": "Drøyt 40 prosent i 1950",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "andel sjøfart",
+    "fra": 1960,
+    "til": 1973,
+    "tekst": "Over 50 prosent fra 1960 til shippingkrisen: et lite land med en av verdens største handelsflåter",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.25": {
+  "kort": "Handelsflåten",
+  "enhet": "Millioner bruttotonn",
+  "serier": {
+   "Utenom tankskip": "Utenom tankskip",
+   "Tankskip": "Tankskip",
+   "Opplag": "I opplag",
+   "Samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Samlet",
+    "ar": 1973,
+    "tekst": "Mer enn sjudoblet fra 1946 til 1973",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Opplag",
+    "ar": 1975,
+    "tekst": "Etter oljekrisen blir store deler av flåten liggende i opplag",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Tankskip",
+    "ar": 1970,
+    "tekst": "Tankskip utgjør om lag halvparten av tonnasjen i 1970",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Skip i opplag er medregnet i seriene, men også vist for seg."
+ },
+ "5.26": {
+  "kort": "Realkapital og BNP i femårsperioder",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "bnp/bnp fastland": "BNP / BNP Fastlands-Norge",
+   "realkapital (fastlands-Norge fra 1975)": "Realkapital",
+   "differanse": "Differanse"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "realkapital (fastlands-Norge fra 1975)",
+    "ar": 1945,
+    "tekst": "Kapitalen falt bare under krigen: knapt 13 prosent fra 1939 til 1945",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "differanse",
+    "ar": 1990,
+    "tekst": "1970–1990: realkapitalen vokser klart mer enn verdiskapingen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "«Differanse» i Excel-arket er vekst i realkapital minus vekst i BNP, i prosentpoeng. Fra 1975 gjelder tallene Fastlands-Norge."
+ },
+ "5.27": {
+  "kort": "Industri: produksjon og kapital",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "bruttoprodukt": "Bruttoprodukt",
+   "realkapital": "Realkapital"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "bruttoprodukt",
+    "ar": 1950,
+    "tekst": "1945–1950: 19 prosent årlig vekst i bruttoproduktet",
+    "kilde": "data",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "realkapital",
+    "fra": 1955,
+    "til": 2025,
+    "tekst": "Sett under ett fra 1950 vokser verdiskaping og realkapital om lag i takt",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.28": {
+  "kort": "Skjermet næringsliv: produksjon og kapital",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {
+   "bruttoprodukt": "Bruttoprodukt",
+   "realkapital": "Realkapital"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "realkapital",
+    "fra": 1955,
+    "til": 2025,
+    "tekst": "Sett under ett fra 1950 vokser verdiskaping og realkapital om lag i takt",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "5.29": {
+  "kort": "Energi, kapital og BNP over 200 år",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "energi": "Energi",
+   "realkapital": "Realkapital",
+   "bnp fastland": "BNP Fastlands-Norge"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "energi",
+    "ar": 1885,
+    "tekst": "Vedbruken passerer toppen fra 1870-årene. Energiveksten er i mange tiår lavere enn verdiskapingen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "energi",
+    "fra": 1946,
+    "til": 1970,
+    "tekst": "Etter krigen vokser energibruken langt sterkere enn realkapital og BNP",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "energi",
+    "ar": 2015,
+    "tekst": "Etter 2010 er veksten i energiforbruket negativ",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Skipsfart er holdt utenom. Energi omfatter både tradisjonelle og moderne energiformer."
+ },
+ "6.1": {
+  "kort": "Produksjon, faktorbruk og totalproduktivitet",
+  "enhet": "Indeks, 1900 = 100",
+  "serier": {
+   "Faktorkompleks": "Samlet faktorbruk",
+   "Produksjon": "Produksjon",
+   "Totalproduktivitet": "Totalproduktivitet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Totalproduktivitet",
+    "ar": 2010,
+    "tekst": "På samme skala er veksten i totalproduktivitet knapt synlig: økt produksjon skyldes i hovedsak økt innsats",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Faktorbruken veier sammen produktinnsats, realkapital og arbeidskraft. Petroleum er holdt utenom."
+ },
+ "6.2": {
+  "kort": "Totalproduktiviteten alene",
+  "enhet": "Indeks, 1900 = 100",
+  "serier": {
+   "Totalproduktivitet": "Totalproduktivitet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Totalproduktivitet",
+    "ar": 2025,
+    "tekst": "Litt mer enn doblet siden 1900: en faktor på 2,3",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "6.3": {
+  "kort": "Totalproduktivitet etter næring",
+  "enhet": "Indeks, 1900 = 100",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Skjermet næringsliv",
+    "ar": 2000,
+    "tekst": "Noe oppsiktsvekkende: skjermet næringsliv har holdt tritt med Fastlands-Norge",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.4": {
+  "kort": "Totalproduktivitet i fire perioder",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Skjermet næringsliv",
+    "ar": 2000,
+    "tekst": "1970–2000: sterkere vekst i skjermet næringsliv enn i industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Industri",
+    "ar": 2025,
+    "tekst": "Etter 2000 er veksten noe høyere i industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.5": {
+  "kort": "Trendvekst i BNP og totalproduktivitet",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "bnp/bnp Fastland": "BNP / BNP Fastlands-Norge",
+   "totalproduktivitet": "Totalproduktivitet"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "bnp/bnp Fastland",
+    "fra": 1820,
+    "til": 1939,
+    "tekst": "BNP-trenden har svingt i leiet 2 til 2½ prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "totalproduktivitet",
+    "fra": 1980,
+    "til": 2025,
+    "tekst": "Trendveksten i totalproduktivitet varierer rundt ½ prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "BNP før 1940, BNP for Fastlands-Norge etter krigen."
+ },
+ "6.6": {
+  "kort": "To måter å måle totalproduktivitet",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "med produktinnsats": "Med produktinnsats",
+   "uten produktinnsats": "Uten produktinnsats"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "uten produktinnsats",
+    "ar": 1947,
+    "tekst": "Holdes produktinnsatsen utenom, blir den beregnede totalproduktiviteten høyere",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.7": {
+  "kort": "Bruttoprodukt per timeverk",
+  "enhet": "Indeks, 1900 = 100",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Fastlands-Norge",
+    "ar": 2025,
+    "tekst": "Fastlands-Norge: en faktor på 21 siden 1900",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "Skjermet næringsliv",
+    "fra": 1970,
+    "til": 2025,
+    "tekst": "Etter 1970 nokså parallelt, med litt høyere vekst i skjermet næringsliv enn i industrien",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Mye av forspranget til industrien oppstår før 1970. Volumet er vanskeligere å måle i tjenesteyting enn i industri."
+ },
+ "6.8": {
+  "kort": "Arbeidsproduktivitet i fire perioder",
+  "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Industri",
+    "ar": 1970,
+    "tekst": "1950–1970: over 4 prosent årlig vekst i både Fastlands-Norge og industrien",
+    "kilde": "data",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.9": {
+  "kort": "Trendvekst i arbeidsproduktiviteten",
+  "enhet": "Trendvekst, prosent",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Skjermet næringsliv",
+    "ar": 1995,
+    "tekst": "Relativt høy vekst i skjermet næringsliv på 1990-tallet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Industri",
+    "ar": 2025,
+    "tekst": "De siste årene er veksten lavest i industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "6.10": {
+  "kort": "Kapital per timeverk",
+  "enhet": "Indeks, 1900 = 100",
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Industri",
+    "ar": 2005,
+    "tekst": "Etter 2005 har kapitalen per timeverk i industrien langt på vei sluttet å øke",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Skjermet næringsliv",
+    "ar": 2025,
+    "tekst": "1900–2025: faktor 20 i industrien, 17 i Fastlands-Norge og 6 i skjermet næringsliv",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.11": {
+  "kort": "Fastlands-Norge: hva driver produktiviteten?",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "kapitalintensitet": "Bidrag fra kapitalintensitet",
+   "totalproduktivitet": "Totalproduktivitet",
+   "bruttoprodukt pr timeverk": "Bruttoprodukt per timeverk"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "kapitalintensitet",
+    "fra": 1950,
+    "til": 1970,
+    "tekst": "Tiårene etter krigen: bidraget fra økt kapital er over 2 prosent …",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "kapitalintensitet",
+    "fra": 1990,
+    "til": 2025,
+    "tekst": "… og om lag ½ prosent fra 1990-tallet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Veksten i bruttoprodukt per timeverk er om lag lik vekst i totalproduktivitet pluss bidraget fra kapitalintensitet."
+ },
+ "6.12": {
+  "kort": "Industri: hva driver produktiviteten?",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "kapitalintensitet": "Bidrag fra kapitalintensitet",
+   "totalproduktivitet": "Totalproduktivitet",
+   "bruttoprodukt pr timeverk": "Bruttoprodukt per timeverk"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "kapitalintensitet",
+    "fra": 2000,
+    "til": 2025,
+    "tekst": "Etter 2000 bidrar avtakende kapitalintensitet til svakere produktivitetsvekst",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "6.13": {
+  "kort": "Skjermet næringsliv: hva driver produktiviteten?",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "kapitalintensitet": "Bidrag fra kapitalintensitet",
+   "totalproduktivitet": "Totalproduktivitet",
+   "bruttoprodukt pr timeverk": "Bruttoprodukt per timeverk"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "kapitalintensitet",
+    "fra": 2000,
+    "til": 2025,
+    "tekst": "Bidraget fra kapitalen har holdt seg noe høyere enn i industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "6.14": {
+  "kort": "Norge mot handelspartnerne",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "handelspartnere": "Handelspartnere",
+   "Fastlands-Norge": "Fastlands-Norge",
+   "oecd": "OECD"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "handelspartnere",
+    "ar": 2020,
+    "tekst": "Fallet i produktivitetsvekst er felles for landene vi handler med",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "Fastlands-Norge",
+    "ar": 2019,
+    "tekst": "Norge har holdt seg noe bedre oppe",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "For Norge gjelder tallene Fastlands-Norge. For de andre landene hele økonomien."
+ },
+ "7.1": {
+  "kort": "Nominell lønnsvekst",
+  "enhet": "Prosent",
+  "serier": {
+   "industri": "Industri",
+   "skjermet næringsliv": "Skjermet næringsliv"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "industri",
+    "ar": 1917,
+    "tekst": "1917: nesten 50 prosent lønnsvekst i industrien",
+    "kilde": "data",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "skjermet næringsliv",
+    "ar": 1922,
+    "tekst": "1922: lønnsfall på rundt 20 prosent",
+    "kilde": "data",
+    "niva": 2,
+    "plass": "u"
+   },
+   {
+    "type": "spenn",
+    "serie": "industri",
+    "fra": 1946,
+    "til": 2025,
+    "tekst": "Etter krigen er lønnsveksten nokså lik i industri og skjermet næringsliv",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "7.2": {
+  "kort": "Reallønn følger produktiviteten",
+  "enhet": "Indeks, 2000 = 100",
+  "serier": {
+   "nasjonal timelønn": "Nasjonal realtimelønn",
+   "produktivitet industri": "Produktivitet i industrien"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "nasjonal timelønn",
+    "fra": 1970,
+    "til": 2025,
+    "tekst": "Realtimelønnen har fulgt produktiviteten i industrien forbausende tett",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Timelønn er årslønn delt på normalarbeidstid, deflatert med konsumprisindeksen."
+ },
+ "7.3": {
+  "kort": "Realprisen på industriens produkter",
+  "enhet": "Indeks, 1902 = 100",
+  "serier": {
+   "realpris industri": "Realpris, industri",
+   "1902 lik 100": "1902 = 100"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "realpris industri",
+    "ar": 1948,
+    "tekst": "Lite variasjon i det svært lange løp, men i perioder påvirker den lønnsomheten i industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Prisindeksen for industriens bruttoprodukt målt mot konsumprisindeksen."
+ },
+ "7.4": {
+  "kort": "Hovedkursen: lønn, produktivitet og priser",
+  "enhet": "Indeks, 2000 = 100",
+  "serier": {
+   "nasjonal timelønn": "Nasjonal realtimelønn",
+   "produktivitet industri": "Produktivitet i industrien",
+   "realhovedkurs": "Realhovedkurs"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "nasjonal timelønn",
+    "fra": 1900,
+    "til": 1970,
+    "tekst": "Før 1970 er sammenhengen mellom produktivitet og reallønn noe svakere",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Realhovedkursen er produktiviteten i industrien korrigert for industriprisene målt mot konsumprisene."
+ },
+ "7.5": {
+  "kort": "Timelønn mot årslønn",
+  "enhet": "Indeks, 1900 = 100",
+  "serier": {
+   "timelønn": "Timelønn",
+   "årslønn": "Årslønn"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "timelønn",
+    "ar": 2025,
+    "tekst": "Timelønn: knapt 20 ganger så høy, 2,4 prosent i året",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "årslønn",
+    "ar": 2025,
+    "tekst": "Årslønn: 11 ganger så høy, 1,9 prosent i året",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "timelønn",
+    "fra": 1950,
+    "til": 2010,
+    "tekst": "Avstanden er fritid: om lag 44 prosent av produktivitetsveksten er tatt ut som kortere arbeidstid",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   }
+  ]
+ },
+ "7.6": {
+  "kort": "Kapitalens andel av inntektene",
+  "enhet": "Prosent",
+  "serier": {
+   "industri": "Industri",
+   "skjermet næringsliv": "Skjermet næringsliv",
+   "0.2": "20 prosent"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "industri",
+    "fra": 1970,
+    "til": 2025,
+    "tekst": "Fra rundt 1970 går om lag 20 prosent av faktorinntektene til kapitalen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Deler av driftsresultatet er regnet som godtgjøring for arbeidsinnsatsen til selvstendige."
+ },
+ "7.7": {
+  "kort": "Avkastning på realkapitalen",
+  "enhet": "Prosent",
+  "serier": {
+   "industri": "Industri",
+   "skjermet næringsliv": "Skjermet næringsliv",
+   "finansnæringen": "Finansnæringen"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "industri",
+    "fra": 1960,
+    "til": 2025,
+    "tekst": "Rundt 10 prosent siden 1960 i både industri og skjermet næringsliv",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "finansnæringen",
+    "ar": 1981,
+    "tekst": "Finansnæringen er en løsgjenger, med langt høyere avkastning enn i Sverige og Danmark",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "8.1": {
+  "kort": "Statens inntekter og utgifter",
+  "enhet": "Prosent av BNP (Fastlands-Norge fra 1970)",
+  "serier": {
+   "inntekter": "Inntekter",
+   "utgifter": "Utgifter",
+   "overskudd": "Overskudd",
+   "inntekter utenom petroleum": "Inntekter utenom petroleum",
+   "utgifter utenom petroleum": "Utgifter utenom petroleum",
+   "oljekorrigert overskudd": "Oljekorrigert overskudd",
+   "strukturelt overskudd": "Strukturelt overskudd"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "inntekter",
+    "fra": 1900,
+    "til": 1918,
+    "tekst": "Rundt 5 prosent av BNP fram mot slutten av 1. verdenskrig",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "inntekter utenom petroleum",
+    "fra": 1985,
+    "til": 2025,
+    "tekst": "Inntektene i leiet 35–40 prosent siden 1980-tallet",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "utgifter utenom petroleum",
+    "ar": 2025,
+    "tekst": "Utgiftene de siste fem årene: om lag 45 prosent av BNP Fastlands-Norge",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "samme_farge": [
+   [
+    "inntekter",
+    "inntekter utenom petroleum"
+   ],
+   [
+    "utgifter",
+    "utgifter utenom petroleum"
+   ],
+   [
+    "overskudd",
+    "oljekorrigert overskudd"
+   ]
+  ],
+  "skjot": [
+   {
+    "ar": 1970,
+    "tekst": "Fra 1970: BNP Fastlands-Norge"
+   }
+  ],
+  "fotnote": "Fram til 1972 i prosent av BNP, fra 1970 i prosent av BNP for Fastlands-Norge og uten petroleumsinntekter."
+ },
+ "8.2": {
+  "kort": "De urolige 1920-årene",
+  "enhet": "Prosent",
+  "serier": {
+   "vekst bnp": "BNP-vekst",
+   "overskudd statsfinanser": "Overskudd i statsfinansene",
+   "eksport minus import": "Eksport minus import",
+   "statsgjeld i prosent av BNP": "Statsgjeld"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "statsgjeld i prosent av BNP",
+    "fra": 1920,
+    "til": 1930,
+    "tekst": "1920-årene: store ubalanser i både statsfinansene og handelen med utlandet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Overskudd, nettoeksport og statsgjeld i prosent av BNP. BNP-vekst i prosent fra året før."
+ },
+ "9.1": {
+  "kort": "BNP eller BNI?",
+  "enhet": "Indeks per innbygger, 1900 = 100",
+  "serier": {
+   "BNI pr innb": "BNI per innbygger",
+   "BNP pr innb": "BNP per innbygger",
+   "BNP med bni-deflator": "BNP med BNI-deflator"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "BNP med bni-deflator",
+    "ar": 2022,
+    "tekst": "Valget av deflator betyr mer enn formuesinntektene fra utlandet",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Årstallene i Excel-arket er merket hvert femte år. Årene imellom er fylt ut."
+ },
+ "9.2": {
+  "kort": "Prisvekst i BNP og BNI",
+  "enhet": "Prosent",
+  "serier": {
+   "bnp-deflator": "BNP-deflator",
+   "bni-deflator": "BNI-deflator"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "bnp-deflator",
+    "ar": 2022,
+    "tekst": "Særlig fra 2000 gir petroleumsprisene høyere prisvekst for BNP enn for konsum og investeringer",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Årstallene i Excel-arket er merket hvert femte år. Årene imellom er fylt ut."
+ },
+ "9.3": {
+  "kort": "BNI per innbygger i 2025-kroner",
+  "enhet": "1000 kroner (2025-kroner)",
+  "serier": {
+   "BNI pr capita": "BNI per innbygger",
+   "uten eksport av olje og gass/renter og utbytte": "Uten olje, gass og oljefondsinntekter"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "BNI pr capita",
+    "ar": 2025,
+    "tekst": "Om lag 1 million kroner i 2025, fra 53 000 i 1900: en 19-dobling",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "uten eksport av olje og gass/renter og utbytte",
+    "ar": 2025,
+    "tekst": "Uten petroleumsinntektene: drøyt 700 000 kroner",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Årstallene i Excel-arket er merket hvert femte år. Årene imellom er fylt ut."
+ },
+ "9.4": {
+  "kort": "Med gevinstene i oljefondet",
+  "enhet": "1000 kroner (2025-kroner)",
+  "serier": {
+   "BNI pr capita": "BNI per innbygger",
+   "uten eksport av olje og gass/renter og utbytte": "Uten olje, gass og oljefondsinntekter",
+   "Medr gevinster oljefond": "Medregnet gevinster i oljefondet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Medr gevinster oljefond",
+    "ar": 2023,
+    "tekst": "Med formuesgevinstene i oljefondet: om lag 1,4 millioner kroner per innbygger de siste tre årene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ],
+  "fotnote": "Formuesgevinster inngår ikke i BNI. Valutaeffekter er holdt utenom. Årstallene i Excel-arket er merket hvert femte år."
+ },
+ "9.5": {
+  "kort": "Norge, Sverige og Danmark",
+  "enhet": "Indeks, 1900 = 100",
+  "serier": {
+   "Danmark": "Danmark",
+   "Norge": "Norge",
+   "Norge uten petroleum": "Norge uten petroleum",
+   "Sverige": "Sverige"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Norge",
+    "ar": 2025,
+    "tekst": "Norge: 2,4 prosent i året, uten petroleum 2,1 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "Danmark",
+    "ar": 2025,
+    "tekst": "Sverige: 2,0 prosent. Danmark: 1,9 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "BNI per innbygger, volumindeks. Årstallene i Excel-arket er merket hvert femte år."
+ },
+ "9.6": {
+  "kort": "Aldri et fattig land",
+  "enhet": "Handelspartnere = 100",
+  "serier": {
+   "Norge - BNP": "Norge, BNP",
+   "Handelspartnere": "Handelspartnere = 100",
+   "Norge - Personlig konsum": "Norge, personlig konsum"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "Norge - BNP",
+    "fra": 1820,
+    "til": 1970,
+    "tekst": "Norge har jevnt over ligget på samme velstandsnivå som landene vi handler med",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   },
+   {
+    "type": "punkt",
+    "serie": "Norge - Personlig konsum",
+    "ar": 2025,
+    "tekst": "Målt ved personlig konsum: 15 prosent over handelspartnerne de siste tre årene",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "15 handelspartnere veid med vekter fra handelsstatistikken for varer."
+ },
+ "9.7": {
+  "kort": "Velstand i Norden",
+  "enhet": "Sverige = 100",
+  "serier": {
+   "Sverige = 100": "Sverige = 100",
+   "Danmark": "Danmark",
+   "Norge": "Norge",
+   "Finland": "Finland"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Norge",
+    "ar": 2023,
+    "tekst": "Målt ved personlig konsum ligger Norge godt over Sverige og Danmark",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "Finland",
+    "ar": 2020,
+    "tekst": "Finland er i ferd med å ta igjen Sverige",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Personlig konsum per innbygger i kjøpekraftspariteter. Årstallene i Excel-arket er merket hvert femte år."
+ },
+ "9.8": {
+  "kort": "Skipsfartens gjennombrudd",
+  "enhet": "Prosent av BNP",
+  "serier": {
+   "handelsfart": "Handelsfart",
+   "fraktfart": "Fraktfart",
+   "samlet": "Samlet"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "samlet",
+    "ar": 1864,
+    "tekst": "Fra 6 prosent av BNP i 1830 til nær 10 prosent i 1865",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "fraktfart",
+    "ar": 1862,
+    "tekst": "Fraktfarten mellom utenlandske havner: over halvparten etter 1860",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "u"
+   }
+  ],
+  "fotnote": "Handelsfart er frakt til og fra Norge. Fraktfart er frakt på norsk kjøl mellom utenlandske havner."
+ },
+ "9.9": {
+  "kort": "Eksporten på 1800-tallet",
+  "enhet": "Prosent av BNP",
+  "serier": {
+   "Eksport utenom skipsfart": "Eksport utenom skipsfart",
+   "Skipsfartstjenester": "Skipsfartstjenester",
+   "Eksport": "Eksport i alt"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "Eksport",
+    "ar": 1916,
+    "tekst": "1916: eksporten når over halvparten av BNP",
+    "kilde": "data",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "9.10": {
+  "kort": "Statens inntekter og utgifter før 1910",
+  "enhet": "Prosent av BNP",
+  "serier": {
+   "Inntekter": "Inntekter",
+   "Utgifter": "Utgifter",
+   "trend inntekter": "Trend, inntekter"
+  },
+  "merknader": [
+   {
+    "type": "punkt",
+    "serie": "trend inntekter",
+    "ar": 1905,
+    "tekst": "Inntektene øker fra rundt 4 prosent av BNP etter 1814 til rundt 6 prosent",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "u"
+   }
+  ]
+ },
+ "9.11": {
+  "kort": "Tollstaten og jernbanen",
+  "enhet": "Prosent",
+  "serier": {
+   "toll som andel av statens inntekter": "Toll, andel av inntektene",
+   "kapitalutgifter som andel av statens utgifter": "Kapitalutgifter, andel av utgiftene",
+   "trend-infrastruktur": "Trend, kapitalutgifter"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "toll som andel av statens inntekter",
+    "fra": 1820,
+    "til": 1890,
+    "tekst": "Toll: i snitt 70 prosent av statens inntekter 1820–1890",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "trend-infrastruktur",
+    "ar": 1877,
+    "tekst": "Høy andel kapitalutgifter etter 1850, særlig i 1870-årene: jernbanen",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ },
+ "9.12": {
+  "kort": "Sjøfart eller industri?",
+  "enhet": "Trendvekst, prosent",
+  "serier": {
+   "sjøfart": "Sjøfart",
+   "industri": "Industri",
+   "BNP": "BNP"
+  },
+  "merknader": [
+   {
+    "type": "spenn",
+    "serie": "sjøfart",
+    "fra": 1820,
+    "til": 1875,
+    "tekst": "Fram til 1875 vokser sjøfarten langt sterkere enn industrien",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   },
+   {
+    "type": "punkt",
+    "serie": "industri",
+    "ar": 1900,
+    "tekst": "Industrien tar seg først opp mot slutten av 1800-tallet",
+    "kilde": "tekst",
+    "niva": 2,
+    "plass": "o"
+   },
+   {
+    "type": "spenn",
+    "serie": "sjøfart",
+    "fra": 1946,
+    "til": 1970,
+    "tekst": "Etter krigen: sterk vekst i både industri og sjøfart, særlig tankflåten",
+    "kilde": "tekst",
+    "niva": 1,
+    "plass": "o"
+   }
+  ]
+ }
+}

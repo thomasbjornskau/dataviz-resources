@@ -1,0 +1,902 @@
+[
+ {
+  "id": "1.1",
+  "emne": 1,
+  "tittel": "Volumutviklingen i privat konsum 1946-1970 med ulike beregninger",
+  "side": 9,
+  "fra": 1946,
+  "til": 1970,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "1.2",
+  "emne": 1,
+  "tittel": "Volumutviklingen i BNP 1865-1950. Indeks med 1865 = 100. Nasjonalregnskap 1865-1960 kontra Grytten",
+  "side": 10,
+  "fra": 1865,
+  "til": 1960,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "1.3",
+  "emne": 1,
+  "tittel": "Volumutviklingen i BNP 1865-1939. Prosentvis endring fra året før. Nasjonalregnskap 1865-1960 kontra Grytten",
+  "side": 11,
+  "fra": 1865,
+  "til": 1960,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "1.4",
+  "emne": 1,
+  "tittel": "Prisutviklingen i BNP 1865-1939. Indeks med 1865 = 100. Nasjonalregnskap 1865-1960 kontra Grytten",
+  "side": 11,
+  "fra": 1865,
+  "til": 1960,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "1.5",
+  "emne": 1,
+  "tittel": "Verdiutviklingen i BNP 1865-1939. Indeks med 1865 = 100. Nasjonalregnskap 1865-1960 kontra Grytten",
+  "side": 12,
+  "fra": 1865,
+  "til": 1960,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "1.6",
+  "emne": 1,
+  "tittel": "Beregnet trendvekst i BNP fram til 1940 med ulike kilder og trendvekst BNP-fastland etter 2. verdenskrig",
+  "side": 13,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "2.1",
+  "emne": 2,
+  "tittel": "Sammensetningen av innenlands anvendelse. 1820 til 2025. Prosent",
+  "side": 16,
+  "fra": 1820,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.2",
+  "emne": 2,
+  "tittel": "Eksport og import i prosent av BNP. 1820 til 2025",
+  "side": 17,
+  "fra": 1820,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.3",
+  "emne": 2,
+  "tittel": "Eksportoverskudd 1900 -1996 og netto gjeld til utlandet fra 1919 og 1924. Prosent av BNP",
+  "side": 18,
+  "fra": 1900,
+  "til": 1996,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.4",
+  "emne": 2,
+  "tittel": "Volumutvikling i BNP til 1970, volumutvikling i BNP for Fastlands-Norge etter 1970. Prosent endring fra året før. Beregnet trendvekst",
+  "side": 19,
+  "fra": 1970,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.5",
+  "emne": 2,
+  "tittel": "Trendvekst i privat konsum og bruttorealinvesteringer i fast kapital sammenliknet med trendvekst for BNP for Fastlands-Norge. Prosent",
+  "side": 19,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "2.6",
+  "emne": 2,
+  "tittel": "Volumvekst i bruttoprodukt i industri og jordbruk. 5-års perioder etter 1900",
+  "side": 20,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.7",
+  "emne": 2,
+  "tittel": "Realkapital (løpende priser) pr årsverk. Industri = 100",
+  "side": 21,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "2.8",
+  "emne": 2,
+  "tittel": "Volumvekst i bruttoprodukt i skjermet næringsliv og offentlig forvaltning. 5-års perioder etter 1900",
+  "side": 21,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.9",
+  "emne": 2,
+  "tittel": "Volumvekst i bruttoprodukt i skjermet næringsliv, og herav bygg og anlegg samt varehandel. 5-års perioder etter 1900",
+  "side": 22,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.10",
+  "emne": 2,
+  "tittel": "Prisvekst i BNP og konsumpriser, samt for BNP-Fastlands-Norge fra 1970",
+  "side": 22,
+  "fra": 1970,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.11",
+  "emne": 2,
+  "tittel": "Prisvekst for eksport og import sammenliknet med prisvekst for BNP. Prosentvis endring fra året før",
+  "side": 23,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "2.12",
+  "emne": 2,
+  "tittel": "Bytteforholdsgevinster. Forholdet mellom prisindeksen for eksport og import. 1910 = 100",
+  "side": 24,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "2.13",
+  "emne": 2,
+  "tittel": "Hvalfangst/sjøfart samt petroleumsvirksomhet som andel av BNP. 1900 til 2025",
+  "side": 25,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.14",
+  "emne": 2,
+  "tittel": "Fordeling av næringsområder siden 1900. Målt i prosent av BNP for Fastlands-Norge",
+  "side": 26,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "2.15",
+  "emne": 2,
+  "tittel": "Finansnæringen 1900-2025. Bruttoprodukt som andel av BNP og andel av samlet sysselsetting",
+  "side": 26,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "3.1",
+  "emne": 3,
+  "tittel": "Utvikling i antall fødsler, døde, utvandringer og innvandringer 1850-2025. 1000 enheter",
+  "side": 27,
+  "fra": 1850,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "3.2",
+  "emne": 3,
+  "tittel": "Fødsler og dødsfall 1850 til 2025. Promille av samlet befolkning",
+  "side": 28,
+  "fra": 1850,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "3.3",
+  "emne": 3,
+  "tittel": "Befolkningen i aldersklassene 18–64 år fordelt på menn og kvinner, samt antall sysselsatte. 1000 personer",
+  "side": 29,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.4",
+  "emne": 3,
+  "tittel": "Antall husmødre og døtre i husholdningene, målt i 1000 personer",
+  "side": 30,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.5",
+  "emne": 3,
+  "tittel": "Andel kvinner av yrkesbefolkningen ifølge folketellingene. Prosent",
+  "side": 30,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.6",
+  "emne": 3,
+  "tittel": "Antall sysselsatte personer i jordbruk (inkl. skogbruk), industri og lønt husarbeid. 1000 personer",
+  "side": 31,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.7",
+  "emne": 3,
+  "tittel": "Sysselsatte personer i skjermet næringsliv og offentlig forvaltning. 1000 personer",
+  "side": 32,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.8",
+  "emne": 3,
+  "tittel": "Sysselsatte personer i skjermet næringsliv og offentlig forvaltning. Andeler av samlet sysselsetting",
+  "side": 32,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "3.9",
+  "emne": 3,
+  "tittel": "Andel kvinner av samlet sysselsetting. 1962-2025",
+  "side": 33,
+  "fra": 1962,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "3.10",
+  "emne": 3,
+  "tittel": "Sysselsatte personer 1962-2025. Fordeling på menn og kvinner. 1000 personer",
+  "side": 34,
+  "fra": 1962,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "4.1",
+  "emne": 4,
+  "tittel": "Sysselsatte personer, årsverk og utførte timeverk 1900-2025. Indekser med 1900 = 100",
+  "side": 37,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "4.2",
+  "emne": 4,
+  "tittel": "Årlig normalarbeidstid for heltidsansatte dagarbeidere",
+  "side": 38,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "4.3",
+  "emne": 4,
+  "tittel": "Normalarbeidstid sammenliknet med faktisk arbeidstid pr. årsverk pr. år for lønnstakere i industri og for lønnstakere i Fastlands-Norge",
+  "side": 38,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "4.4",
+  "emne": 4,
+  "tittel": "Antall selvstendige sysselsatte årsverk i jordbruk og øvrig norsk økonomi. 1000 sysselsatte årsverk. 1900 til 2025",
+  "side": 39,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "4.5",
+  "emne": 4,
+  "tittel": "Andel selvstendige sysselsatte av samlet sysselsetting målt i årsverk. Jordbruk, industri og skjermet næringsliv. 1900 til 2025",
+  "side": 39,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.1",
+  "emne": 5,
+  "tittel": "Volumindekser for Fastlands-Norge. Utvikling i energibruk, realkapital og BNP for Fastlands-Norge. 1900-1925. Indeks med 1946 = 100",
+  "side": 48,
+  "fra": 1900,
+  "til": 1925,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.2",
+  "emne": 5,
+  "tittel": "Volumindekser for Fastlands-Norge. Utvikling i energibruk fordelt på elektrisitet og petroleum/kull og koks, samt realkapital og BNP for Fastlands-Norge. 1900-1925. Indeks med 1946 = 100",
+  "side": 48,
+  "fra": 1900,
+  "til": 1925,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.3",
+  "emne": 5,
+  "tittel": "Overgangen fra tradisjonelle (hest, mekanisk vannkraft, menneskelig arbeid, ved og torv) til moderne energiformer (kull, elektrisitet, og petroleumsprodukter). 1835-1950. Norge utenom skipsfart. PetaJoule (PJ)",
+  "side": 50,
+  "fra": 1835,
+  "til": 1950,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.4",
+  "emne": 5,
+  "tittel": "De tre største energikildene ved overgangen fra tradisjonelle til moderne energiformer. 1835-1950. Norge utenom skipsfart. PetaJoule (PJ)",
+  "side": 51,
+  "fra": 1835,
+  "til": 1950,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.5",
+  "emne": 5,
+  "tittel": "Tilgang på kull fra innførsel og fra Svalbard. 1835-1970. 1000 tonn",
+  "side": 52,
+  "fra": 1835,
+  "til": 1970,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.6",
+  "emne": 5,
+  "tittel": "Forbruk av ved og torv som andel av samlet innenlands energiforbruk. 1835-1965. Prosent",
+  "side": 53,
+  "fra": 1835,
+  "til": 1965,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.7",
+  "emne": 5,
+  "tittel": "Skogavvirkningen 1800-2025 i Norge. Millioner kubikkmeter. Av samlet avvirkning bruk til ved og til eksport av trelast og tømmer",
+  "side": 54,
+  "fra": 1800,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.8",
+  "emne": 5,
+  "tittel": "Skogavvirkningen og ulike anvendelser. 1830-1939. Prosent",
+  "side": 54,
+  "fra": 1830,
+  "til": 1939,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.9",
+  "emne": 5,
+  "tittel": "Omfanget av mekanisk vannkraft i primær- og sekundærnæringer. 1830-1950. Millioner kWh",
+  "side": 55,
+  "fra": 1830,
+  "til": 1950,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.10",
+  "emne": 5,
+  "tittel": "Energi fra hester sammenliknet med omfanget på mekanisk vannenergi. 1830-1970. Målt i PJ",
+  "side": 56,
+  "fra": 1830,
+  "til": 1970,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.11",
+  "emne": 5,
+  "tittel": "Antall hester (1000) og antall traktorer (1000). 1800-1970",
+  "side": 57,
+  "fra": 1800,
+  "til": 1970,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.12",
+  "emne": 5,
+  "tittel": "Samlet innenlands energitilgang målt i TWh, fordelt på petroleumsprodukter og elektrisitet samt kull og koks. 1900 til 2025",
+  "side": 58,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.13",
+  "emne": 5,
+  "tittel": "Salg av petroleumsprodukter. Fyringsprodukter, bensin og diesel. Millioner liter",
+  "side": 59,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "5.14",
+  "emne": 5,
+  "tittel": "Bestanden av kjøretøyer. 1930-2025. 1000 kjøretøyer",
+  "side": 60,
+  "fra": 1930,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.15",
+  "emne": 5,
+  "tittel": "Utviklingen i kjøretøybestand og utvikling i forbruk av bensin og diesel. Volumindeks med 1960 = 100",
+  "side": 60,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "5.16",
+  "emne": 5,
+  "tittel": "Forbruk av bensin og diesel pr, kjøretøy. Utenom elbiler. Liter pr. kjøretøy",
+  "side": 61,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "5.17",
+  "emne": 5,
+  "tittel": "Produksjon, innenlands brutto forbruk (inkl. tap i ledningsnettet) og netto eksport av elektrisitet. TWh. 1900-2025",
+  "side": 62,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.18",
+  "emne": 5,
+  "tittel": "Forbruk av elektrisitet innenlands fordelt på industri mv. og øvrig næringsliv og husholdninger. TWh. 1930 – 2025",
+  "side": 62,
+  "fra": 1930,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.19",
+  "emne": 5,
+  "tittel": "Energiforbruk til boliger (inkl. fritidsboliger) i husholdningene fordelt på energibærer. 1930-2025. Tilført energi pr. husholdning. KWH",
+  "side": 64,
+  "fra": 1930,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.20",
+  "emne": 5,
+  "tittel": "Antall skip i norsk skipsflåte. 1800-1950. Fordeling på seilskip, dampskip og motorskip",
+  "side": 65,
+  "fra": 1800,
+  "til": 1950,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.21",
+  "emne": 5,
+  "tittel": "Utviklingen i energiforbruket i skipsfart. Fordeling på seil/damp og motorskip. 1835-1960. Målt i PJ (PetaJoule)",
+  "side": 66,
+  "fra": 1835,
+  "til": 1960,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.22",
+  "emne": 5,
+  "tittel": "Utviklingen i energiforbruket i skipsfart. Fordeling på seilskip, dampskip og motorskip. 1835-1910. Målt i PJ (PetaJoule)",
+  "side": 67,
+  "fra": 1835,
+  "til": 1910,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.23",
+  "emne": 5,
+  "tittel": "Utviklingen i energiforbruket i skipsfart, Fastlands-Norge og Norge. 1835-1986. Målt i PJ (PetaJoule)",
+  "side": 67,
+  "fra": 1835,
+  "til": 1986,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.24",
+  "emne": 5,
+  "tittel": "Utviklingen i energiforbruket i skipsfart som andel av energiforbruket i Norge. 1835-1986. Prosent",
+  "side": 68,
+  "fra": 1835,
+  "til": 1986,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.25",
+  "emne": 5,
+  "tittel": "Handelsflåten. 1910-1986. Millioner bruttotonn. Fordeling på tankskip, utenom tankskip og skip i opplag",
+  "side": 68,
+  "fra": 1910,
+  "til": 1986,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.26",
+  "emne": 5,
+  "tittel": "Volumvekst i realkapital og BNP (Fastlands-Norge siden 1975) siden 1900. 5-årsperioder",
+  "side": 69,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.27",
+  "emne": 5,
+  "tittel": "Volumvekst i realkapital og bruttoprodukt for industri siden 1900. 5-årsperioder",
+  "side": 70,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.28",
+  "emne": 5,
+  "tittel": "Volumvekst i realkapital og bruttoprodukt for skjermet næringsliv siden 1900",
+  "side": 71,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "5.29",
+  "emne": 5,
+  "tittel": "Trendveksten for energi, realkapital og bnp for fastlands-Norge i perioden 1820 til 2025. Utenom skipsfart og petroleumsnæringer. Prosent endring.",
+  "side": 72,
+  "fra": 1820,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.1",
+  "emne": 6,
+  "tittel": "Indekser for produksjon, faktorbruk og totalproduktivitet for Fastlands-Norge. 1900 til 2025. 1900 = 100",
+  "side": 75,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.2",
+  "emne": 6,
+  "tittel": "Indeks for totalproduktivitet for Fastlands-Norge. 1900 til 2025. 1900 = 100",
+  "side": 75,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.3",
+  "emne": 6,
+  "tittel": "Utviklingen i totalproduktiviteten fordelt på Fastlands-Norge, industri og skjermet næringsliv. 1900 til 2025. 1900 = 100",
+  "side": 76,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.4",
+  "emne": 6,
+  "tittel": "Gjennomsnittlig årlig vekst i totalproduktivitet for delperiodene 1900-1950, 1950-1970, 1970-2000 og 2000- 2025. Fastlands-Norge, industri og skjermet næringsliv",
+  "side": 77,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.5",
+  "emne": 6,
+  "tittel": "Trendvekst i BNP fram til, 1940 og BNP Fastlands-Norge etter 2. verdenskrig, samt trendvekst i totalproduktivitet",
+  "side": 78,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "6.6",
+  "emne": 6,
+  "tittel": "Trendvekst i totalproduktivitet for Fastlands-Norge. Beregnet med og uten produktinnsats som produksjonsfaktor. 1900-2025. Prosent.",
+  "side": 79,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.7",
+  "emne": 6,
+  "tittel": "Utviklingen i bruttoprodukt (faste priser) pr. timeverk. Fastlands-Norge, industri og skjermet næringsliv. 1900 til 2025. 1900 = 100",
+  "side": 79,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.8",
+  "emne": 6,
+  "tittel": "Gjennomsnittlig årlig vekst i bruttoprodukt pr timeverk for delperiodene 1900-1950, 1950-1970, 1970-2000 og 2000-2025. Fastlands-Norge, industri og skjermet næringsliv",
+  "side": 80,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.9",
+  "emne": 6,
+  "tittel": "Trendvekst i bruttoprodukt i faste priser pr. timeverk. 1900-2025. Fastlands-Norge, industri og skjermet næringsliv",
+  "side": 81,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.10",
+  "emne": 6,
+  "tittel": "Indekser for realkapital pr timeverk. Industri, Fastlands-Norge og skjermet næringsliv. 1900-2025. 1900 = 100",
+  "side": 82,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.11",
+  "emne": 6,
+  "tittel": "Fastlands-Norge. Trendvekst i bruttoprodukt pr. timeverk fordelt på totalproduktivitet og bidrag fra kapitalintensitet. 1900 til 2025",
+  "side": 82,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.12",
+  "emne": 6,
+  "tittel": "Industri. Trendvekst i bruttoprodukt pr. timeverk fordelt på totalproduktivitet og bidrag fra kapitalintensitet. 1900 til 2025",
+  "side": 83,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.13",
+  "emne": 6,
+  "tittel": "Skjermet næringsliv. Trendvekst i bruttoprodukt pr. timeverk fordelt på totalproduktivitet og bidrag fra kapitalintensitet. 1900 til 2025",
+  "side": 83,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "6.14",
+  "emne": 6,
+  "tittel": "Trendveksten i arbeidskraftproduktivitet i Norge (Fastlands-Norge) sammenliknet med handelspartnere og OECD-området i perioden etter 1995",
+  "side": 84,
+  "fra": 1995,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.1",
+  "emne": 7,
+  "tittel": "Nominell årlig lønnsvekst for industri og for skjermet næringsliv. 1900 til 2025",
+  "side": 86,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.2",
+  "emne": 7,
+  "tittel": "Utvikling i arbeidskraftproduktivitet i industri og utviklingen i nasjonal realtimelønn for perioden 1970 til 2025. 2000 = 100",
+  "side": 87,
+  "fra": 1970,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.3",
+  "emne": 7,
+  "tittel": "Realprisen for bruttoproduktet i industrien. 1902 =100",
+  "side": 87,
+  "fra": null,
+  "til": null,
+  "periodekilde": "ukjent"
+ },
+ {
+  "id": "7.4",
+  "emne": 7,
+  "tittel": "Utvikling i arbeidskraftproduktivitet i industri og utviklingen i nasjonal realtimelønn, samt hovedkurs. 1900 til 2025. Indeks med 2000 = 100",
+  "side": 88,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.5",
+  "emne": 7,
+  "tittel": "Realutvikling i årslønn og timelønn nasjonalt i perioden 1900 til 2025. 1900 =100",
+  "side": 89,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.6",
+  "emne": 7,
+  "tittel": "Utviklingen av eierandeler i industri og skjermet næringsliv. 1900 -2025",
+  "side": 90,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "7.7",
+  "emne": 7,
+  "tittel": "Kapitalavkastning i industri og skjermet næringsliv, samt finansnæringen. 1900 til 2025",
+  "side": 90,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "8.1",
+  "emne": 8,
+  "tittel": "Statens Inntekter og utgifter i prosent av BNP fra 1900 fram til 1972 og fra 1970 i prosent av BNP for Fastlands-Norge",
+  "side": 92,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "8.2",
+  "emne": 8,
+  "tittel": "Nærmere om statens finanser og enkelte andre indikatorer 1900 – 1939. Overskudd i statsfinanser i prosent av BNP. Prosent volumendring i BNP. Netto eksport i prosent av BNP. Brutto statsgjeld i prosent av BNP",
+  "side": 92,
+  "fra": 1900,
+  "til": 1939,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.1",
+  "emne": 9,
+  "tittel": "Volumutviklingen i BNP, BNP deflatert med prisindeks for innenlands anvendelse og BNI. 1900 til 2025. Pr. innbygger og med 1900 = 100",
+  "side": 94,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.2",
+  "emne": 9,
+  "tittel": "Årlig prisvekst for BNP kontra BNI siden 1970",
+  "side": 94,
+  "fra": 1970,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.3",
+  "emne": 9,
+  "tittel": "BNI pr innbygger i Norge målt i 2025-kroner. Med og uten oljeinntekter. 1000 kroner. 1900-2025",
+  "side": 95,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.4",
+  "emne": 9,
+  "tittel": "BNI pr innbygger i Norge målt i 2025-kroner. Med og uten oljeinntekter, samt formuesgevinster i oljefondet. 1000 kroner. 1970-2025",
+  "side": 96,
+  "fra": 1970,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.5",
+  "emne": 9,
+  "tittel": "Bruttonasjonalinntekt pr. innbygger. Norge, Sverige og Danmark. Volumindeks 1900-2025 med 1900 = 100",
+  "side": 97,
+  "fra": 1900,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.6",
+  "emne": 9,
+  "tittel": "Kjøpekraft pr. innbygger i Norge. Målt ved BNP 1820-2025 og i tillegg målt ved personlig konsum fra 1995. Handelspartnere = 100",
+  "side": 99,
+  "fra": 1820,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.7",
+  "emne": 9,
+  "tittel": "Relative velstandsnivåer i Norden (utenom Island) målt ved personlig konsum. Sverige = 100. 1995 til 2025",
+  "side": 99,
+  "fra": 1995,
+  "til": 2025,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.8",
+  "emne": 9,
+  "tittel": "Bruttofraktinntekter skipsfart 1830-1865, målt i prosent av BNP. Fordeling på handelsfrakt og fraktfart",
+  "side": 101,
+  "fra": 1830,
+  "til": 1865,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.9",
+  "emne": 9,
+  "tittel": "Eksportinntekter fordelt på skipsfartstjenester og øvrig eksport. 1816-1930. Prosent av BNP",
+  "side": 101,
+  "fra": 1816,
+  "til": 1930,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.10",
+  "emne": 9,
+  "tittel": "Statens inntekter og utgifter. 1816-1910. Prosent av BNP",
+  "side": 102,
+  "fra": 1816,
+  "til": 1910,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.11",
+  "emne": 9,
+  "tittel": "Tollinntekter som andel av statens inntekter og kapitalutgifter som andel av statens utgifter. 1816-1910. Prosent",
+  "side": 103,
+  "fra": 1816,
+  "til": 1910,
+  "periodekilde": "tittel"
+ },
+ {
+  "id": "9.12",
+  "emne": 9,
+  "tittel": "Trendveksten i BNP, skipsfart og industri. 1820-1980. Prosent",
+  "side": 103,
+  "fra": 1820,
+  "til": 1980,
+  "periodekilde": "tittel"
+ }
+]

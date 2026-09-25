@@ -1,0 +1,194 @@
+{
+ "_om": "Redaksjonelt lag oppå Excel-tallene. kilde: 'tekst' = gjengitt med egne ord fra publikasjonens tekst (side i katalogen). kilde: 'data' = avlest direkte i tallserien. niva 1 vises alltid, niva 2 bare når du har zoomet inn. plass: o=over, u=under (valgfritt hint).",
+
+ "1.1": {"kort": "Privat konsum etter krigen: tre beregninger", "enhet": "Volumvekst, prosent",
+  "merknader": [
+   {"type":"punkt","serie":"NOS-publikasjonene","ar":1969,"tekst":"Momsen fra 1970 framskyndet kjøp av varige goder til høsten 1969: 7,7 prosent vekst i 1969, nullvekst året etter","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "1.2": {"kort": "BNP 1865–1950: SSB mot Grytten", "enhet": "Indeks, 1865 = 100",
+  "serier": {"Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"},
+  "merknader": [
+   {"type":"punkt","serie":"Grytten","ar":1942,"tekst":"SSB publiserte ikke nasjonalregnskap for krigsårene. Her dekker bare Gryttens serie","kilde":"tekst","niva":1,"plass":"u"}
+  ]},
+ "1.3": {"kort": "Årlig BNP-vekst 1866–1939: SSB mot Grytten", "enhet": "Volumvekst, prosent",
+  "serier": {"Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"},
+  "merknader": [
+   {"type":"spenn","serie":"Grytten","fra":1915,"til":1921,"tekst":"1915–1921: større feilmarginer på grunn av 1. verdenskrig","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "1.4": {"kort": "Prisutvikling i BNP 1865–1939: SSB mot Grytten", "enhet": "Indeks, 1865 = 100",
+  "serier": {"Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"},
+  "merknader": [
+   {"type":"spenn","serie":"Nasjonalregnskap 1865-1960","fra":1915,"til":1921,"tekst":"Store pris- og lønnsbevegelser gjør det vanskelig å skille pris fra volum i disse årene","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "1.5": {"kort": "BNP i løpende priser 1865–1939: SSB mot Grytten", "enhet": "Indeks, 1865 = 100",
+  "serier": {"Nasjonalregnskap 1865-1960": "SSB, Nasjonalregnskap 1865–1960"},
+  "merknader": []},
+ "1.6": {"kort": "Trendveksten i BNP over 200 år", "enhet": "Trendvekst, prosent",
+  "serier": {"bnp med Grytten som kilde før 1930": "BNP, Grytten før 1930", "bnp med NOS 1865-1960 som kilde før 1930": "BNP, NOS før 1930", "Fastlands-Norge": "BNP Fastlands-Norge"},
+  "merknader": [
+   {"type":"spenn","serie":"bnp med Grytten som kilde før 1930","fra":1820,"til":1939,"tekst":"Fra rundt 1820 til 2. verdenskrig: stabil trendvekst på om lag 2¼ prosent","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"spenn","serie":"Fastlands-Norge","fra":1947,"til":1975,"tekst":"Etterkrigsårene skiller seg ut som en unntaksperiode","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+
+ "2.1": {"kort": "Hva brukes pengene til?", "enhet": "Prosent av innenlands anvendelse",
+  "merknader": [
+   {"type":"punkt","serie":"Privat konsum","ar":1850,"tekst":"Privat konsum: rundt 80 prosent gjennom 1800-tallet …","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"Privat konsum","ar":2025,"tekst":"… og under 50 prosent i dag","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"Offentlig konsum","ar":1920,"tekst":"Veksten i offentlig konsum starter etter 1. verdenskrig og skyter fart etter 1945","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"spenn","serie":"Offentlig konsum","fra":1990,"til":2025,"tekst":"Om lag konstant andel etter 1990","kilde":"tekst","niva":2,"plass":"o"},
+   {"type":"punkt","serie":"Bruttoinvesteringer","ar":1950,"tekst":"Investeringene: fra rundt 20 prosent før krigen til over 30 prosent etter","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.2": {"kort": "En liten, åpen økonomi", "enhet": "Prosent av BNP",
+  "merknader": [
+   {"type":"punkt","serie":"Eksport","ar":1916,"tekst":"Under 1. verdenskrig steg eksporten til 50 prosent av BNP","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"Import","ar":1919,"tekst":"De høye inntektene i 1915–16 ga svært høy import mot slutten av krigen","kilde":"tekst","niva":2,"plass":"o"},
+   {"type":"punkt","serie":"Eksport","ar":2022,"tekst":"2022: krigen i Ukraina ga høye olje- og gasspriser. Handlingsregelen dempet virkningen innenlands","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.3": {"kort": "Eksportoverskudd og gjeld til utlandet", "enhet": "Prosent av BNP",
+  "serier": {"eksportoverskudd": "Eksportoverskudd", "netto gjeld i prosent av BNP": "Netto gjeld til utlandet"},
+  "merknader": [
+   {"type":"punkt","serie":"netto gjeld i prosent av BNP","ar":1919,"tekst":"Rett etter begge verdenskrigene hadde Norge netto fordringer på utlandet","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"netto gjeld i prosent av BNP","ar":1932,"tekst":"Fra 1920-årene: underskudd og oppbygging av gjeld","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"netto gjeld i prosent av BNP","ar":1994,"tekst":"1993 og 1994 var de siste årene som gjeldsnasjon","kilde":"tekst","niva":1,"plass":"o"}
+  ],
+  "fotnote": "Gjeldstallene har ingen observasjoner for 1920–1923 og 1940–1945. Serien slutter i 1996."},
+ "2.4": {"kort": "Hvor fort vokser økonomien?", "enhet": "Volumvekst, prosent",
+  "serier": {"vekst bnp": "BNP", "vekst fastlands-bnp": "BNP Fastlands-Norge", "trendvekst fastlands-bnp": "Beregnet trend"},
+  "samme_farge": [["vekst bnp","vekst fastlands-bnp"]],
+  "skjot": [{"ar":1970,"tekst":"Fra 1970: Fastlands-Norge"}],
+  "merknader": [
+   {"type":"spenn","serie":"trendvekst fastlands-bnp","fra":1900,"til":1939,"tekst":"Trenden ligger i overkant av 2 prosent fram til krigen","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"vekst bnp","ar":1921,"tekst":"Fra slutten av 1. verdenskrig og fram til årene etter 2. verdenskrig svinger veksten svært mye fra år til år","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"spenn","serie":"trendvekst fastlands-bnp","fra":1946,"til":1973,"tekst":"Etter krigen dobles trenden til om lag 4 prosent, og den holder seg der til 1970-årene","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"vekst bnp","ar":1947,"tekst":"Gjenreisningen: investeringsledet vekst i industri og i byer og landsdeler som ble ødelagt under krigen","kilde":"tekst","niva":2,"plass":"o"},
+   {"type":"spenn","serie":"trendvekst fastlands-bnp","fra":2009,"til":2025,"tekst":"Etter finanskrisen faller trenden fra om lag 3 til knapt 2 prosent","kilde":"tekst","niva":1,"plass":"u"}
+  ],
+  "fotnote": "Trenden er beregnet med Hodrick-Prescott-filter. Før 1970 er trenden beregnet for hele BNP, selv om kolonnen i Excel-filen heter «trendvekst fastlands-bnp»."},
+ "2.5": {"kort": "Etterkrigsveksten var investeringsledet", "enhet": "Trendvekst, prosent",
+  "serier": {"Fastlands-Norge": "BNP Fastlands-Norge", "Konsum": "Privat konsum", "Investeringer": "Bruttorealinvesteringer"},
+  "merknader": [
+   {"type":"punkt","serie":"Investeringer","ar":1950,"tekst":"Oppsvinget etter krigen var i særlig grad knyttet til økte investeringer","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.6": {"kort": "Industri og jordbruk i femårsperioder", "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {"bnp/bnp fastland": "BNP / BNP Fastlands-Norge", "industri": "Industri", "jordbruk": "Jordbruk"},
+  "merknader": [
+   {"type":"punkt","serie":"industri","ar":1950,"tekst":"1945–1950: industriveksten var omtrent dobbelt så stor som fallet under krigen","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"jordbruk","ar":1980,"tekst":"Jordbruket: svak vekst i verdiskapingen tross kraftig fall i sysselsettingen","kilde":"tekst","niva":2,"plass":"u"}
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden. Rundt krigen er periodene 1935–1939 og 1939–1945."},
+ "2.7": {"kort": "Kapital per årsverk: jordbruket går forbi", "enhet": "Indeks, industri = 100",
+  "serier": {"skjermet næringsliv": "Skjermet næringsliv", "jordbruk": "Jordbruk", "industri": "Industri = 100"},
+  "merknader": [
+   {"type":"punkt","serie":"jordbruk","ar":2000,"tekst":"Siden 2000 har jordbruket om lag dobbelt så mye kapital per årsverk som industrien","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.8": {"kort": "Skjermet næringsliv og offentlig forvaltning", "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {"bnp/bnp fastland": "BNP / BNP Fastlands-Norge", "skjermet næringsliv": "Skjermet næringsliv", "offentlig forvaltning": "Offentlig forvaltning"},
+  "merknader": [
+   {"type":"punkt","serie":"skjermet næringsliv","ar":1925,"tekst":"Store svingninger i skjermet næringsliv. Offentlig forvaltning demper dem i perioder","kilde":"tekst","niva":1,"plass":"u"}
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden."},
+ "2.9": {"kort": "Bygg og anlegg etter krigen", "enhet": "Gjennomsnittlig årlig vekst, prosent",
+  "serier": {"skjermet næringsliv": "Skjermet næringsliv", "bygg og anlegg": "Bygg og anlegg", "varehandel": "Varehandel"},
+  "merknader": [
+   {"type":"punkt","serie":"bygg og anlegg","ar":1950,"tekst":"Gjenoppbygging etter bombing og nedbrenning av byer som Molde, Kristiansund, Bodø og Narvik","kilde":"tekst","niva":1,"plass":"o"}
+  ],
+  "fotnote": "Hver verdi er gjennomsnittlig årlig vekst over perioden."},
+ "2.10": {"kort": "Prisvekst: fra gullstandard til gasspriser", "enhet": "Prisvekst, prosent",
+  "serier": {"bnp": "BNP-deflator", "fastlands-Norge": "BNP Fastlands-Norge", "konsumpris": "Konsumpriser"},
+  "merknader": [
+   {"type":"spenn","serie":"konsumpris","fra":1900,"til":1913,"tekst":"Stabile priser mens kronen var knyttet til gull","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"konsumpris","ar":1918,"tekst":"Ekspansiv pengetrykking gir høy prisvekst mot slutten av 1. verdenskrig","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"konsumpris","ar":1922,"tekst":"Paripolitikken fra 1920: høy rente og stram kreditt for å føre kronen tilbake til gullverdien","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"bnp","ar":2022,"tekst":"2022–23: kraftig økte gasspriser i Europa slår ut i BNP-deflatoren","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.11": {"kort": "Eksport- og importpriser mot BNP", "enhet": "Prisvekst, prosent",
+  "serier": {"bnp": "BNP", "eksport": "Eksport", "import": "Import"},
+  "merknader": []},
+ "2.12": {"kort": "Bytteforholdet med utlandet", "enhet": "Indeks, 1910 = 100",
+  "serier": {"bytteforhold": "Bytteforhold", " uten eksport av petroleum": "Uten petroleumseksport", "1910 = 100": "1910 = 100"},
+  "merknader": [
+   {"type":"spenn","serie":"bytteforhold","fra":1985,"til":2000,"tekst":"Dramatisk fall fra 1985 fram mot 2000","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"bytteforhold","ar":2022,"tekst":"De siste 40 årene er bytteforholdet sterkt preget av petroleumsinntektene","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.13": {"kort": "Fra hvalfangst og sjøfart til olje", "enhet": "Prosent av BNP",
+  "serier": {"hvalfangst og sjøfart": "Hvalfangst og sjøfart", "petroleumsvirksomhet": "Petroleumsvirksomhet"},
+  "merknader": [
+   {"type":"punkt","serie":"hvalfangst og sjøfart","ar":1916,"tekst":"Høye fraktrater under 1. verdenskrig","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"petroleumsvirksomhet","ar":1980,"tekst":"Fra 1970-tallet tar petroleumsvirksomheten over","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"petroleumsvirksomhet","ar":2022,"tekst":"Toppen i 2022: olje- og gasspriser etter krigen i Ukraina","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.14": {"kort": "Hvor skapes verdiene?", "enhet": "Prosent av BNP Fastlands-Norge",
+  "serier": {"jordbruk/skogbruk": "Jordbruk og skogbruk", "industri": "Industri", "offentlig forvaltning": "Offentlig forvaltning", "skjermet næringsliv": "Skjermet næringsliv"},
+  "merknader": [
+   {"type":"punkt","serie":"jordbruk/skogbruk","ar":1955,"tekst":"Jordbruket: rundt 20 prosent fram til 1910, 10 prosent midt på 1950-tallet, under 1 prosent i dag","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"industri","ar":1980,"tekst":"Industrien lå rundt 20 prosent til om lag 1980, deretter under 10 prosent","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"spenn","serie":"offentlig forvaltning","fra":1990,"til":2025,"tekst":"Stabilt rundt 23–24 prosent siden 1990-tallet","kilde":"tekst","niva":2,"plass":"u"},
+   {"type":"punkt","serie":"skjermet næringsliv","ar":2025,"tekst":"Fra om lag 30 prosent i 1900 til knapt 50 prosent","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "2.15": {"kort": "Finansnæringen", "enhet": "Prosent",
+  "serier": {"finansnæringens andel av bnp ": "Andel av BNP", "andel av årsverk Fastlands-Norge": "Andel av årsverk"},
+  "merknader": [
+   {"type":"spenn","serie":"finansnæringens andel av bnp ","fra":1900,"til":1939,"tekst":"Målt ved bruttoprodukt var næringen stor før krigen, med høy godtgjøring til eierne","kilde":"tekst","niva":2,"plass":"o"},
+   {"type":"spenn","serie":"finansnæringens andel av bnp ","fra":1960,"til":2025,"tekst":"BNP-andelen øker betydelig etter 1960, i stor grad på grunn av høye overskudd","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+
+ "3.1": {"kort": "Fødte, døde, utvandrede og innvandrede", "enhet": "1000 personer",
+  "serier": {"fødte": "Fødte", "døde": "Døde", "utvandring": "Utvandring", "innvandring": "Innvandring"},
+  "merknader": [
+   {"type":"punkt","serie":"utvandring","ar":1882,"tekst":"Fram til om lag 1910 motvirket utvandringen til Amerika mye av fødselsoverskuddet","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"fødte","ar":1935,"tekst":"Fra over 60 000 fødte før 1920 til vel 40 000 i 1935. Færre ekteskap forklarer mye","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"innvandring","ar":1951,"tekst":"Tall for innvandring finnes først fra 1951","kilde":"tekst","niva":2,"plass":"o"}
+  ]},
+ "3.2": {"kort": "Fødsels- og dødsrater", "enhet": "Promille av befolkningen",
+  "serier": {"fødselsrate": "Fødte", "dødsrate": "Døde"},
+  "merknader": [
+   {"type":"punkt","serie":"fødselsrate","ar":1935,"tekst":"Markert nedgang fra 1920 til midten av 1930-årene","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"fødselsrate","ar":1946,"tekst":"De store kullene fra rundt 1920 blir foreldre etter krigen","kilde":"tekst","niva":2,"plass":"o"}
+  ]},
+ "3.3": {"kort": "Arbeidsfør befolkning og sysselsetting", "enhet": "1000 personer",
+  "serier": {"menn 18-64": "Menn 18–64 år", "kvinner 18-64": "Kvinner 18–64 år", "sysselsatte menn og kvinner": "Sysselsatte i alt"},
+  "merknader": [
+   {"type":"punkt","serie":"sysselsatte menn og kvinner","ar":1920,"tekst":"Etter 1. verdenskrig holder ikke sysselsettingen lenger tritt med befolkningen. Det er særlig kvinnene som presses ut","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"spenn","serie":"kvinner 18-64","fra":1900,"til":1950,"tekst":"1900–1950: befolkningen +47 prosent, 18–64 år +80 prosent","kilde":"tekst","niva":1,"plass":"o"}
+  ]},
+ "3.4": {"kort": "Husmødre og døtre hjemme", "enhet": "1000 personer",
+  "serier": {"husmødre": "Husmødre", "døtre": "Døtre", "i alt": "I alt"},
+  "merknader": [
+   {"type":"punkt","serie":"i alt","ar":1930,"tekst":"Når sysselsettingen ikke vokser i takt med befolkningen, presses kvinner tilbake til husarbeid","kilde":"tekst","niva":1,"plass":"o"}
+  ],
+  "fotnote": "Tallene er fra folketellingene. Linjene mellom punktene er bare en leseveiledning."},
+ "3.5": {"kort": "Kvinner i yrkeslivet ifølge folketellingene", "enhet": "Prosent",
+  "serier": {"andel kvinner i yrkeslivet": "Kvinner i yrkeslivet", "andel husmødre og døtre hjemme ": "Husmødre og døtre hjemme"},
+  "merknader": [
+   {"type":"punkt","serie":"andel kvinner i yrkeslivet","ar":1910,"tekst":"Rundt 30 prosent fram til 1910 …","kilde":"tekst","niva":1,"plass":"u"},
+   {"type":"punkt","serie":"andel kvinner i yrkeslivet","ar":1960,"tekst":"… og rundt 23 prosent i 1950 og 1960","kilde":"tekst","niva":1,"plass":"u"}
+  ],
+  "fotnote": "Tallene er fra folketellingene. Linjene mellom punktene er bare en leseveiledning."},
+ "3.6": {"kort": "Jordbruk, industri og lønt husarbeid", "enhet": "1000 personer",
+  "serier": {"jordbruk ": "Jordbruk og skogbruk", "industri": "Industri", "lønt husarbeid": "Lønt husarbeid"},
+  "merknader": [
+   {"type":"spenn","serie":"jordbruk ","fra":1900,"til":1945,"tekst":"Mellom 400 000 og 450 000 i jordbruket helt til etter krigen","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"industri","ar":1935,"tekst":"Først midt på 1930-tallet stiger industrisysselsettingen markert","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"spenn","serie":"lønt husarbeid","fra":1900,"til":1939,"tekst":"Rundt 100 000 i lønt husarbeid fram til krigen","kilde":"tekst","niva":2,"plass":"u"}
+  ]},
+ "3.7": {"kort": "Sysselsatte i tjenester og offentlig sektor", "enhet": "1000 personer",
+  "serier": {"skjermet næringsliv inkl. finansnæringen": "Skjermet næringsliv inkl. finans", "offentlig forvaltning": "Offentlig forvaltning"},
+  "merknader": []},
+ "3.8": {"kort": "Andeler av sysselsettingen", "enhet": "Prosent av samlet sysselsetting",
+  "serier": {"skjermet næringsliv inkl. finansnæringen": "Skjermet næringsliv inkl. finans", "offentlig forvaltning": "Offentlig forvaltning"},
+  "merknader": [
+   {"type":"spenn","serie":"offentlig forvaltning","fra":1990,"til":2025,"tekst":"Offentlig andel om lag konstant på 30 prosent siden tidlig 1990-tall","kilde":"tekst","niva":1,"plass":"u"}
+  ]},
+ "3.9": {"kort": "Kvinners andel av sysselsettingen", "enhet": "Prosent",
+  "serier": {"ØA nr 7/1989": "Økonomiske analyser 7/1989", "AKU": "AKU"},
+  "skjot": [{"ar":1972,"tekst":"AKU fra 1972"}],
+  "merknader": [
+   {"type":"punkt","serie":"ØA nr 7/1989","ar":1962,"tekst":"32 prosent tidlig på 1960-tallet","kilde":"tekst","niva":1,"plass":"o"},
+   {"type":"punkt","serie":"AKU","ar":2025,"tekst":"47 prosent i dag","kilde":"tekst","niva":1,"plass":"u"}
+  ],
+  "fotnote": "To kilder overlapper 1972–1988. AKU erstattet den gamle sykelønnsstatistikken, som ble nedlagt fra 1970."},
+ "3.10": {"kort": "Sysselsatte menn og kvinner", "enhet": "1000 personer",
+  "merknader": [
+   {"type":"spenn","serie":"Kvinner","fra":1962,"til":1990,"tekst":"Om lag 85 prosent av veksten på en halv million sysselsatte kom fra kvinner","kilde":"tekst","niva":1,"plass":"o"}
+  ]}
+}

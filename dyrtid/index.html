@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dyrtidsparadokset</title>
+<meta name="description" content="Prisene steg raskere enn på 30 år, men de fleste kan kjøpe mer enn før. En interaktiv gjennomgang av SSBs analyse «Lever vi i en dyrtid?» (Økonomiske analyser 2/2026, kapittel 5).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#162327; --ink-2:#274247; --muted:#4f5e62; --hair:#c3dcdc; --hair-2:#e3eeee;
+  --bg:#ffffff; --bg-soft:#f0f8f9; --bg-card:#ffffff;
+  --green:#1a9d49; --green-dk:#00824d; --green-lt:#b6e8b8; --green-xl:#ecfeed;
+  --blue:#1d6fb8; --blue-lt:#a9d3f0; --purple:#6b4ba1; --orange:#d86b1f; --red:#c73a2a;
+  --missing:#9aa7aa;
+  --focus:#3396d2;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.6}
+a{color:var(--green-dk);text-underline-offset:2px}
+a:hover{color:var(--ink-2)}
+.num,svg text,.tab{font-variant-numeric:tabular-nums}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.wide{max-width:980px;margin:0 auto;padding:0 16px}
+
+/* Header */
+.masthead{border-bottom:1px solid var(--hair);background:var(--bg)}
+.masthead .wide{display:flex;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px;font-size:14px;color:var(--muted)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink-2)}
+.logo svg{width:28px;height:28px}
+.hero{background:var(--bg-soft);border-bottom:1px solid var(--hair);padding:48px 0 40px}
+.kicker{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--green-dk);font-weight:700;margin:0 0 10px}
+h1{font-family:"Roboto Condensed","Open Sans",sans-serif;font-weight:700;font-size:clamp(34px,6vw,54px);line-height:1.05;margin:0 0 18px;color:var(--ink-2)}
+.ingress{font-size:20px;line-height:1.55;margin:0 0 18px}
+.meta{font-size:14px;color:var(--muted);margin:0}
+.scope{margin-top:22px;border-left:3px solid var(--green);padding:6px 0 6px 14px;font-size:15px;color:var(--ink-2)}
+
+/* Table of contents */
+.toc{display:flex;flex-wrap:wrap;gap:6px 18px;margin:26px 0 0;padding:0;list-style:none;font-size:14px}
+.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid var(--hair)}
+.toc a:hover{border-color:var(--green)}
+.toc span{color:var(--green-dk);font-weight:700;margin-right:4px}
+
+/* Sections */
+section{padding:56px 0 24px;border-bottom:1px solid var(--hair-2)}
+section:last-of-type{border-bottom:none}
+.secnum{font-family:"Roboto Condensed",sans-serif;font-weight:700;color:var(--green);font-size:15px;letter-spacing:.04em}
+h2{font-family:"Roboto Condensed","Open Sans",sans-serif;font-weight:700;font-size:clamp(26px,4vw,34px);line-height:1.15;margin:4px 0 16px;color:var(--ink-2)}
+h3{font-size:18px;margin:32px 0 8px;color:var(--ink-2)}
+p{margin:0 0 16px}
+.lead{font-size:18px}
+.small{font-size:14px;color:var(--muted)}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+
+/* Figure */
+figure{margin:24px 0 28px}
+.fig-title{font-weight:700;font-size:16px;margin:0 0 2px;color:var(--ink-2)}
+.fig-sub{font-size:14px;color:var(--muted);margin:0 0 10px}
+.fig-src{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+.chart{width:100%;position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.axis text{font-size:12px;fill:var(--muted)}
+.axis line,.axis path{stroke:var(--hair)}
+.grid line{stroke:var(--hair-2)}
+.zero{stroke:var(--ink-2);stroke-width:1}
+.lbl{font-size:12.5px;fill:var(--ink)}
+.lbl-b{font-size:12.5px;font-weight:700;fill:var(--ink)}
+
+/* Controls */
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.seg{display:inline-flex;border:1px solid var(--ink-2);border-radius:4px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:inherit;font-size:14px;padding:7px 12px;border:none;background:#fff;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--ink-2)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--ink-2);color:#fff}
+.seg button:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.btn{font:inherit;font-size:15px;font-weight:600;padding:10px 18px;border-radius:4px;border:1px solid var(--green-dk);background:var(--green-dk);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--green-dk)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input[type=range]{width:100%;accent-color:var(--green-dk)}
+
+/* Cards and callouts */
+.card{border:1px solid var(--hair);border-radius:6px;padding:18px 20px;background:var(--bg-card)}
+.card-soft{background:var(--bg-soft);border-color:var(--hair)}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.big{font-family:"Roboto Condensed",sans-serif;font-weight:700;font-size:34px;line-height:1.05;color:var(--ink-2)}
+.big.green{color:var(--green-dk)}
+.big.red{color:var(--red)}
+.card .cap{font-size:14px;color:var(--muted);margin-top:4px}
+.callout{border-left:3px solid var(--ink-2);background:var(--bg-soft);padding:14px 18px;margin:22px 0;font-size:16px}
+.callout.interp{border-left-color:var(--orange)}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-bottom:6px}
+.tag.ver{background:var(--green-xl);color:var(--green-dk);border:1px solid var(--green-lt)}
+.tag.int{background:#fff4ea;color:#9a4a10;border:1px solid #f3cfae}
+.tag.miss{background:#f1f3f3;color:#5c6668;border:1px solid #d8dddd}
+
+/* Missing data */
+.missing{border:1px dashed var(--missing);border-radius:6px;padding:16px 18px;background:repeating-linear-gradient(135deg,#fafbfb 0 10px,#f3f5f5 10px 20px);color:#4a5557;font-size:15px}
+.missing strong{color:var(--ink-2)}
+
+/* Guess */
+.guess{border:1px solid var(--hair);border-radius:8px;padding:22px;background:var(--bg-soft)}
+.guess .q{font-weight:700;font-size:18px;margin:0 0 10px;color:var(--ink-2)}
+.guess .val{font-family:"Roboto Condensed",sans-serif;font-size:30px;font-weight:700;color:var(--ink-2)}
+.choice{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.choice button{font:inherit;font-size:15px;padding:9px 14px;border:1px solid var(--ink-2);background:#fff;border-radius:4px;cursor:pointer;color:var(--ink-2)}
+.choice button[aria-pressed="true"]{background:var(--ink-2);color:#fff}
+.reveal{margin-top:18px;display:none}
+.reveal.on{display:block}
+
+/* Basket */
+.basket{display:grid;grid-template-columns:1fr;gap:4px;margin-top:10px}
+.brow{display:grid;grid-template-columns:minmax(120px,1.4fr) 2fr 52px 58px;gap:10px;align-items:center;font-size:14px;padding:4px 0;border-bottom:1px solid var(--hair-2)}
+.brow .p{text-align:right;color:var(--muted)}
+.brow .w{text-align:right;font-weight:600}
+.bres{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.bres .card{flex:1 1 180px}
+
+/* Income ladder */
+.ladder{display:grid;gap:8px;margin:18px 0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;border:1px solid var(--hair);border-radius:6px;padding:12px 14px;cursor:pointer;background:#fff}
+.step[aria-pressed="true"]{border-color:var(--ink-2);box-shadow:inset 3px 0 0 var(--ink-2);background:var(--bg-soft)}
+.step .dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.step b{display:block;color:var(--ink-2)}
+.step span{font-size:14px;color:var(--muted)}
+
+/* Loan */
+.loanctl{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+.loanctl label{font-size:14px;font-weight:600;color:var(--ink-2)}
+.loanval{font-family:"Roboto Condensed",sans-serif;font-size:26px;font-weight:700;color:var(--ink-2)}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.ltab{width:100%;min-width:520px;border-collapse:collapse;font-size:14px;margin-top:14px}
+.ltab th,.ltab td{padding:6px 8px;border-bottom:1px solid var(--hair-2);text-align:right}
+.ltab th:first-child,.ltab td:first-child{text-align:left}
+.ltab thead th{border-bottom:1px solid var(--ink-2);font-weight:600;color:var(--ink-2)}
+.ltab tbody tr:nth-child(even){background:#f7fbfb}
+.ltab tfoot td{font-weight:700;border-top:1px solid var(--ink-2)}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;margin:4px 0 8px;color:var(--ink)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+.legend i.sq{height:10px;width:10px}
+
+/* Map */
+.actor-card{min-height:120px}
+.explain{display:grid;gap:10px}
+.explain details{border:1px solid var(--hair);border-radius:6px;background:#fff}
+.explain summary{cursor:pointer;padding:12px 16px;font-weight:600;color:var(--ink-2);list-style:none}
+.explain summary::-webkit-details-marker{display:none}
+.explain summary:before{content:"+";display:inline-block;width:18px;color:var(--green-dk);font-weight:700}
+.explain details[open] summary:before{content:"–"}
+.explain .body{padding:0 16px 14px 34px;font-size:15.5px}
+
+/* Tooltip */
+.tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--ink-2);border-radius:4px;padding:6px 9px;font-size:13px;line-height:1.35;box-shadow:0 2px 8px rgba(0,0,0,.12);opacity:0;transition:opacity .1s;z-index:10;white-space:nowrap}
+.tip b{color:var(--ink-2)}
+
+footer{background:var(--bg-soft);border-top:1px solid var(--hair);padding:36px 0 48px;margin-top:40px;font-size:14px}
+footer h2{font-size:22px}
+footer ul{padding-left:18px;margin:0 0 16px}
+footer li{margin-bottom:4px}
+
+@media (max-width:560px){
+  body{font-size:16px}
+  .ingress{font-size:18px}
+  .brow{grid-template-columns:1fr 52px 58px;grid-template-areas:"n p w" "s s s"}
+  .brow .n{grid-area:n}.brow .p{grid-area:p}.brow .w{grid-area:w}.brow input{grid-area:s}
+  .big{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<div class="masthead"><div class="wide">
+  <div class="logo" aria-label="Statistisk sentralbyrå">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#00824d"/><path d="M7 25 L15 19 L21 24 L33 13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Statistisk sentralbyrå
+  </div>
+  <span aria-hidden="true">·</span><span>Interaktiv artikkel</span>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <p class="kicker">Økonomiske analyser 2/2026 · Kapittel 5</p>
+  <h1>Dyrtidsparadokset</h1>
+  <p class="ingress">Prisene steg raskere enn på over 30 år. Samtidig viser statistikken at de fleste kan kjøpe mer nå enn før. Begge deler er sant. Denne artikkelen viser hvor målingene skilles, og hvorfor.</p>
+  <p class="meta">Bygger på «Lever vi i en «dyrtid»?» av Eirik Berger Abel, Lasse Eika, Espen Kristiansen og Audun Langørgen i <em>Utsyn over norsk økonomi 2025</em>.</p>
+  <div class="scope">Artikkelen handler om årene 2021–2025. Prisveksten i 2026, etter krigen i Midtøsten og blokaden av Hormuzstredet, er ikke med i analysen.</div>
+  <ol class="toc">
+    <li><a href="#gjett"><span>0</span>Gjett først</a></li>
+    <li><a href="#historie"><span>1</span>Hva er en dyrtid?</a></li>
+    <li><a href="#kurv"><span>2</span>Handlekurven</a></li>
+    <li><a href="#inntekt"><span>3</span>Fire svar</a></li>
+    <li><a href="#laan"><span>4</span>Renta og gjelda</a></li>
+    <li><a href="#hvem"><span>5</span>Hvem kjente det?</a></li>
+    <li><a href="#alle"><span>6</span>Hvorfor alle har rett</a></li>
+  </ol>
+</div></header>
+
+<main>
+
+<!-- 0 GJETT -->
+<section id="gjett"><div class="wrap">
+  <div class="secnum">0 · GJETT FØRST</div>
+  <h2>Hva tror du skjedde?</h2>
+  <p class="lead">Før vi ser på tallene: svar på to spørsmål. Det er ingen fasit på hva folk <em>skal</em> tro, men svarene viser ofte hvor stort gapet er mellom opplevelse og måling.</p>
+
+  <div class="guess">
+    <p class="q">1. Hvor mye steg prisene samlet fra 2021 til 2025?</p>
+    <div class="val num" id="g1v">15 %</div>
+    <input type="range" id="g1" min="0" max="50" step="1" value="15" aria-label="Din gjetning på prisvekst 2021–2025, prosent">
+    <div class="small" style="display:flex;justify-content:space-between"><span>0 %</span><span>50 %</span></div>
+
+    <p class="q" style="margin-top:22px">2. Fikk en typisk husholdning mer eller mindre å rutte med fra 2022 til 2024, etter skatt og justert for prisvekst?</p>
+    <div class="choice" role="group" aria-label="Ditt svar">
+      <button type="button" data-v="mer" aria-pressed="false">Mer</button>
+      <button type="button" data-v="likt" aria-pressed="false">Omtrent likt</button>
+      <button type="button" data-v="mindre" aria-pressed="false">Mindre</button>
+    </div>
+    <div style="margin-top:18px"><button class="btn" id="gBtn" disabled>Vis svaret</button></div>
+
+    <div class="reveal" id="gRev" aria-live="polite">
+      <div class="grid-2">
+        <div class="card">
+          <div class="small">Prisvekst 2021–2025, KPI årsgjennomsnitt</div>
+          <div class="big num" id="gA1"></div>
+          <div class="cap" id="gA1c"></div>
+        </div>
+        <div class="card">
+          <div class="small">Medianinntekt etter skatt, realvekst 2022–2024</div>
+          <div class="big green num">+5,6 %</div>
+          <div class="cap" id="gA2c"></div>
+        </div>
+      </div>
+      <p style="margin-top:16px">Men svaret på spørsmål 2 er ikke så enkelt som det ser ut. Trekker vi fra renteutgiftene, <strong>falt</strong> den typiske husholdningens realinntekt fra 2021 til 2023. Hvilket svar som er «riktig», avhenger av hva du kaller inntekt. Det kommer vi tilbake til i <a href="#inntekt">del 3</a>.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 1 HISTORIE -->
+<section id="historie"><div class="wrap">
+  <div class="secnum">1 · HVA ER EN DYRTID?</div>
+  <h2>Ordet har en lang historie, og målestokken er brutal</h2>
+  <p>Store norske leksikon definerer dyrtid som en periode med vareknapphet og sterkt økende priser. Ordet ble tatt i bruk under og etter første verdenskrig, da prisene nesten tredoblet seg på seks år. «Kamp mot dyrtiden» ble en parole for arbeiderbevegelsen. På 1970-tallet dukket ordet opp igjen, blant annet i kampen mot norsk EEC-medlemskap.</p>
+  <p>Sammenlignet med disse periodene var prisveksten etter 2021 både lavere og kortere.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Årlig prisvekst i Norge, 1914–2025</p>
+    <p class="fig-sub">Endring i konsumprisindeksen fra året før. Prosent. Skraverte felt er periodene som er omtalt som dyrtid.</p>
+    <div class="controls"><div class="seg" id="histSeg" role="group" aria-label="Velg periode">
+      <button type="button" data-r="all" aria-pressed="true">Hele perioden</button>
+      <button type="button" data-r="1914" aria-pressed="false">1914–1935</button>
+      <button type="button" data-r="1969" aria-pressed="false">1969–2025</button>
+    </div></div>
+    <div class="chart" id="histChart"></div>
+    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 08184 (historisk KPI, 2015=100). Egne beregninger. Indeksen er publisert med én desimal. For årene før 1950, da indeksnivået var lavt, gir avrundingen usikkerhet på opptil et par prosentpoeng i årsveksten.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="grid-3" id="epCards"></div>
+  <p style="margin-top:22px">Prisveksten toppet på 7,5 prosent i oktober 2022. Så høyt hadde tolvmånedersveksten ikke vært siden slutten av 1980-tallet. Likevel var episoden kort: allerede i 2024 var årsveksten nede på rundt 3 prosent.</p>
+  <div class="callout"><span class="tag ver">Første kriterium</span><br>Høy og vedvarende inflasjon? <strong>Høy, men ikke vedvarende.</strong> Etter den historiske målestokken var dette ingen dyrtid. Men dyrtid handler også om hvem som rammes, og hva inntektene gjorde.</div>
+</div></section>
+
+<!-- 2 KURV -->
+<section id="kurv"><div class="wrap">
+  <div class="secnum">2 · HANDLEKURVEN</div>
+  <h2>Ingen husholdning er gjennomsnittlig</h2>
+  <p>Konsumprisindeksen måler prisene på en gjennomsnittlig handlekurv. Men prisene på ulike varer har gått svært ulikt. Mat steg med 30 prosent fra 2021 til 2025, mens klær og sko knapt steg. Prisen på barnehage falt kraftig.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Prisvekst fra 2021 til 2025, etter hovedgruppe i KPI</p>
+    <p class="fig-sub">Endring i årsgjennomsnittlig indeks. Prosent.</p>
+    <div class="chart" id="grpChart"></div>
+    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 03014. Egne beregninger.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <h3>Sett sammen din egen handlekurv</h3>
+  <p>Hvor stor del av budsjettet bruker du på hver gruppe? Startpunktet er KPI-vektene for desember 2021. Flytt på glidebryterne og se hvordan din prisvekst avviker fra snittet.</p>
+  <div class="basket" id="basket"></div>
+  <div style="margin-top:10px"><button class="btn ghost" id="bReset" type="button">Tilbakestill til KPI-vektene</button></div>
+  <div class="bres">
+    <div class="card"><div class="small">Din prisvekst 2021–2025</div><div class="big num" id="bYou"></div></div>
+    <div class="card"><div class="small">KPI-kurven, samme beregning</div><div class="big num" id="bKpi"></div></div>
+    <div class="card"><div class="small">Forskjell</div><div class="big num" id="bDiff"></div></div>
+  </div>
+  <p class="note" style="margin-top:10px">Forenklet beregning: faste budsjettandeler fra 2021 og prisutvikling per hovedgruppe. Den offisielle KPI oppdaterer vektene hvert år, og ble 18,6 prosent i perioden. Budsjettet ditt blir normalisert til 100 prosent.</p>
+
+  <h3>Men forskjellene jevner seg ut</h3>
+  <p>De fleste kjøper en blanding av varer med høy og lav prisvekst. Derfor krymper forskjellene kraftig når vi går fra enkeltvarer til husholdninger, og videre til grupper av husholdninger. SSB fant at lavinntektshusholdninger ikke har hatt høyere prisvekst enn andre.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Hvor stor er forskjellen i prisvekst?</p>
+    <p class="fig-sub">Spennet i reell prisvekst (avvik fra gjennomsnittet), 2016–2025. Prosentpoeng.</p>
+    <div class="chart" id="spreadChart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, kapittel 5.3. Varer og husholdninger: avstand mellom 10. og 90. persentil. Grupper: avstand mellom gruppene som oppgitt i teksten. Spredningen mellom husholdninger er trolig overvurdert, fordi hver husholdning bare registrerer forbruket i én uke.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <p>Det største utslaget finner vi ikke mellom rike og fattige, men mellom barnefamilier. Par med barn under 7 år har hatt rundt 3 prosentpoeng lavere prisvekst enn par med eldre barn, nesten bare fordi barnehageprisen falt.</p>
+
+  <h3>Billigvarene ble dyrest</h3>
+  <p>Én ting fanges ikke opp av KPI-gruppene: innenfor samme varekategori har billige varianter steget mer enn dyre. Fenomenet kalles <em>cheapflation</em>, og SSB finner det også i Norge. Hvor stort det er, avhenger av hvordan man definerer «billig».</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Prisvekst på billige og andre matvarer, 2021–2024</p>
+    <p class="fig-sub">Tre ulike måter å definere «billig» på. Prosent.</p>
+    <div class="chart" id="cheapChart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, vedlegg 5.2. Vekstratene er ikke direkte sammenlignbare med KPI for matvarer.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="callout interp"><span class="tag int">Ikke påvist</span><br>Hvis husholdninger med lav inntekt oftere kjøper billigvarianter, har de hatt høyere prisvekst på mat enn KPI viser. De har heller ikke kunnet spare ved å gå over til noe billigere. SSB har ikke data til å teste dette.</div>
+</div></section>
+
+<!-- 3 INNTEKT -->
+<section id="inntekt"><div class="wrap">
+  <div class="secnum">3 · SAMME ÅR, FIRE SVAR</div>
+  <h2>Hva er egentlig inntekt?</h2>
+  <p>Her ligger kjernen i paradokset. Konsumprisindeksen inneholder ikke renter. Renteutgifter regnes som et kostnadspåslag på lån, ikke som et forbruk. Den vanlige inntektsstatistikken trekker heller ikke fra renteutgifter. Når renta tredobles, fanges det derfor ikke opp av noen av de to standardmålene.</p>
+  <p>SSB har derfor regnet på fire ulike inntektsbegreper. Velg et trinn for å se hva som er med.</p>
+
+  <div class="ladder" id="ladder" role="group" aria-label="Velg inntektsbegrep"></div>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title" id="incTitle">Medianinntekt per forbruksenhet, 2015–2024</p>
+    <p class="fig-sub">1000 kroner per forbruksenhet, faste priser.</p>
+    <div class="chart" id="incChart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.6. Beregninger i Langørgen og Eika (2026). Kapitteltekst og figurnote oppgir ulikt prisår (2025 og 2023). Det må avklares før figuren fylles inn.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="grid-3">
+    <div class="card"><span class="tag ver">Fra teksten</span><div class="big green num">+7,6 %</div><div class="cap">Median inntekt etter skatt, reelt 2015–2024 (500 200 → 538 400 kr)</div></div>
+    <div class="card"><span class="tag ver">Fra teksten</span><div class="big red num">Fall</div><div class="cap">De tre målene som trekker fra renter, faller fra 2021 til 2023</div></div>
+    <div class="card"><span class="tag ver">Fra teksten</span><div class="big num">−1,6 %</div><div class="cap">Inntekt etter bo-, låne- og strømutgifter, 2021–2023. Deretter +3,1 % i 2024</div></div>
+  </div>
+  <p style="margin-top:20px">Hvorfor faller det siste målet så lite, når avdrag også trekkes fra? De fleste boliglån er annuitetslån. Når renta stiger, går mer av terminbeløpet til renter og mindre til avdrag. Terminbeløpet øker derfor mindre enn renta skulle tilsi. Annuitetslånene har dempet sjokket.</p>
+
+  <h3>Eiere med høy gjeld tok støyten</h3>
+  <p>Fallet i realinntekt etter renteutgifter gjelder først og fremst boligeiere med mer enn én million kroner i gjeld per forbruksenhet. En del av fallet skyldes også at 2021 var et år med uvanlig høye aksjeutbytter. For leietakere og eiere med lite gjeld går de fire målene omtrent i takt. Leietakernes gjennomsnittsinntekt sto nesten stille fra 2021 til 2024, mens veksten kom blant boligeierne.</p>
+  <div class="missing" id="missBolig"><span class="tag miss">Mangler data</span><br><strong>Figur 5.7 og 5.8</strong> (utviklingen for eiere og leietakere, og for inntektskvartiler) vises når figurgrunnlaget er lagt inn. Tallene finnes ikke i Statistikkbanken.</div>
+  <p style="margin-top:18px">Et viktig poeng for fordelingsdebatten: flertallet av eiere med høy gjeld har middels eller høy inntekt. Leietakerne er overrepresentert blant dem med lavest inntekt, men har lite gjeld og ble derfor lite rammet av renteøkningen.</p>
+</div></section>
+
+<!-- 4 LÅN -->
+<section id="laan"><div class="wrap">
+  <div class="secnum">4 · RENTA BITER, INFLASJONEN SPISER GJELDA</div>
+  <h2>Det du merker, og det du ikke merker</h2>
+  <p>Inflasjon gjør gjeld mindre verd. Et lån på 3 millioner er fortsatt 3 millioner kroner, men hver krone er verd mindre når prisene og lønningene stiger. For den som har lån, er det en gevinst. Den står bare ikke på kontoutskriften.</p>
+  <p>I 2021 og 2022 var inflasjonen rundt 3 prosentpoeng høyere enn boliglånsrenta. Realrenten var altså negativ. Prøv med ditt eget lån:</p>
+
+  <div class="card card-soft">
+    <div class="loanctl">
+      <label for="loan">Boliglån ved inngangen til 2021</label>
+      <div class="loanval num" id="loanV"></div>
+      <input type="range" id="loan" min="500000" max="8000000" step="100000" value="3000000">
+      <label class="check"><input type="checkbox" id="tax" checked> Ta med skattefradraget for renter (22 prosent)</label>
+    </div>
+  </div>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Renteutgift og inflasjonsgevinst per år</p>
+    <p class="fig-sub">Kroner, løpende priser. Stilisert annuitetslån med 20 års løpetid, gjennomsnittlig boliglånsrente.</p>
+    <div class="legend">
+      <span><i class="sq" style="background:var(--ink-2)"></i>Renteutgift</span>
+      <span id="lgTax"><i class="sq" style="background:var(--green-lt)"></i>Skattefradrag</span>
+      <span><i class="sq" style="background:var(--green)"></i>Inflasjonsgevinst på gjelda</span>
+      <span><i class="sq" style="background:#fff;border:2px solid var(--red);border-radius:50%"></i>Netto reell kostnad</span>
+    </div>
+    <div class="chart" id="loanChart"></div>
+    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 07200 (renter på utestående utlån med pant i bolig, husholdninger, årsgjennomsnitt av kvartaler) og 03013 (12-månedersvekst i KPI i desember). Egne beregninger etter metoden i vedlegg 5.4. Renta kan avvike noe fra figur 5.13 i kapitlet.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="grid-3" id="loanCards"></div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="ltab num" id="loanTab"></table></div>
+
+  <div class="callout interp" style="margin-top:22px"><span class="tag int">Fortolkning</span><br>Gevinsten er reell, men den er ikke kontanter. Renteutgiften betales hver måned. Inflasjonsgevinsten viser seg først som at lønna vokser og gjelda krymper i forhold, år for år. Det er en god forklaring på at folk med lån <em>opplevde</em> en dyrtid samtidig som de økonomisk kom bedre ut enn renta alene tilsier.</div>
+
+  <h3>Realrenten gjennom perioden</h3>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Boliglånsrente, realrente og realrente etter skatt, 2015–2025</p>
+    <p class="fig-sub">Prosent. Realrente = nominell rente minus 12-månedersveksten i KPI i desember.</p>
+    <div class="legend">
+      <span><i style="background:var(--blue)"></i>Nominell rente</span>
+      <span><i style="background:var(--ink-2)"></i>Realrente</span>
+      <span><i style="background:var(--green);height:0;border-top:2px dashed var(--green)"></i>Realrente etter skatt</span>
+    </div>
+    <div class="chart" id="rateChart"></div>
+    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 07200 og 03013. Egne beregninger.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <p>Andelen personer i husholdninger med høy gjeldsgrad (gjeld over tre eller fem ganger inntekt etter skatt) falt fra 2022 til 2024. Det skyldes ikke at folk betalte ned lånene sine raskere. Inntektene steg nominelt med inflasjonen, og da krymper gjeldsgraden av seg selv.</p>
+</div></section>
+
+<!-- 5 HVEM -->
+<section id="hvem"><div class="wrap">
+  <div class="secnum">5 · HVEM KJENTE DET?</div>
+  <h2>Opplevelsen er også statistikk</h2>
+  <p>SSB spør hvert år et utvalg av befolkningen om de mangler goder, har betalingsproblemer eller synes det er vanskelig å få endene til å møtes. Her er dyrtiden synlig. Andelen som mangler minst ett materielt gode, steg fra 16,1 til 22,2 prosent fra 2021 til 2024.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Levekårsproblemer, 2015–2025</p>
+    <p class="fig-sub">Andel personer 16 år og over. Prosent.</p>
+    <div class="legend" id="silcLeg"></div>
+    <div class="chart" id="silcChart"></div>
+    <p class="fig-src">Kilde: SSB, levekårsundersøkelsen EU-SILC. Statistikkbanken tabell 12119, 12118 og 12123. For 2016 mangler tall for sosiale goder.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <p>Det overraskende er <em>hvem</em> som rapporterer flere problemer. Leietakerne har hele tiden hatt et nivå 3–5 ganger høyere enn boligeierne, men det har endret seg lite. Økningen kom nesten bare blant boligeierne, altså dem som merket renteøkningen.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Boligeiere: levekårsproblemer 2021 og 2024</p>
+    <p class="fig-sub">Andel personer. Prosent.</p>
+    <div class="chart" id="ownChart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, kapittel 5.7 (tall oppgitt i teksten).</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="missing"><span class="tag miss">Mangler data</span><br><strong>Figur 5.15</strong> (hele tidsserien for eiere og leietakere) er beregnet i SSBs seksjon for inntekts- og levekårsstatistikk og ligger ikke i Statistikkbanken. Fra teksten vet vi at andelen leietakere som mangler minst ett materielt gode, steg fra 40 prosent i 2022 til nesten 45 prosent i 2025.</div>
+  <p style="margin-top:18px">I 2025 falt de rapporterte problemene igjen, og det var boligeierne som sto for nedgangen.</p>
+</div></section>
+
+<!-- 6 ALLE -->
+<section id="alle"><div class="wrap">
+  <div class="secnum">6 · HVORFOR ALLE HAR RETT</div>
+  <h2>Debatten handler om ulike målinger</h2>
+  <p>Dyrtidsdebatten har ofte blitt en krangel om hvem som har rett. Men partene måler forskjellige ting. Registerinntekter og priser er én ting. Hvordan folk opplever økonomien sin, er en annen. Og et gjennomsnitt forteller noe annet enn en fordeling. Klikk på hver aktør.</p>
+</div>
+<div class="wide">
+  <figure>
+    <div class="chart" id="mapChart"></div>
+    <p class="fig-src">Plasseringen er skjematisk og viser hva hver måling eller påstand hviler på, ikke hvem som har rett.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="card actor-card" id="actorCard" aria-live="polite"></div>
+
+  <h3>Fire mulige forklaringer på sprikende tall</h3>
+  <p><span class="tag int">Kapitlets fortolkning</span> Disse forklaringene er foreslått i kapittel 5.8. De er ikke testet hver for seg.</p>
+  <div class="explain">
+    <details><summary>Renta merkes, gevinsten gjør ikke det</summary><div class="body">Økte renteutgifter slår direkte og umiddelbart inn på budsjettet. Inflasjonsgevinsten på gjelda er usynlig. Folk kan overse den eller undervurdere den, og da blir opplevelsen preget av minussiden.</div></details>
+    <details><summary>Mangel på likviditet</summary><div class="body">Selv om man økonomisk kommer godt ut over tid, kan kontantstrømmen være stram her og nå. Husholdninger med høy gjeld eller høy belåningsgrad kan ha blitt tvunget til å spare mer enn de egentlig ville, gjennom avdrag.</div></details>
+    <details><summary>Usikkerhet og forsiktighet</summary><div class="body">Når framtiden føles usikker, strammer mange inn på forbruket for å ha en buffer. Man kan ha bedre råd på papiret og likevel velge å leve som om man har dårligere råd.</div></details>
+    <details><summary>Målemetode</summary><div class="body">Spørreundersøkelser og registerdata måler ulike ting og har ulike svakheter. Forbruksundersøkelsen registrerer for eksempel bare én uke per husholdning, og inntektsmålene mangler blant annet gaver mellom husholdninger.</div></details>
+  </div>
+
+  <div class="callout" style="margin-top:28px"><strong>Konklusjonen i kapittel 5</strong> er at årene etter 2021 ikke framstår som en dyp økonomisk krisetid for folk flest, og at dyrtid er en overdrevet beskrivelse. Men analysen viser også hvorfor mange likevel opplevde perioden slik: boligeiere med høy gjeld fikk en reell nedgang i disponibel inntekt etter renteutgifter, og en gevinst de i liten grad kunne se.</div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <h2>Kilder og metode</h2>
+  <ul>
+    <li>Abel, E.B., Eika, L., Kristiansen, E. og Langørgen, A. (2026): «Lever vi i en «dyrtid»?». <a href="https://www.ssb.no/nasjonalregnskap-og-konjunkturer/okonomiske-analyser/okonomiske-analyser-2-2026-utsyn-over-aret-2025">Økonomiske analyser 2/2026</a>, kapittel 5. Statistisk sentralbyrå.</li>
+    <li>Langørgen, A. og Eika, L. (2026): <em>Levekostnader, inntekter og levekår: Utviklingen for ulike befolkningsgrupper.</em> Rapporter, Statistisk sentralbyrå.</li>
+    <li>Statistikkbanken: tabell 08184, 03013, 03014 (KPI), 07200 (renter), 12118, 12119, 12123 (EU-SILC).</li>
+    <li>SIFO, OsloMet: <a href="https://www.oslomet.no/forskning/forskningsprosjekter/sifos-okonomiske-trygghetsbarometer">Økonomisk trygghetsbarometer</a>.</li>
+  </ul>
+  <p class="note">Tall merket «fra teksten» er hentet direkte fra kapittel 5. Der figurgrunnlaget ikke er tilgjengelig, viser artikkelen «mangler data» i stedet for å anslå verdier. Lånekalkulatoren er en stilisert illustrasjon og ikke en beregning av noen faktisk husholdnings økonomi.</p>
+</div></footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+"use strict";
+/* ============ DATA ============ */
+// 08184: KPI historisk, 2015=100, årsgjennomsnitt 1913–2025
+const KPI_HIST={start:1913,v:[1.9,1.9,2.1,2.6,3.2,4.5,4.8,5.5,5.1,4.3,4.0,4.4,4.5,3.8,3.5,3.2,3.1,3.0,2.8,2.8,2.7,2.8,2.8,2.9,3.1,3.2,3.2,3.7,4.4,4.7,4.8,4.9,4.9,5.1,5.1,5.1,5.1,5.3,6.2,6.7,6.9,7.1,7.2,7.5,7.7,8.1,8.3,8.3,8.5,8.9,9.2,9.7,10.1,10.4,10.9,11.3,11.6,12.8,13.7,14.6,15.7,17.2,19.2,21.0,22.9,24.7,25.9,28.7,32.6,36.3,39.4,41.9,44.2,47.4,51.6,55.0,57.5,59.9,61.9,63.4,64.8,65.7,67.3,68.2,69.9,71.5,73.2,75.5,77.7,78.7,80.7,81.0,82.3,84.2,84.8,88.0,89.9,92.1,93.3,93.9,95.9,97.9,100.0,103.6,105.5,108.4,110.8,112.2,116.1,122.8,129.6,133.6,137.7]};
+// 03014: KPI etter hovedgruppe, årsgjennomsnitt 2021 og 2025. 03013: vekter desember 2021 (promille)
+const GROUPS=[
+ {k:"01",n:"Matvarer og alkoholfrie drikkevarer",s:"Mat og drikke",i21:107.5,i25:139.8,w:129.7},
+ {k:"02",n:"Alkohol og tobakk",s:"Alkohol og tobakk",i21:111.5,i25:131.7,w:42.9},
+ {k:"03",n:"Klær og skotøy",s:"Klær og sko",i21:98.8,i25:103.4,w:49.4},
+ {k:"04",n:"Bolig, lys og brensel",s:"Bolig, lys, brensel",i21:122.3,i25:141.5,w:241.1},
+ {k:"05",n:"Møbler og husholdningsartikler",s:"Møbler, innbo",i21:119.3,i25:142.1,w:67.8},
+ {k:"06",n:"Helsepleie",s:"Helse",i21:114.8,i25:132.7,w:32.3},
+ {k:"07",n:"Transport",s:"Transport",i21:116.3,i25:140.6,w:150.3},
+ {k:"08",n:"Post- og teletjenester",s:"Post og tele",i21:116.7,i25:131.8,w:24.9},
+ {k:"09",n:"Kultur og fritid",s:"Kultur og fritid",i21:120.6,i25:147.7,w:111.9},
+ {k:"10",n:"Utdanning",s:"Utdanning",i21:126.3,i25:145.8,w:4.7},
+ {k:"11",n:"Hotell og restaurant",s:"Hotell, restaurant",i21:119.1,i25:146.4,w:58.5},
+ {k:"12",n:"Andre varer og tjenester (inkl. barnehage)",s:"Andre (inkl. barnehage)",i21:114.0,i25:122.9,w:86.5}
+];
+const KPI_TOT={i21:116.1,i25:137.7};
+const SUB={barnehage:{n:"Sosiale omsorgstjenester (bl.a. barnehage, SFO)",i21:112.7,i25:77.3},strom:{n:"Elektrisitet og brensel",i21:192.6,i25:210.1}};
+// 07200: rente utestående utlån med pant i bolig, husholdninger, kvartaler 2015K1–2025K4
+const RATE_Q=[3.30,3.23,2.98,2.74,2.69,2.55,2.52,2.51,2.58,2.57,2.55,2.52,2.51,2.49,2.48,2.64,2.62,2.79,2.95,3.13,3.03,2.02,1.98,1.94,1.91,1.87,1.85,2.04,2.25,2.45,2.95,4.03,4.26,4.69,5.19,5.61,5.76,5.75,5.72,5.69,5.68,5.65,5.38,5.13];
+// 03013: 12-månedersendring KPI i desember
+const INFL_DEC={2015:2.3,2016:3.5,2017:1.6,2018:3.5,2019:1.4,2020:1.4,2021:5.3,2022:5.9,2023:4.8,2024:2.2,2025:3.2};
+// EU-SILC
+const SILC_YEARS=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+const SILC=[
+ {k:"mat",n:"Mangler minst ett materielt gode",c:"var(--blue)",v:[12.7,12.4,14.8,13.9,15.7,15.1,16.1,18.0,20.3,22.2,20.4]},
+ {k:"sos",n:"Mangler minst ett sosialt gode",c:"var(--green)",v:[9.4,null,11.1,9.7,10.6,10.4,11.0,11.2,12.7,14.9,13.0]},
+ {k:"end",n:"Vanskelig å få endene til å møtes",c:"var(--ink-2)",v:[5.5,5.9,6.3,6.6,7.0,6.6,6.5,6.6,8.0,8.7,8.1]},
+ {k:"bet",n:"Har minst ett betalingsproblem",c:"var(--blue-lt)",v:[5.6,4.8,5.3,5.3,5.8,6.0,5.9,5.9,7.6,7.8,7.1]}
+];
+// Figur 5.6: fylles inn når figurgrunnlaget foreligger. null = mangler data.
+// Kun verdier oppgitt i kapittelteksten er lagt inn.
+const INC_YEARS=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+const INCOME=[
+ {k:"skatt",n:"Inntekt etter skatt",c:"var(--green)",
+  d:"Lønn, næringsinntekt, kapitalinntekt og overføringer, minus skatt. Standardmålet i inntektsstatistikken. Renteutgifter er <em>ikke</em> trukket fra.",
+  v:[500.2,null,null,null,null,null,null,null,null,538.4]},
+ {k:"rente",n:"… minus bo-, rente- og strømutgifter",c:"var(--blue)",
+  d:"Det som er igjen til annet forbruk etter at bolig, renter og strøm er betalt. Gjør eiere og leietakere sammenlignbare.",
+  v:[null,null,null,null,null,null,null,null,null,null]},
+ {k:"laan",n:"… og minus avdrag",c:"var(--purple)",
+  d:"Trekker også fra (stiliserte) avdrag på lån. Et mål på stram kontantstrøm, men avdrag er egentlig sparing, ikke tapt inntekt.",
+  v:[null,null,null,null,null,null,null,null,null,null]},
+ {k:"bolig",n:"Boligutvidet inntekt",c:"#5b3a1c",
+  d:"Legger til verdien av å bo i egen bolig (hva det ville kostet å leie den). Konseptuelt det beste målet på økonomisk velferd.",
+  v:[null,null,null,null,null,null,null,null,null,null]}
+];
+
+/* ============ HJELPERE ============ */
+const NS="http://www.w3.org/2000/svg";
+const $=s=>document.querySelector(s);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function fmt(x,d=1){if(x==null||isNaN(x))return"–";return x.toLocaleString("nb-NO",{minimumFractionDigits:d,maximumFractionDigits:d}).replace("-","−");}
+function kr(x){return Math.round(x).toLocaleString("nb-NO").replace("-","−")+" kr";}
+function sgn(x,d=1){return (x>0?"+":"")+fmt(x,d);}
+function lin(d0,d1,r0,r1){const f=v=>r0+(v-d0)/(d1-d0)*(r1-r0);return f;}
+function ticks(a,b,n){const span=b-a;const step0=span/n;const mag=Math.pow(10,Math.floor(Math.log10(step0)));const s=[1,2,2.5,5,10].map(m=>m*mag).find(m=>m>=step0);const out=[];for(let v=Math.ceil(a/s)*s;v<=b+1e-9;v+=s)out.push(+v.toFixed(10));return out;}
+function newSvg(container,w,h){container.innerHTML="";return el("svg",{viewBox:`0 0 ${w} ${h}`,role:"img"},container);}
+function cw(c){return Math.max(300,Math.min(c.clientWidth||700,960));}
+const tip=$("#tip");
+function showTip(evt,html){tip.innerHTML=html;tip.style.opacity=1;const pad=12;let x=evt.pageX+pad,y=evt.pageY-10-tip.offsetHeight;if(x+tip.offsetWidth>window.scrollX+document.documentElement.clientWidth-8)x=evt.pageX-pad-tip.offsetWidth;if(y<window.scrollY+4)y=evt.pageY+18;tip.style.left=x+"px";tip.style.top=y+"px";}
+function hideTip(){tip.style.opacity=0;}
+function segGroup(root,cb){root.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{root.querySelectorAll("button").forEach(o=>o.setAttribute("aria-pressed",o===b?"true":"false"));cb(b.dataset.r??b.dataset.v);}));}
+
+/* ============ AVLEDEDE TALL ============ */
+const kpi=y=>KPI_HIST.v[y-KPI_HIST.start];
+const kpiGrowth=y=>(kpi(y)/kpi(y-1)-1)*100;
+const growth2125=(KPI_TOT.i25/KPI_TOT.i21-1)*100;
+GROUPS.forEach(g=>g.g=(g.i25/g.i21-1)*100);
+const RATE_Y={};for(let y=2015;y<=2025;y++){const q=RATE_Q.slice((y-2015)*4,(y-2015)*4+4);RATE_Y[y]=q.reduce((a,b)=>a+b,0)/4;}
+
+/* ============ 0 GJETT ============ */
+(function(){
+  const s=$("#g1"),v=$("#g1v"),btn=$("#gBtn");let choice=null;
+  s.addEventListener("input",()=>v.textContent=s.value+" %");
+  document.querySelectorAll("#gjett .choice button").forEach(b=>b.addEventListener("click",()=>{choice=b.dataset.v;document.querySelectorAll("#gjett .choice button").forEach(o=>o.setAttribute("aria-pressed",o===b?"true":"false"));btn.disabled=false;}));
+  btn.addEventListener("click",()=>{
+    const g=+s.value,a=growth2125;
+    $("#gA1").textContent=fmt(a)+" %";
+    const diff=g-a;
+    $("#gA1c").textContent=Math.abs(diff)<2.5?"Du traff godt.":(diff>0?`Du gjettet ${fmt(diff,0)} prosentpoeng for høyt.`:`Du gjettet ${fmt(-diff,0)} prosentpoeng for lavt.`);
+    $("#gA2c").textContent=choice==="mer"?"Riktig, målt på den vanlige måten.":choice==="likt"?"Det var mer enn likt: realinntekten økte klart.":"Målt på den vanlige måten økte den. Men se under.";
+    $("#gRev").classList.add("on");btn.textContent="Svaret vises under";btn.disabled=true;
+  });
+})();
+
+/* ============ 1 HISTORIE ============ */
+const EPOCHS=[
+ {a:1915,b:1920,n:"Første verdenskrig",from:1914,to:1920},
+ {a:1970,b:1983,n:"Oljekriser og 70-tall",from:1969,to:1983},
+ {a:2021,b:2025,n:"Etter pandemien",from:2020,to:2025}
+];
+let histRange="all";
+function drawHist(){
+  const c=$("#histChart"),W=cw(c),H=W<560?300:360,m={t:16,r:12,b:30,l:38};
+  const y0=histRange==="1969"?1969:1914,y1=histRange==="1914"?1935:2025;
+  const data=[];for(let y=y0;y<=y1;y++)data.push({y,v:kpiGrowth(y)});
+  const vmin=Math.min(-20,...data.map(d=>d.v)),vmax=Math.max(10,...data.map(d=>d.v));
+  const svg=newSvg(c,W,H);
+  const n=data.length,bw=(W-m.l-m.r)/n;
+  const x=y=>m.l+(y-y0)*bw,Y=lin(vmin,vmax,H-m.b,m.t);
+  EPOCHS.forEach(e=>{if(e.b<y0||e.a>y1)return;const a=Math.max(e.a,y0),b=Math.min(e.b,y1);
+    el("rect",{x:x(a),y:m.t,width:(b-a+1)*bw,height:H-m.t-m.b,fill:"#fff4ea"},svg);
+    const endA=x(b+1)>W-m.r-90;if(W<560)return;
+    el("text",{x:endA?x(b+1)-3:x(a)+3,y:m.t+12,"text-anchor":endA?"end":"start",class:"lbl",style:"font-size:11.5px;fill:#9a4a10"},svg,e.n);
+  });
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(vmin,vmax,6).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
+  data.forEach(d=>{
+    const r=el("rect",{x:x(d.y)+bw*0.12,width:Math.max(1,bw*0.76),y:Math.min(Y(0),Y(d.v)),height:Math.abs(Y(d.v)-Y(0)),fill:d.y>=2021?"var(--red)":(d.v<0?"var(--blue-lt)":"var(--green)")},svg);
+    r.addEventListener("mousemove",e=>showTip(e,`<b>${d.y}</b><br>${sgn(d.v)} %`));r.addEventListener("mouseleave",hideTip);
+  });
+  el("line",{x1:m.l,x2:W-m.r,y1:Y(0),y2:Y(0),class:"zero"},svg);
+  const step=n>80?(W<560?20:10):(n>40?5:(W<560?4:2));
+  data.forEach(d=>{if(d.y%step===0)el("text",{x:x(d.y)+bw/2,y:H-m.b+16,"text-anchor":"middle"},ax,d.y);});
+}
+function epCards(){
+  const root=$("#epCards");root.innerHTML="";
+  EPOCHS.forEach(e=>{
+    const cum=(kpi(e.to)/kpi(e.from)-1)*100;let peak=-99,py=0;for(let y=e.a;y<=e.b;y++){const g=kpiGrowth(y);if(g>peak){peak=g;py=y;}}
+    const d=document.createElement("div");d.className="card";
+    d.innerHTML=`<div class="small">${e.n}, ${e.from}–${e.to}</div><div class="big num ${e.from===2020?"":"red"}">+${fmt(cum,0)} %</div><div class="cap">samlet prisvekst. Høyeste årsvekst: ${fmt(peak)} % (${py})</div>`;
+    root.appendChild(d);
+  });
+}
+segGroup($("#histSeg"),r=>{histRange=r;drawHist();});
+
+/* ============ 2 KURV ============ */
+function drawGroups(){
+  const c=$("#grpChart"),W=cw(c),narrow=W<560;
+  const rows=[...GROUPS].sort((a,b)=>b.g-a.g);
+  const rh=26,m={t:10,r:48,b:24,l:narrow?140:260},H=m.t+m.b+rh*rows.length;
+  const svg=newSvg(c,W,H);
+  const X=lin(0,35,m.l,W-m.r);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(0,35,narrow?4:7).forEach(t=>{el("line",{x1:X(t),x2:X(t),y1:m.t,y2:H-m.b},gt);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,fmt(t,0));});
+  rows.forEach((g,i)=>{const y=m.t+i*rh;
+    el("text",{x:m.l-8,y:y+rh/2+4,"text-anchor":"end",class:"lbl"},svg,narrow?g.s:g.n);
+    const r=el("rect",{x:X(0),y:y+5,width:X(g.g)-X(0),height:rh-10,fill:g.k==="01"?"var(--red)":"var(--green)"},svg);
+    el("text",{x:X(g.g)+5,y:y+rh/2+4,class:"lbl num"},svg,fmt(g.g));
+    r.addEventListener("mousemove",e=>showTip(e,`<b>${g.n}</b><br>${sgn(g.g)} %<br>Vekt i KPI (des. 2021): ${fmt(g.w/10)} %`));r.addEventListener("mouseleave",hideTip);
+  });
+  const kx=X(growth2125);
+  el("line",{x1:kx,x2:kx,y1:m.t-4,y2:H-m.b,stroke:"var(--ink-2)","stroke-width":1.5,"stroke-dasharray":"4 3"},svg);
+  el("text",{x:kx+4,y:H-m.b-4,class:"lbl-b"},svg,`KPI ${fmt(growth2125)}`);
+}
+const basketW=GROUPS.map(g=>g.w);
+function buildBasket(){
+  const root=$("#basket");root.innerHTML="";
+  GROUPS.forEach((g,i)=>{
+    const row=document.createElement("div");row.className="brow";
+    row.innerHTML=`<span class="n">${g.s}</span><input type="range" min="0" max="400" step="1" value="${Math.round(basketW[i])}" aria-label="Budsjettandel ${g.n}"><span class="p num">${sgn(g.g)}</span><span class="w num"></span>`;
+    row.querySelector("input").addEventListener("input",ev=>{basketW[i]=+ev.target.value;calcBasket();});
+    root.appendChild(row);
+  });
+  calcBasket();
+}
+function calcBasket(){
+  const sum=basketW.reduce((a,b)=>a+b,0)||1;
+  document.querySelectorAll("#basket .brow .w").forEach((s,i)=>s.textContent=fmt(basketW[i]/sum*100)+" %");
+  const you=GROUPS.reduce((a,g,i)=>a+basketW[i]/sum*g.g,0);
+  const ks=GROUPS.reduce((a,g)=>a+g.w,0),kp=GROUPS.reduce((a,g)=>a+g.w/ks*g.g,0);
+  $("#bYou").textContent=fmt(you)+" %";$("#bKpi").textContent=fmt(kp)+" %";
+  const d=you-kp;const e=$("#bDiff");e.textContent=sgn(d)+" pp";e.className="big num "+(Math.abs(d)<0.5?"":(d>0?"red":"green"));
+}
+$("#bReset").addEventListener("click",()=>{GROUPS.forEach((g,i)=>basketW[i]=g.w);buildBasket();});
+
+function drawSpread(){
+  const c=$("#spreadChart"),W=cw(c),narrow=W<560;
+  const rows=[
+    {n:"178 varekategorier",s:"Varekategorier",lo:-21.4,hi:22.0},
+    {n:"Enkelthusholdninger",s:"Husholdninger",lo:-5.1,hi:5.1},
+    {n:"Barnefase: yngste barn 0–6 mot 7–19 år",s:"Barn 0–6 mot 7–19",w:3.3},
+    {n:"Inntekt: laveste mot høyeste kvartil",s:"Lav mot høy inntekt",w:1.0},
+    {n:"Boligeiere mot leietakere",s:"Eiere mot leietakere",w:0.8}
+  ];
+  const rh=40,m={t:8,r:16,b:26,l:narrow?128:290},H=m.t+m.b+rh*rows.length;
+  const svg=newSvg(c,W,H);const X=lin(-25,25,m.l,W-m.r);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  [-20,-10,0,10,20].forEach(t=>{el("line",{x1:X(t),x2:X(t),y1:m.t,y2:H-m.b},gt);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,sgn(t,0));});
+  rows.forEach((r,i)=>{const y=m.t+i*rh+rh/2;
+    const lab=el("text",{x:m.l-8,y:y+4,"text-anchor":"end",class:"lbl"},svg,narrow?r.s:r.n);
+    let lo=r.lo,hi=r.hi,dashed=false;if(r.w!=null){lo=-r.w/2;hi=r.w/2;dashed=true;}
+    el("rect",{x:X(lo),y:y-8,width:Math.max(2,X(hi)-X(lo)),height:16,fill:i<2?"var(--green)":"var(--ink-2)",opacity:i<2?.85:1,rx:2},svg);
+    const txt=r.w!=null?`${fmt(r.w)} pp`:`${fmt(r.hi-r.lo)} pp`;
+    if(i<2)el("text",{x:(X(lo)+X(hi))/2,y:y+4,"text-anchor":"middle",class:"lbl-b num",style:"fill:#fff"},svg,txt);
+    else el("text",{x:X(hi)+6,y:y+4,class:"lbl num"},svg,txt);
+  });
+  el("line",{x1:X(0),x2:X(0),y1:m.t,y2:H-m.b,class:"zero"},svg);
+}
+function drawCheap(){
+  const c=$("#cheapChart"),W=cw(c),narrow=W<560;
+  const rows=[{n:"Kjente billigmerker",b:29.3,o:19.2},{n:"Prisrangering, grov",b:21.5,o:16.5},{n:"Prisrangering, detaljert",b:22.0,o:18.4}];
+  const rh=40,m={t:22,r:40,b:24,l:narrow?130:200},H=m.t+m.b+rh*rows.length;
+  const svg=newSvg(c,W,H);const X=lin(0,32,m.l,W-m.r);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(0,30,narrow?3:6).forEach(t=>{el("line",{x1:X(t),x2:X(t),y1:m.t,y2:H-m.b},gt);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,fmt(t,0));});
+  el("circle",{cx:m.l,cy:8,r:5,fill:"var(--ink-2)"},svg);el("text",{x:m.l+9,y:12,class:"lbl"},svg,"Andre matvarer");
+  el("circle",{cx:m.l+130,cy:8,r:5,fill:"var(--red)"},svg);el("text",{x:m.l+139,y:12,class:"lbl"},svg,"Billige matvarer");
+  rows.forEach((r,i)=>{const y=m.t+i*rh+rh/2;
+    el("text",{x:m.l-8,y:y+4,"text-anchor":"end",class:"lbl"},svg,r.n);
+    el("line",{x1:X(r.o),x2:X(r.b),y1:y,y2:y,stroke:"var(--hair)","stroke-width":4},svg);
+    el("circle",{cx:X(r.o),cy:y,r:6,fill:"var(--ink-2)"},svg);
+    el("circle",{cx:X(r.b),cy:y,r:6,fill:"var(--red)"},svg);
+    el("text",{x:X(r.b)+10,y:y+4,class:"lbl-b num"},svg,"+"+fmt(r.b-r.o)+" pp");
+  });
+}
+
+/* ============ 3 INNTEKT ============ */
+let incSel="skatt";
+function buildLadder(){
+  const root=$("#ladder");root.innerHTML="";
+  INCOME.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.className="step";b.setAttribute("aria-pressed",s.k===incSel?"true":"false");b.style.font="inherit";b.style.textAlign="left";
+    b.innerHTML=`<span class="dot" style="background:${s.c}">${i+1}</span><div><b>${s.n}</b><span>${s.d}</span></div>`;
+    b.addEventListener("click",()=>{incSel=s.k;buildLadder();drawIncome();});root.appendChild(b);});
+}
+function drawIncome(){
+  const c=$("#incChart"),W=cw(c),H=W<560?260:320,m={t:16,r:20,b:30,l:44};
+  const svg=newSvg(c,W,H);
+  const X=lin(2015,2024,m.l,W-m.r),Y=lin(300,560,H-m.b,m.t);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(300,550,5).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
+  INC_YEARS.forEach(y=>{if(W>=560||y%2===1)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
+  const s=INCOME.find(d=>d.k===incSel);
+  const complete=s.v.every(v=>v!=null);
+  // Andre serier som svake linjer dersom komplette
+  INCOME.forEach(o=>{if(o===s||!o.v.every(v=>v!=null))return;
+    el("path",{d:o.v.map((v,i)=>(i?"L":"M")+X(INC_YEARS[i])+","+Y(v)).join(""),fill:"none",stroke:"var(--hair)","stroke-width":2},svg);});
+  if(complete){
+    el("path",{d:s.v.map((v,i)=>(i?"L":"M")+X(INC_YEARS[i])+","+Y(v)).join(""),fill:"none",stroke:s.c,"stroke-width":3},svg);
+  }else{
+    el("rect",{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:"url(#hatch)"},svg);
+    const defs=el("defs",null,svg);const p=el("pattern",{id:"hatch",width:10,height:10,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
+    el("rect",{width:10,height:10,fill:"#fafbfb"},p);el("line",{x1:0,y1:0,x2:0,y2:10,stroke:"#eceff0","stroke-width":5},p);
+    const g=el("g",null,svg);
+    el("rect",{x:(W-230)/2,y:H/2-36,width:230,height:44,fill:"#fff",stroke:"var(--missing)","stroke-dasharray":"4 3",rx:4},g);
+    el("text",{x:W/2,y:H/2-17,"text-anchor":"middle",class:"lbl-b"},g,"Mangler data");
+    el("text",{x:W/2,y:H/2-1,"text-anchor":"middle",class:"lbl",style:"font-size:11.5px"},g,"Figurgrunnlag for figur 5.6 er ikke lagt inn");
+  }
+  s.v.forEach((v,i)=>{if(v==null)return;const cx=X(INC_YEARS[i]),cy=Y(v);
+    el("circle",{cx,cy,r:5.5,fill:s.c,stroke:"#fff","stroke-width":2},svg);
+    el("text",{x:cx+(i===0?8:-8),y:cy-10,"text-anchor":i===0?"start":"end",class:"lbl-b num"},svg,fmt(v,1));
+  });
+  $("#incTitle").textContent="Median "+(s.k==="skatt"?"inntekt etter skatt":s.k==="bolig"?"boligutvidet inntekt":s.n.replace("… ","inntekt "))+" per forbruksenhet, 2015–2024";
+}
+
+/* ============ 4 LÅN ============ */
+function loanModel(L,tax){
+  const rows=[];let B=L;
+  for(let y=2021;y<=2025;y++){
+    const r=RATE_Y[y]/100,pi=INFL_DEC[y]/100;
+    const pay=B*r/(1-Math.pow(1+r,-20));const renter=B*r,avdrag=pay-renter;
+    const fradrag=tax?renter*0.22:0,gev=B*pi;
+    rows.push({y,B,r:RATE_Y[y],pi:INFL_DEC[y],renter,fradrag,gev,avdrag,netto:renter-fradrag-gev});
+    B-=avdrag;
+  }
+  return rows;
+}
+function drawLoan(){
+  const L=+$("#loan").value,tax=$("#tax").checked;
+  $("#loanV").textContent=kr(L);$("#lgTax").style.display=tax?"":"none";
+  const rows=loanModel(L,tax);
+  const c=$("#loanChart"),W=cw(c),H=W<560?300:340,m={t:16,r:14,b:30,l:W<560?58:70};
+  const svg=newSvg(c,W,H);
+  const maxv=Math.max(...rows.map(r=>r.renter)),minv=-Math.max(...rows.map(r=>r.gev+r.fradrag));
+  const tk=ticks(minv*1.08,maxv*1.08,6);const Y=lin(tk[0]<minv?tk[0]:minv*1.08,Math.max(tk[tk.length-1],maxv*1.08),H-m.b,m.t);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  tk.forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,(t/1000).toLocaleString("nb-NO").replace("-","−")+" k");});
+  const n=rows.length,slot=(W-m.l-m.r)/n,bw=Math.min(56,slot*0.5);
+  rows.forEach((r,i)=>{const cx=m.l+slot*i+slot/2;
+    const tipH=`<b>${r.y}</b><br>Rente ${fmt(r.r,2)} %, inflasjon ${fmt(r.pi)} %<br>Renteutgift: ${kr(r.renter)}${tax?`<br>Skattefradrag: ${kr(r.fradrag)}`:""}<br>Inflasjonsgevinst: ${kr(r.gev)}<br><b>Netto: ${kr(r.netto)}</b>`;
+    const g=el("g",null,svg);
+    el("rect",{x:cx-bw/2,y:Y(r.renter),width:bw,height:Y(0)-Y(r.renter),fill:"var(--ink-2)"},g);
+    if(tax)el("rect",{x:cx-bw/2,y:Y(0),width:bw,height:Y(-r.fradrag)-Y(0),fill:"var(--green-lt)"},g);
+    el("rect",{x:cx-bw/2,y:Y(-r.fradrag),width:bw,height:Y(-r.fradrag-r.gev)-Y(-r.fradrag),fill:"var(--green)"},g);
+    el("circle",{cx,cy:Y(r.netto),r:6,fill:"#fff",stroke:"var(--red)","stroke-width":2.5},g);
+    el("text",{x:cx,y:H-m.b+16,"text-anchor":"middle"},ax,r.y);
+    g.addEventListener("mousemove",e=>showTip(e,tipH));g.addEventListener("mouseleave",hideTip);
+  });
+  el("line",{x1:m.l,x2:W-m.r,y1:Y(0),y2:Y(0),class:"zero"},svg);
+  // Cards
+  const r21=rows[0],r24=rows[3];
+  const sumR=rows.reduce((a,r)=>a+r.renter,0),sumF=rows.reduce((a,r)=>a+r.fradrag,0),sumG=rows.reduce((a,r)=>a+r.gev,0),sumN=sumR-sumF-sumG;
+  $("#loanCards").innerHTML=`
+   <div class="card"><div class="small">Renter per måned, 2021</div><div class="big num">${kr(r21.renter/12)}</div><div class="cap">Rente ${fmt(r21.r,2)} %</div></div>
+   <div class="card"><div class="small">Renter per måned, 2024</div><div class="big red num">${kr(r24.renter/12)}</div><div class="cap">Rente ${fmt(r24.r,2)} %. Det er dette du merker.</div></div>
+   <div class="card"><div class="small">Netto reell kostnad 2021–2025</div><div class="big ${sumN<sumR*0.5?"green":""} num">${kr(sumN)}</div><div class="cap">mot ${kr(sumR)} i renter alene</div></div>`;
+  $("#loanTab").innerHTML=`<thead><tr><th>År</th><th>Rente</th><th>Inflasjon</th><th>Renteutgift</th>${tax?"<th>Fradrag</th>":""}<th>Inflasjonsgevinst</th><th>Netto</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.y}</td><td>${fmt(r.r,2)} %</td><td>${fmt(r.pi)} %</td><td>${kr(r.renter)}</td>${tax?`<td>${kr(r.fradrag)}</td>`:""}<td>${kr(r.gev)}</td><td>${kr(r.netto)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Sum</td><td></td><td></td><td>${kr(sumR)}</td>${tax?`<td>${kr(sumF)}</td>`:""}<td>${kr(sumG)}</td><td>${kr(sumN)}</td></tr></tfoot>`;
+}
+$("#loan").addEventListener("input",drawLoan);$("#tax").addEventListener("change",drawLoan);
+
+function drawRates(){
+  const c=$("#rateChart"),W=cw(c),H=W<560?260:300,m={t:14,r:16,b:30,l:36};
+  const yrs=[];for(let y=2015;y<=2025;y++)yrs.push(y);
+  const nom=yrs.map(y=>RATE_Y[y]),real=yrs.map(y=>RATE_Y[y]-INFL_DEC[y]),realT=yrs.map(y=>RATE_Y[y]*0.78-INFL_DEC[y]);
+  const svg=newSvg(c,W,H);const X=lin(2015,2025,m.l,W-m.r),Y=lin(-4.5,7,H-m.b,m.t);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(-4,7,6).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
+  yrs.forEach(y=>{if(W>=560||y%2===1)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
+  el("rect",{x:X(2020.5),y:m.t,width:X(2022.5)-X(2020.5),height:H-m.t-m.b,fill:"#fff4ea"},svg);
+  el("text",{x:X(2021.5),y:Y(-3.9)+14,"text-anchor":"middle",class:"lbl",style:"font-size:11.5px;fill:#9a4a10"},svg,"Negativ realrente");
+  el("line",{x1:m.l,x2:W-m.r,y1:Y(0),y2:Y(0),class:"zero"},svg);
+  const path=(arr,col,dash,wd)=>el("path",{d:arr.map((v,i)=>(i?"L":"M")+X(yrs[i])+","+Y(v)).join(""),fill:"none",stroke:col,"stroke-width":wd||2.5,"stroke-dasharray":dash||""},svg);
+  path(nom,"var(--blue)");path(real,"var(--ink-2)");path(realT,"var(--green)","5 4",2);
+  yrs.forEach((y,i)=>{const hit=el("rect",{x:X(y)-(W-m.l-m.r)/22,y:m.t,width:(W-m.l-m.r)/11,height:H-m.t-m.b,fill:"transparent"},svg);
+    hit.addEventListener("mousemove",e=>showTip(e,`<b>${y}</b><br>Rente: ${fmt(nom[i],2)} %<br>Inflasjon (des.): ${fmt(INFL_DEC[y])} %<br>Realrente: ${fmt(real[i],1)} %<br>Etter skatt: ${fmt(realT[i],1)} %`));hit.addEventListener("mouseleave",hideTip);});
+}
+
+/* ============ 5 HVEM ============ */
+function drawSilc(){
+  $("#silcLeg").innerHTML=SILC.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join("");
+  const c=$("#silcChart"),W=cw(c),H=W<560?280:320,m={t:14,r:W<560?16:50,b:30,l:32};
+  const svg=newSvg(c,W,H);const X=lin(2015,2025,m.l,W-m.r),Y=lin(0,24,H-m.b,m.t);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(0,24,6).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
+  SILC_YEARS.forEach(y=>{if(W>=560||y%2===1)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
+  el("rect",{x:X(2021),y:m.t,width:X(2024)-X(2021),height:H-m.t-m.b,fill:"#fff4ea"},svg);
+  SILC.forEach(s=>{let d="",pen=false;s.v.forEach((v,i)=>{if(v==null){pen=false;return;}d+=(pen?"L":"M")+X(SILC_YEARS[i])+","+Y(v);pen=true;});
+    el("path",{d,fill:"none",stroke:s.c,"stroke-width":2.5},svg);
+    s.v.forEach((v,i)=>{if(v==null){el("text",{x:X(SILC_YEARS[i]),y:Y(10.2),"text-anchor":"middle",class:"lbl",style:"font-size:10.5px;fill:var(--missing)"},svg,"..");return;}
+      const ci=el("circle",{cx:X(SILC_YEARS[i]),cy:Y(v),r:3,fill:s.c},svg);});
+  });
+  SILC_YEARS.forEach((y,i)=>{const hit=el("rect",{x:X(y)-(W-m.l-m.r)/20,y:m.t,width:(W-m.l-m.r)/10,height:H-m.t-m.b,fill:"transparent"},svg);
+    hit.addEventListener("mousemove",e=>showTip(e,`<b>${y}</b><br>`+SILC.map(s=>`${s.n}: ${s.v[i]==null?"mangler data":fmt(s.v[i])+" %"}`).join("<br>")));hit.addEventListener("mouseleave",hideTip);});
+}
+function drawOwn(){
+  const c=$("#ownChart"),W=cw(c),narrow=W<560;
+  const rows=[{n:"Mangler minst ett materielt gode",s:"Materielle mangler",a:8.9,b:16.2},{n:"Vanskelig å få endene til å møtes",s:"Endene møtes ikke",a:2.8,b:6.2}];
+  const rh=46,m={t:24,r:40,b:24,l:narrow?130:260},H=m.t+m.b+rh*rows.length;
+  const svg=newSvg(c,W,H);const X=lin(0,18,m.l,W-m.r);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  ticks(0,18,narrow?3:6).forEach(t=>{el("line",{x1:X(t),x2:X(t),y1:m.t,y2:H-m.b},gt);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,fmt(t,0));});
+  el("circle",{cx:m.l,cy:9,r:5,fill:"var(--hair)",stroke:"var(--ink-2)"},svg);el("text",{x:m.l+9,y:13,class:"lbl"},svg,"2021");
+  el("circle",{cx:m.l+60,cy:9,r:5,fill:"var(--red)"},svg);el("text",{x:m.l+69,y:13,class:"lbl"},svg,"2024");
+  rows.forEach((r,i)=>{const y=m.t+i*rh+rh/2;
+    const words=narrow?r.s:r.n;el("text",{x:m.l-8,y:y+4,"text-anchor":"end",class:"lbl"},svg,words);
+    el("line",{x1:X(r.a),x2:X(r.b),y1:y,y2:y,stroke:"var(--hair)","stroke-width":4},svg);
+    el("circle",{cx:X(r.a),cy:y,r:6,fill:"var(--hair)",stroke:"var(--ink-2)"},svg);
+    el("circle",{cx:X(r.b),cy:y,r:6,fill:"var(--red)"},svg);
+    el("text",{x:X(r.a)-9,y:y+4,"text-anchor":"end",class:"lbl num"},svg,fmt(r.a));
+    el("text",{x:X(r.b)+10,y:y+4,class:"lbl-b num"},svg,fmt(r.b));
+  });
+}
+
+/* ============ 6 KART ============ */
+const ACTORS=[
+ {k:"ssbreg",n:"SSB: inntekter og priser",x:0.2,y:0.62,c:"var(--green-dk)",
+  what:"Registerdata om inntekt, skatt og gjeld for hele befolkningen, og konsumprisindeksen.",
+  find:"Realinntekten har i hovedsak økt, også for dem med lavest inntekt. Men trekker man fra renter, falt den for boligeiere med høy gjeld fra 2021 til 2023.",
+  src:'<a href="https://www.ssb.no/nasjonalregnskap-og-konjunkturer/okonomiske-analyser/okonomiske-analyser-2-2026-utsyn-over-aret-2025">Økonomiske analyser 2/2026, kap. 5.2–5.6</a>'},
+ {k:"silc",n:"SSB: levekårsundersøkelsen",x:0.74,y:0.4,c:"var(--blue)",
+  what:"Spørreundersøkelse (EU-SILC) om materielle og sosiale mangler og betalingsproblemer.",
+  find:"Klart flere rapporterte problemer fra 2021 til 2024, særlig blant boligeiere. Nedgang i 2025.",
+  src:'<a href="https://www.ssb.no/nasjonalregnskap-og-konjunkturer/okonomiske-analyser/okonomiske-analyser-2-2026-utsyn-over-aret-2025">Økonomiske analyser 2/2026, kap. 5.7</a>'},
+ {k:"sifo",n:"SIFO: trygghetsbarometeret",x:0.8,y:0.78,c:"var(--purple)",
+  what:"Spørreundersøkelse som deler husholdningene inn etter selvrapportert økonomisk trygghet, fra «trygge» til «ille ute».",
+  find:"Andelen økonomisk trygge falt fra 65 til 50 prosent etter 2021, og 17 prosent slet eller var ille ute i 2024.",
+  src:'<a href="https://www.oslomet.no/forskning/forskningsnyheter/dyrtiden-det-har-ikke-blitt-noe-bedre">OsloMet, januar 2025</a>'},
+ {k:"smb",n:"Kritikk: «gjennomsnittet skjuler»",x:0.36,y:0.86,c:"var(--orange)",
+  what:"En innvending, ikke en egen måling. Blant annet framført av SMB Norges sjeføkonom.",
+  find:"Gjennomsnittstall kan skjule store forskjeller, og folks opplevelse av dårligere råd må tas på alvor. Kapittel 5 analyserer faktisk fordelingen, men det har i liten grad nådd fram i debatten.",
+  src:'<a href="https://smbnorge.no/dyrtiden-er-ikke-en-myte-mange-har-fatt-darligere-rad/">SMB Norge, april 2026</a>'},
+ {k:"head",n:"Overskriften: «Folk har ikke dårligere råd»",x:0.16,y:0.2,c:"var(--ink-2)",
+  what:"Mediefortolkningen av rapporten, som løfter fram gjennomsnitt og median.",
+  find:"Riktig for folk flest målt ved inntekt etter skatt. Men den mister nyansen om renteutgifter og boligeiere med høy gjeld.",
+  src:'<a href="https://www.aftenposten.no/okonomi/i/Okgwol/ssb-rapport-folk-har-ikke-daarligere-raad-selv-om-det-foeles-slik">Aftenposten, april 2026</a>'}
+];
+let actorSel="ssbreg";
+function drawMap(){
+  const c=$("#mapChart"),W=cw(c),H=W<560?360:400,m={t:28,r:16,b:40,l:28};
+  const svg=newSvg(c,W,H);const X=lin(0,1,m.l,W-m.r),Y=lin(0,1,m.t,H-m.b);
+  el("rect",{x:X(0),y:Y(0),width:X(1)-X(0),height:Y(1)-Y(0),fill:"var(--bg-soft)",stroke:"var(--hair)"},svg);
+  el("line",{x1:X(.5),x2:X(.5),y1:Y(0),y2:Y(1),stroke:"var(--hair)"},svg);
+  el("line",{x1:X(0),x2:X(1),y1:Y(.5),y2:Y(.5),stroke:"var(--hair)"},svg);
+  el("text",{x:X(0),y:H-m.b+18,class:"lbl-b"},svg,W<560?"← Register":"← Registerdata og priser");
+  el("text",{x:X(1),y:H-m.b+18,class:"lbl-b","text-anchor":"end"},svg,W<560?"Opplevd →":"Opplevd økonomi →");
+  el("text",{x:X(0)+4,y:m.t-10,class:"lbl"},svg,"↑ Gjennomsnitt og median");
+  el("text",{x:X(0)+4,y:H-m.b-6,class:"lbl",style:"fill:var(--muted)"},svg,"↓ Fordeling og utsatte grupper");
+  ACTORS.forEach(a=>{const cx=X(a.x),cy=Y(a.y),on=a.k===actorSel;
+    const g=el("g",{tabindex:0,role:"button","aria-label":a.n,style:"cursor:pointer"},svg);
+    el("circle",{cx,cy,r:on?13:10,fill:a.c,stroke:on?"var(--ink)":"#fff","stroke-width":on?3:2},g);
+    const right=a.x<0.6;
+    const t=el("text",{x:cx+(right?18:-18),y:cy+4,"text-anchor":right?"start":"end",class:on?"lbl-b":"lbl",style:W<560?"font-size:11px":""},g,W<560?a.n.replace("Overskriften: ","").replace("Kritikk: ",""):a.n);
+    const pick=()=>{actorSel=a.k;drawMap();showActor();};
+    g.addEventListener("click",pick);g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+  });
+}
+function showActor(){const a=ACTORS.find(x=>x.k===actorSel);
+  $("#actorCard").innerHTML=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px"><span style="width:14px;height:14px;border-radius:50%;background:${a.c};display:inline-block"></span><b style="color:var(--ink-2);font-size:17px">${a.n}</b></div>
+  <p style="margin:0 0 8px"><b>Hva måles:</b> ${a.what}</p><p style="margin:0 0 8px"><b>Hva finner de:</b> ${a.find}</p><p class="note" style="margin:0">Kilde: ${a.src}</p>`;}
+
+/* ============ INIT ============ */
+function drawAll(){drawHist();drawGroups();drawSpread();drawCheap();drawIncome();drawLoan();drawRates();drawSilc();drawOwn();drawMap();}
+epCards();buildBasket();buildLadder();showActor();drawAll();
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(drawAll,150);});
+</script>
+</body>
+</html>

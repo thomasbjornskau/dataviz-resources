@@ -16,6 +16,7 @@
   --blue:#1d6fb8; --blue-lt:#a9d3f0; --purple:#6b4ba1; --orange:#d86b1f; --red:#c73a2a;
   --missing:#9aa7aa;
   --focus:#3396d2;
+  --c-leie:#1a9d49; --c-lav:#1d6fb8; --c-hoy:#a9d3f0; --c-hoy-line:#d86b1f; --c-eier:#1d6fb8;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -330,21 +331,70 @@ footer li{margin-bottom:4px}
     <p class="fig-title" id="incTitle">Medianinntekt per forbruksenhet, 2015–2024</p>
     <p class="fig-sub">1000 kroner per forbruksenhet, faste priser.</p>
     <div class="chart" id="incChart"></div>
-    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.6. Beregninger i Langørgen og Eika (2026). Kapitteltekst og figurnote oppgir ulikt prisår (2025 og 2023). Det må avklares før figuren fylles inn.</p>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.6. Beregninger i Langørgen og Eika (2026) basert på registerdata. Husholdningene er vektet etter antall medlemmer. Kapitteltekst og figurnote oppgir ulikt prisår (2025 og 2023).</p>
   </figure>
 </div>
 <div class="wrap">
   <div class="grid-3">
     <div class="card"><span class="tag ver">Fra teksten</span><div class="big green num">+7,6 %</div><div class="cap">Median inntekt etter skatt, reelt 2015–2024 (500 200 → 538 400 kr)</div></div>
-    <div class="card"><span class="tag ver">Fra teksten</span><div class="big red num">Fall</div><div class="cap">De tre målene som trekker fra renter, faller fra 2021 til 2023</div></div>
+    <div class="card"><span class="tag ver">Figurgrunnlag</span><div class="big red num">−5,0 %</div><div class="cap">Median inntekt etter bo-, rente- og strømutgifter, 2021–2023 (407,6 → 387,1)</div></div>
     <div class="card"><span class="tag ver">Fra teksten</span><div class="big num">−1,6 %</div><div class="cap">Inntekt etter bo-, låne- og strømutgifter, 2021–2023. Deretter +3,1 % i 2024</div></div>
   </div>
   <p style="margin-top:20px">Hvorfor faller det siste målet så lite, når avdrag også trekkes fra? De fleste boliglån er annuitetslån. Når renta stiger, går mer av terminbeløpet til renter og mindre til avdrag. Terminbeløpet øker derfor mindre enn renta skulle tilsi. Annuitetslånene har dempet sjokket.</p>
 
   <h3>Eiere med høy gjeld tok støyten</h3>
   <p>Fallet i realinntekt etter renteutgifter gjelder først og fremst boligeiere med mer enn én million kroner i gjeld per forbruksenhet. En del av fallet skyldes også at 2021 var et år med uvanlig høye aksjeutbytter. For leietakere og eiere med lite gjeld går de fire målene omtrent i takt. Leietakernes gjennomsnittsinntekt sto nesten stille fra 2021 til 2024, mens veksten kom blant boligeierne.</p>
-  <div class="missing" id="missBolig"><span class="tag miss">Mangler data</span><br><strong>Figur 5.7 og 5.8</strong> (utviklingen for eiere og leietakere, og for inntektskvartiler) vises når figurgrunnlaget er lagt inn. Tallene finnes ikke i Statistikkbanken.</div>
-  <p style="margin-top:18px">Et viktig poeng for fordelingsdebatten: flertallet av eiere med høy gjeld har middels eller høy inntekt. Leietakerne er overrepresentert blant dem med lavest inntekt, men har lite gjeld og ble derfor lite rammet av renteøkningen.</p>
+  <p>Grafen under starter med inntekt etter bo-, rente- og strømutgifter, altså målet der renta er trukket fra. Bytt mål og gruppering og se hvem som faktisk falt.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title" id="grpTitle"></p>
+    <p class="fig-sub" id="grpSub"></p>
+    <div class="controls">
+      <div class="seg" id="grpMeas" role="group" aria-label="Inntektsmål">
+        <button type="button" data-r="skatt" aria-pressed="false">Etter skatt</button>
+        <button type="button" data-r="rente" aria-pressed="true">Minus bo, rente, strøm</button>
+        <button type="button" data-r="laan" aria-pressed="false">Minus avdrag</button>
+        <button type="button" data-r="bolig" aria-pressed="false">Boligutvidet</button>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="grpBy" role="group" aria-label="Gruppering">
+        <button type="button" data-r="bolig" aria-pressed="true">Boligstatus</button>
+        <button type="button" data-r="kvartil" aria-pressed="false">Inntektskvartil</button>
+      </div>
+      <div class="seg" id="grpView" role="group" aria-label="Visning">
+        <button type="button" data-r="i2021" aria-pressed="true">Indeks 2021=100</button>
+        <button type="button" data-r="i2020" aria-pressed="false">Indeks 2020=100</button>
+        <button type="button" data-r="kr" aria-pressed="false">Kroner</button>
+      </div>
+    </div>
+    <div class="legend" id="grpLeg"></div>
+    <div class="chart" id="grpIncChart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.7 og 5.8. Gjennomsnitt per forbruksenhet, faste priser. Høy gjeld: over 1 million kroner i gjeld per forbruksenhet. Kvartiler i fordelingen av inntekt etter skatt. <strong>Obs:</strong> 2021 var et år med uvanlig høye aksjeutbytter, særlig i øverste kvartil. Med 2021 som basisår ser fallet etterpå derfor større ut enn det er. Prøv 2020=100.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="grid-3" id="grpCards"></div>
+
+  <h3>Hvem er det som har høy gjeld?</h3>
+  <p>Et viktig poeng for fordelingsdebatten: flertallet av eiere med høy gjeld har middels eller høy inntekt. Leietakerne er overrepresentert blant dem med lavest inntekt, men har lite gjeld og ble derfor lite rammet av renteøkningen.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Boligstatus etter plass i inntektsfordelingen, 2024</p>
+    <p class="fig-sub">Andel personer i hver prosentil av inntekt etter skatt per forbruksenhet. Prosent. Hold over figuren for å lese av.</p>
+    <div class="legend">
+      <span><i class="sq" style="background:var(--c-leie)"></i>Leietakere</span>
+      <span><i class="sq" style="background:var(--c-lav)"></i>Eiere, gjeld under 1 mill. per forbruksenhet</span>
+      <span><i class="sq" style="background:var(--c-hoy)"></i>Eiere, gjeld over 1 mill. per forbruksenhet</span>
+    </div>
+    <div class="chart" id="fig9Chart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.9.</p>
+  </figure>
+</div>
+<div class="wrap">
+  <p id="fig9Txt"></p>
 </div></section>
 
 <!-- 4 LÅN -->
@@ -374,7 +424,7 @@ footer li{margin-bottom:4px}
       <span><i class="sq" style="background:#fff;border:2px solid var(--red);border-radius:50%"></i>Netto reell kostnad</span>
     </div>
     <div class="chart" id="loanChart"></div>
-    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 07200 (renter på utestående utlån med pant i bolig, husholdninger, årsgjennomsnitt av kvartaler) og 03013 (12-månedersvekst i KPI i desember). Egne beregninger etter metoden i vedlegg 5.4. Renta kan avvike noe fra figur 5.13 i kapitlet.</p>
+    <p class="fig-src">Kilde: Rente og inflasjon fra figurgrunnlaget til figur 5.13 i Økonomiske analyser 2/2026 (inflasjon = nominell rente minus realrente). Egne beregninger av et stilisert lån.</p>
   </figure>
 </div>
 <div class="wrap">
@@ -388,18 +438,30 @@ footer li{margin-bottom:4px}
 <div class="wide">
   <figure>
     <p class="fig-title">Boliglånsrente, realrente og realrente etter skatt, 2015–2025</p>
-    <p class="fig-sub">Prosent. Realrente = nominell rente minus 12-månedersveksten i KPI i desember.</p>
+    <p class="fig-sub">Gjennomsnittlig rente på boliglån. Prosent.</p>
     <div class="legend">
       <span><i style="background:var(--blue)"></i>Nominell rente</span>
       <span><i style="background:var(--ink-2)"></i>Realrente</span>
       <span><i style="background:var(--green);height:0;border-top:2px dashed var(--green)"></i>Realrente etter skatt</span>
     </div>
     <div class="chart" id="rateChart"></div>
-    <p class="fig-src">Kilde: SSB, Statistikkbanken tabell 07200 og 03013. Egne beregninger.</p>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.13.</p>
   </figure>
 </div>
 <div class="wrap">
-  <p>Andelen personer i husholdninger med høy gjeldsgrad (gjeld over tre eller fem ganger inntekt etter skatt) falt fra 2022 til 2024. Det skyldes ikke at folk betalte ned lånene sine raskere. Inntektene steg nominelt med inflasjonen, og da krymper gjeldsgraden av seg selv.</p>
+  <p>Inflasjonen spiser også gjeldsgraden. Andelen personer i husholdninger med gjeld over fem ganger inntekt etter skatt falt fra 12,3 prosent i 2020 til 7,9 prosent i 2024. Det skyldes ikke først og fremst at folk betalte ned lånene sine raskere. Inntektene steg nominelt med inflasjonen, og da krymper gjeldsgraden av seg selv.</p>
+</div>
+<div class="wide">
+  <figure>
+    <p class="fig-title">Andel personer i husholdninger med høy gjeldsgrad, 2015–2024</p>
+    <p class="fig-sub">Gjeldsgrad = gjeld delt på inntekt etter skatt. Prosent.</p>
+    <div class="legend">
+      <span><i style="background:var(--blue)"></i>Gjeldsgrad over 3</span>
+      <span><i style="background:var(--ink-2)"></i>Gjeldsgrad over 5</span>
+    </div>
+    <div class="chart" id="fig12Chart"></div>
+    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, figur 5.12.</p>
+  </figure>
 </div></section>
 
 <!-- 5 HVEM -->
@@ -418,19 +480,29 @@ footer li{margin-bottom:4px}
   </figure>
 </div>
 <div class="wrap">
-  <p>Det overraskende er <em>hvem</em> som rapporterer flere problemer. Leietakerne har hele tiden hatt et nivå 3–5 ganger høyere enn boligeierne, men det har endret seg lite. Økningen kom nesten bare blant boligeierne, altså dem som merket renteøkningen.</p>
+  <p>Det overraskende er <em>hvem</em> som rapporterer flere problemer. Leietakerne har hele tiden ligget langt høyere, før renteøkningen gjerne 3–5 ganger så høyt som boligeierne. Men den relative økningen fra 2021 til 2024 var mye større blant boligeierne, altså dem som merket renteøkningen. Velg indikator:</p>
 </div>
 <div class="wide">
   <figure>
-    <p class="fig-title">Boligeiere: levekårsproblemer 2021 og 2024</p>
-    <p class="fig-sub">Andel personer. Prosent.</p>
-    <div class="chart" id="ownChart"></div>
-    <p class="fig-src">Kilde: Økonomiske analyser 2/2026, kapittel 5.7 (tall oppgitt i teksten).</p>
+    <p class="fig-title" id="f15Title"></p>
+    <p class="fig-sub">Andel personer 16 år og over. Endringen er regnet i prosent av nivået i 2021.</p>
+    <div class="controls"><div class="seg" id="f15Seg" role="group" aria-label="Velg indikator">
+      <button type="button" data-r="2" aria-pressed="true">Materielle mangler</button>
+      <button type="button" data-r="3" aria-pressed="false">Sosiale mangler</button>
+      <button type="button" data-r="0" aria-pressed="false">Endene møtes ikke</button>
+      <button type="button" data-r="1" aria-pressed="false">Betalingsproblem</button>
+    </div></div>
+    <div class="legend">
+      <span><i style="background:var(--c-leie)"></i>Leietakere</span>
+      <span><i style="background:var(--c-eier)"></i>Boligeiere</span>
+    </div>
+    <div class="grid-2" style="gap:24px"><div><p class="small" style="margin:0 0 4px;font-weight:600;color:var(--ink-2)">Nivå, prosent</p><div class="chart" id="f15Lvl"></div></div><div><p class="small" style="margin:0 0 4px;font-weight:600;color:var(--ink-2)">Endring fra 2021, prosent</p><div class="chart" id="f15Chg"></div></div></div>
+    <p class="fig-src">Kilde: SSB, levekårsundersøkelsen EU-SILC. Økonomiske analyser 2/2026, figur 5.15. For 2016 mangler tall for sosiale goder.</p>
   </figure>
 </div>
 <div class="wrap">
-  <div class="missing"><span class="tag miss">Mangler data</span><br><strong>Figur 5.15</strong> (hele tidsserien for eiere og leietakere) er beregnet i SSBs seksjon for inntekts- og levekårsstatistikk og ligger ikke i Statistikkbanken. Fra teksten vet vi at andelen leietakere som mangler minst ett materielt gode, steg fra 40 prosent i 2022 til nesten 45 prosent i 2025.</div>
-  <p style="margin-top:18px">I 2025 falt de rapporterte problemene igjen, og det var boligeierne som sto for nedgangen.</p>
+  <p id="f15Txt"></p>
+  <p>I 2025 falt de rapporterte problemene igjen blant boligeierne, mens andelen leietakere som mangler minst ett materielt gode, fortsatte å stige, til 44,3 prosent.</p>
 </div></section>
 
 <!-- 6 ALLE -->
@@ -466,10 +538,11 @@ footer li{margin-bottom:4px}
   <ul>
     <li>Abel, E.B., Eika, L., Kristiansen, E. og Langørgen, A. (2026): «Lever vi i en «dyrtid»?». <a href="https://www.ssb.no/nasjonalregnskap-og-konjunkturer/okonomiske-analyser/okonomiske-analyser-2-2026-utsyn-over-aret-2025">Økonomiske analyser 2/2026</a>, kapittel 5. Statistisk sentralbyrå.</li>
     <li>Langørgen, A. og Eika, L. (2026): <em>Levekostnader, inntekter og levekår: Utviklingen for ulike befolkningsgrupper.</em> Rapporter, Statistisk sentralbyrå.</li>
-    <li>Statistikkbanken: tabell 08184, 03013, 03014 (KPI), 07200 (renter), 12118, 12119, 12123 (EU-SILC).</li>
+    <li>Figurgrunnlag til kapittel 5 (figur 5.6–5.9, 5.12–5.15), levert av forfatterne.</li>
+    <li>Statistikkbanken: tabell 08184, 03013, 03014 (KPI), 12118, 12119, 12123 (EU-SILC).</li>
     <li>SIFO, OsloMet: <a href="https://www.oslomet.no/forskning/forskningsprosjekter/sifos-okonomiske-trygghetsbarometer">Økonomisk trygghetsbarometer</a>.</li>
   </ul>
-  <p class="note">Tall merket «fra teksten» er hentet direkte fra kapittel 5. Der figurgrunnlaget ikke er tilgjengelig, viser artikkelen «mangler data» i stedet for å anslå verdier. Lånekalkulatoren er en stilisert illustrasjon og ikke en beregning av noen faktisk husholdnings økonomi.</p>
+  <p class="note">Tall merket «fra teksten» er hentet direkte fra kapittel 5. Figurene 5.6–5.15 er tegnet fra forfatternes figurgrunnlag. Manglende verdier vises som brudd i linjene, ikke som anslag. Lånekalkulatoren er en stilisert illustrasjon og ikke en beregning av noen faktisk husholdnings økonomi.</p>
 </div></footer>
 
 <div class="tip" id="tip"></div>
@@ -496,10 +569,6 @@ const GROUPS=[
 ];
 const KPI_TOT={i21:116.1,i25:137.7};
 const SUB={barnehage:{n:"Sosiale omsorgstjenester (bl.a. barnehage, SFO)",i21:112.7,i25:77.3},strom:{n:"Elektrisitet og brensel",i21:192.6,i25:210.1}};
-// 07200: rente utestående utlån med pant i bolig, husholdninger, kvartaler 2015K1–2025K4
-const RATE_Q=[3.30,3.23,2.98,2.74,2.69,2.55,2.52,2.51,2.58,2.57,2.55,2.52,2.51,2.49,2.48,2.64,2.62,2.79,2.95,3.13,3.03,2.02,1.98,1.94,1.91,1.87,1.85,2.04,2.25,2.45,2.95,4.03,4.26,4.69,5.19,5.61,5.76,5.75,5.72,5.69,5.68,5.65,5.38,5.13];
-// 03013: 12-månedersendring KPI i desember
-const INFL_DEC={2015:2.3,2016:3.5,2017:1.6,2018:3.5,2019:1.4,2020:1.4,2021:5.3,2022:5.9,2023:4.8,2024:2.2,2025:3.2};
 // EU-SILC
 const SILC_YEARS=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
 const SILC=[
@@ -508,23 +577,34 @@ const SILC=[
  {k:"end",n:"Vanskelig å få endene til å møtes",c:"var(--ink-2)",v:[5.5,5.9,6.3,6.6,7.0,6.6,6.5,6.6,8.0,8.7,8.1]},
  {k:"bet",n:"Har minst ett betalingsproblem",c:"var(--blue-lt)",v:[5.6,4.8,5.3,5.3,5.8,6.0,5.9,5.9,7.6,7.8,7.1]}
 ];
-// Figur 5.6: fylles inn når figurgrunnlaget foreligger. null = mangler data.
-// Kun verdier oppgitt i kapittelteksten er lagt inn.
+// Figurgrunnlag fra Tabeller_Utsynet_kap5.xlsx (Økonomiske analyser 2/2026, kap. 5)
+// Figur 5.6: median, 1000 kr per forbruksenhet, faste priser, 2015–2024
+const FIG6={"skatt": [500.2, 490.1, 494.6, 496.8, 505.5, 507.0, 511.2, 509.7, 520.2, 538.4], "rente": [390.3, 385.5, 388.2, 388.1, 392.5, 403.4, 407.6, 396.6, 387.1, 394.0], "laan": [347.2, 339.0, 340.4, 338.7, 343.7, 351.3, 353.1, 346.7, 347.3, 358.1], "bolig": [508.5, 500.9, 507.5, 513.8, 518.9, 523.8, 530.5, 519.9, 509.6, 519.6]};
+// Figur 5.7: gjennomsnitt, [leietakere, eiere gjeld/eu<1 mill, eiere gjeld/eu>1 mill]
+const FIG7={"skatt": [[384.8, 373.8, 373.4, 371.2, 377.6, 381.6, 396.5, 395.2, 394.9, 400.9], [534.6, 519.5, 525.4, 526.4, 532.1, 535.3, 561.2, 531.5, 543.8, 564.5], [646.0, 617.4, 620.1, 620.0, 631.6, 635.7, 675.5, 641.9, 653.7, 679.3]], "bolig": [[369.0, 359.5, 358.8, 356.6, 361.7, 367.7, 382.8, 379.9, 377.0, 383.1], [579.5, 563.2, 572.6, 579.1, 584.8, 587.7, 610.6, 576.5, 582.1, 603.1], [631.1, 610.2, 615.1, 619.8, 625.5, 637.2, 683.0, 633.8, 605.4, 613.4]], "rente": [[244.6, 237.9, 234.6, 227.0, 232.3, 242.3, 255.9, 254.2, 251.5, 252.6], [453.0, 439.5, 444.6, 443.3, 447.8, 457.3, 477.7, 443.5, 450.8, 468.6], [509.8, 491.1, 492.4, 490.5, 495.6, 513.2, 556.1, 506.4, 479.4, 484.5]], "laan": [[233.2, 226.5, 223.5, 216.0, 220.9, 230.2, 243.1, 242.8, 242.8, 244.9], [438.6, 424.2, 429.5, 428.3, 433.4, 442.4, 462.3, 429.2, 439.3, 458.3], [430.5, 406.4, 405.7, 401.8, 408.3, 420.3, 458.2, 416.6, 407.8, 420.2]]};
+// Figur 5.8: gjennomsnitt etter kvartil i inntekt etter skatt [Q1..Q4]
+const FIG8={"skatt": [[291.0, 284.3, 284.8, 280.5, 288.8, 289.9, 300.5, 297.6, 305.1, 312.7], [445.1, 436.2, 440.0, 441.5, 449.2, 450.6, 454.6, 453.8, 463.4, 479.1], [563.2, 551.4, 556.4, 559.5, 569.2, 571.4, 577.0, 573.6, 584.4, 605.2], [931.5, 877.4, 884.8, 887.0, 896.4, 909.5, 1012.7, 913.7, 917.3, 950.5]], "bolig": [[307.2, 300.0, 301.4, 300.0, 306.9, 309.3, 320.3, 313.5, 312.9, 319.7], [456.4, 449.0, 454.6, 460.1, 465.2, 469.1, 473.6, 467.2, 461.0, 471.4], [567.3, 559.1, 566.0, 573.1, 578.7, 584.8, 593.1, 579.7, 566.8, 577.9], [924.0, 876.9, 886.4, 892.8, 896.0, 915.4, 1023.0, 907.0, 870.7, 886.2]], "rente": [[182.5, 178.4, 176.8, 169.0, 175.4, 182.9, 191.6, 184.8, 185.5, 187.5], [338.0, 333.2, 335.2, 333.8, 338.4, 348.1, 350.1, 343.5, 338.5, 345.8], [447.2, 441.3, 444.5, 445.0, 449.9, 462.1, 467.8, 454.0, 442.3, 450.7], [792.3, 747.5, 752.9, 752.4, 754.9, 780.4, 885.6, 769.5, 734.7, 747.4]], "laan": [[162.6, 156.7, 154.4, 146.1, 152.8, 158.9, 166.9, 162.0, 168.1, 172.5], [302.7, 295.1, 295.9, 293.6, 298.8, 305.9, 306.0, 303.8, 307.7, 318.4], [399.5, 390.0, 391.4, 390.3, 395.6, 403.8, 406.2, 398.3, 398.7, 411.5], [720.3, 671.1, 674.1, 670.8, 673.5, 692.6, 792.0, 683.8, 666.4, 685.5]]};
+// Figur 5.9: 2024, [persentil, leietakere, eiere<1 mill, eiere>1 mill] (andeler, prosent). Regnearket er kumulativt; tredje kolonne er feilmerket "<1 mill" og er ">1 mill".
+const FIG9=[[0, 77.6, 11.8, 10.6], [0.5, 77.6, 11.8, 10.6], [1.5, 73.4, 16.8, 9.8], [2.5, 74.6, 17.5, 7.9], [3.5, 73.9, 17.6, 8.6], [4.5, 72.6, 19.2, 8.2], [5.5, 63.4, 27.4, 9.2], [6.5, 61.5, 28.0, 10.5], [7.5, 60.6, 28.2, 11.2], [8.5, 58.3, 29.8, 11.9], [9.5, 52.9, 32.4, 14.7], [10.5, 50.8, 32.9, 16.3], [11.5, 48.5, 34.4, 17.0], [12.5, 45.7, 35.8, 18.5], [13.5, 42.9, 36.8, 20.3], [14.5, 40.8, 38.2, 21.0], [15.5, 38.8, 38.7, 22.5], [16.5, 36.9, 39.3, 23.9], [17.5, 35.4, 40.1, 24.5], [18.5, 33.6, 40.4, 25.9], [19.5, 31.7, 40.7, 27.6], [20.5, 31.1, 40.6, 28.3], [21.5, 29.7, 40.7, 29.6], [22.5, 28.5, 40.7, 30.8], [23.5, 27.1, 41.7, 31.2], [24.5, 26.4, 41.3, 32.3], [25.5, 25.3, 41.3, 33.4], [26.5, 24.5, 41.3, 34.2], [27.5, 23.4, 40.9, 35.7], [28.5, 22.1, 41.7, 36.3], [29.5, 21.6, 41.7, 36.6], [30.5, 20.9, 40.8, 38.3], [31.5, 20.3, 40.1, 39.6], [32.5, 19.1, 40.3, 40.6], [33.5, 19.1, 39.9, 41.0], [34.5, 18.0, 40.6, 41.3], [35.5, 18.0, 39.3, 42.7], [36.5, 17.4, 39.0, 43.6], [37.5, 17.3, 38.4, 44.3], [38.5, 16.0, 38.4, 45.5], [39.5, 15.6, 37.5, 46.9], [40.5, 15.5, 37.6, 46.9], [41.5, 14.9, 36.9, 48.1], [42.5, 14.5, 37.1, 48.4], [43.5, 14.3, 36.1, 49.7], [44.5, 13.7, 36.1, 50.2], [45.5, 13.9, 35.7, 50.4], [46.5, 13.4, 35.2, 51.4], [47.5, 13.1, 34.7, 52.2], [48.5, 12.6, 34.4, 53.0], [49.5, 12.5, 34.5, 53.1], [50.5, 12.2, 33.9, 53.9], [51.5, 12.0, 34.1, 53.9], [52.5, 11.5, 33.8, 54.6], [53.5, 11.0, 32.8, 56.2], [54.5, 11.2, 32.3, 56.5], [55.5, 10.7, 32.4, 56.9], [56.5, 10.5, 31.5, 58.0], [57.5, 9.9, 32.3, 57.8], [58.5, 10.0, 31.4, 58.5], [59.5, 9.9, 31.4, 58.7], [60.5, 10.0, 31.2, 58.9], [61.5, 9.5, 31.3, 59.2], [62.5, 9.0, 30.7, 60.3], [63.5, 9.1, 29.9, 60.9], [64.5, 8.8, 30.2, 61.0], [65.5, 8.9, 29.8, 61.3], [66.5, 8.5, 29.7, 61.8], [67.5, 8.4, 29.2, 62.3], [68.5, 8.2, 29.2, 62.5], [69.5, 8.3, 29.4, 62.3], [70.5, 7.9, 28.7, 63.4], [71.5, 7.6, 28.6, 63.8], [72.5, 7.5, 28.4, 64.1], [73.5, 7.3, 28.0, 64.8], [74.5, 7.3, 28.0, 64.8], [75.5, 7.1, 27.2, 65.6], [76.5, 6.9, 27.9, 65.3], [77.5, 6.7, 27.7, 65.7], [78.5, 6.5, 27.1, 66.4], [79.5, 6.5, 26.7, 66.8], [80.5, 6.1, 27.1, 66.7], [81.5, 6.2, 26.6, 67.1], [82.5, 5.5, 26.4, 68.0], [83.5, 5.8, 26.1, 68.1], [84.5, 5.8, 26.0, 68.2], [85.5, 5.1, 26.2, 68.7], [86.5, 5.3, 25.8, 69.0], [87.5, 4.6, 25.6, 69.8], [88.5, 5.0, 24.5, 70.5], [89.5, 4.5, 24.7, 70.8], [90.5, 4.3, 24.6, 71.1], [91.5, 4.0, 24.5, 71.5], [92.5, 3.9, 24.4, 71.7], [93.5, 3.8, 23.9, 72.3], [94.5, 3.6, 22.9, 73.4], [95.5, 3.3, 22.9, 73.9], [96.5, 3.1, 22.6, 74.2], [97.5, 3.0, 23.3, 73.7], [98.5, 2.9, 23.0, 74.1], [99.5, 3.0, 24.3, 72.6], [100, 3.0, 24.3, 72.6]];
+// Figur 5.12: andel personer med gjeldsgrad over 3 og 5, 2015–2024
+const FIG12={"g3": [31.6, 33.3, 34.4, 35.0, 35.1, 36.2, 35.7, 35.1, 32.9, 31.0], "g5": [9.2, 10.4, 11.2, 11.6, 11.5, 12.3, 11.9, 11.3, 9.2, 7.9]};
+// Figur 5.13: boliglånsrente, realrente, realrente etter skatt 2015–2025
+const FIG13={"nom": [3.19, 2.61, 2.57, 2.52, 2.81, 2.39, 1.91, 2.67, 4.74, 5.72, 5.53], "real": [0.84, -0.83, 0.92, -0.94, 1.43, 0.94, -3.24, -3.04, -0.02, 3.45, 2.27], "realT": [0.16, -1.38, 0.37, -1.47, 0.82, 0.42, -3.64, -3.59, -1.02, 2.21, 1.09]};
+// Figur 5.15: [endene, betalingsproblem, materielt, sosialt], 2015–2025, null = mangler
+const FIG15={"eiere": [[2.8, 3.3, 3.1, 3.7, 4.1, 3.1, 2.8, 4, 5.3, 6.2, 5.6], [3.7, 3.3, 3.3, 3.4, 3.9, 3.7, 3.3, 4, 4.8, 5.2, 4.8], [6.6, 6.5, 7.9, 7.5, 8.7, 8, 8.9, 11.9, 14.4, 16.2, 14], [5.5, null, 6.3, 5.8, 6.4, 5.7, 6.1, 7.1, 9.5, 11.2, 9]], "leie": [[15.9, 16.2, 18.1, 17.8, 17.5, 19.6, 19.4, 16.2, 17.7, 17.2, 17.7], [13.2, 10.7, 12.8, 12.5, 12.6, 14.5, 15, 12.7, 17.3, 16.6, 15.9], [36.2, 35.2, 39.7, 37.9, 40.5, 40.4, 40.8, 39.8, 41.6, 42.8, 44.3], [24.6, null, 27.9, 23.8, 25.4, 27.1, 27.9, 26, 24.3, 27.5, 28]]};
 const INC_YEARS=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
 const INCOME=[
- {k:"skatt",n:"Inntekt etter skatt",c:"var(--green)",
-  d:"Lønn, næringsinntekt, kapitalinntekt og overføringer, minus skatt. Standardmålet i inntektsstatistikken. Renteutgifter er <em>ikke</em> trukket fra.",
-  v:[500.2,null,null,null,null,null,null,null,null,538.4]},
- {k:"rente",n:"… minus bo-, rente- og strømutgifter",c:"var(--blue)",
-  d:"Det som er igjen til annet forbruk etter at bolig, renter og strøm er betalt. Gjør eiere og leietakere sammenlignbare.",
-  v:[null,null,null,null,null,null,null,null,null,null]},
- {k:"laan",n:"… og minus avdrag",c:"var(--purple)",
-  d:"Trekker også fra (stiliserte) avdrag på lån. Et mål på stram kontantstrøm, men avdrag er egentlig sparing, ikke tapt inntekt.",
-  v:[null,null,null,null,null,null,null,null,null,null]},
- {k:"bolig",n:"Boligutvidet inntekt",c:"#5b3a1c",
-  d:"Legger til verdien av å bo i egen bolig (hva det ville kostet å leie den). Konseptuelt det beste målet på økonomisk velferd.",
-  v:[null,null,null,null,null,null,null,null,null,null]}
+ {k:"skatt",n:"Inntekt etter skatt",t:"inntekt etter skatt",c:"var(--green)",
+  d:"Lønn, næringsinntekt, kapitalinntekt og overføringer, minus skatt. Standardmålet i inntektsstatistikken. Renteutgifter er <em>ikke</em> trukket fra."},
+ {k:"rente",n:"… minus bo-, rente- og strømutgifter",t:"inntekt etter bo-, rente- og strømutgifter",c:"var(--blue)",
+  d:"Det som er igjen til annet forbruk etter at bolig, renter og strøm er betalt. Gjør eiere og leietakere sammenlignbare."},
+ {k:"laan",n:"… og minus avdrag",t:"inntekt etter bo-, låne- og strømutgifter",c:"var(--purple)",
+  d:"Trekker også fra (stiliserte) avdrag på lån. Et mål på stram kontantstrøm, men avdrag er egentlig sparing, ikke tapt inntekt."},
+ {k:"bolig",n:"Boligutvidet inntekt",t:"boligutvidet inntekt",c:"#8a5a2b",
+  d:"Legger til verdien av å bo i egen bolig (hva det ville kostet å leie den). Konseptuelt det beste målet på økonomisk velferd."}
 ];
+INCOME.forEach(s=>s.v=FIG6[s.k]);
+const YRS25=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
 
 /* ============ HJELPERE ============ */
 const NS="http://www.w3.org/2000/svg";
@@ -547,7 +627,35 @@ const kpi=y=>KPI_HIST.v[y-KPI_HIST.start];
 const kpiGrowth=y=>(kpi(y)/kpi(y-1)-1)*100;
 const growth2125=(KPI_TOT.i25/KPI_TOT.i21-1)*100;
 GROUPS.forEach(g=>g.g=(g.i25/g.i21-1)*100);
-const RATE_Y={};for(let y=2015;y<=2025;y++){const q=RATE_Q.slice((y-2015)*4,(y-2015)*4+4);RATE_Y[y]=q.reduce((a,b)=>a+b,0)/4;}
+// Rente og inflasjon som i figur 5.13 (inflasjon = nominell rente − realrente)
+const RATE_Y={},INFL_Y={};YRS25.forEach((y,i)=>{RATE_Y[y]=FIG13.nom[i];INFL_Y[y]=FIG13.nom[i]-FIG13.real[i];});
+
+/* Generisk linjediagram. series: [{n,c,v,w,dash,dim}] */
+function lineChart(c,o){
+  const W=cw(c),H=o.h?o.h(W):(W<560?260:320),narrow=W<560;
+  const endLab=o.endLabels&&!narrow;
+  const m={t:14,r:endLab?(o.lr||150):16,b:30,l:o.l||40};
+  const svg=newSvg(c,W,H);const yrs=o.years;
+  const X=lin(yrs[0],yrs[yrs.length-1],m.l,W-m.r),Y=lin(o.ymin,o.ymax,H-m.b,m.t);
+  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
+  (o.ticks||ticks(o.ymin,o.ymax,5)).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,(o.fy||(v=>fmt(v,0)))(t));});
+  yrs.forEach(y=>{if(!narrow||y%2===1||yrs.length<7)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
+  if(o.band)el("rect",{x:X(o.band[0]),y:m.t,width:X(o.band[1])-X(o.band[0]),height:H-m.t-m.b,fill:"#fff4ea"},svg,null).parentNode.insertBefore(svg.lastChild,gt);
+  if(o.ref!=null)el("line",{x1:m.l,x2:W-m.r,y1:Y(o.ref),y2:Y(o.ref),class:"zero"},svg);
+  const ends=[];
+  o.series.forEach(s=>{let d="",pen=false;s.v.forEach((v,i)=>{if(v==null){pen=false;return;}d+=(pen?"L":"M")+X(yrs[i])+","+Y(v);pen=true;});
+    el("path",{d,fill:"none",stroke:s.c,"stroke-width":s.w||2.5,"stroke-dasharray":s.dash||"",opacity:s.dim?0.9:1,"stroke-linejoin":"round"},svg);
+    if(!s.dim)s.v.forEach((v,i)=>{if(v!=null&&(s.dots||i===s.v.length-1))el("circle",{cx:X(yrs[i]),cy:Y(v),r:3.2,fill:s.c},svg);});
+    let li=s.v.length-1;while(li>=0&&s.v[li]==null)li--;
+    if(endLab&&!s.dim&&li>=0)ends.push({y:Y(s.v[li]),x:X(yrs[li]),t:s.n+(o.fe?" "+o.fe(s.v[li]):""),c:s.c});
+  });
+  // unngå overlapp i endeetiketter
+  ends.sort((a,b)=>a.y-b.y);for(let i=1;i<ends.length;i++)if(ends[i].y-ends[i-1].y<15)ends[i].y=ends[i-1].y+15;
+  ends.forEach(e=>el("text",{x:e.x+8,y:e.y+4,class:"lbl",style:`fill:${e.c};font-weight:600`},svg,e.t));
+  if(o.tip)yrs.forEach((y,i)=>{const hw=(W-m.l-m.r)/(yrs.length-1)/2;const hit=el("rect",{x:X(y)-hw,y:m.t,width:hw*2,height:H-m.t-m.b,fill:"transparent"},svg);
+    hit.addEventListener("mousemove",e=>showTip(e,o.tip(i,y)));hit.addEventListener("mouseleave",hideTip);});
+  return {svg,X,Y,m,W,H};
+}
 
 /* ============ 0 GJETT ============ */
 (function(){
@@ -695,43 +803,75 @@ function buildLadder(){
     b.addEventListener("click",()=>{incSel=s.k;buildLadder();drawIncome();});root.appendChild(b);});
 }
 function drawIncome(){
-  const c=$("#incChart"),W=cw(c),H=W<560?260:320,m={t:16,r:20,b:30,l:44};
-  const svg=newSvg(c,W,H);
-  const X=lin(2015,2024,m.l,W-m.r),Y=lin(300,560,H-m.b,m.t);
-  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
-  ticks(300,550,5).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
-  INC_YEARS.forEach(y=>{if(W>=560||y%2===1)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
-  const s=INCOME.find(d=>d.k===incSel);
-  const complete=s.v.every(v=>v!=null);
-  // Andre serier som svake linjer dersom komplette
-  INCOME.forEach(o=>{if(o===s||!o.v.every(v=>v!=null))return;
-    el("path",{d:o.v.map((v,i)=>(i?"L":"M")+X(INC_YEARS[i])+","+Y(v)).join(""),fill:"none",stroke:"var(--hair)","stroke-width":2},svg);});
-  if(complete){
-    el("path",{d:s.v.map((v,i)=>(i?"L":"M")+X(INC_YEARS[i])+","+Y(v)).join(""),fill:"none",stroke:s.c,"stroke-width":3},svg);
-  }else{
-    el("rect",{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:"url(#hatch)"},svg);
-    const defs=el("defs",null,svg);const p=el("pattern",{id:"hatch",width:10,height:10,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
-    el("rect",{width:10,height:10,fill:"#fafbfb"},p);el("line",{x1:0,y1:0,x2:0,y2:10,stroke:"#eceff0","stroke-width":5},p);
-    const g=el("g",null,svg);
-    el("rect",{x:(W-230)/2,y:H/2-36,width:230,height:44,fill:"#fff",stroke:"var(--missing)","stroke-dasharray":"4 3",rx:4},g);
-    el("text",{x:W/2,y:H/2-17,"text-anchor":"middle",class:"lbl-b"},g,"Mangler data");
-    el("text",{x:W/2,y:H/2-1,"text-anchor":"middle",class:"lbl",style:"font-size:11.5px"},g,"Figurgrunnlag for figur 5.6 er ikke lagt inn");
-  }
-  s.v.forEach((v,i)=>{if(v==null)return;const cx=X(INC_YEARS[i]),cy=Y(v);
-    el("circle",{cx,cy,r:5.5,fill:s.c,stroke:"#fff","stroke-width":2},svg);
-    el("text",{x:cx+(i===0?8:-8),y:cy-10,"text-anchor":i===0?"start":"end",class:"lbl-b num"},svg,fmt(v,1));
-  });
-  $("#incTitle").textContent="Median "+(s.k==="skatt"?"inntekt etter skatt":s.k==="bolig"?"boligutvidet inntekt":s.n.replace("… ","inntekt "))+" per forbruksenhet, 2015–2024";
+  const c=$("#incChart"),sel=INCOME.find(d=>d.k===incSel);
+  const series=INCOME.filter(o=>o!==sel).map(o=>({n:o.n,c:"#c9d3d5",v:o.v,w:1.5,dim:true})).concat([{n:"",c:sel.c,v:sel.v,w:3.5,dots:true}]);
+  const r=lineChart(c,{years:INC_YEARS,ymin:320,ymax:560,ticks:[350,400,450,500,550],series,band:[2021,2023],
+    tip:(i,y)=>`<b>${y}</b><br>`+INCOME.map(o=>`${o===sel?"<b>":""}${o.t[0].toUpperCase()+o.t.slice(1)}: ${fmt(o.v[i])}${o===sel?"</b>":""}`).join("<br>")});
+  [0,6,9].forEach(i=>{const cx=r.X(INC_YEARS[i]),cy=r.Y(sel.v[i]);el("text",{x:cx+(i===9?-8:i===0?6:0),y:cy-11,"text-anchor":i===9?"end":i===0?"start":"middle",class:"lbl-b num"},r.svg,fmt(sel.v[i]));});
+  const ch=(sel.v[8]/sel.v[6]-1)*100;
+  el("text",{x:r.X(2022),y:r.m.t+14,"text-anchor":"middle",class:"lbl",style:"font-size:11.5px;fill:#9a4a10"},r.svg,`2021–2023: ${sgn(ch)} %`);
+  $("#incTitle").textContent="Median "+sel.t+" per forbruksenhet, 2015–2024";
+}
+
+/* Figur 5.7 / 5.8 */
+let grpBy="bolig",grpView="i2021",grpMeas="rente";
+const GRP={bolig:{d:FIG7,n:["Leietakere","Eiere, gjeld under 1 mill.","Eiere, gjeld over 1 mill."],s:["Leietakere","Eiere, lav gjeld","Eiere, høy gjeld"],c:["var(--c-leie)","var(--c-lav)","var(--c-hoy-line)"]},
+  kvartil:{d:FIG8,n:["1. kvartil (laveste)","2. kvartil","3. kvartil","4. kvartil (høyeste)"],s:["1. kvartil","2. kvartil","3. kvartil","4. kvartil"],c:["#6fb0de","#3f8fd0","#1d5f9e","#0b3a63"]}};
+function drawGrpInc(){
+  const G=GRP[grpBy],sel=INCOME.find(d=>d.k===grpMeas),raw=G.d[grpMeas];
+  const base=grpView==="i2021"?6:grpView==="i2020"?5:null;
+  const vals=raw.map(v=>base==null?v:v.map(x=>x/v[base]*100));
+  let mn=Infinity,mx=-Infinity;vals.forEach(v=>v.forEach(x=>{mn=Math.min(mn,x);mx=Math.max(mx,x);}));
+  let ymin,ymax,tk;
+  if(base==null){ymin=Math.floor(mn/100)*100;ymax=Math.ceil(mx/100)*100;tk=ticks(ymin,ymax,5);}
+  else{ymin=Math.min(80,Math.floor(mn/5)*5);ymax=Math.max(110,Math.ceil(mx/5)*5);tk=ticks(ymin,ymax,5);}
+  $("#grpLeg").innerHTML=G.n.map((n,i)=>`<span><i style="background:${G.c[i]}"></i>${n}</span>`).join("");
+  const c=$("#grpIncChart");
+  lineChart(c,{years:INC_YEARS,ymin,ymax,ticks:tk,ref:base==null?null:100,band:[2021,2023],endLabels:true,lr:grpBy==="bolig"?132:118,
+    series:vals.map((v,i)=>({n:G.s[i],c:G.c[i],v,w:2.5,dots:true})),
+    fe:base==null?(v=>fmt(v,0)):(v=>fmt(v,1)),
+    tip:(i,y)=>`<b>${y}</b><br>`+G.n.map((n,j)=>`${n}: ${fmt(raw[j][i],1)} ${base==null?"":`(indeks ${fmt(vals[j][i],1)})`}`).join("<br>")});
+  $("#grpTitle").textContent=`Gjennomsnittlig ${sel.t} etter ${grpBy==="bolig"?"boligstatus":"inntektskvartil"}, 2015–2024`;
+  $("#grpSub").textContent=base==null?"1000 kroner per forbruksenhet, faste priser.":`Indeks, ${base===6?2021:2020}=100. Viser endring, ikke nivå.`;
+  // kort: endring 2021–2023 og 2021–2024
+  $("#grpCards").innerHTML=raw.map((v,j)=>{const a=(v[8]/v[6]-1)*100,b=(v[9]/v[6]-1)*100;
+    return `<div class="card"><div class="small">${G.n[j]}</div><div class="big num ${a<-3?"red":a>0?"green":""}">${sgn(a)} %</div><div class="cap">endring 2021–2023. Til 2024: ${sgn(b)} %</div></div>`;}).join("");
+}
+segGroup($("#grpBy"),r=>{grpBy=r;drawGrpInc();});
+segGroup($("#grpMeas"),r=>{grpMeas=r;drawGrpInc();});
+segGroup($("#grpView"),r=>{grpView=r;drawGrpInc();});
+
+/* Figur 5.9 */
+function drawFig9(){
+  const c=$("#fig9Chart"),W=cw(c),H=W<560?250:300,m={t:10,r:14,b:34,l:40};
+  const svg=newSvg(c,W,H);const X=lin(0,100,m.l,W-m.r),Y=lin(0,100,H-m.b,m.t);
+  const d=FIG9;const cols=["var(--c-hoy)","var(--c-lav)","var(--c-leie)"];
+  // stabling: nederst høy gjeld, så lav gjeld, øverst leietakere
+  const layer=(lo,hi,col)=>{let p="M"+d.map(r=>X(r[0])+","+Y(hi(r))).join("L");p+="L"+[...d].reverse().map(r=>X(r[0])+","+Y(lo(r))).join("L")+"Z";el("path",{d:p,fill:col},svg);};
+  layer(r=>0,r=>r[3],cols[0]);layer(r=>r[3],r=>r[3]+r[2],cols[1]);layer(r=>r[3]+r[2],r=>100,cols[2]);
+  const ax=el("g",{class:"axis"},svg);
+  [0,25,50,75,100].forEach(t=>{el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,t);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,t);});
+  el("text",{x:(m.l+W-m.r)/2,y:H-4,"text-anchor":"middle",class:"lbl",style:"fill:var(--muted)"},svg,"Prosentil i fordelingen av inntekt etter skatt →");
+  const vl=el("line",{x1:0,x2:0,y1:m.t,y2:H-m.b,stroke:"var(--ink)","stroke-width":1,opacity:0},svg);
+  const hit=el("rect",{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:"transparent"},svg);
+  hit.addEventListener("mousemove",e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+    const pc=Math.max(0,Math.min(100,(q.x-m.l)/(W-m.l-m.r)*100));const r=d.reduce((a,b)=>Math.abs(b[0]-pc)<Math.abs(a[0]-pc)?b:a);
+    vl.setAttribute("x1",X(r[0]));vl.setAttribute("x2",X(r[0]));vl.setAttribute("opacity",.6);
+    showTip(e,`<b>Prosentil ${fmt(r[0],1)}</b><br>Leietakere: ${fmt(r[1])} %<br>Eiere, lav gjeld: ${fmt(r[2])} %<br>Eiere, høy gjeld: ${fmt(r[3])} %`);});
+  hit.addEventListener("mouseleave",()=>{hideTip();vl.setAttribute("opacity",0);});
+  const at=p=>d.reduce((a,b)=>Math.abs(b[0]-p)<Math.abs(a[0]-p)?b:a);
+  const p10=at(9.5),p50=at(49.5),p90=at(89.5);
+  $("#fig9Txt").innerHTML=`Blant dem rundt 10. prosentil er ${fmt(p10[1],0)} prosent leietakere og bare ${fmt(p10[3],0)} prosent eiere med høy gjeld. Rundt medianen har ${fmt(p50[3],0)} prosent høy gjeld, og rundt 90. prosentil ${fmt(p90[3],0)} prosent. Renteøkningen traff altså i hovedsak husholdninger med middels og høy inntekt.`;
 }
 
 /* ============ 4 LÅN ============ */
 function loanModel(L,tax){
   const rows=[];let B=L;
   for(let y=2021;y<=2025;y++){
-    const r=RATE_Y[y]/100,pi=INFL_DEC[y]/100;
+    const r=RATE_Y[y]/100,pi=INFL_Y[y]/100;
     const pay=B*r/(1-Math.pow(1+r,-20));const renter=B*r,avdrag=pay-renter;
     const fradrag=tax?renter*0.22:0,gev=B*pi;
-    rows.push({y,B,r:RATE_Y[y],pi:INFL_DEC[y],renter,fradrag,gev,avdrag,netto:renter-fradrag-gev});
+    rows.push({y,B,r:RATE_Y[y],pi:INFL_Y[y],renter,fradrag,gev,avdrag,netto:renter-fradrag-gev});
     B-=avdrag;
   }
   return rows;
@@ -770,20 +910,14 @@ function drawLoan(){
 $("#loan").addEventListener("input",drawLoan);$("#tax").addEventListener("change",drawLoan);
 
 function drawRates(){
-  const c=$("#rateChart"),W=cw(c),H=W<560?260:300,m={t:14,r:16,b:30,l:36};
-  const yrs=[];for(let y=2015;y<=2025;y++)yrs.push(y);
-  const nom=yrs.map(y=>RATE_Y[y]),real=yrs.map(y=>RATE_Y[y]-INFL_DEC[y]),realT=yrs.map(y=>RATE_Y[y]*0.78-INFL_DEC[y]);
-  const svg=newSvg(c,W,H);const X=lin(2015,2025,m.l,W-m.r),Y=lin(-4.5,7,H-m.b,m.t);
-  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
-  ticks(-4,7,6).forEach(t=>{el("line",{x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},gt);el("text",{x:m.l-6,y:Y(t)+4,"text-anchor":"end"},ax,fmt(t,0));});
-  yrs.forEach(y=>{if(W>=560||y%2===1)el("text",{x:X(y),y:H-m.b+16,"text-anchor":"middle"},ax,y);});
-  el("rect",{x:X(2020.5),y:m.t,width:X(2022.5)-X(2020.5),height:H-m.t-m.b,fill:"#fff4ea"},svg);
-  el("text",{x:X(2021.5),y:Y(-3.9)+14,"text-anchor":"middle",class:"lbl",style:"font-size:11.5px;fill:#9a4a10"},svg,"Negativ realrente");
-  el("line",{x1:m.l,x2:W-m.r,y1:Y(0),y2:Y(0),class:"zero"},svg);
-  const path=(arr,col,dash,wd)=>el("path",{d:arr.map((v,i)=>(i?"L":"M")+X(yrs[i])+","+Y(v)).join(""),fill:"none",stroke:col,"stroke-width":wd||2.5,"stroke-dasharray":dash||""},svg);
-  path(nom,"var(--blue)");path(real,"var(--ink-2)");path(realT,"var(--green)","5 4",2);
-  yrs.forEach((y,i)=>{const hit=el("rect",{x:X(y)-(W-m.l-m.r)/22,y:m.t,width:(W-m.l-m.r)/11,height:H-m.t-m.b,fill:"transparent"},svg);
-    hit.addEventListener("mousemove",e=>showTip(e,`<b>${y}</b><br>Rente: ${fmt(nom[i],2)} %<br>Inflasjon (des.): ${fmt(INFL_DEC[y])} %<br>Realrente: ${fmt(real[i],1)} %<br>Etter skatt: ${fmt(realT[i],1)} %`));hit.addEventListener("mouseleave",hideTip);});
+  lineChart($("#rateChart"),{years:YRS25,ymin:-4.5,ymax:7,ticks:[-4,-2,0,2,4,6],ref:0,band:[2020.5,2022.5],h:W=>W<560?260:300,l:36,
+    series:[{c:"var(--blue)",v:FIG13.nom},{c:"var(--ink-2)",v:FIG13.real},{c:"var(--green)",v:FIG13.realT,dash:"5 4",w:2}],
+    tip:(i,y)=>`<b>${y}</b><br>Nominell rente: ${fmt(FIG13.nom[i],2)} %<br>Realrente: ${fmt(FIG13.real[i],1)} %<br>Realrente etter skatt: ${fmt(FIG13.realT[i],1)} %`});
+}
+function drawFig12(){
+  lineChart($("#fig12Chart"),{years:INC_YEARS,ymin:0,ymax:40,ticks:[0,10,20,30,40],h:W=>W<560?220:260,l:32,band:[2020,2024],
+    series:[{c:"var(--blue)",v:FIG12.g3,dots:true},{c:"var(--ink-2)",v:FIG12.g5,dots:true}],
+    tip:(i,y)=>`<b>${y}</b><br>Gjeldsgrad over 3: ${fmt(FIG12.g3[i])} %<br>Gjeldsgrad over 5: ${fmt(FIG12.g5[i])} %`});
 }
 
 /* ============ 5 HVEM ============ */
@@ -803,24 +937,24 @@ function drawSilc(){
   SILC_YEARS.forEach((y,i)=>{const hit=el("rect",{x:X(y)-(W-m.l-m.r)/20,y:m.t,width:(W-m.l-m.r)/10,height:H-m.t-m.b,fill:"transparent"},svg);
     hit.addEventListener("mousemove",e=>showTip(e,`<b>${y}</b><br>`+SILC.map(s=>`${s.n}: ${s.v[i]==null?"mangler data":fmt(s.v[i])+" %"}`).join("<br>")));hit.addEventListener("mouseleave",hideTip);});
 }
-function drawOwn(){
-  const c=$("#ownChart"),W=cw(c),narrow=W<560;
-  const rows=[{n:"Mangler minst ett materielt gode",s:"Materielle mangler",a:8.9,b:16.2},{n:"Vanskelig å få endene til å møtes",s:"Endene møtes ikke",a:2.8,b:6.2}];
-  const rh=46,m={t:24,r:40,b:24,l:narrow?130:260},H=m.t+m.b+rh*rows.length;
-  const svg=newSvg(c,W,H);const X=lin(0,18,m.l,W-m.r);
-  const gt=el("g",{class:"grid"},svg),ax=el("g",{class:"axis"},svg);
-  ticks(0,18,narrow?3:6).forEach(t=>{el("line",{x1:X(t),x2:X(t),y1:m.t,y2:H-m.b},gt);el("text",{x:X(t),y:H-m.b+16,"text-anchor":"middle"},ax,fmt(t,0));});
-  el("circle",{cx:m.l,cy:9,r:5,fill:"var(--hair)",stroke:"var(--ink-2)"},svg);el("text",{x:m.l+9,y:13,class:"lbl"},svg,"2021");
-  el("circle",{cx:m.l+60,cy:9,r:5,fill:"var(--red)"},svg);el("text",{x:m.l+69,y:13,class:"lbl"},svg,"2024");
-  rows.forEach((r,i)=>{const y=m.t+i*rh+rh/2;
-    const words=narrow?r.s:r.n;el("text",{x:m.l-8,y:y+4,"text-anchor":"end",class:"lbl"},svg,words);
-    el("line",{x1:X(r.a),x2:X(r.b),y1:y,y2:y,stroke:"var(--hair)","stroke-width":4},svg);
-    el("circle",{cx:X(r.a),cy:y,r:6,fill:"var(--hair)",stroke:"var(--ink-2)"},svg);
-    el("circle",{cx:X(r.b),cy:y,r:6,fill:"var(--red)"},svg);
-    el("text",{x:X(r.a)-9,y:y+4,"text-anchor":"end",class:"lbl num"},svg,fmt(r.a));
-    el("text",{x:X(r.b)+10,y:y+4,class:"lbl-b num"},svg,fmt(r.b));
-  });
+let f15i=2;
+const F15N=["Vanskelig eller svært vanskelig å få endene til å møtes","Har minst ett betalingsproblem","Mangler minst ett materielt gode","Mangler minst ett sosialt gode"];
+function drawFig15(){
+  const e=FIG15.eiere[f15i],l=FIG15.leie[f15i];
+  const mx=Math.ceil(Math.max(...l.filter(v=>v!=null))/10)*10;
+  lineChart($("#f15Lvl"),{years:YRS25,ymin:0,ymax:mx,ticks:ticks(0,mx,5),h:W=>W<400?220:240,l:30,band:[2021,2024],
+    series:[{c:"var(--c-leie)",v:l,dots:true},{c:"var(--c-eier)",v:e,dots:true}],
+    tip:(i,y)=>`<b>${y}</b><br>Leietakere: ${l[i]==null?"mangler data":fmt(l[i])+" %"}<br>Boligeiere: ${e[i]==null?"mangler data":fmt(e[i])+" %"}`});
+  const ci=v=>v.map(x=>x==null?null:(x/v[6]-1)*100);const ce=ci(e),cl=ci(l);
+  const all=[...ce,...cl].filter(v=>v!=null);const lo=Math.floor(Math.min(-20,...all)/20)*20,hi=Math.ceil(Math.max(...all)/20)*20;
+  lineChart($("#f15Chg"),{years:YRS25.slice(6),ymin:lo,ymax:hi,ticks:ticks(lo,hi,5),fy:v=>sgn(v,0)+" %",ref:0,h:W=>W<400?220:240,l:46,
+    series:[{c:"var(--c-leie)",v:cl.slice(6),dots:true},{c:"var(--c-eier)",v:ce.slice(6),dots:true}],
+    tip:(i,y)=>`<b>${y}</b>, endring fra 2021<br>Leietakere: ${sgn(cl[i+6],0)} %<br>Boligeiere: ${sgn(ce[i+6],0)} %`});
+  $("#f15Title").textContent=F15N[f15i]+", etter boligstatus, 2015–2025";
+  const r=l[9]/e[9];
+  $("#f15Txt").innerHTML=`<strong>${F15N[f15i]}:</strong> Blant boligeiere steg andelen fra ${fmt(e[6])} til ${fmt(e[9])} prosent fra 2021 til 2024 (${sgn(ce[9],0)} prosent). Blant leietakere gikk den fra ${fmt(l[6])} til ${fmt(l[9])} prosent (${sgn(cl[9],0)} prosent). Leietakernes nivå er fortsatt ${fmt(r,1)} ganger så høyt.`;
 }
+segGroup($("#f15Seg"),r=>{f15i=+r;drawFig15();});
 
 /* ============ 6 KART ============ */
 const ACTORS=[
@@ -870,7 +1004,7 @@ function showActor(){const a=ACTORS.find(x=>x.k===actorSel);
   <p style="margin:0 0 8px"><b>Hva måles:</b> ${a.what}</p><p style="margin:0 0 8px"><b>Hva finner de:</b> ${a.find}</p><p class="note" style="margin:0">Kilde: ${a.src}</p>`;}
 
 /* ============ INIT ============ */
-function drawAll(){drawHist();drawGroups();drawSpread();drawCheap();drawIncome();drawLoan();drawRates();drawSilc();drawOwn();drawMap();}
+function drawAll(){drawHist();drawGroups();drawSpread();drawCheap();drawIncome();drawGrpInc();drawFig9();drawLoan();drawRates();drawFig12();drawSilc();drawFig15();drawMap();}
 epCards();buildBasket();buildLadder();showActor();drawAll();
 let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(drawAll,150);});
 </script>

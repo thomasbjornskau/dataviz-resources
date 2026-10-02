@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Dashbord med åtte visninger av konsumprisindeksen, bygd på uttrekk fra SSBs PxWebApi v2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>KPI fra Statistikkbanken</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
+<style>
+:root { color-scheme: light; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: a dashboard. Tinted ground, each figure on its own white card with even
+   gaps: one wide card with the headline figure beside its trend, then a two-column
+   grid. Every card carries its own source line, table view and API query. The text
+   about caveats and method sits directly on the ground, below the cards. */
+:root {
+  --bg: #F0F8F9;      /* page ground */
+  --card: #FFFFFF;    /* chart surface */
+  --band: #F0F8F9;    /* tint used inside cards */
+  --ink: #162327;
+  --ink-2: #274247;
+  --muted: #5A7377;
+  --rule: #C3DCDC;
+  --grid: #C3DCDC;
+  --axis: #7A9598;
+  --accent: #00824D;
+  --s1: #1A9D49;
+  --s2: #1D9DE2;
+  --s3: #B02A00;
+  --s4: #7438EB;
+  --neg: #A3136C;
+  --context: #A3B9BB;
+  --wash: rgba(26, 157, 73, .12);
+  --epoch: rgba(39, 66, 71, .07);
+  --tile: #B6E8B8;
+  --tile-ink: #162327;
+  --tip-bg: #FFFFFF;
+  --tip-ink: #162327;
+  --tip-muted: #5A7377;
+  --tip-border: #9DB4B6;
+  --font: "Open Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E181B; --card: #162327; --band: #1C2F33; --ink: #F0F8F9; --ink-2: #D6E6E6;
+    --muted: #9DB8B8; --rule: #34494D; --grid: #34494D; --axis: #6F8A8E; --accent: #4FC578;
+    --s1: #1A9D49; --s2: #1D9DE2; --s3: #FE4617; --s4: #7C44F6; --neg: #CD0587;
+    --context: #4F686C; --wash: rgba(26, 157, 73, .2); --epoch: rgba(240, 248, 249, .07);
+    --tile: #0B5F4A; --tile-ink: #F0F8F9;
+    --tip-bg: #1C2F33; --tip-ink: #F0F8F9; --tip-muted: #9DB8B8; --tip-border: #5B7478;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E181B; --card: #162327; --band: #1C2F33; --ink: #F0F8F9; --ink-2: #D6E6E6;
+  --muted: #9DB8B8; --rule: #34494D; --grid: #34494D; --axis: #6F8A8E; --accent: #4FC578;
+  --s1: #1A9D49; --s2: #1D9DE2; --s3: #FE4617; --s4: #7C44F6; --neg: #CD0587;
+  --context: #4F686C; --wash: rgba(26, 157, 73, .2); --epoch: rgba(240, 248, 249, .07);
+  --tile: #0B5F4A; --tile-ink: #F0F8F9;
+  --tip-bg: #1C2F33; --tip-ink: #F0F8F9; --tip-muted: #9DB8B8; --tip-border: #5B7478;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 28px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Masthead */
+.masthead { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 4.4vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.lede { margin: 0; max-width: 66ch; color: var(--ink-2); }
+
+/* Hero card */
+.hero {
+  background: var(--card);
+  padding: 22px 24px 24px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 2.2fr);
+  gap: 24px 32px;
+  align-items: start;
+}
+.hero-figure { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hero-label { margin: 0; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.hero-value {
+  margin: 0;
+  font-size: clamp(64px, 10vw, 104px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.hero-value small { font-size: .36em; font-weight: 600; letter-spacing: 0; margin-left: .15em; }
+.hero-stats {
+  margin: 12px 0 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0;
+  font-size: 13px;
+}
+.hero-stats dt, .hero-stats dd { margin: 0; padding: 6px 0; border-top: 1px solid var(--rule); }
+.hero-stats dt { color: var(--ink-2); padding-right: 12px; }
+.hero-stats dd { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Figure grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.fig {
+  margin: 0;
+  padding: 22px 24px 24px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.fig.wide { grid-column: 1 / -1; }
+.hero .fig { padding: 0; }
+.fig h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.fig .sub { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.plot { min-width: 0; }
+.plot svg { display: block; max-width: 100%; overflow: visible; }
+.plot text { font-family: var(--font); font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.plot text.strong { fill: var(--ink); font-weight: 600; }
+.plot text.note { fill: var(--ink-2); }
+.plot text.unit { fill: var(--muted); }
+.plot text.strong, .plot text.note { paint-order: stroke; stroke: var(--card); stroke-width: 3px; stroke-linejoin: round; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.key { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--muted); }
+.key.dash { border-top-style: dashed; }
+.key.block { height: 10px; width: 10px; border: 0; }
+.key.tick { width: 0; height: 14px; border-top: 0; border-left: 2px solid var(--ink-2); }
+
+/* Horizontal bars (HTML): label | plot. Row = 30px band, bar = 20px, so the gap is half the bar.
+   The value sits just outside the bar end; .lead reserves room for it after the longest bar. */
+.bars { display: flex; flex-direction: column; }
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 18.5em) minmax(0, 1fr);
+  gap: 0 12px;
+  align-items: center;
+  font-size: 13px;
+}
+.bar-label { height: 30px; display: flex; align-items: center; line-height: 15px; color: var(--ink-2); min-width: 0; }
+.track { position: relative; height: 30px; }
+.lead { margin-right: 3.4em; }
+.gl {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--p) * (100% - 1px));
+  border-left: 1px solid var(--grid);
+}
+.gl.zero { border-left-color: var(--axis); }
+.bar { position: absolute; z-index: 1; top: 5px; height: 20px; left: 0; width: calc(var(--w) * 100%); background: var(--s1); }
+.bar.up { left: 50%; width: calc(var(--w) * 50%); }
+.bar.down { left: auto; right: 50%; width: calc(var(--w) * 50%); background: var(--neg); }
+.bar-ref {
+  position: absolute; z-index: 2; top: 0; bottom: 0;
+  left: calc(var(--ref) * 100%);
+  margin-left: -1px;
+  border-left: 2px solid var(--ink-2);
+}
+.bar-row:hover .bar { filter: brightness(1.12); }
+.val {
+  position: absolute; z-index: 3; top: 50%; transform: translateY(-50%);
+  left: calc(var(--w) * 100% + 3px);
+  padding: 0 3px; line-height: 16px;
+  background: var(--card);
+  font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.val.up { left: calc(50% + var(--w) * 50% + 3px); }
+.val.down { left: auto; right: calc(50% + var(--w) * 50% + 3px); }
+.bar-row.axis .bar-label { height: 20px; }
+.bar-ticks { position: relative; height: 20px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar-ticks span { position: absolute; top: 3px; left: calc(var(--p) * 100%); transform: translateX(-50%); white-space: nowrap; }
+.bar-unit { font-size: 12px; color: var(--muted); line-height: 18px; }
+
+/* Treemap (HTML) */
+.treemap { position: relative; width: 100%; height: 300px; }
+.tile {
+  position: absolute;
+  background: var(--tile);
+  color: var(--tile-ink);
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tile:hover { filter: brightness(1.08); }
+.tile b { font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* Group chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit; font-size: 12px;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px 10px 4px 8px;
+  display: inline-flex; align-items: center; gap: 6px;
+  cursor: pointer;
+}
+.chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--context); flex: none; }
+.chip[aria-pressed="true"] { border-color: var(--ink-2); color: var(--ink); font-weight: 600; background: var(--band); }
+.chip:disabled { cursor: not-allowed; opacity: .55; }
+.hint { margin: 0; font-size: 12px; color: var(--muted); min-height: 1.5em; }
+
+/* Figure footer */
+.fig-foot { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
+.fig-foot p { margin: 0; }
+.fig-foot .caveat { color: var(--ink-2); }
+details summary { cursor: pointer; color: var(--accent); font-weight: 600; width: fit-content; }
+details[open] summary { margin-bottom: 8px; }
+.tbl-wrap { overflow: auto; max-height: 280px; border: 1px solid var(--rule); }
+table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }
+th, td { padding: 5px 10px; text-align: right; white-space: nowrap; color: var(--ink); }
+th:first-child, td:first-child { text-align: left; }
+thead th { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--ink-2); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--band); }
+.query { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.query code {
+  display: block; padding: 6px 8px; background: var(--band); color: var(--ink-2);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+/* Method */
+.method { border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 40px; }
+.method h2 { margin: 0 0 8px; font-size: 17px; font-weight: 700; }
+.method p, .method li { margin: 0; max-width: 62ch; color: var(--ink-2); }
+.method ol, .method ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+.method blockquote { margin: 0 0 10px; padding: 10px 14px; background: var(--card); border-left: 3px solid var(--ink-2); color: var(--ink); }
+.method code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; }
+.colophon { margin: 0; font-size: 12px; color: var(--muted); }
+
+/* Tooltip */
+.tip {
+  position: fixed; z-index: 10; pointer-events: none;
+  background: var(--tip-bg); color: var(--tip-ink);
+  border: 1px solid var(--tip-border);
+  padding: 8px 10px; font-size: 12px; line-height: 1.4;
+  min-width: 150px; max-width: 280px; box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+.tip .tip-head { font-weight: 700; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid var(--grid); }
+.tip .tip-row { display: flex; align-items: center; gap: 8px; }
+.tip .tip-row span { flex: 1; color: var(--tip-muted); }
+.tip .tip-row b { margin-left: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tip .tip-key { width: 12px; border-top: 2px solid currentColor; flex: none; }
+
+@media (max-width: 760px) {
+  .page { padding-inline: 16px; gap: 16px; }
+  .grid { gap: 16px; }
+  .hero, .fig { padding: 18px 16px 20px; }
+  .hero .fig { padding: 0; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .grid, .method { grid-template-columns: minmax(0, 1fr); }
+  .bar-row { grid-template-columns: minmax(0, 1fr); }
+  .bar-row .bar-label { grid-column: 1 / -1; height: auto; padding: 6px 0 2px; }
+  .bar-row.axis .bar-label { display: none; }
+  .track { height: 24px; }
+  .bar { top: 4px; height: 16px; }
+  .treemap { height: 340px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Eksempelside · Statistikkbanken via PxWebApi v2</p>
+    <h1>Konsumprisindeksen</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <section class="hero" aria-label="Siste tall">
+    <div class="hero-figure">
+      <p class="hero-label" id="hero-label"></p>
+      <p class="hero-value" id="hero-value"></p>
+      <dl class="hero-stats" id="hero-stats"></dl>
+      <div class="fig-foot" id="hero-foot"></div>
+    </div>
+    <figure class="fig" id="f-trend">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="legend"></div>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+  </section>
+
+  <section class="grid">
+    <figure class="fig" id="f-groups12">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="legend"></div>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+    <figure class="fig" id="f-groups1">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="legend"></div>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+    <figure class="fig" id="f-weights">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+    <figure class="fig" id="f-annual">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="legend"></div>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+    <figure class="fig wide" id="f-since">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="chips" role="group" aria-label="Velg grupper"></div>
+      <p class="hint" id="chip-hint" aria-live="polite"></p>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+    <figure class="fig wide" id="f-history">
+      <figcaption><h2></h2><p class="sub"></p></figcaption>
+      <div class="plot"></div>
+      <div class="fig-foot"></div>
+    </figure>
+  </section>
+
+  <section class="method">
+    <div>
+      <h2>Forbehold fra SSB</h2>
+      <blockquote>F.o.m. 2026 er referanseår 2025=100. Endringstall beregnet fra serier med 2025=100 kan avvike fra endringstall publisert før 2026 med annet referanseår. Avvikene skyldes i all hovedsak avrundingseffekter.</blockquote>
+      <p>Noten følger tabellene 14700, 14701 og 14706 og er merket som obligatorisk i API-et. Fra januar 2026 gjelder FNs konsumklassifisering COICOP 2018, som gir 13 hovedgrupper.</p>
+    </div>
+    <div>
+      <h2>Slik er tallene hentet</h2>
+      <ol>
+        <li>Søk på «konsumprisindeks» ga 17 tabeller. Siden bruker 14700 (måned), 14701 (år), 14706 (avledede serier) og 14711 (historisk serie).</li>
+        <li>Variabelkoder er lest fra metadata før hver spørring. Hovedgruppene er valgt med kodelisten <code>agg_CoiCop2018Kpi011</code>.</li>
+        <li>Hver spørring har eksplisitt seleksjon. Tid er valgt med <code>top(n)</code> der det passer, så lenkene følger nye publiseringer.</li>
+        <li>Manglende verdier vises som de er. Egne beregninger er merket under figuren de gjelder.</li>
+      </ol>
+    </div>
+    <div>
+      <h2>Ikke fra Statistikkbanken</h2>
+      <p>Inflasjonsmålet og verdenskrigene er lagt inn som kontekst. Inflasjonsmålet er fastsatt i forskrift om pengepolitikken: 2,5 prosent fra 2001 og 2 prosent fra 2018. Alle andre tall på siden kommer fra API-uttrekkene.</p>
+    </div>
+    <div>
+      <h2>Lisens</h2>
+      <p>Data fra SSB er lisensiert under <a href="https://www.ssb.no/diverse/lisens">CC BY 4.0</a>. Statistikken har egen side på <a href="https://www.ssb.no/kpi">ssb.no/kpi</a>.</p>
+    </div>
+  </section>
+  <p class="colophon" id="colophon"></p>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Data: snapshot fetched from PxWebApi v2 ---------- */
+  var API = 'https://data.ssb.no/api/pxwebapi/v2/tables/';
+  var MAIN_GROUPS = 'valueCodes[VareTjenesteGrp]=*&codelist[VareTjenesteGrp]=agg_CoiCop2018Kpi011';
+
+  var DATA = {
+    fetched: '2026-10-02',
+    tables: {
+      '14700': { updated: '2026-09-10' },
+      '14701': { updated: '2026-02-10' },
+      '14706': { updated: '2026-09-10' },
+      '14711': { updated: '2026-02-06' }
+    },
+    trend: {
+      table: '14706',
+      query: API + '14706/data?lang=no&valueCodes[KPIavledetSerie]=KPI,KPI-JAE&valueCodes[ContentsCode]=Tolvmanedersendring&valueCodes[Tid]=top(37)&outputFormat=json-stat2',
+      first: '2023M08',
+      kpi: [4.9, 3.4, 4.0, 4.7, 4.7, 4.8, 4.6, 3.9, 3.6, 3.0, 2.6, 2.8, 2.7, 3.0, 2.6, 2.4, 2.3, 2.3, 3.5, 2.6, 2.5, 3.1, 3.0, 3.2, 3.5, 3.6, 3.1, 3.0, 3.2, 3.6, 2.7, 3.6, 3.4, 3.1, 2.7, 3.0, 3.3],
+      jae: [6.3, 5.6, 6.0, 5.8, 5.5, 5.3, 4.8, 4.6, 4.3, 4.1, 3.5, 3.3, 3.3, 3.1, 2.6, 2.9, 2.7, 2.7, 3.5, 3.3, 3.0, 2.8, 3.1, 3.2, 3.0, 3.0, 3.4, 3.0, 3.2, 3.4, 3.0, 3.0, 3.2, 3.4, 2.7, 2.7, 3.0]
+    },
+    latest: {
+      table: '14700',
+      query: API + '14700/data?lang=no&valueCodes[VareTjenesteGrp]=00&valueCodes[ContentsCode]=KpiIndMnd,Manedsendring,Tolvmanedersendring&valueCodes[Tid]=top(2)&outputFormat=json-stat2',
+      months: ['2026M07', '2026M08'],
+      index: [103.8, 103.5],
+      monthly: [1.0, -0.3],
+      yearly: [3.0, 3.3]
+    },
+    groups: {
+      table: '14700',
+      query: API + '14700/data?lang=no&' + MAIN_GROUPS + '&valueCodes[ContentsCode]=Tolvmanedersendring,Manedsendring,KpiVektMnd&valueCodes[Tid]=top(1)&outputFormat=json-stat2',
+      month: '2026M08',
+      rows: [
+        { code: '01', name: 'Matvarer og alkoholfrie drikkevarer', short: 'Mat og alkoholfri drikke', y12: 1.6, m1: -1.4, w: 104.7 },
+        { code: '02', name: 'Alkoholholdige drikkevarer og tobakk', short: 'Alkohol og tobakk', y12: 2.4, m1: -0.1, w: 34.1 },
+        { code: '03', name: 'Klær og skotøy', short: 'Klær og skotøy', y12: 2.2, m1: -0.4, w: 42.8 },
+        { code: '04', name: 'Bolig, elektrisitet og brensel', short: 'Bolig, strøm og brensel', y12: 3.9, m1: 0.4, w: 312.3 },
+        { code: '05', name: 'Møbler, husholdningsartikler og vedlikehold av innbo', short: 'Møbler og husholdningsartikler', y12: 1.5, m1: -1.3, w: 58.5 },
+        { code: '06', name: 'Helse', short: 'Helse', y12: 4.4, m1: -0.3, w: 31.6 },
+        { code: '07', name: 'Transport', short: 'Transport', y12: 2.4, m1: -1.7, w: 138.1 },
+        { code: '08', name: 'Informasjon og kommunikasjon', short: 'Informasjon og kommunikasjon', y12: 3.2, m1: 0.3, w: 52.5 },
+        { code: '09', name: 'Fritid, sport og kultur', short: 'Fritid, sport og kultur', y12: 3.8, m1: -0.1, w: 84.5 },
+        { code: '10', name: 'Utdanning', short: 'Utdanning', y12: 2.4, m1: 0.0, w: 6.1 },
+        { code: '11', name: 'Serverings- og overnattingstjenester', short: 'Servering og overnatting', y12: 5.5, m1: 0.2, w: 59.4 },
+        { code: '12', name: 'Forsikring og finansielle tjenester', short: 'Forsikring og finans', y12: 7.9, m1: 0.0, w: 27.2 },
+        { code: '13', name: 'Andre varer og tjenester', short: 'Andre varer og tjenester', y12: 4.3, m1: 0.3, w: 48.3 }
+      ]
+    },
+    annual: {
+      table: '14701',
+      query: API + '14701/data?lang=no&valueCodes[VareTjenesteGrp]=00&valueCodes[ContentsCode]=Aarsendring&valueCodes[Tid]=*&outputFormat=json-stat2',
+      first: 2000,
+      change: [null, 2.9, 1.4, 2.4, 0.5, 1.4, 2.3, 0.8, 3.7, 2.2, 2.5, 1.2, 0.7, 2.1, 2.2, 2.1, 3.6, 1.9, 2.7, 2.2, 1.4, 3.4, 5.8, 5.5, 3.2, 3.0],
+      status: { 0: '..' },
+      statusText: '.. = Tallgrunnlag mangler. Tall er ikke kommet inn i våre databaser eller er for usikre til å publiseres.',
+      /* Context only, not from the Statbank: the inflation target set in regulation. */
+      target: [{ from: 2001, to: 2017, value: 2.5 }, { from: 2018, to: 2025, value: 2.0 }]
+    },
+    groupIndex: {
+      table: '14701',
+      query: API + '14701/data?lang=no&' + MAIN_GROUPS + '&valueCodes[ContentsCode]=KpiAar&valueCodes[Tid]=top(11)&outputFormat=json-stat2',
+      queryTotal: API + '14701/data?lang=no&valueCodes[VareTjenesteGrp]=00&valueCodes[ContentsCode]=KpiAar&valueCodes[Tid]=top(11)&outputFormat=json-stat2',
+      first: 2015,
+      total: [72.6, 75.2, 76.6, 78.7, 80.4, 81.5, 84.3, 89.2, 94.1, 97.1, 100.0],
+      series: {
+        '01': [71.5, 73.4, 73.4, 75.2, 76.0, 78.5, 76.9, 81.9, 89.9, 94.7, 100.0],
+        '02': [75.9, 78.4, 80.1, 81.8, 84.0, 86.3, 84.6, 87.8, 92.2, 96.3, 100.0],
+        '03': [96.7, 101.5, 100.8, 97.5, 98.5, 96.8, 95.6, 96.2, 99.9, 102.2, 100.0],
+        '04': [70.7, 73.8, 76.0, 79.8, 81.4, 78.5, 86.4, 92.2, 94.0, 96.2, 100.0],
+        '05': [70.4, 74.2, 73.2, 74.1, 75.8, 81.0, 84.0, 89.4, 97.0, 99.6, 100.0],
+        '06': [75.4, 76.9, 78.4, 79.6, 81.7, 84.0, 86.5, 88.7, 92.0, 96.2, 100.0],
+        '07': [71.1, 72.9, 74.8, 77.4, 79.8, 81.0, 82.8, 90.1, 96.5, 97.9, 100.0],
+        '08': [78.6, 81.1, 81.7, 82.6, 84.0, 86.7, 88.9, 90.0, 96.1, 98.2, 100.0],
+        '09': [64.5, 67.8, 70.1, 72.1, 74.7, 77.5, 79.8, 83.5, 90.7, 96.1, 100.0],
+        '10': [68.6, 70.9, 74.4, 79.0, 82.5, 85.0, 86.6, 88.4, 91.1, 96.0, 100.0],
+        '11': [68.3, 70.5, 73.1, 75.1, 77.1, 78.7, 81.4, 87.4, 93.2, 96.6, 100.0],
+        '12': [75.4, 75.3, 76.7, 77.5, 78.6, 81.6, 84.5, 87.1, 89.7, 93.3, 100.0],
+        '13': [84.2, 86.8, 88.7, 90.4, 91.7, 94.9, 96.9, 98.9, 100.4, 101.5, 100.0]
+      }
+    },
+    history: {
+      table: '14711',
+      query: API + '14711/data?lang=no&valueCodes[ContentsCode]=KpiAar&valueCodes[Tid]=*&outputFormat=json-stat2',
+      first: 1865,
+      index: [1.0,1.0,1.1,1.1,1.0,1.0,1.0,1.2,1.2,1.3,1.2,1.2,1.2,1.1,1.0,1.1,1.2,1.2,1.1,1.1,1.0,1.0,0.9,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.1,1.1,1.2,1.2,1.1,1.1,1.0,1.1,1.1,1.2,1.2,1.2,1.2,1.2,1.3,1.4,1.4,1.5,1.9,2.3,3.3,3.5,4.0,3.7,3.1,2.9,3.2,3.3,2.8,2.5,2.3,2.2,2.2,2.0,2.0,2.0,2.0,2.0,2.1,2.2,2.3,2.3,2.7,3.2,3.4,3.5,3.5,3.6,3.7,3.7,3.7,3.7,3.9,4.5,4.9,5.0,5.2,5.2,5.4,5.6,5.9,6.0,6.0,6.1,6.5,6.6,7.1,7.3,7.6,7.9,8.2,8.4,9.3,9.9,10.6,11.4,12.5,13.9,15.2,16.6,17.9,18.8,20.8,23.7,26.4,28.6,30.4,32.1,34.4,37.5,39.9,41.8,43.5,44.9,46.0,47.1,47.7,48.9,49.5,50.8,51.9,53.1,54.8,56.4,57.2,58.6,58.9,59.7,61.1,61.6,63.9,65.3,66.9,67.7,68.2,69.6,71.1,72.6,75.2,76.6,78.7,80.4,81.5,84.3,89.2,94.1,97.1,100.0],
+      /* Context only, not from the Statbank. */
+      epochs: [{ from: 1914, to: 1918, label: '1. verdenskrig' }, { from: 1940, to: 1945, label: '2. verdenskrig' }],
+      marker: { year: 2001, label: 'Inflasjonsmål innført 2001', short: 'Inflasjonsmål 2001' }
+    }
+  };
+
+  /* ---------- Formatting ---------- */
+  var MONTHS_SHORT = ['jan.', 'feb.', 'mars', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'nov.', 'des.'];
+  var MONTHS_LONG = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+
+  function fmt(v, decimals) {
+    if (v === null || v === undefined) return '..';
+    var d = decimals === undefined ? 1 : decimals;
+    return v.toFixed(d).replace('.', ',').replace('-', '−');
+  }
+  function signed(v) { return (v > 0 ? '+' : '') + fmt(v); }
+  function parseMonth(code) { return { y: +code.slice(0, 4), m: +code.slice(5) }; }
+  function monthLabel(code, long) {
+    var p = parseMonth(code);
+    return (long ? MONTHS_LONG : MONTHS_SHORT)[p.m - 1] + ' ' + p.y;
+  }
+  function addMonths(code, n) {
+    var p = parseMonth(code), t = p.y * 12 + (p.m - 1) + n;
+    var y = Math.floor(t / 12), m = t % 12 + 1;
+    return y + 'M' + (m < 10 ? '0' : '') + m;
+  }
+  function lowerFirst(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
+
+  /* ---------- DOM helpers ---------- */
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function svgText(parent, x, y, str, attrs) {
+    var a = { x: x, y: y };
+    for (var k in (attrs || {})) a[k] = attrs[k];
+    var t = svgEl('text', a, parent);
+    t.textContent = str;
+    return t;
+  }
+  function h(tag, props, children) {
+    var n = document.createElement(tag);
+    for (var k in (props || {})) {
+      if (k === 'class') n.className = props[k];
+      else if (k === 'text') n.textContent = props[k];
+      else n.setAttribute(k, props[k]);
+    }
+    (children || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+  function scale(d0, d1, r0, r1) {
+    return function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); };
+  }
+  function frame(host, height, label) {
+    host.textContent = '';
+    var width = Math.max(240, Math.floor(host.clientWidth));
+    var svg = svgEl('svg', { width: width, height: height, viewBox: '0 0 ' + width + ' ' + height, role: 'img', 'aria-label': label }, host);
+    return { svg: svg, width: width, height: height };
+  }
+  /* The unit is written out and sits in a fixed spot above the axis, never on a tick. */
+  function yAxis(svg, ticks, y, x0, x1, unit, top) {
+    if (unit) svgText(svg, 0, top - 10, unit, { class: 'unit' });
+    ticks.forEach(function (t) {
+      svgEl('line', { x1: x0, x2: x1, y1: y(t), y2: y(t), stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': 1 }, svg);
+      svgText(svg, x0 - 8, y(t) + 4, fmt(t, 0), { 'text-anchor': 'end' });
+    });
+  }
+  function vGrid(svg, xs, y0, y1) {
+    xs.forEach(function (px) { svgEl('line', { x1: px, x2: px, y1: y0, y2: y1, stroke: 'var(--grid)', 'stroke-width': 1 }, svg); });
+  }
+  /* Gridlines and an axis row for the HTML bar charts. ticks: [{p: 0..1, label, zero}] */
+  function barGrid(track, ticks) {
+    ticks.forEach(function (t) {
+      var g = h('span', { class: 'gl' + (t.zero ? ' zero' : '') });
+      g.style.setProperty('--p', t.p.toFixed(4));
+      track.appendChild(g);
+    });
+  }
+  function barAxis(ticks, unit, lead) {
+    var box = h('span', { class: 'bar-ticks' + (lead ? ' lead' : '') });
+    ticks.forEach(function (t) {
+      var l = h('span', { text: t.label });
+      l.style.setProperty('--p', t.p.toFixed(4));
+      box.appendChild(l);
+    });
+    var frag = document.createDocumentFragment();
+    frag.appendChild(h('div', { class: 'bar-row axis' }, [h('span', { class: 'bar-label', 'aria-hidden': 'true' }), box]));
+    frag.appendChild(h('div', { class: 'bar-row axis' }, [h('span', { class: 'bar-label', 'aria-hidden': 'true' }), h('span', { class: 'bar-unit', text: unit })]));
+    return frag;
+  }
+  /* Push labels apart vertically so they never overlap. */
+  function spread(items, gap, top, bottom) {
+    items.sort(function (a, b) { return a.y - b.y; });
+    for (var i = 1; i < items.length; i++) {
+      if (items[i].y - items[i - 1].y < gap) items[i].y = items[i - 1].y + gap;
+    }
+    var over = items.length ? items[items.length - 1].y - bottom : 0;
+    if (over > 0) items.forEach(function (it) { it.y -= over; });
+    for (var j = items.length - 2; j >= 0; j--) {
+      if (items[j + 1].y - items[j].y < gap) items[j].y = items[j + 1].y - gap;
+    }
+    if (items.length && items[0].y < top) {
+      var d = top - items[0].y;
+      items.forEach(function (it) { it.y += d; });
+    }
+    return items;
+  }
+
+  /* ---------- Tooltip ---------- */
+  var tipEl = document.getElementById('tip');
+  var tip = {
+    show: function (evt, head, rows) {
+      tipEl.textContent = '';
+      tipEl.appendChild(h('div', { class: 'tip-head', text: head }));
+      rows.forEach(function (r) {
+        var row = h('div', { class: 'tip-row' });
+        if (r.color) {
+          var key = h('i', { class: 'tip-key' });
+          key.style.color = r.color;
+          if (r.dash) key.style.borderTopStyle = 'dashed';
+          row.appendChild(key);
+        }
+        row.appendChild(h('span', { text: r.label }));
+        row.appendChild(h('b', { text: r.value }));
+        tipEl.appendChild(row);
+      });
+      tipEl.hidden = false;
+      var w = tipEl.offsetWidth, ht = tipEl.offsetHeight;
+      var x = evt.clientX + 14, y = evt.clientY - ht - 12;
+      if (x + w > window.innerWidth - 8) x = evt.clientX - w - 14;
+      if (x < 8) x = 8;
+      if (y < 8) y = evt.clientY + 16;
+      tipEl.style.left = x + 'px';
+      tipEl.style.top = y + 'px';
+    },
+    hide: function () { tipEl.hidden = true; }
+  };
+  /* Crosshair behaviour shared by the line charts. */
+  function crosshair(svg, box, count, xOf, onIndex) {
+    var line = svgEl('line', { y1: box.y0, y2: box.y1, stroke: 'var(--axis)', 'stroke-width': 1, visibility: 'hidden' }, svg);
+    var dots = svgEl('g', {}, svg);
+    var hit = svgEl('rect', { x: box.x0, y: box.y0, width: box.x1 - box.x0, height: box.y1 - box.y0, fill: 'transparent' }, svg);
+    function move(evt) {
+      var r = svg.getBoundingClientRect();
+      var px = (evt.clientX - r.left) * (svg.viewBox.baseVal.width / r.width);
+      var best = 0, bestD = Infinity;
+      for (var i = 0; i < count; i++) {
+        var d = Math.abs(xOf(i) - px);
+        if (d < bestD) { bestD = d; best = i; }
+      }
+      line.setAttribute('x1', xOf(best)); line.setAttribute('x2', xOf(best));
+      line.setAttribute('visibility', 'visible');
+      dots.textContent = '';
+      onIndex(best, evt, dots);
+    }
+    function leave() { line.setAttribute('visibility', 'hidden'); dots.textContent = ''; tip.hide(); }
+    hit.addEventListener('pointermove', move);
+    hit.addEventListener('pointerdown', move);
+    hit.addEventListener('pointerleave', leave);
+  }
+  function hoverDot(parent, x, y, color) {
+    svgEl('circle', { cx: x, cy: y, r: 4, fill: color, stroke: 'var(--card)', 'stroke-width': 2 }, parent);
+  }
+
+  /* ---------- Figure chrome: title, source line, table view, query ---------- */
+  function sourceLine(tableIds) {
+    var ids = tableIds.slice();
+    var word = ids.length > 1 ? 'tabellene ' : 'tabell ';
+    var dates = ids.map(function (id) { return DATA.tables[id].updated; });
+    var same = dates.every(function (d) { return d === dates[0]; });
+    var updated = same ? dates[0] : ids.map(function (id, i) { return dates[i] + ' (' + id + ')'; }).join(', ');
+    return 'Kilde: SSB, ' + word + ids.join(', ') + '. Sist oppdatert: ' + updated + '.';
+  }
+  function tableView(head, rows) {
+    var thead = h('thead', {}, [h('tr', {}, head.map(function (c) { return h('th', { scope: 'col', text: c }); }))]);
+    var tbody = h('tbody', {}, rows.map(function (r) {
+      return h('tr', {}, r.map(function (c) { return h('td', { text: c }); }));
+    }));
+    return h('div', { class: 'tbl-wrap' }, [h('table', {}, [thead, tbody])]);
+  }
+  function setFigure(id, opts) {
+    var fig = document.getElementById(id);
+    fig.querySelector('h2').textContent = opts.title;
+    fig.querySelector('.sub').textContent = opts.sub;
+    var foot = fig.querySelector('.fig-foot');
+    foot.textContent = '';
+    (opts.caveats || []).forEach(function (c) { foot.appendChild(h('p', { class: 'caveat', text: c })); });
+    foot.appendChild(h('p', { text: sourceLine(opts.tables) }));
+    var det = h('details', {}, [h('summary', { text: 'Tall og spørring' })]);
+    det.appendChild(tableView(opts.head, opts.rows));
+    (opts.tableNotes || []).forEach(function (n) { det.appendChild(h('p', { text: n })); });
+    opts.queries.forEach(function (q) {
+      det.appendChild(h('div', { class: 'query' }, [
+        h('a', { href: encodeURI(q), target: '_blank', rel: 'noopener', text: 'Åpne spørringen i API-et' }),
+        h('code', { text: q })
+      ]));
+    });
+    foot.appendChild(det);
+    return fig;
+  }
+  function setLegend(fig, items) {
+    var box = fig.querySelector('.legend');
+    box.textContent = '';
+    items.forEach(function (it) {
+      var key = h('i', { class: 'key ' + (it.kind || '') });
+      if (it.color) {
+        if (it.kind === 'block') key.style.background = it.color;
+        else if (it.kind === 'tick') key.style.borderLeftColor = it.color;
+        else key.style.borderTopColor = it.color;
+      }
+      box.appendChild(h('span', {}, [key, document.createTextNode(it.label)]));
+    });
+  }
+
+  /* ---------- Derived values ---------- */
+  var trendMonths = DATA.trend.kpi.map(function (_, i) { return addMonths(DATA.trend.first, i); });
+  var lastMonth = DATA.latest.months[1], prevMonth = DATA.latest.months[0];
+  var groups = DATA.groups.rows;
+  var byCode = {};
+  groups.forEach(function (g) { byCode[g.code] = g; });
+  var gi = DATA.groupIndex;
+  var giYears = gi.total.map(function (_, i) { return gi.first + i; });
+  /* Own calculation: growth since the first year, from index values with one decimal. */
+  function since(series) { return series.map(function (v) { return (v / series[0] - 1) * 100; }); }
+  var sinceTotal = since(gi.total);
+  var sinceByCode = {};
+  Object.keys(gi.series).forEach(function (c) { sinceByCode[c] = since(gi.series[c]); });
+
+  /* ---------- Masthead and hero ---------- */
+  document.getElementById('lede').textContent =
+    'Åtte visninger av KPI, bygd på sju uttrekk fra SSBs åpne API. Tallene ble hentet ' +
+    '2. oktober 2026 og ligger lagret i siden. Siste periode er ' + monthLabel(lastMonth, true) + '.';
+  document.getElementById('hero-label').textContent = 'Tolvmånedersvekst i KPI, ' + monthLabel(lastMonth, true);
+  (function () {
+    var v = document.getElementById('hero-value');
+    v.textContent = fmt(DATA.latest.yearly[1]);
+    v.appendChild(h('small', { text: '%' }));
+    var stats = document.getElementById('hero-stats');
+    [
+      ['Tolvmånedersvekst i ' + monthLabel(prevMonth, true).split(' ')[0], fmt(DATA.latest.yearly[0]) + ' %'],
+      ['KPI-JAE, tolvmånedersvekst', fmt(DATA.trend.jae[DATA.trend.jae.length - 1]) + ' %'],
+      ['Endring fra ' + monthLabel(prevMonth, true).split(' ')[0], signed(DATA.latest.monthly[1]) + ' %'],
+      ['Indeks (2025=100)', fmt(DATA.latest.index[1])]
+    ].forEach(function (r) {
+      stats.appendChild(h('dt', { text: r[0] }));
+      stats.appendChild(h('dd', { text: r[1] }));
+    });
+    var foot = document.getElementById('hero-foot');
+    foot.appendChild(h('p', { text: sourceLine(['14700', '14706']) }));
+    foot.appendChild(h('div', { class: 'query' }, [
+      h('a', { href: encodeURI(DATA.latest.query), target: '_blank', rel: 'noopener', text: 'Åpne spørringen i API-et' })
+    ]));
+  })();
+
+  /* ---------- Figure 1: twelve-month rate, line with area wash ---------- */
+  var figTrend = (function () {
+    var t = DATA.trend, n = t.kpi.length;
+    var first = t.kpi[0], last = t.kpi[n - 1];
+    var fig = setFigure('f-trend', {
+      title: 'Tolvmånedersveksten i KPI har ' + (last < first ? 'falt' : 'økt') + ' fra ' + fmt(first) + ' til ' + fmt(last) + ' prosent på tre år',
+      sub: 'Tolvmånedersendring i prosent, ' + monthLabel(trendMonths[0], true) + '–' + monthLabel(trendMonths[n - 1], true),
+      caveats: ['KPI-JAE er KPI justert for avgiftsendringer og uten energivarer.'],
+      tables: [t.table],
+      head: ['Måned', 'KPI', 'KPI-JAE'],
+      rows: trendMonths.map(function (m, i) { return [monthLabel(m), fmt(t.kpi[i]), fmt(t.jae[i])]; }),
+      queries: [t.query]
+    });
+    setLegend(fig, [{ label: 'KPI', color: 'var(--s1)' }, { label: 'KPI-JAE', color: 'var(--s2)', kind: 'dash' }]);
+    var host = fig.querySelector('.plot');
+    return function draw() {
+      var f = frame(host, 256, fig.querySelector('h2').textContent), svg = f.svg;
+      var box = { x0: 30, x1: f.width - 40, y0: 28, y1: f.height - 28 };
+      var x = scale(0, n - 1, box.x0, box.x1), y = scale(0, 7, box.y1, box.y0);
+      yAxis(svg, [0, 2, 4, 6], y, box.x0, box.x1, 'Prosent', box.y0);
+      trendMonths.forEach(function (m, i) {
+        var p = parseMonth(m);
+        if (p.m !== 1) return;
+        vGrid(svg, [x(i)], box.y0, box.y1);
+        svgText(svg, x(i), box.y1 + 19, 'jan. ' + p.y, { 'text-anchor': 'middle' });
+      });
+      var path = function (arr) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' '); };
+      svgEl('path', { d: path(t.kpi) + ' L' + x(n - 1) + ' ' + y(0) + ' L' + x(0) + ' ' + y(0) + ' Z', fill: 'var(--wash)', stroke: 'none' }, svg);
+      svgEl('path', { d: path(t.jae), fill: 'none', stroke: 'var(--s2)', 'stroke-width': 2, 'stroke-dasharray': '5 4', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      svgEl('path', { d: path(t.kpi), fill: 'none', stroke: 'var(--s1)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      hoverDot(svg, x(n - 1), y(t.jae[n - 1]), 'var(--s2)');
+      hoverDot(svg, x(n - 1), y(last), 'var(--s1)');
+      var labels = spread([{ y: y(last), s: fmt(last) }, { y: y(t.jae[n - 1]), s: fmt(t.jae[n - 1]) }], 14, box.y0 + 4, box.y1);
+      labels.forEach(function (l) { svgText(svg, box.x1 + 9, l.y + 4, l.s, { class: 'strong' }); });
+      crosshair(svg, box, n, x, function (i, evt, dots) {
+        hoverDot(dots, x(i), y(t.jae[i]), 'var(--s2)');
+        hoverDot(dots, x(i), y(t.kpi[i]), 'var(--s1)');
+        tip.show(evt, monthLabel(trendMonths[i], true), [
+          { color: 'var(--s1)', value: fmt(t.kpi[i]) + ' %', label: 'KPI' },
+          { color: 'var(--s2)', dash: true, value: fmt(t.jae[i]) + ' %', label: 'KPI-JAE' }
+        ]);
+      });
+    };
+  })();
+
+  /* ---------- Figure 2: twelve-month change by group, sorted bars ---------- */
+  var placeBarValues = (function () {
+    var sorted = groups.slice().sort(function (a, b) { return b.y12 - a.y12; });
+    var total = DATA.latest.yearly[1], max = 8;
+    var fig = setFigure('f-groups12', {
+      title: sorted[0].name + ' steg mest det siste året',
+      sub: 'Tolvmånedersendring i prosent etter hovedgruppe, ' + monthLabel(DATA.groups.month, true),
+      tables: [DATA.groups.table],
+      head: ['Hovedgruppe', '12-måneders endring (prosent)'],
+      rows: sorted.map(function (g) { return [g.name, fmt(g.y12)]; }).concat([['KPI i alt', fmt(total)]]),
+      queries: [DATA.groups.query]
+    });
+    setLegend(fig, [{ label: 'KPI i alt: ' + fmt(total) + ' prosent', kind: 'tick', color: 'var(--ink-2)' }]);
+    var ticks = [0, 2, 4, 6, 8].map(function (t) { return { p: t / max, label: fmt(t, 0), zero: t === 0 }; });
+    var box = h('div', { class: 'bars' }), placed = [];
+    sorted.forEach(function (g) {
+      var track = h('span', { class: 'track lead' });
+      barGrid(track, ticks);
+      var bar = h('span', { class: 'bar' });
+      bar.style.setProperty('--w', (g.y12 / max).toFixed(4));
+      var ref = h('span', { class: 'bar-ref' });
+      ref.style.setProperty('--ref', (total / max).toFixed(4));
+      var val = h('span', { class: 'val', text: fmt(g.y12) });
+      val.style.setProperty('--w', (g.y12 / max).toFixed(4));
+      track.appendChild(bar);
+      track.appendChild(ref);
+      track.appendChild(val);
+      placed.push({ val: val, ref: ref });
+      var row = h('div', { class: 'bar-row' }, [h('span', { class: 'bar-label', text: g.name }), track]);
+      row.addEventListener('pointermove', function (evt) {
+        tip.show(evt, g.name, [{ value: fmt(g.y12) + ' %', label: 'Siste tolv måneder' }, { value: fmt(g.w) + ' ‰', label: 'Vekt i KPI' }]);
+      });
+      row.addEventListener('pointerleave', tip.hide);
+      box.appendChild(row);
+    });
+    box.appendChild(barAxis(ticks, 'Prosent', true));
+    fig.querySelector('.plot').appendChild(box);
+    /* A value that would land on the reference line moves to just right of it. */
+    return function place() {
+      placed.forEach(function (r) {
+        r.val.style.marginLeft = '';
+        var v = r.val.getBoundingClientRect(), f = r.ref.getBoundingClientRect();
+        if (v.left < f.right + 2 && v.right > f.left - 2) r.val.style.marginLeft = (f.right + 3 - v.left) + 'px';
+      });
+    };
+  })();
+
+  /* ---------- Figure 3: monthly change by group, diverging bars ---------- */
+  (function () {
+    var sorted = groups.slice().sort(function (a, b) { return b.m1 - a.m1; });
+    var total = DATA.latest.monthly[1], max = 2.5;   // domain is wider than the outer gridlines so the values fit outside the bars
+    var lowest = sorted[sorted.length - 1];
+    var fig = setFigure('f-groups1', {
+      title: lowest.name + ' falt mest fra ' + monthLabel(prevMonth, true).split(' ')[0] + ' til ' + monthLabel(lastMonth, true).split(' ')[0],
+      sub: 'Månedsendring i prosent etter hovedgruppe, ' + monthLabel(DATA.groups.month, true) + '. KPI i alt: ' + signed(total) + ' prosent',
+      tables: [DATA.groups.table],
+      head: ['Hovedgruppe', 'Månedsendring (prosent)'],
+      rows: sorted.map(function (g) { return [g.name, signed(g.m1)]; }).concat([['KPI i alt', signed(total)]]),
+      queries: [DATA.groups.query]
+    });
+    setLegend(fig, [{ label: 'Opp', kind: 'block', color: 'var(--s1)' }, { label: 'Ned', kind: 'block', color: 'var(--neg)' }]);
+    var ticks = [-2, -1, 0, 1, 2].map(function (t) { return { p: (t + max) / (2 * max), label: t === 0 ? '0' : signed(t).replace(',0', ''), zero: t === 0 }; });
+    var box = h('div', { class: 'bars' });
+    sorted.forEach(function (g) {
+      var track = h('span', { class: 'track' });
+      barGrid(track, ticks);
+      if (g.m1 !== 0) {
+        var bar = h('span', { class: 'bar ' + (g.m1 > 0 ? 'up' : 'down') });
+        bar.style.setProperty('--w', (Math.abs(g.m1) / max).toFixed(4));
+        track.appendChild(bar);
+      }
+      var val = h('span', { class: 'val ' + (g.m1 < 0 ? 'down' : 'up'), text: signed(g.m1) });
+      val.style.setProperty('--w', (Math.abs(g.m1) / max).toFixed(4));
+      track.appendChild(val);
+      var row = h('div', { class: 'bar-row' }, [
+        h('span', { class: 'bar-label', text: g.name }), track
+      ]);
+      row.addEventListener('pointermove', function (evt) {
+        tip.show(evt, g.name, [{ value: signed(g.m1) + ' %', label: 'Fra forrige måned' }]);
+      });
+      row.addEventListener('pointerleave', tip.hide);
+      box.appendChild(row);
+    });
+    box.appendChild(barAxis(ticks, 'Prosent', false));
+    fig.querySelector('.plot').appendChild(box);
+  })();
+
+  /* ---------- Figure 4: weights, treemap ---------- */
+  function squarify(items, w, hgt) {
+    var total = items.reduce(function (s, d) { return s + d.w; }, 0);
+    var k = (w * hgt) / total;
+    var nodes = items.map(function (d) { return { d: d, area: d.w * k }; });
+    var rect = { x: 0, y: 0, w: w, h: hgt }, out = [], row = [];
+    function worst(r, side) {
+      var s = 0, mx = 0, mn = Infinity;
+      r.forEach(function (n) { s += n.area; mx = Math.max(mx, n.area); mn = Math.min(mn, n.area); });
+      return Math.max(side * side * mx / (s * s), s * s / (side * side * mn));
+    }
+    function place(r) {
+      var s = r.reduce(function (a, n) { return a + n.area; }, 0);
+      if (rect.w >= rect.h) {
+        var cw = s / rect.h, cy = rect.y;
+        r.forEach(function (n) { var ch = n.area / cw; out.push({ d: n.d, x: rect.x, y: cy, w: cw, h: ch }); cy += ch; });
+        rect = { x: rect.x + cw, y: rect.y, w: rect.w - cw, h: rect.h };
+      } else {
+        var rh = s / rect.w, cx = rect.x;
+        r.forEach(function (n) { var rw = n.area / rh; out.push({ d: n.d, x: cx, y: rect.y, w: rw, h: rh }); cx += rw; });
+        rect = { x: rect.x, y: rect.y + rh, w: rect.w, h: rect.h - rh };
+      }
+    }
+    nodes.forEach(function (n) {
+      var side = Math.min(rect.w, rect.h);
+      if (!row.length || worst(row.concat([n]), side) <= worst(row, side)) row.push(n);
+      else { place(row); row = [n]; }
+    });
+    if (row.length) place(row);
+    return out;
+  }
+  var figWeights = (function () {
+    var sorted = groups.slice().sort(function (a, b) { return b.w - a.w; });
+    var sum = sorted.reduce(function (s, g) { return s + g.w; }, 0);
+    var fig = setFigure('f-weights', {
+      title: sorted[0].name + ' veier tyngst i KPI: ' + fmt(sorted[0].w) + ' promille',
+      sub: 'Vekter i promille etter hovedgruppe. Vektene gjelder for kalenderåret ' + parseMonth(DATA.groups.month).y,
+      tables: [DATA.groups.table],
+      head: ['Hovedgruppe', 'Vekt (promille)'],
+      rows: sorted.map(function (g) { return [g.name, fmt(g.w)]; }),
+      tableNotes: ['Summen av de avrundede vektene er ' + fmt(sum) + ' promille (egen beregning).'],
+      queries: [DATA.groups.query]
+    });
+    var host = fig.querySelector('.plot');
+    var map = h('div', { class: 'treemap' });
+    host.appendChild(map);
+    return function draw() {
+      map.textContent = '';
+      var w = map.clientWidth, ht = map.clientHeight, gap = 2;
+      squarify(sorted, w, ht).forEach(function (r) {
+        var tile = h('div', { class: 'tile' });
+        tile.style.left = (r.x + gap / 2) + 'px';
+        tile.style.top = (r.y + gap / 2) + 'px';
+        tile.style.width = Math.max(0, r.w - gap) + 'px';
+        tile.style.height = Math.max(0, r.h - gap) + 'px';
+        map.appendChild(tile);
+        /* Label only when it fits: full name, then short name, then value alone, then nothing. */
+        var options = [[r.d.name, fmt(r.d.w)], [r.d.short, fmt(r.d.w)], [null, fmt(r.d.w)]];
+        for (var i = 0; i < options.length; i++) {
+          tile.textContent = '';
+          if (options[i][0]) tile.appendChild(h('span', { text: options[i][0] }));
+          tile.appendChild(h('b', { text: options[i][1] }));
+          if (tile.scrollHeight <= tile.clientHeight && tile.scrollWidth <= tile.clientWidth) break;
+          if (i === options.length - 1) { tile.textContent = ''; tile.style.padding = '0'; }   // no label: drop the padding so a narrow tile keeps its true width
+        }
+        tile.addEventListener('pointermove', function (evt) {
+          tip.show(evt, r.d.name, [{ value: fmt(r.d.w) + ' ‰', label: 'Vekt i KPI' }]);
+        });
+        tile.addEventListener('pointerleave', tip.hide);
+      });
+    };
+  })();
+
+  /* ---------- Figure 5: annual change, columns with a missing value ---------- */
+  var figAnnual = (function () {
+    var a = DATA.annual, n = a.change.length;
+    var years = a.change.map(function (_, i) { return a.first + i; });
+    var lastI = n - 1, maxI = 1;
+    a.change.forEach(function (v, i) { if (v !== null && v > a.change[maxI]) maxI = i; });
+    var fig = setFigure('f-annual', {
+      title: 'Årsveksten var ' + fmt(a.change[lastI]) + ' prosent i ' + years[lastI] + ', ned fra toppen på ' + fmt(a.change[maxI]) + ' i ' + years[maxI],
+      sub: 'Årsendring i KPI i prosent, ' + years[0] + '–' + years[lastI],
+      caveats: ['Inflasjonsmålet er ikke hentet fra Statistikkbanken. Det er fastsatt i forskrift: 2,5 prosent fra 2001 og 2 prosent fra 2018.'],
+      tables: [a.table],
+      head: ['År', 'Årsendring (prosent)'],
+      rows: years.map(function (yr, i) { return [String(yr), a.status[i] || fmt(a.change[i])]; }),
+      tableNotes: [a.statusText],
+      queries: [a.query]
+    });
+    setLegend(fig, [{ label: 'Årsendring', kind: 'block', color: 'var(--s1)' }, { label: 'Inflasjonsmål', kind: 'dash', color: 'var(--ink-2)' }]);
+    var host = fig.querySelector('.plot');
+    return function draw() {
+      var f = frame(host, 272, fig.querySelector('h2').textContent), svg = f.svg;
+      var box = { x0: 30, x1: f.width - 8, y0: 30, y1: f.height - 28 };
+      var band = (box.x1 - box.x0) / n, bw = band * 2 / 3;   // gap = half the bar width
+      var cx = function (i) { return box.x0 + band * (i + 0.5); };
+      var y = scale(0, 7, box.y1, box.y0);
+      yAxis(svg, [0, 2, 4, 6], y, box.x0, box.x1, 'Prosent', box.y0);
+      years.forEach(function (yr, i) {
+        if (yr % 5 === 0) svgText(svg, cx(i), box.y1 + 19, String(yr), { 'text-anchor': 'middle' });
+        var v = a.change[i];
+        if (v === null) {
+          var miss = svgText(svg, cx(i), y(0) - 6, a.status[i] || '..', { 'text-anchor': 'middle', class: 'note' });
+          svgEl('title', {}, miss).textContent = a.statusText;
+        } else {
+          var top = y(v);
+          svgEl('rect', { x: cx(i) - bw / 2, y: top, width: bw, height: box.y1 - top, fill: 'var(--s1)' }, svg);
+          if (i === lastI || i === maxI) svgText(svg, cx(i), top - 6, fmt(v), { 'text-anchor': 'middle', class: 'strong' });
+        }
+      });
+      var d = '';
+      a.target.forEach(function (seg, k) {
+        var xa = cx(seg.from - a.first) - band / 2, xb = cx(seg.to - a.first) + band / 2;
+        d += (k ? ' L' : 'M') + xa + ' ' + y(seg.value) + ' L' + xb + ' ' + y(seg.value);
+      });
+      svgEl('path', { d: d, fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1.5, 'stroke-dasharray': '5 3' }, svg);
+      years.forEach(function (yr, i) {
+        var hit = svgEl('rect', { x: cx(i) - band / 2, y: box.y0, width: band, height: box.y1 - box.y0, fill: 'transparent' }, svg);
+        hit.addEventListener('pointermove', function (evt) {
+          var rows = [{ color: 'var(--s1)', value: a.change[i] === null ? '..' : fmt(a.change[i]) + ' %', label: a.change[i] === null ? 'Tallgrunnlag mangler' : 'Årsendring' }];
+          a.target.forEach(function (seg) {
+            if (yr >= seg.from && yr <= seg.to) rows.push({ color: 'var(--ink-2)', dash: true, value: fmt(seg.value) + ' %', label: 'Inflasjonsmål' });
+          });
+          tip.show(evt, String(yr), rows);
+        });
+        hit.addEventListener('pointerleave', tip.hide);
+      });
+    };
+  })();
+
+  /* ---------- Figure 6: growth since 2015 by group, emphasis lines with a selector ---------- */
+  var figSince = (function () {
+    var last = giYears.length - 1;
+    var ranked = groups.slice().sort(function (a, b) { return sinceByCode[b.code][last] - sinceByCode[a.code][last]; });
+    var top = ranked[0], bottom = ranked[ranked.length - 1];
+    var head = ['Hovedgruppe'].concat(giYears.map(String));
+    var fig = setFigure('f-since', {
+      title: top.name + ' har steget mest siden ' + gi.first + ', ' + lowerFirst(bottom.name) + ' minst',
+      sub: 'Prisvekst siden ' + gi.first + ' i prosent, etter hovedgruppe. Velg opptil fire grupper',
+      caveats: ['Veksten siden ' + gi.first + ' er egen beregning fra årsindeksene (2025=100, én desimal). Tabellen under viser indeksene slik de er hentet.'],
+      tables: [gi.table],
+      head: head,
+      rows: [['KPI i alt'].concat(gi.total.map(function (v) { return fmt(v); }))].concat(
+        groups.map(function (g) { return [g.name].concat(gi.series[g.code].map(function (v) { return fmt(v); })); })),
+      queries: [gi.query, gi.queryTotal]
+    });
+    var host = fig.querySelector('.plot'), chipBox = fig.querySelector('.chips'), hint = document.getElementById('chip-hint');
+    var MAX = 4, slots = {};          // code -> slot number, stable while selected
+    [top.code, bottom.code, '01'].forEach(function (c, i) { if (!(c in slots)) slots[c] = i + 1; });
+    function freeSlot() {
+      for (var s = 1; s <= MAX; s++) {
+        var used = Object.keys(slots).some(function (c) { return slots[c] === s; });
+        if (!used) return s;
+      }
+      return 0;
+    }
+    var chips = {};
+    groups.forEach(function (g) {
+      var dot = h('i');
+      var b = h('button', { class: 'chip', type: 'button', id: 'chip-' + g.code }, [dot, document.createTextNode(g.name)]);
+      b.addEventListener('click', function () {
+        if (g.code in slots) delete slots[g.code];
+        else { var s = freeSlot(); if (s) slots[g.code] = s; }
+        sync(); draw();
+      });
+      chips[g.code] = { button: b, dot: dot };
+      chipBox.appendChild(b);
+    });
+    function sync() {
+      var full = Object.keys(slots).length >= MAX;
+      groups.forEach(function (g) {
+        var on = g.code in slots, c = chips[g.code];
+        c.button.setAttribute('aria-pressed', on ? 'true' : 'false');
+        c.button.disabled = full && !on;
+        c.dot.style.background = on ? 'var(--s' + slots[g.code] + ')' : '';
+      });
+      hint.textContent = full ? 'Fire grupper er valgt. Fjern én for å velge en ny.' : '';
+    }
+    function draw() {
+      var f = frame(host, 356, fig.querySelector('h2').textContent), svg = f.svg;
+      var wide = f.width >= 620;
+      var box = { x0: 34, x1: f.width - (wide ? 210 : 14), y0: 28, y1: f.height - 28 };
+      var x = scale(0, last, box.x0, box.x1), y = scale(-5, 60, box.y1, box.y0);
+      yAxis(svg, [0, 20, 40, 60], y, box.x0, box.x1, 'Prosent', box.y0);
+      vGrid(svg, giYears.map(function (_, i) { return x(i); }), box.y0, box.y1);
+      giYears.forEach(function (yr, i) {
+        if ((yr - gi.first) % (wide ? 1 : 5) === 0) svgText(svg, x(i), box.y1 + 19, String(yr), { 'text-anchor': 'middle' });
+      });
+      var path = function (arr) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' '); };
+      groups.forEach(function (g) {
+        if (g.code in slots) return;
+        svgEl('path', { d: path(sinceByCode[g.code]), fill: 'none', stroke: 'var(--context)', 'stroke-width': 1.25, 'stroke-linejoin': 'round' }, svg);
+      });
+      svgEl('path', { d: path(sinceTotal), fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2, 'stroke-dasharray': '2 4', 'stroke-linecap': 'round' }, svg);
+      var labels = [{ y: y(sinceTotal[last]), s: 'KPI i alt ' + fmt(sinceTotal[last]), color: 'var(--ink)' }];
+      Object.keys(slots).forEach(function (c) {
+        var col = 'var(--s' + slots[c] + ')', arr = sinceByCode[c];
+        svgEl('path', { d: path(arr), fill: 'none', stroke: col, 'stroke-width': 2.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+        hoverDot(svg, x(last), y(arr[last]), col);
+        labels.push({ y: y(arr[last]), s: byCode[c].short + ' ' + fmt(arr[last]), color: col });
+      });
+      if (wide) {
+        spread(labels, 15, box.y0 + 4, box.y1).forEach(function (l) {
+          svgEl('line', { x1: box.x1 + 8, x2: box.x1 + 20, y1: l.y, y2: l.y, stroke: l.color, 'stroke-width': 2 }, svg);
+          svgText(svg, box.x1 + 25, l.y + 4, l.s, { class: 'strong' });
+        });
+      }
+      crosshair(svg, box, giYears.length, x, function (i, evt, dots) {
+        var rows = [{ color: 'var(--ink)', dash: true, value: fmt(sinceTotal[i]) + ' %', label: 'KPI i alt' }];
+        Object.keys(slots).sort(function (a, b) { return sinceByCode[b][i] - sinceByCode[a][i]; }).forEach(function (c) {
+          hoverDot(dots, x(i), y(sinceByCode[c][i]), 'var(--s' + slots[c] + ')');
+          rows.push({ color: 'var(--s' + slots[c] + ')', value: fmt(sinceByCode[c][i]) + ' %', label: byCode[c].short });
+        });
+        tip.show(evt, giYears[i] + ' (siden ' + gi.first + ')', rows);
+      });
+    }
+    sync();
+    return draw;
+  })();
+
+  /* ---------- Figure 7: price level since 1865, log scale with epochs ---------- */
+  var figHistory = (function () {
+    var hd = DATA.history, n = hd.index.length;
+    var years = hd.index.map(function (_, i) { return hd.first + i; });
+    var ratio = hd.index[n - 1] / hd.index[0];
+    var fig = setFigure('f-history', {
+      title: 'Prisnivået i ' + years[n - 1] + ' er om lag ' + Math.round(ratio) + ' ganger nivået i ' + years[0],
+      sub: 'Konsumprisindeks, 2025=100, ' + years[0] + '–' + years[n - 1] + '. Logaritmisk skala',
+      caveats: [
+        'Indeksen har én desimal. I de tidligste årene gir det trappetrinn, og endringstall regnet fra så lave indeksverdier blir upresise. Derfor viser figuren nivå, ikke årsvekst. Forholdstallet i tittelen er egen beregning.',
+        'Obligatorisk note fra SSB: Denne tabellen erstatter tabell 08184.'
+      ],
+      tables: [hd.table],
+      head: ['År', 'Indeks (2025=100)'],
+      rows: years.map(function (yr, i) { return [String(yr), fmt(hd.index[i])]; }),
+      queries: [hd.query]
+    });
+    var host = fig.querySelector('.plot');
+    var L = Math.log10;
+    return function draw() {
+      var f = frame(host, 336, fig.querySelector('h2').textContent), svg = f.svg;
+      var wide = f.width >= 620;
+      var box = { x0: 34, x1: f.width - 34, y0: 28, y1: f.height - 28 };
+      var x = scale(hd.first, years[n - 1], box.x0, box.x1);
+      var yl = scale(L(0.8), L(130), box.y1, box.y0);
+      var y = function (v) { return yl(L(v)); };
+      hd.epochs.forEach(function (e, k) {
+        svgEl('rect', { x: x(e.from), y: box.y0, width: x(e.to) - x(e.from), height: box.y1 - box.y0, fill: 'var(--epoch)' }, svg);
+        /* On narrow screens the marker label owns the first row, so the epoch labels start one row down. */
+        svgText(svg, (x(e.from) + x(e.to)) / 2, box.y0 + 12 + (k + (wide ? 0 : 1)) * 15, e.label, { 'text-anchor': 'middle', class: 'note' });
+      });
+      svgText(svg, 0, box.y0 - 10, 'Indeks (2025=100)', { class: 'unit' });
+      [1, 2, 5, 10, 20, 50, 100].forEach(function (t) {
+        svgEl('line', { x1: box.x0, x2: box.x1, y1: y(t), y2: y(t), stroke: 'var(--grid)', 'stroke-width': 1 }, svg);
+        svgText(svg, box.x0 - 8, y(t) + 4, String(t), { 'text-anchor': 'end' });
+      });
+      for (var yr = 1880; yr <= 2020; yr += 20) {
+        vGrid(svg, [x(yr)], box.y0, box.y1);
+        if (wide || (yr - 1880) % 40 === 0) svgText(svg, x(yr), box.y1 + 19, String(yr), { 'text-anchor': 'middle' });
+      }
+      svgEl('line', { x1: box.x0, x2: box.x1, y1: box.y1, y2: box.y1, stroke: 'var(--axis)', 'stroke-width': 1 }, svg);
+      var mk = hd.marker;
+      svgEl('line', { x1: x(mk.year), x2: x(mk.year), y1: box.y0, y2: box.y1, stroke: 'var(--ink-2)', 'stroke-width': 1, 'stroke-dasharray': '5 3' }, svg);
+      svgText(svg, x(mk.year) - 6, box.y0 + 12, wide ? mk.label : mk.short, { 'text-anchor': 'end', class: 'note' });
+      var d = hd.index.map(function (v, i) { return (i ? 'L' : 'M') + x(years[i]).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' ');
+      svgEl('path', { d: d, fill: 'none', stroke: 'var(--s1)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      hoverDot(svg, x(years[n - 1]), y(hd.index[n - 1]), 'var(--s1)');
+      svgText(svg, box.x1 + 9, y(hd.index[n - 1]) + 4, fmt(hd.index[n - 1], 0), { class: 'strong' });
+      crosshair(svg, box, n, function (i) { return x(years[i]); }, function (i, evt, dots) {
+        hoverDot(dots, x(years[i]), y(hd.index[i]), 'var(--s1)');
+        tip.show(evt, String(years[i]), [{ color: 'var(--s1)', value: fmt(hd.index[i]), label: 'Indeks, 2025=100' }]);
+      });
+    };
+  })();
+
+  document.getElementById('colophon').textContent =
+    'Øyeblikksbilde hentet ' + DATA.fetched + '. Siden henter ikke nye tall selv. Lenkene under hver figur gir samme uttrekk med ferske tall direkte fra API-et.';
+
+  /* ---------- Draw now and on resize ---------- */
+  var drawers = [figTrend, placeBarValues, figWeights, figAnnual, figSince, figHistory];
+  function drawAll() { drawers.forEach(function (d) { d(); }); }
+  drawAll();
+  var pending = 0, lastWidth = window.innerWidth;
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
+    cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(function () { tip.hide(); drawAll(); });
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+})();
+</script>
+</body>
+</html>

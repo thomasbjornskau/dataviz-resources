@@ -361,6 +361,7 @@ function flextabCall(targetId, opts) {
   L.push(`<span class="ln">    <span class="arg">data</span>=<span class="kw">df</span>,</span>`);
   if (opts.groupby) L.push(`<span class="ln">    <span class="arg">groupby</span>=${fxList(opts.groupby)},</span>`);
   if (opts.tableHTML) L.push(`<span class="ln">    <span class="arg">table</span>=<span class="str">"</span>${opts.tableHTML}<span class="str">"</span>,</span>`);
+  if (opts.labels) L.push(`<span class="ln">    <span class="arg">labels</span>=<span class="kw">labels</span>,</span>`);
   L.push(`<span class="ln">)</span>`);
   const note = opts.note ? `<span class="note">${opts.note}</span>` : "";
   document.getElementById(targetId).innerHTML = `<span class="lbl">Som flextab-kall</span>${L.join("")}${note}`;
@@ -371,24 +372,27 @@ function flextabCall(targetId, opts) {
    ================================================================= */
 let combo = "nest";
 
+const VR = `<span class="var">landsdel</span>`, VK = `<span class="var">kjønn</span>`, VE = `<span class="var">utdanning</span>`;
+const OP = `<span class="op">*</span>`, TOT = `<span class="op">total</span>`;
+const P = (s) => `<span class="paren">(</span>${s}<span class="paren">)</span>`;
 const COMBO_META = {
   nest: {
-    expr: `<span class="var">landsdel</span> <span class="op">*</span> <span class="var">kjønn</span> <span class="op">*</span> <span class="var">utdanning</span>`,
+    expr: `${VR} ${OP} ${P(`${TOT} ${VK} ${OP} ${P(`${TOT} ${VE}`)}`)}`,
     note: "Hver stjerne (*) nester neste variabel inn i den forrige. Ett dypt hierarki: landsdel ytterst, så kjønn, så utdanning innerst.",
     callout: `<strong>Alt nestet:</strong> tre variabler i ett hierarki. Hver landsdel deles på kjønn, og hvert kjønn deles igjen på utdanning. Radene innerst summerer opp til nivået over.`
   },
   stack: {
-    expr: `<span class="var">landsdel</span>&nbsp;&nbsp;<span class="var">kjønn</span>&nbsp;&nbsp;<span class="var">utdanning</span>`,
+    expr: `${TOT} ${VR} ${TOT} ${VK} ${TOT} ${VE}`,
     note: "Mellomrom mellom variablene stabler dem. Tre selvstendige fordelinger under hverandre – ingen er inni noen annen.",
     callout: `<strong>Alt stablet:</strong> tre uavhengige fordelinger. Hver blokk deler hele befolkningen på sin egen måte, og hver blokk summerer til det samme – 500. Du kan ikke summere på tvers av blokkene.`
   },
   "nest-group": {
-    expr: `<span class="var">landsdel</span> <span class="op">*</span> <span class="paren">(</span><span class="var">kjønn</span>&nbsp;&nbsp;<span class="var">utdanning</span><span class="paren">)</span>`,
+    expr: `${VR} ${OP} ${P(`${TOT} ${VK} ${VE}`)}`,
     note: "Parentesen grupperer kjønn og utdanning som stablet. Stjernen nester HELE gruppen inn i landsdel. For hver landsdel får du to fordelinger under hverandre.",
     callout: `<strong>Landsdel · (kjønn stablet utdanning):</strong> parentesen holder kjønn og utdanning sammen som to stablede fordelinger, og de gjentas inni hver landsdel. Legg merke til at kjønn og utdanning ikke er nestet i hverandre – de står side ved side, begge inni landsdelen.`
   },
   "group-nest": {
-    expr: `<span class="paren">(</span><span class="var">landsdel</span>&nbsp;&nbsp;<span class="var">kjønn</span><span class="paren">)</span> <span class="op">*</span> <span class="var">utdanning</span>`,
+    expr: `${TOT} ${VR} ${OP} ${P(`${TOT} ${VE}`)} ${TOT} ${VK} ${OP} ${P(`${TOT} ${VE}`)}`,
     note: "Her grupperes landsdel og kjønn som stablet, og HELE gruppen nestes med utdanning. To blokker – én for landsdel, én for kjønn – der hver kategori brytes ned på utdanning.",
     callout: `<strong>(Landsdel stablet kjønn) · utdanning:</strong> nå er landsdel og kjønn de stablede blokkene, og utdanning nestes inn i hver kategori i begge. Samme tre variabler som over, men utdanning ligger nå innerst i stedet for landsdel.`
   },
@@ -456,8 +460,8 @@ function renderCombo() {
   tbl.innerHTML = h;
   const m = COMBO_META[combo];
   flextabCall("expr-bonus", {
-    groupby: ["landsdel", "kjønn", "utdanning"],
-    tableHTML: m.expr
+    groupby: ["utdanning", "kjønn", "landsdel"],
+    tableHTML: `${m.expr} <span class="op">,</span> <span class="op">count</span>`
   });
   document.getElementById("struct-note").innerHTML = `<span class="mark">i</span><span>${m.note}</span>`;
   document.getElementById("combo-callout").innerHTML = m.callout;
@@ -494,19 +498,26 @@ function renderSubtotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-uttrykk speiler valgene (åtte kombinasjoner av grand, subtotal, sextotal)
-  const eT = subState.grand, eS = subState.subtotal, eK = subState.sextotal;
-  let left;
-  if (!eT && !eK)      left = `<span class="var">landsdel</span>`;
-  else if (!eT && eK)  left = `<span class="var">kjønn</span> <span class="var">landsdel</span>`;
-  else if (eT && !eK)  left = `<span class="op">total</span> <span class="var">landsdel</span>`;
-  else                 left = `<span class="paren">(</span><span class="op">total</span> <span class="var">landsdel</span><span class="paren">)</span>`;
-  const right = eS
-    ? `<span class="paren">(</span><span class="op">total</span> <span class="var">kjønn</span><span class="paren">)</span>`
-    : `<span class="var">kjønn</span>`;
+  // flextab-uttrykk speiler valgene (åtte kombinasjoner av grand T, subtotal S, sextotal K)
+  // Mappet eksakt mot fagpersonens spesifikasjon. Nøkkel: `${+T}${+S}${+K}`.
+  const xR = `<span class="var">landsdel</span>`, xK = `<span class="var">kjønn</span>`;
+  const xOP = `<span class="op">*</span>`, xT = `<span class="op">total</span>`;
+  const xP = (s) => `<span class="paren">(</span>${s}<span class="paren">)</span>`;
+  const subKey = `${+subState.grand}${+subState.subtotal}${+subState.sextotal}`;
+  const ROWS = {
+    "000": `${xR} ${xOP} ${xK}`,
+    "010": `${xR} ${xOP} ${xP(`${xT} ${xK}`)}`,
+    "011": `${xK} ${xR} ${xOP} ${xP(`${xT} ${xK}`)}`,
+    "111": `${xP(`${xT} ${xR}`)} ${xOP} ${xP(`${xT} ${xK}`)}`,
+    "100": `${xT} ${xR} ${xOP} ${xP(xK)}`,
+    "101": `${xT} ${xK} ${xR} ${xOP} ${xK}`,
+    "110": `${xT} ${xR} ${xOP} ${xP(`${xT} ${xK}`)}`,
+    "001": `${xK} ${xR} ${xOP} ${xK}`,
+  };
   flextabCall("sub-expr", {
-    groupby: ["landsdel", "kjønn"],
-    tableHTML: `${left} <span class="op">*</span> ${right}`
+    groupby: ["kjønn", "landsdel"],
+    tableHTML: `${ROWS[subKey]} <span class="op">,</span> <span class="op">count</span>`,
+    labels: subKey === "101"
   });
 
   document.getElementById("subtotal-callout").innerHTML = subState.sextotal

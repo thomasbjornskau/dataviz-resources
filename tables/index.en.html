@@ -514,8 +514,8 @@ function renderTotal() {
   tbl.innerHTML = h;
 
   // flextab call: total is added on each axis. Rows = employment, columns = education.
-  const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">employment</span>` : `<span class="var">employment</span>`;
-  const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">education</span>` : `<span class="var">education</span>`;
+  const rowSide = totState.rowTot ? `<span class="var">employment</span> <span class="op">total</span>` : `<span class="var">employment</span>`;
+  const colSide = totState.colTot ? `<span class="var">education</span> <span class="op">total</span>` : `<span class="var">education</span>`;
   flextabCall("total-expr", {
     groupby: ["education", "employment"],
     tableHTML: `${rowSide} <span class="op">,</span> ${colSide}`,
@@ -592,24 +592,29 @@ function renderNest() {
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
 
-  // flextab call: a space stacks, * nests
-  let tableHTML, note, gb;
+  // flextab call: a space stacks, * nests. total last (English). count as column dimension.
+  const VE = `<span class="var">education</span>`, VM = `<span class="var">employment</span>`;
+  const tE = `${VE} <span class="op">total</span>`, tM = `${VM} <span class="op">total</span>`;
+  const totE = `<span class="paren">(</span>${VE} <span class="op">total</span><span class="paren">)</span>`;
+  const totM = `<span class="paren">(</span>${VM} <span class="op">total</span><span class="paren">)</span>`;
+  const COUNT = `<span class="op">count</span>`;
+  let rowPart, note, gb;
   if (nestMode === "none") {
-    tableHTML = `<span class="var">employment</span>`;
-    note = "One variable — one distribution.";
-    gb = ["employment"];
+    rowPart = tM;
+    note = "One variable — one distribution. count counts people.";
+    gb = ["education", "employment"];
   } else if (nestMode === "stack") {
-    tableHTML = `<span class="var">education</span>&nbsp;&nbsp;<span class="var">employment</span>`;
+    rowPart = `${tM} ${tE}`;
     note = "A space stacks two distributions.";
     gb = ["education", "employment"];
   } else {
-    tableHTML = nestDir === "ut-first"
-      ? `<span class="var">education</span> <span class="op">*</span> <span class="var">employment</span>`
-      : `<span class="var">employment</span> <span class="op">*</span> <span class="var">education</span>`;
+    rowPart = nestDir === "ut-first"
+      ? `${VE} <span class="op">*</span> ${totM}`
+      : `${VM} <span class="op">*</span> ${totE}`;
     note = "The star (*) nests one inside the other.";
     gb = ["education", "employment"];
   }
-  flextabCall("nest-expr", { groupby: gb, tableHTML, note });
+  flextabCall("nest-expr", { groupby: gb, tableHTML: `${rowPart} <span class="op">,</span> ${COUNT}`, note });
 }
 wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
@@ -716,17 +721,20 @@ function renderPct() {
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
 
-  // flextab call: the percentage keyword sets the denominator
+  // flextab call: employment total , (education total) [* percentage keyword]
   const PCT_EXPR = {
-    count: { kw: `<span class="op">n</span>`, note: "n counts observations." },
-    col:   { kw: `<span class="op">colpctn</span>`, note: "colpctn: percent of the column total." },
-    row:   { kw: `<span class="op">rowpctn</span>`, note: "rowpctn: percent of the row total." },
-    tot:   { kw: `<span class="op">pctn</span>`, note: "pctn: percent of the grand total." },
+    count: { kw: null,      note: "Count — no percentage keyword." },
+    col:   { kw: `colpctn`,  note: "colpctn: percent of the column total." },
+    row:   { kw: `rowpctn`,  note: "rowpctn: percent of the row total." },
+    tot:   { kw: `pctn`,     note: "pctn: percent of the grand total." },
   };
   const pe = PCT_EXPR[pctMode];
+  const colPart = `<span class="paren">(</span><span class="var">education</span> <span class="op">total</span><span class="paren">)</span>`;
+  const rowPart4 = `<span class="var">employment</span> <span class="op">total</span>`;
+  const colFull = pe.kw ? `${colPart} <span class="op">*</span> <span class="op">${pe.kw}</span>` : colPart;
   flextabCall("pct-expr", {
     groupby: ["education", "employment"],
-    tableHTML: `<span class="var">employment</span> <span class="op">,</span> <span class="var">education</span> <span class="op">*</span> ${pe.kw}`,
+    tableHTML: `${rowPart4} <span class="op">,</span> ${colFull}`,
     note: pe.note
   });
 

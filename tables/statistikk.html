@@ -462,18 +462,18 @@ function renderStat() {
   document.getElementById("stat-legend").innerHTML = STAT_META[stat].legend;
   document.getElementById("stat-callout").innerHTML = STAT_META[stat].callout;
 
-  // flextab-kall: antall trenger ingen measure; sum/snitt bruker measure=inntekt
+  // flextab-kall: total landsdel som rad, statistikk som kolonne. total først (norsk).
   if (stat === "n") {
     flextabCall("stat-expr", {
       groupby: ["landsdel"],
-      table: "landsdel",
-      note: "Uten measure teller flextab observasjoner (N) per gruppe."
+      table: "total landsdel , count",
+      note: "Uten measure teller flextab observasjoner (count) per gruppe."
     });
   } else {
     flextabCall("stat-expr", {
       groupby: ["landsdel"],
       measure: "inntekt",
-      table: `inntekt * landsdel * ${stat === "sum" ? "sum" : "mean"}`,
+      table: `total landsdel , inntekt * ${stat === "sum" ? "sum" : "mean"}`,
       note: stat === "sum"
         ? "measure=inntekt gjør cellene til kroner; sum summerer dem."
         : "measure=inntekt med mean gir gjennomsnitt per gruppe."
@@ -522,15 +522,16 @@ function renderMulti() {
   h += `</tr></tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-kall: measure er inntekt eller [inntekt, skatt]; table lister statistikkene
+  // flextab-kall: total landsdel , measure * statistikk. total først (norsk).
   const measList = measures === "both" ? ["inntekt", "skatt"] : ["inntekt"];
-  const statKw = sList.join(" ");
-  const measTable = measList.length === 1 ? "inntekt" : "(inntekt skatt)";
+  const statWords = sList.map(s => s === "n" ? "count" : s);
+  const statPart = statWords.length === 1 ? statWords[0] : `(${statWords.join(" ")})`;
+  const measPart = measList.length === 1 ? "inntekt" : "(inntekt skatt)";
   flextabCall("multi-expr", {
     groupby: ["landsdel"],
     measure: measList,
-    table: `landsdel , ${measTable} * (${statKw})`,
-    note: "Flere målevariabler i measure gir hver sin blokk; statistikkene står i parentes."
+    table: `total landsdel , ${measPart} * ${statPart}`,
+    note: "Flere målevariabler i measure gir hver sin blokk; flere statistikker står i parentes."
   });
 }
 wireSeg("seg-measures", btn => { measures = btn.dataset.m; renderMulti(); });
@@ -555,7 +556,6 @@ function renderPct() {
   h += `<thead><tr><th class="corner">Landsdel</th>`;
   if (showN) h += `<th>Av personer</th>`;
   if (showS) h += `<th>Av inntekt</th>`;
-  if (pcttype === "side") h += `<th>Differanse</th>`;
   h += `</tr></thead><tbody>`;
   for (const r of REGIONS) {
     const d = DATA[r];
@@ -564,43 +564,37 @@ function renderPct() {
     h += `<tr><th>${r}</th>`;
     if (showN) h += `<td class="num${pcttype==='side'||pcttype==='pctn'?' pct-row':''}">${fmtPct(pn)}</td>`;
     if (showS) h += `<td class="num${pcttype==='side'||pcttype==='pctsum'?' pct-col':''}">${fmtPct(ps)}</td>`;
-    if (pcttype === "side") {
-      const diff = ps - pn;
-      const col = Math.abs(diff) < 0.05 ? "var(--ink-soft)" : diff > 0 ? "var(--blue)" : "var(--accent)";
-      h += `<td class="num" style="color:${col};font-weight:600">${diff>0?"+":""}${diff.toLocaleString("nb-NO",{minimumFractionDigits:1,maximumFractionDigits:1})}</td>`;
-    }
     h += `</tr>`;
   }
   // total
   h += `<tr><th class="is-total">Totalt</th>`;
   if (showN) h += `<td class="num is-total">${fmtPct(100)}</td>`;
   if (showS) h += `<td class="num is-total">${fmtPct(100)}</td>`;
-  if (pcttype === "side") h += `<td class="num is-total">0,0</td>`;
   h += `</tr></tbody>`;
   tbl.innerHTML = h;
   document.getElementById("pct-hint").textContent = PCT_HINT[pcttype];
   document.getElementById("pct-callout").innerHTML =
     `<strong>Se Oslo mot Nord-Norge:</strong> begge har mange innbyggere, men Oslo har 25 % av personene og 32,5 % av inntekten, mens Nord-Norge har 25 % av personene og bare 20,5 % av inntekten. Forskjellen er inntekt per person. Vestland er unntaket som bekrefter regelen: 30 % begge veier, fordi snittinntekten der ligger nær landssnittet.`;
 
-  // flextab-kall: pctn teller personer (ingen measure); pctsum krever measure=inntekt
+  // flextab-kall: total landsdel som rad. total først (norsk).
   if (pcttype === "pctn") {
     flextabCall("pct-expr", {
       groupby: ["landsdel"],
-      table: "landsdel * pctn",
+      table: "total landsdel , pctn",
       note: "pctn er andel av antall – ingen measure nødvendig."
     });
   } else if (pcttype === "pctsum") {
     flextabCall("pct-expr", {
       groupby: ["landsdel"],
       measure: "inntekt",
-      table: "landsdel * inntekt * pctsum",
+      table: "total landsdel , inntekt * pctsum",
       note: "pctsum er andel av summen – krever measure=inntekt."
     });
   } else {
     flextabCall("pct-expr", {
       groupby: ["landsdel"],
       measure: "inntekt",
-      table: "landsdel * (pctn inntekt * pctsum)",
+      table: "total landsdel , pctn inntekt * pctsum",
       note: "Begge samtidig: pctn av antall og pctsum av inntekt side om side."
     });
   }

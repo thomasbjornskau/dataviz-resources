@@ -458,18 +458,18 @@ function renderStat() {
   document.getElementById("stat-legend").innerHTML = STAT_META[stat].legend;
   document.getElementById("stat-callout").innerHTML = STAT_META[stat].callout;
 
-  // flextab call: count needs no measure; sum/mean use measure=income
+  // flextab call: region total as row, statistic as column. total last (English).
   if (stat === "n") {
     flextabCall("stat-expr", {
       groupby: ["region"],
-      table: "region",
-      note: "With no measure, flextab counts observations (N) per group."
+      table: "region total , count",
+      note: "With no measure, flextab counts observations (count) per group."
     });
   } else {
     flextabCall("stat-expr", {
       groupby: ["region"],
       measure: "income",
-      table: `income * region * ${stat === "sum" ? "sum" : "mean"}`,
+      table: `region total , income * ${stat === "sum" ? "sum" : "mean"}`,
       note: stat === "sum"
         ? "measure=income makes the cells kroner; sum adds them up."
         : "measure=income with mean gives the average per group."
@@ -518,15 +518,16 @@ function renderMulti() {
   h += `</tr></tbody>`;
   tbl.innerHTML = h;
 
-  // flextab call: measure is income or [income, tax]; table lists the statistics
+  // flextab call: region total , measure * statistic. total last (English).
   const measList = measures === "both" ? ["income", "tax"] : ["income"];
-  const statKw = sList.join(" ");
-  const measTable = measList.length === 1 ? "income" : "(income tax)";
+  const statWords = sList.map(s => s === "n" ? "count" : s);
+  const statPart = statWords.length === 1 ? statWords[0] : `(${statWords.join(" ")})`;
+  const measPart = measList.length === 1 ? "income" : "(income tax)";
   flextabCall("multi-expr", {
     groupby: ["region"],
     measure: measList,
-    table: `region , ${measTable} * (${statKw})`,
-    note: "Several measures give one block each; the statistics sit in parentheses."
+    table: `region total , ${measPart} * ${statPart}`,
+    note: "Several measures give one block each; several statistics sit in parentheses."
   });
 }
 wireSeg("seg-measures", btn => { measures = btn.dataset.m; renderMulti(); });
@@ -551,7 +552,6 @@ function renderPct() {
   h += `<thead><tr><th class="corner">Region</th>`;
   if (showN) h += `<th>Of people</th>`;
   if (showS) h += `<th>Of income</th>`;
-  if (pcttype === "side") h += `<th>Difference</th>`;
   h += `</tr></thead><tbody>`;
   for (const r of REGIONS) {
     const d = DATA[r];
@@ -560,43 +560,37 @@ function renderPct() {
     h += `<tr><th>${r}</th>`;
     if (showN) h += `<td class="num${pcttype==='side'||pcttype==='pctn'?' pct-row':''}">${fmtPct(pn)}</td>`;
     if (showS) h += `<td class="num${pcttype==='side'||pcttype==='pctsum'?' pct-col':''}">${fmtPct(ps)}</td>`;
-    if (pcttype === "side") {
-      const diff = ps - pn;
-      const col = Math.abs(diff) < 0.05 ? "var(--ink-soft)" : diff > 0 ? "var(--blue)" : "var(--accent)";
-      h += `<td class="num" style="color:${col};font-weight:600">${diff>0?"+":""}${diff.toLocaleString("en-GB",{minimumFractionDigits:1,maximumFractionDigits:1})}</td>`;
-    }
     h += `</tr>`;
   }
   // total
   h += `<tr><th class="is-total">Total</th>`;
   if (showN) h += `<td class="num is-total">${fmtPct(100)}</td>`;
   if (showS) h += `<td class="num is-total">${fmtPct(100)}</td>`;
-  if (pcttype === "side") h += `<td class="num is-total">0.0</td>`;
   h += `</tr></tbody>`;
   tbl.innerHTML = h;
   document.getElementById("pct-hint").textContent = PCT_HINT[pcttype];
   document.getElementById("pct-callout").innerHTML =
     `<strong>Look at Oslo versus Nord-Norge:</strong> both have many inhabitants, but Oslo has 25% of the people and 32.5% of the income, while Nord-Norge has 25% of the people and only 20.5% of the income. The difference is income per person. Vestland is the exception that proves the rule: 30% both ways, because average income there sits close to the national average.`;
 
-  // flextab call: pctn counts people (no measure); pctsum requires measure=income
+  // flextab call: region total as row. total last (English).
   if (pcttype === "pctn") {
     flextabCall("pct-expr", {
       groupby: ["region"],
-      table: "region * pctn",
+      table: "region total , pctn",
       note: "pctn is a share of the count — no measure needed."
     });
   } else if (pcttype === "pctsum") {
     flextabCall("pct-expr", {
       groupby: ["region"],
       measure: "income",
-      table: "region * income * pctsum",
+      table: "region total , income * pctsum",
       note: "pctsum is a share of the sum — requires measure=income."
     });
   } else {
     flextabCall("pct-expr", {
       groupby: ["region"],
       measure: "income",
-      table: "region * (pctn income * pctsum)",
+      table: "region total , pctn income * pctsum",
       note: "Both at once: pctn of the count and pctsum of the income side by side."
     });
   }

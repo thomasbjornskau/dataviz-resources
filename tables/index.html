@@ -593,24 +593,29 @@ function renderNest() {
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
 
-  // flextab-kall: mellomrom stabler, * nester
-  let tableHTML, note, gb;
+  // flextab-kall: mellomrom stabler, * nester. total først (norsk). count som kolonnedimensjon.
+  const VU = `<span class="var">utdanning</span>`, VY = `<span class="var">yrkesstatus</span>`;
+  const tU = `<span class="op">total</span> ${VU}`, tY = `<span class="op">total</span> ${VY}`;
+  const totU = `<span class="paren">(</span><span class="op">total</span> ${VU}<span class="paren">)</span>`;
+  const totY = `<span class="paren">(</span><span class="op">total</span> ${VY}<span class="paren">)</span>`;
+  const COUNT = `<span class="op">count</span>`;
+  let rowPart, note, gb;
   if (nestMode === "none") {
-    tableHTML = `<span class="var">yrkesstatus</span>`;
-    note = "Én variabel – én fordeling.";
-    gb = ["yrkesstatus"];
+    rowPart = tY;
+    note = "Én variabel – én fordeling. count teller personer.";
+    gb = ["utdanning", "yrkesstatus"];
   } else if (nestMode === "stack") {
-    tableHTML = `<span class="var">utdanning</span>&nbsp;&nbsp;<span class="var">yrkesstatus</span>`;
+    rowPart = `${tY} ${tU}`;
     note = "Mellomrom stabler to fordelinger.";
     gb = ["utdanning", "yrkesstatus"];
   } else {
-    tableHTML = nestDir === "ut-first"
-      ? `<span class="var">utdanning</span> <span class="op">*</span> <span class="var">yrkesstatus</span>`
-      : `<span class="var">yrkesstatus</span> <span class="op">*</span> <span class="var">utdanning</span>`;
+    rowPart = nestDir === "ut-first"
+      ? `${VU} <span class="op">*</span> ${totY}`
+      : `${VY} <span class="op">*</span> ${totU}`;
     note = "Stjernen (*) nester den ene inni den andre.";
     gb = ["utdanning", "yrkesstatus"];
   }
-  flextabCall("nest-expr", { groupby: gb, tableHTML, note });
+  flextabCall("nest-expr", { groupby: gb, tableHTML: `${rowPart} <span class="op">,</span> ${COUNT}`, note });
 }
 wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
@@ -717,17 +722,20 @@ function renderPct() {
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
 
-  // flextab-kall: prosentnøkkelordet bestemmer nevneren
+  // flextab-kall: total yrkesstatus , (total utdanning) [* prosentnøkkelord]
   const PCT_EXPR = {
-    count: { kw: `<span class="op">n</span>`, note: "n teller observasjoner." },
-    col:   { kw: `<span class="op">colpctn</span>`, note: "colpctn: prosent av kolonnetotalen." },
-    row:   { kw: `<span class="op">rowpctn</span>`, note: "rowpctn: prosent av radtotalen." },
-    tot:   { kw: `<span class="op">pctn</span>`, note: "pctn: prosent av totalsummen." },
+    count: { kw: null,          note: "Antall – ingen prosentnøkkelord." },
+    col:   { kw: `colpctn`,      note: "colpctn: prosent av kolonnetotalen." },
+    row:   { kw: `rowpctn`,      note: "rowpctn: prosent av radtotalen." },
+    tot:   { kw: `pctn`,         note: "pctn: prosent av totalsummen." },
   };
   const pe = PCT_EXPR[pctMode];
+  const colPart = `<span class="paren">(</span><span class="op">total</span> <span class="var">utdanning</span><span class="paren">)</span>`;
+  const rowPart4 = `<span class="op">total</span> <span class="var">yrkesstatus</span>`;
+  const colFull = pe.kw ? `${colPart} <span class="op">*</span> <span class="op">${pe.kw}</span>` : colPart;
   flextabCall("pct-expr", {
     groupby: ["utdanning", "yrkesstatus"],
-    tableHTML: `<span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span> <span class="op">*</span> ${pe.kw}`,
+    tableHTML: `${rowPart4} <span class="op">,</span> ${colFull}`,
     note: pe.note
   });
 

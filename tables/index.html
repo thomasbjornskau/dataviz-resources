@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nb">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Å lese en krysstabell · interaktiv forklaring</title>
+<title>How to read a cross-table · an interactive explainer</title>
 <style>
   :root {
     --ink:        #1a2230;
@@ -138,7 +138,7 @@
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
-  /* ---- flextab-boks (fullt Python-kall) ---- */
+  /* ---- flextab box (full Python call) ---- */
   .expr-bonus { margin-top: 14px; padding: 14px 16px; background: #1a2230; border-radius: 8px; font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #e6ebf3; overflow-x: auto; }
   .expr-bonus .lbl { display:block; font-family:"Inter",system-ui,sans-serif; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; color:#8b97ad; margin-bottom: 9px; }
   .expr-bonus .ln { display:block; white-space:pre-wrap; word-break:break-word; padding-left:2.2em; text-indent:-2.2em; }
@@ -156,10 +156,10 @@
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="wordmark"><span class="dot"></span>Tabellanatomi</div>
-    <nav class="lang-switch" aria-label="Språk">
-      <a href="#" class="active" aria-current="page">NO</a>
-      <a href="index.en.html">EN</a>
+    <div class="wordmark"><span class="dot"></span>Table anatomy</div>
+    <nav class="lang-switch" aria-label="Language">
+      <a href="index-no.html">NO</a>
+      <a href="#" class="active" aria-current="page">EN</a>
     </nav>
   </div>
 </div>
@@ -168,30 +168,30 @@
 
   <!-- HERO -->
   <header class="hero wrap">
-    <p class="eyebrow">Interaktiv forklaring</p>
-    <h1>En tabell er ikke et bilde. Den er et oppslagsverk.</h1>
-    <p class="lede">Hver celle svarer på et bestemt spørsmål – men bare hvis du vet hvilket. Vi bruker ett gjennomgående eksempel: utdanningsnivå og yrkesaktivitet. Skru på bryterne og se hvordan rader, kolonner, totaler og prosenter forandrer hva tabellen forteller.</p>
-    <span class="badge"><span class="tick">✓</span> Alle tall er fiktive og laget for forklaringen</span>
+    <p class="eyebrow">Interactive explainer</p>
+    <h1>A table isn't a picture. It's a reference work.</h1>
+    <p class="lede">Every cell answers a specific question — but only if you know which one. We use one running example: level of education and employment. Flip the switches and watch how rows, columns, totals and percentages change what the table is telling you.</p>
+    <span class="badge"><span class="tick">✓</span> All figures are fictitious, made for the explainer</span>
   </header>
 
-  <!-- DEL 1: DIMENSJONER -->
+  <!-- PART 1: DIMENSIONS -->
   <section class="step wrap" id="dim">
     <div class="step-head">
-      <div class="step-num">Del 1</div>
-      <h2>To variabler krysset: hva som står nedover, og hva som står bortover</h2>
-      <p>En krysstabell deler de samme personene opp etter to variabler samtidig. Her er det <em>yrkesstatus</em> og <em>utdanningsnivå</em>. Det som varierer nedover kalles raddimensjonen, det som varierer bortover er kolonnedimensjonen. Bytt om hvilken vei de står, og se at innholdet er det samme – bare snudd.</p>
+      <div class="step-num">Part 1</div>
+      <h2>Two variables crossed: what runs down, and what runs across</h2>
+      <p>A cross-table splits the same people by two variables at once. Here they are <em>employment status</em> and <em>level of education</em>. What varies down the page is the row dimension; what varies across is the column dimension. Swap which way they run and you'll see the content is identical — just turned on its side.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Orientering</span>
-          <div class="seg" id="seg-orient" role="group" aria-label="Velg orientering">
-            <button data-orient="ut-cols" aria-pressed="true">Utdanning bortover</button>
-            <button data-orient="ut-rows">Utdanning nedover</button>
+          <span class="ctrl-label">Orientation</span>
+          <div class="seg" id="seg-orient" role="group" aria-label="Choose orientation">
+            <button data-orient="ut-cols" aria-pressed="true">Education across</button>
+            <button data-orient="ut-rows">Education down</button>
           </div>
-          <p class="ctrl-hint">Samme tall, snudd på siden. Vi holder oss til disse to variablene gjennom hele forklaringen.</p>
+          <p class="ctrl-hint">Same figures, turned on their side. We keep these two variables throughout the whole explainer.</p>
         </div>
         <div class="expr-bonus" id="dim-expr"></div>
       </div>
@@ -199,32 +199,32 @@
       <div class="table-card">
         <div class="table-scroll"><table id="tbl-dim" aria-live="polite"></table></div>
         <div class="legend">
-          <span><span class="swatch" style="background:var(--accent)"></span> Raddimensjon</span>
-          <span><span class="swatch" style="background:var(--blue)"></span> Kolonnedimensjon</span>
-          <span>Tall i tusen personer (fiktivt)</span>
+          <span><span class="swatch" style="background:var(--accent)"></span> Row dimension</span>
+          <span><span class="swatch" style="background:var(--blue)"></span> Column dimension</span>
+          <span>Figures in thousands of people (fictitious)</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- DEL 2: TOTALER / MARGINALER -->
+  <!-- PART 2: TOTALS / MARGINALS -->
   <section class="step wrap" id="total">
     <div class="step-head">
-      <div class="step-num">Del 2</div>
-      <h2>Totaler er svar, ikke pynt</h2>
-      <p>En total – det statistikere kaller en <em>marginal</em> – er summen langs kanten av tabellen. Radtotalen svarer «hvor mange er det i denne raden til sammen?», kolonnetotalen det samme nedover, og hjørnet er alle til sammen. Skru dem på og se hvor de hører hjemme. Totaler er grunnleggende tabellanatomi – de kommer før vi begynner å bygge ut tabellen.</p>
+      <div class="step-num">Part 2</div>
+      <h2>Totals are answers, not decoration</h2>
+      <p>A total — what statisticians call a <em>marginal</em> — is the sum along the edge of the table. The row total answers "how many in this row altogether?", the column total does the same going down, and the corner is everyone combined. Switch them on and see where each belongs. Totals are basic table anatomy — they come before we start building the table out.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-rowtot" checked><span class="track"></span><span class="switch-text">Totalkolonne (sum bortover)</span></label>
+          <label class="switch"><input type="checkbox" id="sw-rowtot" checked><span class="track"></span><span class="switch-text">Total column (sum across)</span></label>
         </div>
         <div class="ctrl">
-          <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Totalrad (sum nedover)</span></label>
+          <label class="switch"><input type="checkbox" id="sw-coltot" checked><span class="track"></span><span class="switch-text">Total row (sum down)</span></label>
         </div>
-        <div class="ctrl"><p class="ctrl-hint">Hjørnet dukker opp når begge er på – det er totalsummen, og den må stemme begge veier.</p></div>
+        <div class="ctrl"><p class="ctrl-hint">The corner appears when both are on — it's the grand total, and it has to match both ways.</p></div>
         <div class="expr-bonus" id="total-expr"></div>
       </div>
 
@@ -232,89 +232,89 @@
         <div class="table-scroll"><table id="tbl-total" aria-live="polite"></table></div>
         <div class="legend">
           <span><span class="swatch" style="background:var(--total)"></span> Total / marginal</span>
-          <span>Tall i tusen personer (fiktivt)</span>
+          <span>Figures in thousands of people (fictitious)</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- DEL 3: STABLING OG NESTING -->
+  <!-- PART 3: STACKING AND NESTING -->
   <section class="step wrap" id="nest">
     <div class="step-head">
-      <div class="step-num">Del 3</div>
-      <h2>Én fordeling, to fordelinger, eller én inni en annen</h2>
-      <p>Krysstabellen i Del 1 viste allerede to variabler i kryss. Den her bygger opp til det steg for steg, så du ser hva som skiller måtene å sette sammen en tabell på. Vi går fra det enkleste til det mest sammensatte.</p>
+      <div class="step-num">Part 3</div>
+      <h2>One distribution, two distributions, or one inside another</h2>
+      <p>The cross-table in Part 1 already showed two variables crossed. This part builds up to it step by step, so you can see what separates the ways of putting a table together. We go from the simplest to the most composite.</p>
     </div>
 
     <div class="board">
       <div class="controls">
-        <h3>Kontroller</h3>
+        <h3>Controls</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Oppbygging</span>
-          <div class="seg" id="seg-nest" role="group" aria-label="Velg oppbygging">
-            <button data-mode="none" aria-pressed="true">Én fordeling</button>
-            <button data-mode="stack">Stabling</button>
+          <span class="ctrl-label">Construction</span>
+          <div class="seg" id="seg-nest" role="group" aria-label="Choose construction">
+            <button data-mode="none" aria-pressed="true">One distribution</button>
+            <button data-mode="stack">Stacking</button>
             <button data-mode="nest">Nesting</button>
           </div>
           <p class="ctrl-hint" id="nest-hint"></p>
         </div>
         <div class="ctrl" id="nest-dir-wrap" style="display:none">
-          <span class="ctrl-label">Hvilken vei nestes det?</span>
-          <div class="seg" id="seg-nest-dir" role="group" aria-label="Velg nesteretning">
-            <button data-dir="ut-first" aria-pressed="true">Yrkesstatus per utdanning</button>
-            <button data-dir="ys-first">Utdanning per yrkesstatus</button>
+          <span class="ctrl-label">Which way is it nested?</span>
+          <div class="seg" id="seg-nest-dir" role="group" aria-label="Choose nesting direction">
+            <button data-dir="ut-first" aria-pressed="true">Employment within education</button>
+            <button data-dir="ys-first">Education within employment</button>
           </div>
-          <p class="ctrl-hint">Nesting kan gå begge veier. Rekkefølgen bestemmer hva som leses «innenfor» hva.</p>
+          <p class="ctrl-hint">Nesting can run either way. The order decides what is read "within" what.</p>
         </div>
         <div class="expr-bonus" id="nest-expr"></div>
       </div>
 
       <div class="table-card">
         <div class="table-scroll"><table id="tbl-nest" aria-live="polite"></table></div>
-        <div class="legend" id="nest-legend"><span>Tall i tusen personer (fiktivt)</span></div>
+        <div class="legend" id="nest-legend"><span>Figures in thousands of people (fictitious)</span></div>
       </div>
     </div>
 
     <div class="callout" id="nest-callout"></div>
   </section>
 
-  <!-- DEL 4: PROSENT -->
+  <!-- PART 4: PERCENTAGES -->
   <section class="step wrap" id="pct">
     <div class="step-head">
-      <div class="step-num">Del 4 · kjernen</div>
-      <h2>Tre prosenter, tre ulike spørsmål – og én som regel er riktig</h2>
-      <p>Her snubler de fleste. Samme celle kan gjøres om til prosent på tre måter, og de betyr ikke det samme. Men de er ikke likestilte: hvilken du bør velge, avhenger av hva som er bakgrunnsvariabelen din. Velg en type under og se hvilken retning prosenten regnes i.</p>
+      <div class="step-num">Part 4 · the heart of it</div>
+      <h2>Three percentages, three different questions — and one is usually right</h2>
+      <p>This is where most people trip up. The same cell can be turned into a percentage three ways, and they don't mean the same thing. But they aren't equal options: which one you should pick depends on what your background variable is. Pick a type below and see which direction the percentage runs.</p>
     </div>
 
     <div class="pct-cards">
       <div class="pct-card col" id="card-col" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Kolonneprosent</div>
-        <h4>Av alle i kolonnen</h4>
-        <p>«Blant dem med høyere utdanning – hvor stor andel er yrkesaktive?» Hver kolonne summerer til 100.</p>
-        <span class="pin rec">Oftest riktig her</span>
+        <div class="tag">Column percent</div>
+        <h4>Of everyone in the column</h4>
+        <p>"Among those with higher education — what share are employed?" Each column adds up to 100.</p>
+        <span class="pin rec">Usually right here</span>
       </div>
       <div class="pct-card row" id="card-row" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Radprosent</div>
-        <h4>Av alle i raden</h4>
-        <p>«Blant de yrkesaktive – hvor stor andel har høyere utdanning?» Hver rad summerer til 100.</p>
+        <div class="tag">Row percent</div>
+        <h4>Of everyone in the row</h4>
+        <p>"Among the employed — what share have higher education?" Each row adds up to 100.</p>
       </div>
       <div class="pct-card tot" id="card-tot" role="button" tabindex="0" aria-pressed="false">
-        <div class="tag">Totalprosent</div>
-        <h4>Av alle til sammen</h4>
-        <p>«Hvor stor andel av hele befolkningen er yrkesaktive med høyere utdanning?» Hele tabellen summerer til 100.</p>
-        <span class="pin rare">Sjelden brukt</span>
+        <div class="tag">Total percent</div>
+        <h4>Of everyone combined</h4>
+        <p>"What share of the whole population are employed people with higher education?" The whole table adds up to 100.</p>
+        <span class="pin rare">Rarely used</span>
       </div>
     </div>
 
     <div class="board" style="margin-top:26px">
       <div class="controls">
-        <h3>Visning</h3>
+        <h3>View</h3>
         <div class="ctrl">
-          <span class="ctrl-label">Prosenttype</span>
-          <div class="seg" id="seg-pct" role="group" aria-label="Velg prosenttype">
-            <button data-pct="count" aria-pressed="true">Antall</button>
-            <button data-pct="col">Kolonne&nbsp;%</button>
-            <button data-pct="row">Rad&nbsp;%</button>
+          <span class="ctrl-label">Percentage type</span>
+          <div class="seg" id="seg-pct" role="group" aria-label="Choose percentage type">
+            <button data-pct="count" aria-pressed="true">Count</button>
+            <button data-pct="col">Column&nbsp;%</button>
+            <button data-pct="row">Row&nbsp;%</button>
             <button data-pct="tot">Total&nbsp;%</button>
           </div>
         </div>
@@ -329,18 +329,18 @@
     </div>
 
     <div class="rule">
-      <h4>Rettesnoren: prosentuer på bakgrunnsvariabelen</h4>
-      <p>Når én variabel forklarer en annen, regner du vanligvis prosenten <strong>innenfor hver verdi av bakgrunnsvariabelen</strong>. Her er utdanning bakgrunnen og yrkesaktivitet det vi vil forklare – så vi spør «hvor stor andel er yrkesaktive innen hvert utdanningsnivå?». Med utdanning som kolonner blir det <strong>kolonneprosent</strong>, og hver kolonne summerer til 100.</p>
-      <p>Da blir tallene direkte sammenlignbare: 53 %, 69 %, 86 % yrkesaktive – andelen stiger tydelig med utdanning. Den motsatte prosentueringen svarer på et annet spørsmål, og <strong>totalprosent forekommer sjelden</strong> – den brukes mest når du vil vise hvor stor del av helheten en enkelt kombinasjon utgjør.</p>
+      <h4>The rule of thumb: percentage on the background variable</h4>
+      <p>When one variable explains another, you usually compute the percentage <strong>within each value of the background variable</strong>. Here education is the background and employment is what we want to explain — so we ask "what share are employed within each level of education?". With education as columns that makes it <strong>column percent</strong>, and each column adds up to 100.</p>
+      <p>That makes the numbers directly comparable: 53%, 69%, 86% employed — the share rises clearly with education. The opposite percentage answers a different question, and <strong>total percent is rarely used</strong> — mostly when you want to show what share of the whole a single combination makes up.</p>
     </div>
   </section>
 
   <!-- AVSLUTNING -->
   <section class="step wrap" id="end">
     <div class="step-head">
-      <div class="step-num">Til slutt</div>
-      <h2>Les retningen før du leser tallet</h2>
-      <p class="body">Når du møter en prosenttabell: finn først ut hva som summerer til 100. Det forteller deg hvilket spørsmål forfatteren stilte – og om det er det samme spørsmålet du selv lurte på. Spør så om prosenten er regnet på bakgrunnsvariabelen, slik den vanligvis bør. En godt merket tabell sier dette rett ut. En dårlig merket lar deg gjette, og da gjetter folk gjerne feil.</p>
+      <div class="step-num">In closing</div>
+      <h2>Read the direction before you read the number</h2>
+      <p class="body">When you meet a percentage table: first work out what adds up to 100. That tells you which question the author asked — and whether it's the same question you were wondering about. Then ask whether the percentage was computed on the background variable, as it usually should be. A well-labelled table says this outright. A poorly labelled one lets you guess, and people tend to guess wrong.</p>
     </div>
   </section>
 
@@ -348,8 +348,8 @@
 
 <footer>
   <div class="wrap">
-    <span>Interaktiv forklaring · tabellanatomi · alle tall er fiktive</span>
-    <span>Bygget som en frittstående side · ingen sporing</span>
+    <span>Interactive explainer · table anatomy · all figures are fictitious</span>
+    <span>Built as a standalone page · no tracking</span>
   </div>
 </footer>
 
@@ -358,21 +358,21 @@
    DATA — fiktiv miniverden: utdanningsnivå × yrkesstatus.
    Bakgrunnsvariabel = utdanning; avhengig variabel = yrkesstatus.
    Realistisk mønster: yrkesaktiv-andelen stiger med utdanning.
-   Tall i tusen personer, runde og åpenbart syntetiske.
+   Figures in thousands of people, round and obviously synthetic.
    ================================================================= */
 
 const LABELS = {
-  utdanning:   { navn: "Utdanningsnivå", verdier: ["Grunnskole", "Videregående", "Høyere utdanning"] },
-  yrkesstatus: { navn: "Yrkesstatus",    verdier: ["Yrkesaktiv", "Ikke yrkesaktiv"] },
+  utdanning:   { navn: "Education",   verdier: ["Lower secondary", "Upper secondary", "Higher education"] },
+  yrkesstatus: { navn: "Employment",  verdier: ["Employed", "Not employed"] },
 };
 
-/* Sumraden (kolonnetotalen) øverst (nordisk/SSB-sedvane) på norsk. */
+/* Totals first/top/left — consistent with the Norwegian version. */
 const TOTAL_FIRST = true;
 
 const CUBE = {
-  "Grunnskole|Yrkesaktiv":       320, "Grunnskole|Ikke yrkesaktiv":       280,
-  "Videregående|Yrkesaktiv":     760, "Videregående|Ikke yrkesaktiv":     340,
-  "Høyere utdanning|Yrkesaktiv": 690, "Høyere utdanning|Ikke yrkesaktiv": 110,
+  "Lower secondary|Employed":   320, "Lower secondary|Not employed":   280,
+  "Upper secondary|Employed":   760, "Upper secondary|Not employed":   340,
+  "Higher education|Employed":  690, "Higher education|Not employed":  110,
 };
 
 function marginal(vars) {
@@ -385,8 +385,8 @@ function marginal(vars) {
   }
   return out;
 }
-function fmt(n) { return (n === null || n === undefined) ? "" : n.toLocaleString("nb-NO"); }
-function fmtPct(n) { return n.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " %"; }
+function fmt(n) { return (n === null || n === undefined) ? "" : n.toLocaleString("en-GB"); }
+function fmtPct(n) { return n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%"; }
 
 const GRAND = Object.values(CUBE).reduce((a, b) => a + b, 0);
 
@@ -405,8 +405,8 @@ function syncSeg(id, attr, val) {
 }
 
 /* =================================================================
-   flextab-boks: fullt fargelagt Python-kall.
-   table-uttrykket sendes inn som ferdig fargelagt HTML (tableHTML).
+   flextab box: full coloured Python call.
+   The table expression is passed as ready-coloured HTML (tableHTML).
    ================================================================= */
 function fxStr(txt) { return `<span class="str">"${txt}"</span>`; }
 function fxList(arr) { return arr.length === 1 ? fxStr(arr[0]) : `[${arr.map(fxStr).join(", ")}]`; }
@@ -417,15 +417,14 @@ function flextabCall(targetId, opts) {
   if (opts.groupby) L.push(`<span class="ln">    <span class="arg">groupby</span>=${fxList(opts.groupby)},</span>`);
   if (opts.measure) { const m = Array.isArray(opts.measure) ? fxList(opts.measure) : fxStr(opts.measure); L.push(`<span class="ln">    <span class="arg">measure</span>=${m},</span>`); }
   if (opts.weight) L.push(`<span class="ln">    <span class="arg">weight</span>=${fxStr(opts.weight)},</span>`);
-  // table vises med fargelagt uttrykk inne i strengen: <span class="str">"..."</span> der ... er tableHTML
   if (opts.tableHTML) L.push(`<span class="ln">    <span class="arg">table</span>=<span class="str">"</span>${opts.tableHTML}<span class="str">"</span>,</span>`);
   L.push(`<span class="ln">)</span>`);
   const note = opts.note ? `<span class="note">${opts.note}</span>` : "";
-  document.getElementById(targetId).innerHTML = `<span class="lbl">Som flextab-kall</span>${L.join("")}${note}`;
+  document.getElementById(targetId).innerHTML = `<span class="lbl">As a flextab call</span>${L.join("")}${note}`;
 }
 
 /* =================================================================
-   DEL 1 — Dimensjoner (orientering: utdanning som kolonne eller rad)
+   PART 1 — Dimensions (orientation: education as column or row)
    ================================================================= */
 let orient = "ut-cols";
 
@@ -442,8 +441,8 @@ function renderDim() {
     return orient === "ut-cols" ? d[`${cv}|${rv}`] : d[`${rv}|${cv}`];
   }
 
-  let h = `<caption>Antall personer etter ${rowsVar.navn.toLowerCase()} og ${colsVar.navn.toLowerCase()}</caption>`;
-  h += `<div class="caption-sub">${rowsVar.navn} nedover · ${colsVar.navn} bortover</div>`;
+  let h = `<caption>Number of people by ${rowsVar.navn.toLowerCase()} and ${colsVar.navn.toLowerCase()}</caption>`;
+  h += `<div class="caption-sub">${rowsVar.navn} down · ${colsVar.navn} across</div>`;
   h += `<thead><tr><th class="corner" style="color:var(--accent)">${rowsVar.navn}</th>`;
   for (const c of colVals) h += `<th class="colspan-head">${c}</th>`;
   h += `</tr></thead><tbody>`;
@@ -455,21 +454,21 @@ function renderDim() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-kall: det som står før komma havner i radene
+  // flextab call: what comes before the comma goes into the rows
   const tableHTML = orient === "ut-cols"
-    ? `<span class="var">yrkesstatus</span> <span class="op">,</span> <span class="var">utdanning</span>`
-    : `<span class="var">utdanning</span> <span class="op">,</span> <span class="var">yrkesstatus</span>`;
+    ? `<span class="var">employment</span> <span class="op">,</span> <span class="var">education</span>`
+    : `<span class="var">education</span> <span class="op">,</span> <span class="var">employment</span>`;
   flextabCall("dim-expr", {
-    groupby: ["utdanning", "yrkesstatus"],
+    groupby: ["education", "employment"],
     tableHTML,
-    note: "Komma skiller rader (før) fra kolonner (etter)."
+    note: "The comma separates rows (before) from columns (after)."
   });
 }
 wireSeg("seg-orient", btn => { orient = btn.dataset.orient; renderDim(); });
 
 /* =================================================================
-   DEL 2 — Totaler / marginaler
-   Fast: utdanning bortover (kolonner), yrkesstatus nedover (rader).
+   PART 2 — Totals / marginals
+   Fixed: education across (columns), employment down (rows).
    ================================================================= */
 const totState = { rowTot: true, colTot: true };
 
@@ -478,17 +477,17 @@ function renderTotal() {
   const ut = LABELS.utdanning.verdier, ys = LABELS.yrkesstatus.verdier;
   const d = marginal(["utdanning", "yrkesstatus"]);
 
-  let h = `<caption>Antall personer etter yrkesstatus og utdanningsnivå</caption>`;
-  h += `<div class="caption-sub">Marginaler vises langs kanten</div>`;
-  h += `<thead><tr><th class="corner">Yrkesstatus</th>`;
-  if (totState.rowTot && TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
+  let h = `<caption>Number of people by employment and education</caption>`;
+  h += `<div class="caption-sub">Marginals shown along the edge</div>`;
+  h += `<thead><tr><th class="corner">Employment</th>`;
+  if (totState.rowTot && TOTAL_FIRST) h += `<th class="is-total">All</th>`;
   for (const u of ut) h += `<th>${u}</th>`;
-  if (totState.rowTot && !TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
+  if (totState.rowTot && !TOTAL_FIRST) h += `<th class="is-total">All</th>`;
   h += `</tr></thead><tbody>`;
 
   let marginRow = "";
   if (totState.colTot) {
-    marginRow = `<tr><th class="is-total">Alle</th>`;
+    marginRow = `<tr><th class="is-total">All</th>`;
     const grandCell = `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${fmt(GRAND)}</td>`;
     if (totState.rowTot && TOTAL_FIRST) marginRow += grandCell;
     for (const u of ut) {
@@ -514,21 +513,21 @@ function renderTotal() {
   h += `</tbody>`;
   tbl.innerHTML = h;
 
-  // flextab-kall: total legges til på hver akse. Rader = yrkesstatus, kolonner = utdanning.
-  const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">yrkesstatus</span>` : `<span class="var">yrkesstatus</span>`;
-  const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">utdanning</span>` : `<span class="var">utdanning</span>`;
+  // flextab call: total is added on each axis. Rows = employment, columns = education.
+  const rowSide = totState.rowTot ? `<span class="op">total</span> <span class="var">employment</span>` : `<span class="var">employment</span>`;
+  const colSide = totState.colTot ? `<span class="op">total</span> <span class="var">education</span>` : `<span class="var">education</span>`;
   flextabCall("total-expr", {
-    groupby: ["utdanning", "yrkesstatus"],
+    groupby: ["education", "employment"],
     tableHTML: `${rowSide} <span class="op">,</span> ${colSide}`,
-    note: "total legger en marginal på den aksen."
+    note: "total adds a marginal on that axis."
   });
 }
 document.getElementById("sw-rowtot").addEventListener("change", e => { totState.rowTot = e.target.checked; renderTotal(); });
 document.getElementById("sw-coltot").addEventListener("change", e => { totState.colTot = e.target.checked; renderTotal(); });
 
 /* =================================================================
-   DEL 3 — Stabling og nesting
-   Rekkefølge: Én fordeling → Stabling → Nesting.
+   PART 3 — Stacking and nesting
+   Order: One distribution → Stacking → Nesting.
    ================================================================= */
 let nestMode = "none";
 let nestDir = "ut-first";
@@ -544,76 +543,76 @@ function renderNest() {
   document.getElementById("nest-dir-wrap").style.display = (nestMode === "nest") ? "" : "none";
 
   if (nestMode === "none") {
-    cap = "Antall yrkesaktive og ikke yrkesaktive";
-    h += `<thead><tr><th class="corner">Yrkesstatus</th><th>Antall</th></tr></thead><tbody>`;
+    cap = "Number of employed and not employed";
+    h += `<thead><tr><th class="corner">Employment</th><th>Count</th></tr></thead><tbody>`;
     for (const y of ys) h += `<tr><th>${y}</th><td class="num">${fmt(byYs[y])}</td></tr>`;
-    h += `<tr><th class="is-total">Alle</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    h += `<tr><th class="is-total">All</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
     h += `</tbody>`;
-    hint = "Én variabel, én fordeling – yrkesstatus for hele befolkningen. Det enkleste tilfellet.";
-    callout = `<strong>Én fordeling:</strong> bare én variabel deler opp befolkningen. Totalen nederst er hele populasjonen.`;
+    hint = "One variable, one distribution — employment for the whole population. The simplest case.";
+    callout = `<strong>One distribution:</strong> just one variable divides the population. The total at the bottom is the whole population.`;
   }
 
   if (nestMode === "stack") {
-    cap = "To fordelinger stablet under hverandre";
-    h += `<thead><tr><th class="corner">Variabel</th><th>Antall</th></tr></thead><tbody>`;
-    h += `<tr><th class="group-label">Yrkesstatus</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    cap = "Two distributions stacked one under the other";
+    h += `<thead><tr><th class="corner">Variable</th><th>Count</th></tr></thead><tbody>`;
+    h += `<tr><th class="group-label">Employment</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
     for (const y of ys) h += `<tr><th class="indent">${y}</th><td class="num">${fmt(byYs[y])}</td></tr>`;
-    h += `<tr><th class="group-label">Utdanningsnivå</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
+    h += `<tr><th class="group-label">Education</th><td class="num is-total">${fmt(GRAND)}</td></tr>`;
     for (const u of ut) h += `<tr><th class="indent">${u}</th><td class="num">${fmt(byUt[u])}</td></tr>`;
     h += `</tbody>`;
-    hint = "To uavhengige fordelinger satt under hverandre. Hver blokk deler hele befolkningen på sin måte.";
-    callout = `<strong>Stabling:</strong> to selvstendige fordelinger under hverandre. Begge blokkene har samme total – hele befolkningen – fordi de bare deler den opp på hver sin måte. Du kan ikke summere på tvers av blokkene.`;
+    hint = "Two independent distributions set one under the other. Each block divides the whole population its own way.";
+    callout = `<strong>Stacking:</strong> two self-contained distributions, one under the other. Both blocks have the same total — the whole population — because they just divide it up in different ways. You can't sum across the blocks.`;
   }
 
   if (nestMode === "nest") {
     if (nestDir === "ut-first") {
-      cap = "Yrkesstatus innenfor hvert utdanningsnivå";
-      h += `<thead><tr><th class="corner">Utdanning · yrkesstatus</th><th>Antall</th></tr></thead><tbody>`;
+      cap = "Employment within each level of education";
+      h += `<thead><tr><th class="corner">Education · employment</th><th>Count</th></tr></thead><tbody>`;
       for (const u of ut) {
         h += `<tr><th class="group-label">${u}</th><td class="num is-total">${fmt(byUt[u])}</td></tr>`;
         for (const y of ys) h += `<tr><th class="indent">${y}</th><td class="num">${fmt(d[`${u}|${y}`])}</td></tr>`;
       }
       h += `</tbody>`;
-      hint = "Yrkesstatus brutt ned innenfor hvert utdanningsnivå. Underradene summerer til gruppen over.";
-      callout = `<strong>Nesting:</strong> dette er nettopp krysstabellen fra Del 1, skrevet ut radvis. Hver utdanningsgruppe deles på yrkesstatus, og delsummene (yrkesaktiv + ikke) blir gruppetotalen over.`;
+      hint = "Employment broken down within each level of education. The sub-rows add up to the group above.";
+      callout = `<strong>Nesting:</strong> this is exactly the cross-table from Part 1, written out row by row. Each education group is split by employment, and the sub-totals (employed + not) become the group total above.`;
     } else {
-      cap = "Utdanningsnivå innenfor hver yrkesstatus";
-      h += `<thead><tr><th class="corner">Yrkesstatus · utdanning</th><th>Antall</th></tr></thead><tbody>`;
+      cap = "Level of education within each employment status";
+      h += `<thead><tr><th class="corner">Employment · education</th><th>Count</th></tr></thead><tbody>`;
       for (const y of ys) {
         h += `<tr><th class="group-label">${y}</th><td class="num is-total">${fmt(byYs[y])}</td></tr>`;
         for (const u of ut) h += `<tr><th class="indent">${u}</th><td class="num">${fmt(d[`${u}|${y}`])}</td></tr>`;
       }
       h += `</tbody>`;
-      hint = "Samme tall, nestet motsatt vei: utdanning brutt ned innenfor hver yrkesstatus.";
-      callout = `<strong>Nesting – motsatt vei:</strong> samme datapunkter, men nå deles hver yrkesstatus på utdanning. Hvilken vei du nester bestemmer hva som leses «innenfor» hva – og dermed hvilket spørsmål tabellen først besvarer.`;
+      hint = "Same figures, nested the other way: education broken down within each employment status.";
+      callout = `<strong>Nesting — the other way:</strong> same data points, but now each employment status is split by education. Which way you nest decides what is read "within" what — and so which question the table answers first.`;
     }
   }
 
-  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Tall i tusen personer (fiktivt)</div>` + h;
+  tbl.innerHTML = `<caption>${cap}</caption><div class="caption-sub">Figures in thousands of people (fictitious)</div>` + h;
   document.getElementById("nest-hint").textContent = hint;
   document.getElementById("nest-callout").innerHTML = callout;
 
-  // flextab-kall: mellomrom stabler, * nester. total først (norsk). count som kolonnedimensjon.
-  const VU = `<span class="var">utdanning</span>`, VY = `<span class="var">yrkesstatus</span>`;
-  const tU = `<span class="op">total</span> ${VU}`, tY = `<span class="op">total</span> ${VY}`;
-  const totU = `<span class="paren">(</span><span class="op">total</span> ${VU}<span class="paren">)</span>`;
-  const totY = `<span class="paren">(</span><span class="op">total</span> ${VY}<span class="paren">)</span>`;
+  // flextab call: a space stacks, * nests. total first (consistent). count as column dimension.
+  const VE = `<span class="var">education</span>`, VM = `<span class="var">employment</span>`;
+  const tE = `<span class="op">total</span> ${VE}`, tM = `<span class="op">total</span> ${VM}`;
+  const totE = `<span class="paren">(</span><span class="op">total</span> ${VE}<span class="paren">)</span>`;
+  const totM = `<span class="paren">(</span><span class="op">total</span> ${VM}<span class="paren">)</span>`;
   const COUNT = `<span class="op">count</span>`;
   let rowPart, note, gb;
   if (nestMode === "none") {
-    rowPart = tY;
-    note = "Én variabel – én fordeling. count teller personer.";
-    gb = ["utdanning", "yrkesstatus"];
+    rowPart = tM;
+    note = "One variable — one distribution. count counts people.";
+    gb = ["education", "employment"];
   } else if (nestMode === "stack") {
-    rowPart = `${tY} ${tU}`;
-    note = "Mellomrom stabler to fordelinger.";
-    gb = ["utdanning", "yrkesstatus"];
+    rowPart = `${tM} ${tE}`;
+    note = "A space stacks two distributions.";
+    gb = ["education", "employment"];
   } else {
     rowPart = nestDir === "ut-first"
-      ? `${VU} <span class="op">*</span> ${totY}`
-      : `${VY} <span class="op">*</span> ${totU}`;
-    note = "Stjernen (*) nester den ene inni den andre.";
-    gb = ["utdanning", "yrkesstatus"];
+      ? `${VE} <span class="op">*</span> ${totM}`
+      : `${VM} <span class="op">*</span> ${totE}`;
+    note = "The star (*) nests one inside the other.";
+    gb = ["education", "employment"];
   }
   flextabCall("nest-expr", { groupby: gb, tableHTML: `${rowPart} <span class="op">,</span> ${COUNT}`, note });
 }
@@ -621,22 +620,22 @@ wireSeg("seg-nest", btn => { nestMode = btn.dataset.mode; renderNest(); });
 wireSeg("seg-nest-dir", btn => { nestDir = btn.dataset.dir; renderNest(); });
 
 /* =================================================================
-   DEL 4 — Prosent (kjernen)
-   Fast: utdanning bortover (kolonner = bakgrunn), yrkesstatus nedover.
+   PART 4 — Percentages (the heart of it)
+   Fixed: education across (columns = background), employment down.
    ================================================================= */
 let pctMode = "count";
 
 const PCT_TEXT = {
-  count: "Rå antall personer. Velg en prosenttype for å se hvilken vei den regnes.",
-  col:   "Kolonneprosent: hver celle deles på kolonnens total. Hvert utdanningsnivå summerer til 100 % – det er den anbefalte her, fordi utdanning er bakgrunnsvariabelen.",
-  row:   "Radprosent: hver celle deles på radens total. Svarer «blant de yrkesaktive, hvilken utdanning har de?» – et annet, ofte mindre relevant spørsmål.",
-  tot:   "Totalprosent: hver celle deles på totalsummen. Alle cellene summerer til 100 %. Brukes sjelden – mest for å vise hvor stor del av helheten en kombinasjon utgjør.",
+  count: "Raw count of people. Pick a percentage type to see which way it runs.",
+  col:   "Column percent: each cell is divided by its column total. Each level of education adds up to 100% — the recommended choice here, because education is the background variable.",
+  row:   "Row percent: each cell is divided by its row total. Answers \u201camong the employed, what education do they have?\u201d — a different, often less relevant question.",
+  tot:   "Total percent: each cell is divided by the grand total. All cells add up to 100%. Rarely used — mostly to show what share of the whole a combination makes up.",
 };
 const PCT_LEGEND = {
-  count: `<span>Tall i tusen personer (fiktivt)</span>`,
-  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Summerer til 100 % nedover hver kolonne · anbefalt</span>`,
-  row:   `<span><span class="swatch" style="background:var(--accent)"></span> Summerer til 100 % bortover hver rad</span>`,
-  tot:   `<span><span class="swatch" style="background:var(--total)"></span> Hele tabellen summerer til 100 %</span>`,
+  count: `<span>Figures in thousands of people (fictitious)</span>`,
+  col:   `<span><span class="swatch" style="background:var(--blue)"></span> Adds up to 100% down each column · recommended</span>`,
+  row:   `<span><span class="swatch" style="background:var(--accent)"></span> Adds up to 100% across each row</span>`,
+  tot:   `<span><span class="swatch" style="background:var(--total)"></span> The whole table adds up to 100%</span>`,
 };
 
 function renderPct() {
@@ -680,20 +679,20 @@ function renderPct() {
     }
   }
 
-  let h = `<caption>${pctMode === "count" ? "Antall" : "Andel"} personer etter yrkesstatus og utdanningsnivå</caption>`;
+  let h = `<caption>${pctMode === "count" ? "Number of" : "Share of"} people by employment and education</caption>`;
   h += `<div class="caption-sub">${
-    pctMode === "count" ? "Med marginaler langs kanten" :
-    pctMode === "col" ? "Kolonneprosent · hvert utdanningsnivå = 100 %" :
-    pctMode === "row" ? "Radprosent · hver yrkesstatus-rad = 100 %" :
-    "Totalprosent · hele tabellen = 100 %"}</div>`;
-  h += `<thead><tr><th class="corner">Yrkesstatus</th>`;
-  if (TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
+    pctMode === "count" ? "With marginals along the edge" :
+    pctMode === "col" ? "Column percent · each level of education = 100%" :
+    pctMode === "row" ? "Row percent · each employment row = 100%" :
+    "Total percent · the whole table = 100%"}</div>`;
+  h += `<thead><tr><th class="corner">Employment</th>`;
+  if (TOTAL_FIRST) h += `<th class="is-total">All</th>`;
   for (const u of ut) h += `<th>${u}</th>`;
-  if (!TOTAL_FIRST) h += `<th class="is-total">Alle</th>`;
+  if (!TOTAL_FIRST) h += `<th class="is-total">All</th>`;
   h += `</tr></thead><tbody>`;
 
   const grandCell = `<td class="num is-total" style="box-shadow:inset 0 0 0 2px var(--total)">${totVal("grand")}</td>`;
-  let marginRow = `<tr><th class="is-total">Alle</th>`;
+  let marginRow = `<tr><th class="is-total">All</th>`;
   if (TOTAL_FIRST) marginRow += grandCell;
   for (const u of ut) marginRow += `<td class="num is-total">${totVal("col", u)}</td>`;
   if (!TOTAL_FIRST) marginRow += grandCell;
@@ -705,7 +704,7 @@ function renderPct() {
     const rowTotCell = `<td class="num is-total">${totVal("row", y)}</td>`;
     if (TOTAL_FIRST) dataRows += rowTotCell;
     for (const u of ut) {
-      const hl = (y === "Yrkesaktiv" && u === "Høyere utdanning") ? " pulse-target" : "";
+      const hl = (y === "Employed" && u === "Higher education") ? " pulse-target" : "";
       dataRows += `<td class="num ${cellClass}${hl}">${valueOf(y, u)}</td>`;
     }
     if (!TOTAL_FIRST) dataRows += rowTotCell;
@@ -722,19 +721,19 @@ function renderPct() {
     document.getElementById(id).setAttribute("aria-pressed", pctMode === mode ? "true" : "false");
   syncSeg("seg-pct", "pct", pctMode);
 
-  // flextab-kall: total yrkesstatus , (total utdanning) [* prosentnøkkelord]
+  // flextab call: employment total , (education total) [* percentage keyword]
   const PCT_EXPR = {
-    count: { kw: null,          note: "Antall – ingen prosentnøkkelord." },
-    col:   { kw: `colpctn`,      note: "colpctn: prosent av kolonnetotalen." },
-    row:   { kw: `rowpctn`,      note: "rowpctn: prosent av radtotalen." },
-    tot:   { kw: `pctn`,         note: "pctn: prosent av totalsummen." },
+    count: { kw: null,      note: "Count — no percentage keyword." },
+    col:   { kw: `colpctn`,  note: "colpctn: percent of the column total." },
+    row:   { kw: `rowpctn`,  note: "rowpctn: percent of the row total." },
+    tot:   { kw: `pctn`,     note: "pctn: percent of the grand total." },
   };
   const pe = PCT_EXPR[pctMode];
-  const colPart = `<span class="paren">(</span><span class="op">total</span> <span class="var">utdanning</span><span class="paren">)</span>`;
-  const rowPart4 = `<span class="op">total</span> <span class="var">yrkesstatus</span>`;
+  const colPart = `<span class="paren">(</span><span class="op">total</span> <span class="var">education</span><span class="paren">)</span>`;
+  const rowPart4 = `<span class="op">total</span> <span class="var">employment</span>`;
   const colFull = pe.kw ? `${colPart} <span class="op">*</span> <span class="op">${pe.kw}</span>` : colPart;
   flextabCall("pct-expr", {
-    groupby: ["utdanning", "yrkesstatus"],
+    groupby: ["education", "employment"],
     tableHTML: `${rowPart4} <span class="op">,</span> ${colFull}`,
     note: pe.note
   });
